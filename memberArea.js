@@ -50,6 +50,21 @@
     }
   }
 
+  const DEVICE_TOKEN_KEY = "cm_device_token";
+
+  function getDeviceToken() {
+    try {
+      let token = localStorage.getItem(DEVICE_TOKEN_KEY);
+      if (!token) {
+        token = crypto.randomUUID();
+        localStorage.setItem(DEVICE_TOKEN_KEY, token);
+      }
+      return token;
+    } catch (e) {
+      return "anonymous";
+    }
+  }
+
   /* ---------------------------------------------------------------- */
   /* Stage metadata                                                    */
   /* ---------------------------------------------------------------- */
@@ -59,6 +74,8 @@
     { id: 2, icon: "compass", title: "גבול ההבחנה", subtitle: "הפרדה בין רגש, מחשבה ומציאות" },
     { id: 3, icon: "footprints", title: "קרקוע", subtitle: "חזרה לגוף ולכאן ועכשיו" },
     { id: 4, icon: "sparkles", title: "מדד חוסן", subtitle: "השיקוף האישי שלך", alwaysUnlocked: true },
+    { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
+    { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
   ];
 
   /* ---------------------------------------------------------------- */
@@ -430,6 +447,267 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Stage 5 — Conversational Check-in (Behavioral Health Check)       */
+  /* ---------------------------------------------------------------- */
+
+  function ListeningWaveform() {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 cm-fade-in-soft">
+        <div className="flex items-end gap-1.5 h-14">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <span
+              key={i}
+              className="cm-wave-bar w-2 rounded-full bg-gradient-to-t from-gold-300 to-gold-500"
+              style={{ height: "100%", animationDelay: `${i * 0.12}s` }}
+            />
+          ))}
+        </div>
+        <p className="mt-6 text-[13px] text-white/45">מקשיבה לך ברגישות...</p>
+      </div>
+    );
+  }
+
+  function CheckInComposer({ text, setText, onSend, disabled }) {
+    const filled = text.trim().length > 0;
+    return (
+      <div className="cm-fade-in-soft" style={{ animationDelay: "0.15s" }}>
+        <div
+          className="relative rounded-3xl border backdrop-blur-xl transition-all duration-500"
+          style={{
+            borderColor: filled ? "rgba(211,168,87,0.65)" : "rgba(255,255,255,0.12)",
+            boxShadow: filled ? "0 0 34px -6px rgba(211,168,87,0.45)" : "0 0 0 rgba(0,0,0,0)",
+            background: "rgba(255,255,255,0.05)",
+          }}
+        >
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value.slice(0, 4000))}
+            placeholder="כתבי כאן בחופשיות, בלי לסנן את עצמך..."
+            rows={5}
+            disabled={disabled}
+            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-[15px] leading-relaxed text-white placeholder:text-white/30 focus:outline-none"
+          />
+          <div className="flex items-center justify-between px-4 pb-3.5">
+            <span className="text-[11px] text-white/25">{text.length}/4000</span>
+            <button
+              type="button"
+              onClick={onSend}
+              disabled={!filled || disabled}
+              aria-label="שליחה"
+              className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-gold-300 to-gold-500 text-ink-800 shadow-soft transition-all ${
+                filled && !disabled ? "cm-send-pulse opacity-100 scale-100" : "opacity-35 scale-95"
+              }`}
+            >
+              <Icon name="arrow-up" size={18} strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  function TypedReply({ reply }) {
+    const [typed, setTyped] = useState("");
+    useEffect(() => {
+      setTyped("");
+      if (!reply) return;
+      let i = 0;
+      const id = setInterval(() => {
+        i += 1;
+        setTyped(reply.slice(0, i));
+        if (i >= reply.length) clearInterval(id);
+      }, 18);
+      return () => clearInterval(id);
+    }, [reply]);
+
+    return (
+      <p className="text-[15px] leading-relaxed text-white/90">
+        {typed}
+        {typed.length < reply.length ? <span className="cm-cursor-blink text-gold-400">▍</span> : null}
+      </p>
+    );
+  }
+
+  function CheckInStage({ onDashboardUpdate, onNavigateStage }) {
+    const [text, setText] = useState("");
+    const [status, setStatus] = useState("idle"); // idle | loading | done | error
+    const [reply, setReply] = useState("");
+    const [dashboardData, setDashboardData] = useState(null);
+    const [showDashboard, setShowDashboard] = useState(false);
+
+    async function handleSend() {
+      const trimmed = text.trim();
+      if (!trimmed || status === "loading") return;
+      setStatus("loading");
+      setShowDashboard(false);
+      try {
+        const res = await fetch("/api/checkin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+          body: JSON.stringify({ text: trimmed }),
+        });
+        if (!res.ok) throw new Error("request failed");
+        const data = await res.json();
+        setReply(data.reply || "תודה שחלקת את זה איתי. אני כאן.");
+        setDashboardData(data.dashboard || null);
+        if (onDashboardUpdate) onDashboardUpdate(data.dashboard || null);
+        setStatus("done");
+        setText("");
+        setTimeout(() => setShowDashboard(true), 350);
+      } catch (e) {
+        setStatus("error");
+      }
+    }
+
+    function startOver() {
+      setStatus("idle");
+      setReply("");
+      setShowDashboard(false);
+    }
+
+    return (
+      <div className="relative min-h-full overflow-hidden">
+        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-gold-400/25 blur-3xl cm-glow-drift" />
+        <div className="pointer-events-none absolute bottom-[-90px] -left-12 h-64 w-64 rounded-full bg-gold-300/15 blur-3xl cm-glow-drift-slow" />
+
+        <div className="relative z-10 px-1 pb-4">
+          {status === "idle" || status === "error" ? (
+            <>
+              <header className="mb-6 px-1 cm-fade-in-soft">
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon name="message-circle" size={15} className="text-gold-400" />
+                  <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset · צ'ק-אין</span>
+                </div>
+                <p className="font-heading text-[18px] font-bold text-white leading-snug">
+                  היי, אני כאן איתך.
+                  <br />
+                  ספרי לי איך עבר עלייך היום ומה שלומך עכשיו?
+                </p>
+              </header>
+              <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
+              {status === "error" ? (
+                <div className="cm-fade-in-soft mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center">
+                  <p className="text-[13px] leading-relaxed text-white/60">לא הצלחנו כרגע להתחבר אלייך — זה בסדר, את לא לבד. נסי שוב בעוד רגע.</p>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+
+          {status === "loading" ? <ListeningWaveform /> : null}
+
+          {status === "done" ? (
+            <div className="space-y-6">
+              <div className="cm-fade-in-soft rounded-3xl border border-gold-400/25 bg-white/[0.04] px-5 py-5 backdrop-blur-xl">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <Icon name="sparkles" size={13} className="text-gold-400" />
+                  <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset</span>
+                </div>
+                <TypedReply reply={reply} />
+              </div>
+
+              {showDashboard && dashboardData ? (
+                <div className="cm-slide-up-in">
+                  <ResilienceDashboard data={dashboardData} onNavigateStage={onNavigateStage} />
+                </div>
+              ) : null}
+
+              {showDashboard ? (
+                <Button as="button" type="button" variant="secondary" className="w-full" icon="message-circle" onClick={startOver}>
+                  שיחה נוספת
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Stage 6 — Client Resources & Vault (materials assigned by therapist) */
+  /* ---------------------------------------------------------------- */
+
+  const MATERIAL_TYPE_META = {
+    audio: { icon: "headphones", label: "קובץ שמע" },
+    worksheet: { icon: "file-text", label: "דף עבודה" },
+    summary: { icon: "book-open", label: "סיכום פגישה" },
+    other: { icon: "file-text", label: "חומר" },
+  };
+
+  function MaterialCard({ material }) {
+    const meta = MATERIAL_TYPE_META[material.type] || MATERIAL_TYPE_META.other;
+    return (
+      <div className="cm-fade-in-soft rounded-2xl border border-ink-100 bg-white px-4 py-4 shadow-soft">
+        <div className="flex items-start gap-3">
+          <span className="w-10 h-10 rounded-full bg-gold-50 text-gold-600 flex items-center justify-center shrink-0">
+            <Icon name={meta.icon} size={17} />
+          </span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10.5px] font-heading font-semibold uppercase tracking-wider text-gold-600 mb-0.5">{meta.label}</p>
+            <p className="font-heading font-bold text-[14.5px] text-ink-800 leading-snug">{material.title}</p>
+            {material.notes ? <p className="text-[12.5px] text-ink-500 mt-1 leading-relaxed">{material.notes}</p> : null}
+          </div>
+        </div>
+        <div className="mt-3">
+          {material.type === "audio" ? (
+            <audio controls src={material.url} className="w-full" />
+          ) : (
+            <a
+              href={material.url}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-gold-600 hover:text-gold-700"
+            >
+              לפתיחת הקובץ
+              <Icon name="arrow-up-right" size={13} />
+            </a>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  function MaterialsStage() {
+    const [materials, setMaterials] = useState(null);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+      fetch("/api/materials", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => setMaterials(Array.isArray(data) ? data : []))
+        .catch(() => setError(true));
+    }, []);
+
+    return (
+      <div className="space-y-4">
+        <header className="mb-2 px-1">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="book-open" size={15} className="text-gold-600" />
+            <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">החומרים שלי</span>
+          </div>
+          <p className="text-[13px] text-ink-500 leading-relaxed">חומרים אישיים שהוקצו לך — דמיון מודרך, דפי עבודה וסיכומים.</p>
+        </header>
+
+        {error ? (
+          <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
+            <p className="text-[13px] text-ink-500">לא הצלחנו לטעון את החומרים כרגע. נסי שוב בעוד רגע.</p>
+          </div>
+        ) : materials === null ? (
+          <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
+            <p className="text-[13px] text-ink-400">טוענת...</p>
+          </div>
+        ) : materials.length === 0 ? (
+          <div className="rounded-2xl border border-ink-100 bg-white px-4 py-6 text-center">
+            <p className="text-[13px] text-ink-500">עוד לא הוקצו לך חומרים. כשהמטפלת תשייך לך משהו, הוא יופיע כאן.</p>
+          </div>
+        ) : (
+          materials.map((m) => <MaterialCard key={m.id} material={m} />)
+        )}
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Phone frame + nav                                                  */
   /* ---------------------------------------------------------------- */
 
@@ -506,12 +784,20 @@
   function MemberArea({ onExit }) {
     const [progress, setProgress] = useState(loadProgress);
     const [current, setCurrent] = useState(() => loadProgress().unlocked);
+    const [serverDashboard, setServerDashboard] = useState(null);
 
     useEffect(() => {
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = "";
       };
+    }, []);
+
+    useEffect(() => {
+      fetch("/api/dashboard", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => data && setServerDashboard(data))
+        .catch(() => {});
     }, []);
 
     function unlock(stageId, nextUnlocked) {
@@ -537,7 +823,15 @@
         <StageNav stages={STAGES} progress={progress} current={current} onSelect={setCurrent} />
         {current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
-            <ResilienceDashboard progress={progress} sessions={loadSessions()} onNavigateStage={navigateToStage} />
+            <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
+          </div>
+        ) : current === 5 ? (
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
+            <CheckInStage onDashboardUpdate={setServerDashboard} onNavigateStage={navigateToStage} />
+          </div>
+        ) : current === 6 ? (
+          <div className="flex-1 overflow-y-auto px-5 py-6">
+            <MaterialsStage />
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-5 py-6">

@@ -82,8 +82,9 @@
             {wins.map((win) => (
               <div key={win.id} className="relative overflow-hidden rounded-2xl border border-gold-400/40 bg-gradient-to-br from-ink-700 via-ink-800 to-ink-800 p-4 shadow-soft">
                 <div className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-gold-400/15 blur-2xl" />
+                <div className="cm-shimmer-sweep pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                 <div className="relative flex items-start gap-3">
-                  <div className="mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gold-400 shadow-soft">
+                  <div className="cm-star-pop mt-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gold-400 shadow-soft">
                     <Icon name="star" size={16} className="text-ink-800" />
                   </div>
                   <div className="flex-1">
@@ -293,8 +294,8 @@
   /* Root component                                                      */
   /* ---------------------------------------------------------------- */
 
-  function ResilienceDashboard({ progress, sessions, onNavigateStage }) {
-    const data = buildResilienceData(progress, sessions);
+  function ResilienceDashboard({ progress = { unlocked: 1, completed: [] }, sessions = [], onNavigateStage, data: serverData }) {
+    const data = serverData || buildResilienceData(progress, sessions);
 
     return (
       <div className="px-1 pb-2">
