@@ -190,51 +190,74 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Client Profile View — Timeline + Resources & Vault                */
+  /* Client Profile View — unified chronological activity feed         */
   /* ---------------------------------------------------------------- */
 
-  function ExtractionChips({ items, tone }) {
-    if (!items || !items.length) return null;
-    const tones = {
-      trigger: "bg-rose-50 text-rose-700",
-      pattern: "bg-ink-100 text-ink-600",
-      alert: "bg-amber-50 text-amber-700",
-      win: "bg-gold-50 text-gold-700",
-    };
+  function intensityLabel(intensity) {
+    return { low: "עוצמה נמוכה", medium: "עוצמה בינונית", high: "עוצמה גבוהה" }[intensity] || "";
+  }
+
+  function AnalysisChip({ icon, text, hint }) {
+    if (!text) return null;
     return (
-      <div className="flex flex-wrap gap-1.5 mt-2">
-        {items.map((item, i) => (
-          <span key={item.id || i} className={`px-2.5 py-1 rounded-full text-[11.5px] font-heading font-semibold ${tones[tone]}`}>
-            {item.label || item.title || item.message || item.text}
-          </span>
+      <span
+        title={hint || undefined}
+        className="inline-flex items-center gap-1.5 max-w-full px-2.5 py-1.5 rounded-full bg-ink-800 text-gold-300 text-[11.5px] font-heading font-semibold"
+      >
+        <Icon name={icon} size={11} className="text-gold-400 shrink-0" />
+        <span className="truncate">{text}</span>
+      </span>
+    );
+  }
+
+  function AnalysisChips({ checkin }) {
+    const chips = [
+      ...checkin.triggers.map((t) => ({
+        key: `trig-${t.id}`,
+        icon: "flame",
+        text: t.area,
+        hint: [intensityLabel(t.intensity), t.note].filter(Boolean).join(" · "),
+      })),
+      ...checkin.patterns.map((p) => ({ key: `pat-${p.id}`, icon: "brain", text: p.title, hint: p.description })),
+      ...checkin.balanceAlerts.map((b) => ({ key: `alert-${b.id}`, icon: "alert-circle", text: b.message })),
+      ...checkin.wins.map((w) => ({ key: `win-${w.id}`, icon: "star", text: w.title, hint: w.description })),
+    ].filter((c) => c.text);
+    if (!chips.length) return null;
+    return (
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {chips.map((c) => (
+          <AnalysisChip key={c.key} icon={c.icon} text={c.text} hint={c.hint} />
         ))}
       </div>
     );
   }
 
-  function CheckinTimelineItem({ checkin }) {
+  function FeedCheckinCard({ checkin }) {
     return (
-      <div className="rounded-2xl border border-ink-100 bg-white px-5 py-4">
-        <p className="text-[11.5px] text-ink-400 mb-3">{formatDateTime(checkin.createdAt)}</p>
-        <div className="mb-3">
-          <p className="text-[11px] font-heading font-semibold uppercase tracking-wider text-ink-400 mb-1">המטופל/ת כתב/ה</p>
-          <p className="text-[14px] text-ink-800 leading-relaxed whitespace-pre-wrap">{checkin.text}</p>
+      <article className="rounded-2xl border border-ink-100 bg-white px-5 py-4 shadow-softer">
+        <div className="flex items-center justify-between mb-3">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-wider text-ink-400">
+            <Icon name="message-circle" size={12} className="text-gold-600" />
+            צ'ק-אין
+          </span>
+          <span className="text-[11.5px] text-ink-400 shrink-0">{formatDateTime(checkin.createdAt)}</span>
         </div>
+        <p className="text-[14px] text-ink-800 leading-relaxed whitespace-pre-wrap mb-3">{checkin.text}</p>
         {checkin.aiReply ? (
-          <div className="mb-3">
-            <p className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600 mb-1">תגובת ה-AI</p>
-            <p className="text-[13.5px] text-ink-600 leading-relaxed whitespace-pre-wrap">{checkin.aiReply}</p>
+          <div className="rounded-xl bg-ink-800 border-r-[3px] border-gold-400 px-4 py-3 mb-1">
+            <p className="flex items-center gap-1.5 text-[10.5px] font-heading font-semibold uppercase tracking-wider text-gold-400 mb-1">
+              <Icon name="sparkles" size={11} />
+              תגובת קטי · AI
+            </p>
+            <p className="text-[13px] text-white/85 leading-relaxed whitespace-pre-wrap">{checkin.aiReply}</p>
           </div>
         ) : null}
-        <ExtractionChips items={checkin.triggers} tone="trigger" />
-        <ExtractionChips items={checkin.patterns} tone="pattern" />
-        <ExtractionChips items={checkin.balanceAlerts} tone="alert" />
-        <ExtractionChips items={checkin.wins} tone="win" />
-      </div>
+        <AnalysisChips checkin={checkin} />
+      </article>
     );
   }
 
-  function MaterialRow({ material, authHeader, onDeleted }) {
+  function FeedMaterialCard({ material, authHeader, onDeleted }) {
     const meta = materialMeta(material.type);
     const [deleting, setDeleting] = useState(false);
     async function handleDelete() {
@@ -248,20 +271,83 @@
       }
     }
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-ink-100 bg-white px-4 py-3">
-        <span className="w-9 h-9 rounded-full bg-gold-50 text-gold-600 flex items-center justify-center shrink-0">
-          <Icon name={meta.icon} size={15} />
-        </span>
-        <div className="flex-1 min-w-0">
-          <p className="font-heading font-semibold text-[13.5px] text-ink-800 truncate">{material.title}</p>
-          {material.notes ? <p className="text-[12px] text-ink-500 truncate">{material.notes}</p> : null}
+      <article className="rounded-2xl border border-gold-200 bg-gold-50/50 px-5 py-4 shadow-softer">
+        <div className="flex items-center justify-between mb-2">
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-700">
+            <Icon name={meta.icon} size={12} />
+            חומר טיפולי הוקצה · {meta.label}
+          </span>
+          <span className="text-[11.5px] text-ink-400 shrink-0">{formatDateTime(material.created_at)}</span>
         </div>
-        <a href={material.url} target="_blank" rel="noreferrer" className="text-ink-400 hover:text-gold-600 shrink-0 p-1.5">
-          <Icon name="arrow-up-right" size={15} className="rtl-flip" />
-        </a>
-        <button type="button" onClick={handleDelete} disabled={deleting} className="text-ink-400 hover:text-rose-600 shrink-0 p-1.5 disabled:opacity-50">
-          <Icon name="trash-2" size={15} />
-        </button>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-heading font-bold text-[14.5px] text-ink-800 mb-1">{material.title}</p>
+            {material.notes ? <p className="text-[13px] text-ink-600 mb-3 leading-relaxed">{material.notes}</p> : null}
+            {material.type === "audio" ? (
+              <audio controls src={material.url} className="w-full" />
+            ) : (
+              <a
+                href={material.url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-gold-700 hover:text-gold-800"
+              >
+                לפתיחת הקובץ
+                <Icon name="arrow-up-right" size={13} className="rtl-flip" />
+              </a>
+            )}
+          </div>
+          <button type="button" onClick={handleDelete} disabled={deleting} className="text-gold-700/60 hover:text-rose-600 shrink-0 p-1.5 disabled:opacity-50">
+            <Icon name="trash-2" size={15} />
+          </button>
+        </div>
+      </article>
+    );
+  }
+
+  const FEED_NODE = {
+    checkin: { icon: "message-circle", className: "bg-gold-500 text-white" },
+    audio: { icon: "headphones", className: "bg-ink-800 text-gold-400" },
+    worksheet: { icon: "file-text", className: "bg-ink-800 text-gold-400" },
+    summary: { icon: "book-open", className: "bg-ink-800 text-gold-400" },
+    other: { icon: "file-text", className: "bg-ink-800 text-gold-400" },
+  };
+
+  function ActivityFeed({ profile, authHeader, onMaterialDeleted }) {
+    const entries = [
+      ...profile.checkins.map((c) => ({ key: `c-${c.id}`, date: c.createdAt, node: "checkin", render: () => <FeedCheckinCard checkin={c} /> })),
+      ...profile.materials.map((m) => ({
+        key: `m-${m.id}`,
+        date: m.created_at,
+        node: m.type,
+        render: () => <FeedMaterialCard material={m} authHeader={authHeader} onDeleted={onMaterialDeleted} />,
+      })),
+    ].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+    if (!entries.length) {
+      return (
+        <p className="text-[13px] text-ink-500 py-10 text-center">
+          עוד אין פעילות בתיק המטופל/ת — צ'ק-אינים וחומרי טיפול יופיעו כאן בסדר כרונולוגי אחד.
+        </p>
+      );
+    }
+
+    return (
+      <div className="relative">
+        <div className="absolute top-1 bottom-1 right-6 w-px bg-gradient-to-b from-ink-200 via-ink-100 to-transparent" />
+        <div className="space-y-5">
+          {entries.map((entry) => {
+            const node = FEED_NODE[entry.node] || FEED_NODE.checkin;
+            return (
+              <div key={entry.key} className="relative flex gap-4">
+                <span className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center shrink-0 ring-4 ring-ink-50 ${node.className}`}>
+                  <Icon name={node.icon} size={17} />
+                </span>
+                <div className="flex-1 min-w-0 pt-1">{entry.render()}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   }
@@ -423,44 +509,25 @@
           </div>
         </header>
 
-        <main className="max-w-2xl mx-auto px-5 py-7 space-y-9">
-          <section>
-            <h2 className="font-heading text-[16px] font-bold text-ink-800 mb-3 flex items-center gap-2">
-              <Icon name="message-circle" size={15} className="text-gold-600" />
-              ציר זמן · היסטוריית הצ'ק־אינים
+        <main className="max-w-2xl mx-auto px-5 py-7">
+          <div className="mb-7">
+            <h2 className="font-heading text-[13px] font-semibold uppercase tracking-wider text-ink-400 mb-3 flex items-center gap-1.5">
+              <Icon name="upload" size={13} className="text-gold-600" />
+              שיוך חומר טיפולי חדש
             </h2>
-            {profile.checkins.length === 0 ? (
-              <p className="text-[13px] text-ink-500 py-4">עוד לא בוצעו צ'ק-אינים.</p>
-            ) : (
-              <div className="space-y-3">
-                {profile.checkins.map((c) => (
-                  <CheckinTimelineItem key={c.id} checkin={c} />
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section>
-            <h2 className="font-heading text-[16px] font-bold text-ink-800 mb-3 flex items-center gap-2">
-              <Icon name="book-open" size={15} className="text-gold-600" />
-              חומרי טיפול · Resources &amp; Vault
-            </h2>
-            <div className="space-y-3 mb-4">
-              {profile.materials.length === 0 ? (
-                <p className="text-[13px] text-ink-500 py-2">עדיין לא שויכו חומרים למטופל/ת זה/ו.</p>
-              ) : (
-                profile.materials.map((m) => (
-                  <MaterialRow
-                    key={m.id}
-                    material={m}
-                    authHeader={authHeader}
-                    onDeleted={(id) => setProfile((prev) => ({ ...prev, materials: prev.materials.filter((x) => x.id !== id) }))}
-                  />
-                ))
-              )}
-            </div>
             <UploadMaterialForm token={token} authHeader={authHeader} onUploaded={load} />
-          </section>
+          </div>
+
+          <h2 className="font-heading text-[16px] font-bold text-ink-800 mb-5 flex items-center gap-2">
+            <Icon name="clock" size={15} className="text-gold-600" />
+            תיק מטופל/ת · סרט הפעילות המלא
+          </h2>
+
+          <ActivityFeed
+            profile={profile}
+            authHeader={authHeader}
+            onMaterialDeleted={(id) => setProfile((prev) => ({ ...prev, materials: prev.materials.filter((x) => x.id !== id) }))}
+          />
         </main>
       </div>
     );
