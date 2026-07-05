@@ -33,6 +33,7 @@ const CONTENT = {
       { label: "השיטה", href: "#solution" },
       { label: "למי זה מתאים", href: "#audience" },
       { label: "סדנאות ושירותים", href: "#workshops" },
+      { label: "תוכניות ומחירים", href: "#plans" },
       { label: "תוצאות", href: "#results" },
     ],
     login: "כניסה למערכת / אזור אישי",
@@ -92,9 +93,94 @@ const CONTENT = {
     items: [
       { icon: "graduation-cap", title: "סדנת חוסן רגשי לנוער", meta: "קבוצות קטנות · מותאם גילאים", text: "סדנה חווייתית שמלמדת בני נוער לזהות דפוסים, לווסת רגשות וחרדה, ולבנות ביטחון עצמי יציב." },
       { icon: "heart-handshake", title: "סדנאות לנשים", meta: "מפגש קבוצתי · יום/בוקר", text: "מרחב בטוח לעבודה על עומס רגשי, תקיעות ודימוי עצמי — עם כלים פרקטיים ליישום מהרגע הראשון." },
-      { icon: "school", title: "תוכניות לבתי ספר", meta: "התאמה למסגרת החינוכית", text: "תוכנית חוסן רגשי מותאמת לבית הספר או לארגון — סדנה חד-פעמית או מסלול מלא." },
+      { icon: "building-2", title: "סדנאות לארגונים ובתי ספר", meta: "בנייה לפי צרכי הארגון", text: "תוכנית חוסן רגשי מותאמת אישית לבית הספר, עמותה או ארגון — החל מסדנה חד-פעמית ועד מסלול שנתי מלא. לבקשת מידע והצעת מחיר מותאמת." },
     ],
     cta: "לבדוק זמינות לסדנה הקרובה",
+  },
+  plans: {
+    eyebrow: "תוכניות ומחירים",
+    title: "בחרי את המסלול שמתאים לך",
+    subtitle: "כל התוכניות כוללות שיחת היכרות חינמית של 30 דקות — ללא התחייבות",
+    items: [
+      {
+        id: "digital",
+        icon: "smartphone",
+        badge: "ניסיון חינם",
+        badgeColor: "#16A34A",
+        title: "ליווי דיגיטלי",
+        price: "₪340",
+        priceNote: "לחודש",
+        trial: "14 יום ניסיון חינם",
+        highlight: false,
+        features: [
+          "פרוטוקול עוגן — כלי ייצוב רגשי יומיומי",
+          "צ'אטבוט טיפולי אישי 24/7",
+          "חומרי השיטה נשלחים אוטומטית",
+          "מעקב התקדמות אישי",
+          "גישה לכל החומרים הדיגיטליים",
+        ],
+        cta: "להתחיל ניסיון חינם",
+      },
+      {
+        id: "youth",
+        icon: "graduation-cap",
+        badge: "לנוער",
+        badgeColor: "#7C3AED",
+        title: "מפגשי זום לנוער",
+        price: "₪750",
+        priceNote: "5 מפגשים",
+        trial: null,
+        highlight: false,
+        features: [
+          "דימוי עצמי וביטחון פנימי",
+          "כלים מעשיים לחרדה חברתית",
+          "חוסן רגשי יומיומי",
+          "מפגשים אישיים בזום",
+          "מותאם לגיל ולשלב ההתפתחותי",
+        ],
+        cta: "להרשמה",
+      },
+      {
+        id: "recommended",
+        icon: "star",
+        badge: "מומלצת",
+        badgeColor: "#D97706",
+        title: "ליווי אישי",
+        price: "₪1,700",
+        priceNote: "5 מפגשים",
+        trial: null,
+        highlight: true,
+        features: [
+          "עבודה עמוקה על שורש הדפוס",
+          "ויסות רגשי בזמן אמת",
+          "כלי NLP לשינוי חשיבה",
+          "חיזוק ביטחון פנימי יציב",
+          "תמיכה בין מפגשים",
+          "גישה לחומרים דיגיטליים",
+        ],
+        cta: "לתחילת תהליך",
+      },
+      {
+        id: "premium",
+        icon: "award",
+        badge: "פרימיום",
+        badgeColor: "#B45309",
+        title: "תהליך מעמיק",
+        price: "₪3,500",
+        priceNote: "11 מפגשים",
+        trial: null,
+        highlight: false,
+        features: [
+          "תהליך שינוי מקיף ומעמיק",
+          "עבודה על כל שדות החיים",
+          "שחרור דפוסים מושרשים",
+          "עבודה עם טראומה והיסטוריה רגשית",
+          "ליווי אישי צמוד לכל אורך הדרך",
+          "גישה מלאה לכל החומרים הדיגיטליים",
+        ],
+        cta: "לתהליך פרימיום",
+      },
+    ],
   },
   results: {
     eyebrow: "תוצאות",
@@ -565,6 +651,119 @@ function Workshops() {
 }
 
 /* ---------------------------------------------------------------- */
+/* Plans & Pricing                                                   */
+/* ---------------------------------------------------------------- */
+
+function PlanCard({ plan, idx }) {
+  const waText = `היי קטי! אני מעוניינ/ת ב${plan.title} 🌿`;
+  return (
+    <Reveal
+      style={{ transitionDelay: `${idx * 80}ms` }}
+      className={`relative flex flex-col rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 ${
+        plan.highlight
+          ? "bg-ink-800 shadow-[0_24px_56px_-16px_rgba(194,151,74,0.45)] ring-2 ring-gold-400"
+          : "bg-white border border-ink-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]"
+      }`}
+    >
+      {plan.badge && (
+        <span
+          className="absolute -top-3 right-6 px-3 py-1 rounded-full text-white text-[12px] font-heading font-bold tracking-wide"
+          style={{ backgroundColor: plan.badgeColor }}
+        >
+          {plan.badge}
+        </span>
+      )}
+
+      <div className="flex items-center gap-3 mb-5">
+        <span
+          className={`inline-flex items-center justify-center w-11 h-11 rounded-xl ${
+            plan.highlight ? "bg-gold-500/20 text-gold-400" : "bg-gold-50 text-gold-600"
+          }`}
+        >
+          <Icon name={plan.icon} size={22} />
+        </span>
+        <h3 className={`font-heading font-bold text-[19px] ${plan.highlight ? "text-white" : "text-ink-800"}`}>
+          {plan.title}
+        </h3>
+      </div>
+
+      <div className="mb-1">
+        <span className={`font-heading font-extrabold text-[38px] leading-none ${plan.highlight ? "text-gold-400" : "text-gold-600"}`}>
+          {plan.price}
+        </span>
+        <span className={`text-[15px] mr-1.5 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>{plan.priceNote}</span>
+      </div>
+      {plan.trial && (
+        <p className="text-[13px] font-semibold mb-4" style={{ color: plan.badgeColor }}>
+          {plan.trial}
+        </p>
+      )}
+
+      <ul className={`flex flex-col gap-2.5 flex-1 mt-4 mb-6 ${plan.highlight ? "text-ink-200" : "text-ink-600"}`}>
+        {plan.features.map((f) => (
+          <li key={f} className="flex items-start gap-2.5 text-[14px] leading-snug">
+            <Icon name="check" size={16} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-gold-400" : "text-gold-500"}`} />
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(waText)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`w-full py-3.5 rounded-full text-center font-heading font-semibold text-[15px] transition-all duration-300 hover:-translate-y-0.5 ${
+          plan.highlight
+            ? "bg-gold-500 text-white hover:bg-gold-400 shadow-[0_8px_24px_-8px_rgba(194,151,74,0.6)]"
+            : "bg-gold-50 text-gold-700 border border-gold-200 hover:bg-gold-100"
+        }`}
+      >
+        {plan.cta}
+      </a>
+    </Reveal>
+  );
+}
+
+function Plans() {
+  return (
+    <section id="plans" className="py-16 sm:py-24" style={{ background: "linear-gradient(180deg, #FAFAF8 0%, #FFF8F0 100%)" }}>
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[640px] mx-auto mb-4">
+          <Eyebrow>{CONTENT.plans.eyebrow}</Eyebrow>
+          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px]">{CONTENT.plans.title}</h2>
+        </Reveal>
+        <Reveal className="text-center mb-12">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-50 border border-gold-200 text-gold-700 text-[13.5px] font-medium">
+            <Icon name="gift" size={15} />
+            {CONTENT.plans.subtitle}
+          </span>
+        </Reveal>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+          {CONTENT.plans.items.map((plan, i) => (
+            <PlanCard key={plan.id} plan={plan} idx={i} />
+          ))}
+        </div>
+
+        <Reveal className="text-center mt-10">
+          <p className="text-ink-400 text-[14px]">
+            לסדנאות לארגונים, בתי ספר ועמותות —{" "}
+            <a
+              href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("היי קטי! אני מעוניינ/ת בסדנה לארגון/בית ספר, אשמח לקבל פרטים 🌿")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-600 font-semibold hover:underline"
+            >
+              לחצי לקבלת הצעת מחיר מותאמת
+            </a>
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /* Results + testimonials                                            */
 /* ---------------------------------------------------------------- */
 
@@ -734,6 +933,7 @@ function Home({ onEnterApp }) {
         <Solution />
         <Audience />
         <Workshops />
+        <Plans />
         <Results />
         <FinalCta />
       </main>
