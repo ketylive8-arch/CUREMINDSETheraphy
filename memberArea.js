@@ -65,6 +65,77 @@
     }
   }
 
+  const AGE_GROUP_KEY = "cm_age_group_set";
+
+  /* ---------------------------------------------------------------- */
+  /* Age group onboarding                                              */
+  /* ---------------------------------------------------------------- */
+
+  function AgeGroupOnboarding({ onDone }) {
+    const [selected, setSelected] = useState(null);
+    const [saving, setSaving] = useState(false);
+
+    function confirm() {
+      if (!selected) return;
+      setSaving(true);
+      fetch("/api/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+        body: JSON.stringify({ ageGroup: selected }),
+      })
+        .catch(() => {})
+        .finally(() => {
+          localStorage.setItem(AGE_GROUP_KEY, "1");
+          onDone(selected);
+        });
+    }
+
+    const options = [
+      { value: "adult", label: "מבוגר/ת", desc: "18+", icon: "user" },
+      { value: "youth", label: "נוער", desc: "עד גיל 18", icon: "users" },
+    ];
+
+    return (
+      <div className="absolute inset-0 z-40 bg-white flex flex-col items-center justify-center gap-6 px-8 text-center" dir="rtl">
+        <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto">
+          <Icon name="sparkles" size={26} className="text-gold-600" />
+        </div>
+        <div>
+          <p className="font-heading font-bold text-[18px] text-ink-800">ברוכ/ה הבא/ה לאזור האישי</p>
+          <p className="text-[13px] text-ink-500 mt-1">כדי שאתאים את השפה והתכנים עבורך, ספר/י לי מי את/ה:</p>
+        </div>
+        <div className="flex gap-4 w-full">
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setSelected(opt.value)}
+              className={`flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl border-2 transition-all ${
+                selected === opt.value
+                  ? "border-gold-500 bg-gold-50"
+                  : "border-ink-200 bg-ink-50 hover:border-gold-300"
+              }`}
+            >
+              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value ? "bg-gold-500 text-white" : "bg-ink-200 text-ink-600"}`}>
+                <Icon name={opt.icon} size={20} />
+              </span>
+              <span className={`font-heading font-bold text-[15px] ${selected === opt.value ? "text-gold-700" : "text-ink-700"}`}>{opt.label}</span>
+              <span className="text-[12px] text-ink-400">{opt.desc}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          disabled={!selected || saving}
+          onClick={confirm}
+          className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
+        >
+          {saving ? "שומר..." : "מתחילים"}
+        </button>
+      </div>
+    );
+  }
+
   /* ---------------------------------------------------------------- */
   /* Stage metadata                                                    */
   /* ---------------------------------------------------------------- */
@@ -76,6 +147,7 @@
     { id: 4, icon: "sparkles", title: "מדד חוסן", subtitle: "השיקוף האישי שלך", alwaysUnlocked: true },
     { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
+    { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
   ];
 
   /* ---------------------------------------------------------------- */
@@ -708,6 +780,106 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Tasks stage                                                        */
+  /* ---------------------------------------------------------------- */
+
+  const TASK_CATEGORY_ICONS = {
+    breathing: "wind",
+    journaling: "pen-line",
+    movement: "activity",
+    social: "users",
+    mindfulness: "sparkles",
+  };
+
+  const TASK_CATEGORY_LABELS = {
+    breathing: "נשימה",
+    journaling: "כתיבה",
+    movement: "תנועה",
+    social: "חברתי",
+    mindfulness: "מיינדפולנס",
+  };
+
+  function TasksStage() {
+    const [tasks, setTasks] = useState(null);
+    const [completing, setCompleting] = useState(null);
+
+    useEffect(() => {
+      fetch("/api/tasks", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((r) => r.json())
+        .then((data) => setTasks(Array.isArray(data) ? data : []))
+        .catch(() => setTasks([]));
+    }, []);
+
+    function completeTask(id) {
+      setCompleting(id);
+      fetch(`/api/tasks/${id}/complete`, { method: "POST", headers: { "X-Device-Token": getDeviceToken() } })
+        .then(() => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: 1 } : t))))
+        .finally(() => setCompleting(null));
+    }
+
+    const pending = tasks ? tasks.filter((t) => !t.completed) : [];
+    const done = tasks ? tasks.filter((t) => t.completed) : [];
+
+    return (
+      <div className="space-y-4">
+        <header className="mb-2 px-1">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="check-circle" size={15} className="text-gold-600" />
+            <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">משימות יומיות</span>
+          </div>
+          <p className="text-[13px] text-ink-500 leading-relaxed">משימות קטנות שנגזרו עבורך מהשיחות עם הבוט הטיפולי. צעד קטן ביום.</p>
+        </header>
+
+        {tasks === null ? (
+          <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
+            <p className="text-[13px] text-ink-400">טוענת...</p>
+          </div>
+        ) : pending.length === 0 && done.length === 0 ? (
+          <div className="rounded-2xl border border-ink-100 bg-white px-4 py-6 text-center">
+            <Icon name="sparkles" size={28} className="text-gold-300 mx-auto mb-2" />
+            <p className="text-[13px] text-ink-500">עוד אין משימות. אחרי הצ'ק-אין הראשון שלך תקבלי משימה יומית מותאמת אישית.</p>
+          </div>
+        ) : (
+          <>
+            {pending.map((task) => (
+              <div key={task.id} className="rounded-2xl border border-gold-200 bg-gold-50 px-4 py-4 flex items-start gap-3">
+                <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gold-100 text-gold-600 shrink-0 mt-0.5">
+                  <Icon name={TASK_CATEGORY_ICONS[task.category] || "sparkles"} size={17} />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-heading font-semibold text-ink-800 text-[14px] mb-0.5">{task.title}</p>
+                  <p className="text-[13px] text-ink-500 leading-snug">{task.description}</p>
+                  <span className="inline-block mt-2 text-[11px] px-2 py-0.5 rounded-full bg-gold-100 text-gold-700 font-medium">
+                    {TASK_CATEGORY_LABELS[task.category] || "כללי"}
+                  </span>
+                </div>
+                <button
+                  onClick={() => completeTask(task.id)}
+                  disabled={completing === task.id}
+                  className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-gold-500 text-white hover:bg-gold-600 transition-colors disabled:opacity-50"
+                >
+                  {completing === task.id ? "..." : "עשיתי!"}
+                </button>
+              </div>
+            ))}
+            {done.length > 0 && (
+              <div>
+                <p className="text-[11px] font-semibold text-ink-400 uppercase tracking-wider mb-2 px-1">הושלמו ✓</p>
+                {done.map((task) => (
+                  <div key={task.id} className="rounded-2xl border border-ink-100 bg-white px-4 py-3 flex items-center gap-3 opacity-60 mb-2">
+                    <Icon name="check-circle" size={18} className="text-gold-400 shrink-0" />
+                    <p className="text-[13px] text-ink-500 line-through">{task.title}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Phone frame + nav                                                  */
   /* ---------------------------------------------------------------- */
 
@@ -724,21 +896,50 @@
     );
   }
 
-  function Header({ subtitle, onExit }) {
+  function Header({ subtitle, onExit, onNotifications }) {
+    const [unread, setUnread] = useState(0);
+
+    useEffect(() => {
+      function loadUnread() {
+        fetch("/api/notifications", { headers: { "X-Device-Token": getDeviceToken() } })
+          .then((r) => r.ok ? r.json() : [])
+          .then((rows) => setUnread(rows.filter((n) => !n.read).length))
+          .catch(() => {});
+      }
+      loadUnread();
+      const id = setInterval(loadUnread, 60000);
+      return () => clearInterval(id);
+    }, []);
+
     return (
       <div className="flex items-center justify-between gap-3 px-5 pt-7 sm:pt-5 pb-3 bg-white border-b border-ink-100 shrink-0">
         <div>
           <p className="font-heading font-bold text-[15px] text-ink-800">CureMindset · אזור אישי</p>
           <p className="text-[12px] text-ink-500">{subtitle}</p>
         </div>
-        <button
-          type="button"
-          onClick={onExit}
-          aria-label="סגירת האזור האישי"
-          className="w-9 h-9 rounded-full flex items-center justify-center bg-ink-50 text-ink-600 hover:bg-ink-100 transition-colors shrink-0"
-        >
-          <Icon name="x" size={18} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onNotifications}
+            aria-label="התראות"
+            className="relative w-9 h-9 rounded-full flex items-center justify-center bg-ink-50 text-ink-600 hover:bg-ink-100 transition-colors shrink-0"
+          >
+            <Icon name="bell" size={18} />
+            {unread > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                {unread > 9 ? "9+" : unread}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={onExit}
+            aria-label="סגירת האזור האישי"
+            className="w-9 h-9 rounded-full flex items-center justify-center bg-ink-50 text-ink-600 hover:bg-ink-100 transition-colors shrink-0"
+          >
+            <Icon name="x" size={18} />
+          </button>
+        </div>
       </div>
     );
   }
@@ -778,6 +979,69 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Notifications panel                                               */
+  /* ---------------------------------------------------------------- */
+
+  function NotificationsPanel({ onClose }) {
+    const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      fetch("/api/notifications", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((r) => r.ok ? r.json() : [])
+        .then((rows) => { setNotifications(rows); setLoading(false); })
+        .catch(() => setLoading(false));
+    }, []);
+
+    function markAllRead() {
+      fetch("/api/notifications/read-all", { method: "POST", headers: { "X-Device-Token": getDeviceToken() } });
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: 1 })));
+    }
+
+    function markRead(id) {
+      fetch(`/api/notifications/${id}/read`, { method: "POST", headers: { "X-Device-Token": getDeviceToken() } });
+      setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: 1 } : n));
+    }
+
+    const typeIcon = { reminder: "clock", win: "trophy", info: "info" };
+
+    return (
+      <div className="absolute inset-0 z-30 bg-white flex flex-col" dir="rtl">
+        <div className="flex items-center justify-between px-5 pt-7 sm:pt-5 pb-3 border-b border-ink-100 shrink-0">
+          <p className="font-heading font-bold text-[15px] text-ink-800">התראות</p>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={markAllRead} className="text-[11px] text-gold-600 font-semibold hover:underline">סמן הכל כנקרא</button>
+            <button type="button" onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center bg-ink-50 text-ink-600 hover:bg-ink-100">
+              <Icon name="x" size={16} />
+            </button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto divide-y divide-ink-50">
+          {loading && <p className="text-center text-ink-400 text-sm py-10">טוען...</p>}
+          {!loading && notifications.length === 0 && <p className="text-center text-ink-400 text-sm py-10">אין התראות</p>}
+          {notifications.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              onClick={() => markRead(n.id)}
+              className={`w-full text-right flex gap-3 px-5 py-4 transition-colors hover:bg-gold-50 ${n.read ? "opacity-60" : "bg-gold-50/40"}`}
+            >
+              <span className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type === "win" ? "bg-gold-100 text-gold-600" : "bg-ink-100 text-ink-500"}`}>
+                <Icon name={typeIcon[n.type] || "bell"} size={15} />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className={`text-[13px] leading-snug ${n.read ? "text-ink-500" : "text-ink-800 font-medium"}`}>{n.message}</p>
+                <p className="text-[11px] text-ink-400 mt-1">{new Date(n.created_at).toLocaleDateString("he-IL")}</p>
+              </div>
+              {!n.read && <span className="w-2 h-2 rounded-full bg-gold-500 mt-1.5 shrink-0" />}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Root                                                               */
   /* ---------------------------------------------------------------- */
 
@@ -785,6 +1049,8 @@
     const [progress, setProgress] = useState(loadProgress);
     const [current, setCurrent] = useState(() => loadProgress().unlocked);
     const [serverDashboard, setServerDashboard] = useState(null);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(AGE_GROUP_KEY));
 
     useEffect(() => {
       document.body.style.overflow = "hidden";
@@ -819,8 +1085,10 @@
 
     return (
       <PhoneFrame>
-        <Header subtitle={stage ? stage.subtitle : ""} onExit={onExit} />
+        <Header subtitle={stage ? stage.subtitle : ""} onExit={onExit} onNotifications={() => setShowNotifications(true)} />
         <StageNav stages={STAGES} progress={progress} current={current} onSelect={setCurrent} />
+        {showNotifications && <NotificationsPanel onClose={() => setShowNotifications(false)} />}
+        {showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
         {current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
@@ -832,6 +1100,10 @@
         ) : current === 6 ? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <MaterialsStage />
+          </div>
+        ) : current === 7 ? (
+          <div className="flex-1 overflow-y-auto px-5 py-6">
+            <TasksStage />
           </div>
         ) : (
           <div className="flex-1 overflow-y-auto px-5 py-6">

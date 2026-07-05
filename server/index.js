@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 
-const { db } = require("./db");
+const { db, getAgeGroup, scheduleEngagementNotifications } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -89,7 +89,8 @@ api.post("/checkin", async (req, res) => {
   }
 
   try {
-    const result = await runBehavioralHealthCheck(text.trim());
+    const ageGroup = getAgeGroup(req.deviceToken);
+    const result = await runBehavioralHealthCheck(text.trim(), ageGroup);
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));
     const triggers = withIds(result.triggers);
@@ -103,6 +104,15 @@ api.post("/checkin", async (req, res) => {
     ).run(req.deviceToken, text.trim(), result.reply, JSON.stringify(triggers), JSON.stringify(patterns), JSON.stringify(balanceAlerts), JSON.stringify(wins));
     touchPatientActivity(req.deviceToken);
 
+    // Save the daily task if one was generated
+    let savedTask = null;
+    if (result.dailyTask) {
+      const taskResult = db.prepare(
+        "INSERT INTO daily_tasks (device_token, title, description, category) VALUES (?, ?, ?, ?)"
+      ).run(req.deviceToken, result.dailyTask.title, result.dailyTask.description, result.dailyTask.category || "mindfulness");
+      savedTask = { id: taskResult.lastInsertRowid, ...result.dailyTask, completed: false };
+    }
+
     const progressRow = db.prepare("SELECT unlocked, completed FROM protocol_progress WHERE device_token = ?").get(req.deviceToken);
     const progress = { unlocked: progressRow.unlocked, completed: JSON.parse(progressRow.completed) };
     const sessions = db.prepare("SELECT score, date FROM grounding_sessions WHERE device_token = ? ORDER BY date ASC").all(req.deviceToken);
@@ -110,7 +120,7 @@ api.post("/checkin", async (req, res) => {
       .prepare("SELECT triggers, patterns, balance_alerts, wins FROM checkins WHERE device_token = ? ORDER BY created_at DESC")
       .all(req.deviceToken);
 
-    res.json({ reply: result.reply, dashboard: buildDashboardData(progress, sessions, checkinRows) });
+    res.json({ reply: result.reply, dailyTask: savedTask, dashboard: buildDashboardData(progress, sessions, checkinRows) });
   } catch (err) {
     if (err instanceof NoApiKeyError) {
       return res.status(503).json({ error: "OPENAI_API_KEY is not configured on the server" });
@@ -118,6 +128,62 @@ api.post("/checkin", async (req, res) => {
     console.error("checkin failed:", err);
     res.status(502).json({ error: "Failed to reach OpenAI" });
   }
+});
+
+// ── Profile (age group + trial) ──
+api.get("/profile", (req, res) => {
+  const row = db.prepare("SELECT age_group, trial_start_at FROM patient_profile WHERE device_token = ?").get(req.deviceToken);
+  res.json({ ageGroup: row?.age_group || "adult", trialStartAt: row?.trial_start_at || null });
+});
+
+api.put("/profile", (req, res) => {
+  const { ageGroup } = req.body || {};
+  if (!["adult", "youth"].includes(ageGroup)) {
+    return res.status(400).json({ error: "ageGroup must be adult or youth" });
+  }
+  db.prepare("UPDATE patient_profile SET age_group = ?, updated_at = datetime('now') WHERE device_token = ?").run(ageGroup, req.deviceToken);
+  res.json({ ok: true, ageGroup });
+});
+
+// ── Daily tasks ──
+api.get("/tasks", (req, res) => {
+  const rows = db.prepare(
+    "SELECT id, title, description, category, completed, created_at FROM daily_tasks WHERE device_token = ? ORDER BY created_at DESC LIMIT 20"
+  ).all(req.deviceToken);
+  res.json(rows);
+});
+
+api.post("/tasks/:id/complete", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ error: "invalid task id" });
+  const task = db.prepare("SELECT device_token FROM daily_tasks WHERE id = ?").get(id);
+  if (!task || task.device_token !== req.deviceToken) return res.status(404).json({ error: "not found" });
+  db.prepare("UPDATE daily_tasks SET completed = 1, completed_at = datetime('now') WHERE id = ?").run(id);
+  // Give a win notification
+  db.prepare("INSERT INTO notifications (device_token, message, type) VALUES (?, ?, 'win')").run(
+    req.deviceToken, "כל הכבוד! השלמת את המשימה היומית שלך 🌟 כל צעד קטן הוא ניצחון אמיתי."
+  );
+  res.json({ ok: true });
+});
+
+// ── Notifications ──
+api.get("/notifications", (req, res) => {
+  const rows = db.prepare(
+    "SELECT id, message, type, read, created_at FROM notifications WHERE device_token = ? ORDER BY created_at DESC LIMIT 30"
+  ).all(req.deviceToken);
+  res.json(rows);
+});
+
+api.post("/notifications/:id/read", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  if (!id) return res.status(400).json({ error: "invalid id" });
+  db.prepare("UPDATE notifications SET read = 1 WHERE id = ? AND device_token = ?").run(id, req.deviceToken);
+  res.json({ ok: true });
+});
+
+api.post("/notifications/read-all", (req, res) => {
+  db.prepare("UPDATE notifications SET read = 1 WHERE device_token = ?").run(req.deviceToken);
+  res.json({ ok: true });
 });
 
 api.get("/materials", (req, res) => {

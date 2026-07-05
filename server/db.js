@@ -45,6 +45,33 @@ db.exec(`
     wins TEXT NOT NULL DEFAULT '[]',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS daily_tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_token TEXT NOT NULL REFERENCES patients(device_token),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'mindfulness',
+    completed INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    completed_at TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS notifications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_token TEXT NOT NULL REFERENCES patients(device_token),
+    message TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'reminder',
+    read INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS patient_profile (
+    device_token TEXT PRIMARY KEY REFERENCES patients(device_token),
+    age_group TEXT NOT NULL DEFAULT 'adult',
+    trial_start_at TEXT,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -66,6 +93,24 @@ for (const stmt of crmColumns) {
 function ensurePatient(deviceToken) {
   db.prepare("INSERT OR IGNORE INTO patients (device_token) VALUES (?)").run(deviceToken);
   db.prepare("INSERT OR IGNORE INTO protocol_progress (device_token) VALUES (?)").run(deviceToken);
+  db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
 }
 
-module.exports = { db, ensurePatient };
+function getAgeGroup(deviceToken) {
+  const row = db.prepare("SELECT age_group FROM patient_profile WHERE device_token = ?").get(deviceToken);
+  return row?.age_group || "adult";
+}
+
+function scheduleEngagementNotifications(deviceToken) {
+  const msgs = [
+    "היי! זה הזמן לצ'ק-אין יומי שלך. מה עובר עליך היום? 🌿",
+    "זכרת את המשימה שקיבלת היום? גם צעד קטן חשוב 💛",
+    "שלום! אנחנו ביחד בתהליך. איך אתה/את מרגיש/ה עכשיו?",
+    "יום שלישי לניסיון החינם — איך הולך? כנסי לצ'ק-אין ✨",
+    "שבוע ראשון הסתיים! זה הישג אמיתי. בואי נמשיך 🌱",
+  ];
+  const stmt = db.prepare("INSERT INTO notifications (device_token, message, type) VALUES (?, ?, 'reminder')");
+  msgs.forEach((m) => stmt.run(deviceToken, m));
+}
+
+module.exports = { db, ensurePatient, getAgeGroup, scheduleEngagementNotifications };
