@@ -248,20 +248,28 @@ function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
 /* Shared bits                                                       */
 /* ---------------------------------------------------------------- */
 
-function Logo({ size = 36 }) {
+function Logo({ size = 48 }) {
+  const [err, setErr] = useState(false);
+  if (err) {
+    return (
+      <div className="flex items-center gap-2.5">
+        <span
+          className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-700 text-white font-heading font-bold shrink-0"
+          style={{ width: 36, height: 36, fontSize: 15 }}
+        >
+          CM
+        </span>
+        <span className="font-heading font-bold text-ink-800 text-lg leading-none">CureMindset</span>
+      </div>
+    );
+  }
   return (
-    <div className="flex items-center gap-2.5">
-      <span
-        className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-700 text-white font-heading font-bold shrink-0"
-        style={{ width: size, height: size, fontSize: size * 0.42 }}
-        aria-hidden="true"
-      >
-        CM
-      </span>
-      <span className="font-heading font-bold text-ink-800 text-lg leading-none">
-        CureMindset
-      </span>
-    </div>
+    <img
+      src="/images/logo.png"
+      alt="CureMindset — By Kety Segev"
+      style={{ height: size, width: "auto", objectFit: "contain" }}
+      onError={() => setErr(true)}
+    />
   );
 }
 
