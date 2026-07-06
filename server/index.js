@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 
-const { db, getAgeGroup, scheduleEngagementNotifications } = require("./db");
+const { db, getAgeGroup, getAccessStatus, scheduleEngagementNotifications } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -145,6 +145,37 @@ api.put("/profile", (req, res) => {
   res.json({ ok: true, ageGroup });
 });
 
+// ── Access (14-day trial + personal access codes) ──
+api.get("/access", (req, res) => {
+  res.json(getAccessStatus(req.deviceToken));
+});
+
+api.post("/access/redeem", (req, res) => {
+  const code = String(req.body?.code || "").trim().toUpperCase();
+  if (!code) return res.status(400).json({ error: "code is required" });
+
+  const row = db.prepare("SELECT code, plan, months, redeemed_by FROM access_codes WHERE code = ?").get(code);
+  if (!row) return res.status(404).json({ error: "קוד לא נמצא — בדקי שהקלדת נכון" });
+  if (row.redeemed_by && row.redeemed_by !== req.deviceToken) {
+    return res.status(409).json({ error: "הקוד הזה כבר נוצל" });
+  }
+
+  const expiresAt = row.months
+    ? db.prepare("SELECT datetime('now', ?) AS t").get(`+${row.months} months`).t
+    : null;
+  db.prepare("UPDATE access_codes SET redeemed_by = ?, redeemed_at = datetime('now') WHERE code = ?").run(req.deviceToken, code);
+  db.prepare("UPDATE patient_profile SET access_code = ?, access_expires_at = ?, updated_at = datetime('now') WHERE device_token = ?").run(
+    code,
+    expiresAt,
+    req.deviceToken
+  );
+  db.prepare("INSERT INTO notifications (device_token, message, type) VALUES (?, ?, 'win')").run(
+    req.deviceToken,
+    "ברוכה הבאה! הקוד האישי שלך הופעל והגישה למערכת פתוחה 🌿"
+  );
+  res.json({ ok: true, ...getAccessStatus(req.deviceToken) });
+});
+
 // ── Daily tasks ──
 api.get("/tasks", (req, res) => {
   const rows = db.prepare(
@@ -198,6 +229,33 @@ api.get("/materials", (req, res) => {
 // never reach the device-token middleware (Express matches prefixes in order).
 const admin = express.Router();
 admin.use(adminAuthMiddleware);
+
+// ── Access codes: the therapist generates a personal code after payment and
+// sends it to the client (WhatsApp/מייל); the client redeems it in the member area.
+admin.get("/codes", (req, res) => {
+  const rows = db
+    .prepare("SELECT code, plan, note, months, created_at, redeemed_by, redeemed_at FROM access_codes ORDER BY created_at DESC LIMIT 100")
+    .all();
+  res.json(rows);
+});
+
+admin.post("/codes", (req, res) => {
+  const { plan = "digital", note = "", months = null } = req.body || {};
+  const monthsInt = months === null || months === "" ? null : parseInt(months, 10);
+  if (monthsInt !== null && (!Number.isInteger(monthsInt) || monthsInt < 1 || monthsInt > 36)) {
+    return res.status(400).json({ error: "months must be 1-36 or empty" });
+  }
+  // Unambiguous alphabet (no O/0, I/1) so codes survive being read aloud over the phone.
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code;
+  do {
+    const pick = () => alphabet[crypto.randomInt(alphabet.length)];
+    code = `CM-${pick()}${pick()}${pick()}${pick()}-${pick()}${pick()}${pick()}${pick()}`;
+  } while (db.prepare("SELECT 1 FROM access_codes WHERE code = ?").get(code));
+
+  db.prepare("INSERT INTO access_codes (code, plan, note, months) VALUES (?, ?, ?, ?)").run(code, String(plan), String(note), monthsInt);
+  res.json({ code, plan, note, months: monthsInt });
+});
 
 admin.get("/patients", (req, res) => {
   const patients = db.prepare("SELECT device_token, display_name, last_interaction_at FROM patients ORDER BY created_at DESC").all();

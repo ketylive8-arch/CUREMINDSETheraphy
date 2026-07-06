@@ -72,6 +72,16 @@ db.exec(`
     trial_start_at TEXT,
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS access_codes (
+    code TEXT PRIMARY KEY,
+    plan TEXT NOT NULL DEFAULT 'digital',
+    note TEXT,
+    months INTEGER,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    redeemed_by TEXT REFERENCES patients(device_token),
+    redeemed_at TEXT
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -81,6 +91,8 @@ const crmColumns = [
   "ALTER TABLE patients ADD COLUMN status TEXT NOT NULL DEFAULT 'מאוזן'",
   "ALTER TABLE patients ADD COLUMN last_interaction_at TEXT",
   "ALTER TABLE patients ADD COLUMN last_summary TEXT",
+  "ALTER TABLE patient_profile ADD COLUMN access_code TEXT",
+  "ALTER TABLE patient_profile ADD COLUMN access_expires_at TEXT",
 ];
 for (const stmt of crmColumns) {
   try {
@@ -94,6 +106,31 @@ function ensurePatient(deviceToken) {
   db.prepare("INSERT OR IGNORE INTO patients (device_token) VALUES (?)").run(deviceToken);
   db.prepare("INSERT OR IGNORE INTO protocol_progress (device_token) VALUES (?)").run(deviceToken);
   db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
+}
+
+const TRIAL_DAYS = 14;
+
+// Access resolution: a redeemed code wins (unlimited unless it carries an expiry);
+// otherwise the automatic 14-day trial that starts on first contact (ensurePatient).
+function getAccessStatus(deviceToken) {
+  const row = db
+    .prepare("SELECT trial_start_at, access_code, access_expires_at FROM patient_profile WHERE device_token = ?")
+    .get(deviceToken);
+  if (!row) return { status: "expired", daysLeft: 0 };
+
+  if (row.access_code) {
+    if (!row.access_expires_at) return { status: "code", daysLeft: null };
+    const msLeft = new Date(row.access_expires_at.replace(" ", "T") + "Z").getTime() - Date.now();
+    if (msLeft > 0) return { status: "code", daysLeft: Math.ceil(msLeft / 86400000) };
+  }
+
+  if (row.trial_start_at) {
+    const started = new Date(row.trial_start_at.replace(" ", "T") + "Z").getTime();
+    const msLeft = started + TRIAL_DAYS * 86400000 - Date.now();
+    if (msLeft > 0) return { status: "trial", daysLeft: Math.ceil(msLeft / 86400000) };
+  }
+
+  return { status: "expired", daysLeft: 0 };
 }
 
 function getAgeGroup(deviceToken) {
@@ -113,4 +150,4 @@ function scheduleEngagementNotifications(deviceToken) {
   msgs.forEach((m) => stmt.run(deviceToken, m));
 }
 
-module.exports = { db, ensurePatient, getAgeGroup, scheduleEngagementNotifications };
+module.exports = { db, ensurePatient, getAgeGroup, getAccessStatus, scheduleEngagementNotifications };

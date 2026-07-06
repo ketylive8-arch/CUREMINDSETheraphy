@@ -137,6 +137,115 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* Access gate — 14-day trial + personal access code                 */
+  /* ---------------------------------------------------------------- */
+
+  // Shown as a blocking overlay when the trial expired (dismissible=false), or as a
+  // dismissible sheet when the client taps "יש לי קוד" from the trial banner.
+  function AccessGate({ expired, onUnlocked, onClose, onExit }) {
+    const [code, setCode] = useState("");
+    const [status, setStatus] = useState("idle"); // idle | loading | error
+    const [errorMsg, setErrorMsg] = useState("");
+
+    function redeem() {
+      const trimmed = code.trim();
+      if (!trimmed || status === "loading") return;
+      setStatus("loading");
+      fetch("/api/access/redeem", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+        body: JSON.stringify({ code: trimmed }),
+      })
+        .then(async (r) => {
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
+          onUnlocked(data);
+        })
+        .catch((e) => {
+          setStatus("error");
+          setErrorMsg(e.message);
+        });
+    }
+
+    return (
+      <div className="absolute inset-0 z-50 bg-white flex flex-col items-center justify-center gap-5 px-7 text-center" dir="rtl">
+        <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center">
+          <Icon name="shield-check" size={26} className="text-gold-600" />
+        </div>
+        <div>
+          <p className="font-heading font-bold text-[18px] text-ink-800">
+            {expired ? "תקופת ההתנסות שלך הסתיימה" : "הפעלת קוד אישי"}
+          </p>
+          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
+            {expired
+              ? "כדי להמשיך את המסע — בחרי מסלול ובצעי תשלום, ומיד תקבלי ממני קוד אישי לכניסה."
+              : "קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח."}
+          </p>
+        </div>
+
+        <div className="w-full flex flex-col gap-2.5">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => { setCode(e.target.value); setStatus("idle"); }}
+            onKeyDown={(e) => e.key === "Enter" && redeem()}
+            placeholder="CM-XXXX-XXXX"
+            dir="ltr"
+            className="w-full text-center tracking-widest font-heading font-bold text-[16px] py-3.5 rounded-2xl border-2 border-ink-200 focus:border-gold-500 outline-none text-ink-800 placeholder:text-ink-300"
+          />
+          {status === "error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
+          <button
+            type="button"
+            disabled={!code.trim() || status === "loading"}
+            onClick={redeem}
+            className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
+          >
+            {status === "loading" ? "בודק..." : "הפעלת הקוד"}
+          </button>
+        </div>
+
+        {expired ? (
+          <div className="w-full flex flex-col gap-2.5">
+            <button
+              type="button"
+              onClick={onExit}
+              className="w-full py-3 rounded-2xl bg-ink-800 text-white font-heading font-semibold text-[14px] hover:bg-ink-700 transition-colors"
+            >
+              לצפייה במסלולים ולתשלום
+            </button>
+            <a
+              href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99!%20%D7%A1%D7%99%D7%99%D7%9E%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%AA%D7%A7%D7%95%D7%A4%D7%AA%20%D7%94%D7%A0%D7%99%D7%A1%D7%99%D7%95%D7%9F%20%D7%95%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%94%D7%9E%D7%A9%D7%99%D7%9A%20%F0%9F%8C%BF"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 rounded-2xl border border-gold-300 text-gold-700 bg-gold-50 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors"
+            >
+              דברי איתי בוואטסאפ
+            </a>
+          </div>
+        ) : (
+          <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline">
+            סגירה
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // Thin banner above the stages while on a free trial: days left + code entry shortcut.
+  function TrialBanner({ daysLeft, onEnterCode }) {
+    return (
+      <div className="flex items-center justify-between gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
+        <span className="text-[12.5px] text-gold-700 font-medium">
+          ניסיון חינם — {daysLeft === 1 ? "יום אחרון" : `נותרו ${daysLeft} ימים`}
+        </span>
+        <button type="button" onClick={onEnterCode} className="text-[12.5px] font-bold text-gold-700 underline shrink-0">
+          יש לי קוד אישי
+        </button>
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Stage metadata                                                    */
   /* ---------------------------------------------------------------- */
 
@@ -1051,12 +1160,22 @@
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(AGE_GROUP_KEY));
+    // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
+    const [access, setAccess] = useState(null);
+    const [showCodeEntry, setShowCodeEntry] = useState(false);
 
     useEffect(() => {
       document.body.style.overflow = "hidden";
       return () => {
         document.body.style.overflow = "";
       };
+    }, []);
+
+    useEffect(() => {
+      fetch("/api/access", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((res) => (res.ok ? res.json() : { status: "trial", daysLeft: 14 }))
+        .then(setAccess)
+        .catch(() => setAccess({ status: "trial", daysLeft: 14 }));
     }, []);
 
     useEffect(() => {
@@ -1083,12 +1202,25 @@
 
     const stage = STAGES.find((s) => s.id === current);
 
+    const expired = access && access.status === "expired";
+
     return (
       <PhoneFrame>
         <Header subtitle={stage ? stage.subtitle : ""} onExit={onExit} onNotifications={() => setShowNotifications(true)} />
+        {access && access.status === "trial" && (
+          <TrialBanner daysLeft={access.daysLeft} onEnterCode={() => setShowCodeEntry(true)} />
+        )}
         <StageNav stages={STAGES} progress={progress} current={current} onSelect={setCurrent} />
         {showNotifications && <NotificationsPanel onClose={() => setShowNotifications(false)} />}
-        {showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
+        {(expired || showCodeEntry) && (
+          <AccessGate
+            expired={expired}
+            onUnlocked={(next) => { setAccess(next); setShowCodeEntry(false); }}
+            onClose={() => setShowCodeEntry(false)}
+            onExit={onExit}
+          />
+        )}
+        {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
         {current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />

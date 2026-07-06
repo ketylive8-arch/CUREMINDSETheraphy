@@ -138,6 +138,117 @@
     );
   }
 
+  // Access-code panel: Kety generates a personal code after a client pays,
+  // sends it in WhatsApp, and the client unlocks the member area with it.
+  function AccessCodesPanel({ authHeader }) {
+    const [codes, setCodes] = useState([]);
+    const [plan, setPlan] = useState("digital");
+    const [months, setMonths] = useState("");
+    const [note, setNote] = useState("");
+    const [creating, setCreating] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [justCreated, setJustCreated] = useState(null);
+
+    function load() {
+      fetch("/api/admin/codes", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : []))
+        .then(setCodes)
+        .catch(() => {});
+    }
+    useEffect(load, []);
+
+    function create() {
+      if (creating) return;
+      setCreating(true);
+      fetch("/api/admin/codes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: authHeader },
+        body: JSON.stringify({ plan, note, months: months || null }),
+      })
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((data) => {
+          setJustCreated(data.code);
+          setNote("");
+          load();
+        })
+        .catch(() => {})
+        .finally(() => setCreating(false));
+    }
+
+    const planNames = { digital: "ליווי דיגיטלי", youth: "מפגשי נוער", recommended: "ליווי אישי", premium: "פרימיום" };
+
+    return (
+      <section className="bg-white rounded-2xl border border-ink-100 p-5">
+        <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon name="shield-check" size={17} className="text-gold-600" />
+            <h2 className="font-heading font-bold text-[16px] text-ink-800">קודי גישה ללקוחות</h2>
+          </div>
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={17} className="text-ink-400" />
+        </button>
+
+        {open && (
+          <div className="mt-4 space-y-4">
+            <div className="flex flex-wrap items-end gap-2.5">
+              <label className="flex flex-col gap-1 text-[12px] text-ink-500">
+                מסלול
+                <select value={plan} onChange={(e) => setPlan(e.target.value)} className="rounded-xl border border-ink-200 px-3 py-2 text-[13px] text-ink-700 bg-white">
+                  <option value="digital">ליווי דיגיטלי</option>
+                  <option value="youth">מפגשי נוער</option>
+                  <option value="recommended">ליווי אישי</option>
+                  <option value="premium">פרימיום</option>
+                </select>
+              </label>
+              <label className="flex flex-col gap-1 text-[12px] text-ink-500">
+                תוקף בחודשים (ריק = ללא הגבלה)
+                <input type="number" min="1" max="36" value={months} onChange={(e) => setMonths(e.target.value)} className="w-32 rounded-xl border border-ink-200 px-3 py-2 text-[13px]" />
+              </label>
+              <label className="flex flex-col gap-1 text-[12px] text-ink-500 flex-1 min-w-[140px]">
+                הערה (שם הלקוחה)
+                <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="למשל: דנה לוי" className="rounded-xl border border-ink-200 px-3 py-2 text-[13px]" />
+              </label>
+              <button
+                type="button"
+                onClick={create}
+                disabled={creating}
+                className="rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] px-5 py-2.5 hover:bg-gold-600 disabled:opacity-40"
+              >
+                {creating ? "יוצרת..." : "צרי קוד חדש"}
+              </button>
+            </div>
+
+            {justCreated && (
+              <div className="rounded-xl bg-gold-50 border border-gold-200 px-4 py-3 text-center">
+                <p className="text-[12px] text-gold-700 mb-1">הקוד נוצר! שלחי אותו ללקוחה בוואטסאפ:</p>
+                <p className="font-heading font-extrabold text-[20px] tracking-widest text-ink-800" dir="ltr">{justCreated}</p>
+              </div>
+            )}
+
+            {codes.length > 0 && (
+              <ul className="divide-y divide-ink-50 max-h-64 overflow-y-auto">
+                {codes.map((c) => (
+                  <li key={c.code} className="py-2.5 flex items-center justify-between gap-3 text-[13px]">
+                    <div className="min-w-0">
+                      <span className="font-heading font-bold text-ink-800 ml-2" dir="ltr">{c.code}</span>
+                      <span className="text-ink-400">
+                        {planNames[c.plan] || c.plan}
+                        {c.note ? ` · ${c.note}` : ""}
+                        {c.months ? ` · ${c.months} חוד'` : ""}
+                      </span>
+                    </div>
+                    <span className={`shrink-0 px-2.5 py-1 rounded-full text-[11.5px] font-semibold ${c.redeemed_by ? "bg-ink-100 text-ink-500" : "bg-gold-50 text-gold-700 border border-gold-200"}`}>
+                      {c.redeemed_by ? "נוצל" : "פנוי"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </section>
+    );
+  }
+
   function ClinicList({ authHeader, onOpenPatient, onLogout }) {
     const [patients, setPatients] = useState(null);
     const [error, setError] = useState(false);
@@ -175,6 +286,7 @@
         </header>
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
+          <AccessCodesPanel authHeader={authHeader} />
           {error ? (
             <p className="text-center text-[13px] text-ink-500 py-10">לא הצלחנו לטעון את רשימת המטופלים. נסי לרענן.</p>
           ) : patients === null ? (

@@ -22,6 +22,16 @@ function waLink(text) {
   return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
 }
 
+// קישורי תשלום לכל מסלול — קטי: הדביקי כאן את קישורי הסליקה שלך
+// (Grow/משולם, PayBox, ביט לעסקים או PayPal). מסלול שהקישור שלו ריק ("")
+// ימשיך לשלוח את הלקוחה לוואטסאפ לתיאום תשלום.
+const PAYMENT_LINKS = {
+  digital: "",
+  youth: "",
+  recommended: "",
+  premium: "",
+};
+
 /* ---------------------------------------------------------------- */
 /* Content                                                            */
 /* ---------------------------------------------------------------- */
@@ -664,6 +674,8 @@ function Workshops() {
 
 function PlanCard({ plan, idx }) {
   const waText = `היי קטי! אני מעוניינ/ת ב${plan.title} 🌿`;
+  const payLink = PAYMENT_LINKS[plan.id] || "";
+  const ctaHref = payLink || `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(waText)}`;
   return (
     <Reveal
       style={{ transitionDelay: `${idx * 80}ms` }}
@@ -717,7 +729,7 @@ function PlanCard({ plan, idx }) {
       </ul>
 
       <a
-        href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(waText)}`}
+        href={ctaHref}
         target="_blank"
         rel="noopener noreferrer"
         className={`w-full py-3.5 rounded-full text-center font-heading font-semibold text-[15px] transition-all duration-300 hover:-translate-y-0.5 ${
@@ -726,8 +738,13 @@ function PlanCard({ plan, idx }) {
             : "bg-gold-50 text-gold-700 border border-gold-200 hover:bg-gold-100"
         }`}
       >
-        {plan.cta}
+        {payLink ? `${plan.cta} · תשלום מאובטח` : plan.cta}
       </a>
+      {payLink && (
+        <p className={`text-center text-[12px] mt-2 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>
+          לאחר התשלום תקבלי קוד אישי לכניסה למערכת
+        </p>
+      )}
     </Reveal>
   );
 }
