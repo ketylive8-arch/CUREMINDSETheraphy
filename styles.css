@@ -18,3 +18,6 @@
 .text-\[13\.5px\] { font-size: 13.5px; }
 .text-\[20px\] { font-size: 20px; }
 .placeholder\:text-ink-300::placeholder { color: #B9B4AC; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.block { display: block; }
+.mt-2\.5 { margin-top: 0.625rem; }

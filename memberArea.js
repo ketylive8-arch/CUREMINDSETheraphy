@@ -142,7 +142,7 @@
 
   // Shown as a blocking overlay when the trial expired (dismissible=false), or as a
   // dismissible sheet when the client taps "יש לי קוד" from the trial banner.
-  function AccessGate({ expired, onUnlocked, onClose, onExit }) {
+  function AccessGate({ expired, onUnlocked, onClose, onExit, onShowSummary }) {
     const [code, setCode] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
@@ -208,6 +208,13 @@
           <div className="w-full flex flex-col gap-2.5">
             <button
               type="button"
+              onClick={onShowSummary}
+              className="w-full py-3 rounded-2xl bg-gold-50 border border-gold-300 text-gold-700 font-heading font-bold text-[14px] hover:bg-gold-100 transition-colors"
+            >
+              🌟 מה עברתי במסע — הסיכום שלי
+            </button>
+            <button
+              type="button"
               onClick={onExit}
               className="w-full py-3 rounded-2xl bg-ink-800 text-white font-heading font-semibold text-[14px] hover:bg-ink-700 transition-colors"
             >
@@ -227,6 +234,131 @@
             סגירה
           </button>
         )}
+      </div>
+    );
+  }
+
+  // End-of-trial motivational summary: what the client did, wins, patterns, and a
+  // warm CTA to continue — reachable from the paywall gate and the trial banner.
+  function JourneySummary({ onClose, onExit }) {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+      fetch("/api/journey-summary", { headers: { "X-Device-Token": getDeviceToken() } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then(setData)
+        .catch(() => {});
+    }, []);
+
+    if (!data) {
+      return (
+        <div className="absolute inset-0 z-50 bg-white flex items-center justify-center" dir="rtl">
+          <p className="text-[13px] text-ink-400">אוספת את המסע שלך...</p>
+        </div>
+      );
+    }
+
+    const s = data.stats;
+    const statItems = [
+      { value: data.journeyDay, label: "ימים במסע" },
+      { value: s.checkins, label: "שיחות צ'ק-אין" },
+      { value: s.groundingSessions, label: "תרגילי קרקוע" },
+      { value: s.tasksDone, label: "משימות שהושלמו" },
+    ].filter((it) => it.value > 0 || it.label === "ימים במסע");
+
+    const emailBody = [
+      `סיכום המסע שלי ב-CureMindset · ${data.journeyDay} ימים`,
+      "",
+      `שיחות צ'ק-אין: ${s.checkins}`,
+      `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief ? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)` : ""}`,
+      `משימות יומיות שהושלמו: ${s.tasksDone} מתוך ${s.tasksTotal}`,
+      "",
+      data.wins.length ? "הניצחונות שלי:\n" + data.wins.map((w) => `• ${w.title || w.text}`).join("\n") : "",
+      data.patterns.length ? "\nדפוסים שזיהינו יחד:\n" + data.patterns.map((p) => `• ${p.title}`).join("\n") : "",
+      "",
+      "CureMindset · שיטת קטי שגב",
+    ].join("\n");
+    const mailtoHref = `mailto:?subject=${encodeURIComponent("סיכום המסע שלי ב-CureMindset")}&body=${encodeURIComponent(emailBody)}`;
+
+    return (
+      <div className="absolute inset-0 z-50 bg-white overflow-y-auto" dir="rtl">
+        <div className="px-6 py-8 flex flex-col gap-6">
+          <div className="text-center">
+            <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-3">
+              <Icon name="sparkles" size={26} className="text-gold-600" />
+            </div>
+            <p className="font-heading font-extrabold text-[22px] text-ink-800">המסע שלך עד כאן</p>
+            <p className="text-[13.5px] text-ink-500 mt-1">תראי כמה עשית — כל אחד מהמספרים האלה הוא בחירה שלך בעצמך.</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {statItems.map((it) => (
+              <div key={it.label} className="rounded-2xl bg-gold-50 border border-gold-200 py-4 text-center">
+                <p className="font-heading font-extrabold text-[28px] text-gold-600 leading-none">{it.value}</p>
+                <p className="text-[12.5px] text-ink-500 mt-1.5">{it.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {s.avgRelief != null && (
+            <div className="rounded-2xl bg-ink-800 py-4 px-5 text-center">
+              <p className="font-heading font-extrabold text-[26px] text-gold-400 leading-none">{s.avgRelief}%</p>
+              <p className="text-[12.5px] text-ink-200 mt-1.5">ירידה ממוצעת בעומס הרגשי אחרי תרגול</p>
+            </div>
+          )}
+
+          {data.wins.length > 0 && (
+            <div>
+              <p className="font-heading font-bold text-[15px] text-ink-800 mb-2.5">הניצחונות שלך 🌟</p>
+              <ul className="flex flex-col gap-2">
+                {data.wins.map((w, i) => (
+                  <li key={i} className="flex items-start gap-2.5 rounded-xl bg-ink-50 px-3.5 py-3 text-[13.5px] text-ink-700 leading-snug">
+                    <Icon name="shield-check" size={16} className="text-gold-500 mt-0.5 shrink-0" />
+                    <span>
+                      <span className="font-semibold">{w.title || w.text}</span>
+                      {w.description ? <span className="text-ink-500"> — {w.description}</span> : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {data.patterns.length > 0 && (
+            <div>
+              <p className="font-heading font-bold text-[15px] text-ink-800 mb-2.5">דפוסים שזיהינו יחד</p>
+              <ul className="flex flex-col gap-2">
+                {data.patterns.map((p, i) => (
+                  <li key={i} className="rounded-xl border border-ink-100 px-3.5 py-3 text-[13.5px] text-ink-600 leading-snug">
+                    <span className="font-semibold text-ink-800">{p.title}</span>
+                    {p.description ? ` — ${p.description}` : ""}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="rounded-2xl bg-gold-50 border border-gold-200 px-5 py-5 text-center">
+            <p className="font-heading font-bold text-[16px] text-ink-800">זה רק השער הראשון של המסע 🌿</p>
+            <p className="text-[13px] text-ink-600 mt-1.5 leading-relaxed">
+              העבודה האמיתית על הדפוס שזיהינו מתחילה עכשיו. בליווי הדיגיטלי נמשיך יחד — יום אחר יום, בקצב שלך.
+            </p>
+            <button
+              type="button"
+              onClick={onExit}
+              className="w-full mt-4 py-3.5 rounded-full bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors"
+            >
+              להמשך המסע — למסלולים
+            </button>
+            <a href={mailtoHref} className="block w-full mt-2.5 py-3 rounded-full border border-gold-300 text-gold-700 font-heading font-semibold text-[13.5px] hover:bg-gold-100 transition-colors">
+              שליחת הסיכום למייל שלי
+            </a>
+          </div>
+
+          <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline mx-auto pb-2">
+            חזרה
+          </button>
+        </div>
       </div>
     );
   }
@@ -1163,6 +1295,7 @@
     // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
+    const [showSummary, setShowSummary] = useState(false);
 
     useEffect(() => {
       document.body.style.overflow = "hidden";
@@ -1218,8 +1351,10 @@
             onUnlocked={(next) => { setAccess(next); setShowCodeEntry(false); }}
             onClose={() => setShowCodeEntry(false)}
             onExit={onExit}
+            onShowSummary={() => setShowSummary(true)}
           />
         )}
+        {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
         {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
         {current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">

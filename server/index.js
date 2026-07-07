@@ -181,6 +181,54 @@ api.post("/access/redeem", (req, res) => {
   res.json({ ok: true, ...getAccessStatus(req.deviceToken) });
 });
 
+// ── Journey summary: everything the client did, for the end-of-trial page ──
+api.get("/journey-summary", (req, res) => {
+  const token = req.deviceToken;
+  const journeyDay = getJourneyDay(token);
+  const access = getAccessStatus(token);
+
+  const checkins = db.prepare("SELECT COUNT(*) AS n FROM checkins WHERE device_token = ?").get(token).n;
+  const groundings = db.prepare("SELECT COUNT(*) AS n, AVG(score) AS avg FROM grounding_sessions WHERE device_token = ?").get(token);
+  const tasksDone = db.prepare("SELECT COUNT(*) AS n FROM daily_tasks WHERE device_token = ? AND completed = 1").get(token).n;
+  const tasksTotal = db.prepare("SELECT COUNT(*) AS n FROM daily_tasks WHERE device_token = ?").get(token).n;
+  const progressRow = db.prepare("SELECT completed FROM protocol_progress WHERE device_token = ?").get(token);
+  const stagesCompleted = progressRow ? JSON.parse(progressRow.completed).length : 0;
+
+  // Latest AI-extracted wins and patterns across all checkins (newest first, deduped)
+  const rows = db.prepare("SELECT wins, patterns FROM checkins WHERE device_token = ? ORDER BY created_at DESC LIMIT 10").all(token);
+  const collect = (field, cap) => {
+    const seen = new Set();
+    const out = [];
+    for (const r of rows) {
+      let items = [];
+      try { items = JSON.parse(r[field] || "[]"); } catch {}
+      for (const it of items) {
+        const key = it.title || it.text || JSON.stringify(it);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(it);
+        if (out.length >= cap) return out;
+      }
+    }
+    return out;
+  };
+
+  res.json({
+    journeyDay: Math.min(journeyDay, 14),
+    accessStatus: access.status,
+    stats: {
+      checkins,
+      groundingSessions: groundings.n,
+      avgRelief: groundings.avg ? Math.round(groundings.avg) : null,
+      tasksDone,
+      tasksTotal,
+      stagesCompleted,
+    },
+    wins: collect("wins", 5),
+    patterns: collect("patterns", 4),
+  });
+});
+
 // ── Daily tasks ──
 api.get("/tasks", (req, res) => {
   const rows = db.prepare(
