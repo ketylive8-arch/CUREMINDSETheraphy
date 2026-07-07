@@ -83,3 +83,9 @@
   .sm\:text-\[28px\] { font-size: 28px; }
   .sm\:text-\[24px\] { font-size: 24px; }
 }
+
+/* ── About photo layout ── */
+.max-w-\[360px\] { max-width: 360px; }
+@media (min-width: 1024px) {
+  .lg\:grid-cols-\[\.85fr_1\.15fr\] { grid-template-columns: .85fr 1.15fr; }
+}

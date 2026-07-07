@@ -589,15 +589,36 @@ function About() {
   return (
     <section id="about" className="py-16 sm:py-24 bg-white">
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-12">
-          <Eyebrow>על קטי</Eyebrow>
-          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px] mb-5">נעים להכיר, אני קטי שגב</h2>
-          <p className="text-ink-500 text-[18px] leading-[1.6]">
-            מאמנת ומטפלת רגשית-תודעתית, מפתחת שיטת CureMindset. אחרי שנים של עבודה עם בני נוער, נשים והורים,
-            למדתי שהשינוי האמיתי לא קורה בשכנוע — הוא קורה כשעובדים עם התת-מודע, ברגש, בגובה העיניים.
-            זו השליחות שלי: לתת לכל אחד ואחת את הכלים לחוסן רגשי שמחזיק לכל החיים.
-          </p>
-        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-[.85fr_1.15fr] gap-10 lg:gap-16 items-center mb-14">
+          {/* התמונה של קטי — images/kety-about.jpg (אפשר להחליף בכל רגע בקובץ באותו שם) */}
+          <Reveal className="flex justify-center">
+            <div className="relative w-full max-w-[360px] aspect-[4/5] rounded-[1.25rem] overflow-hidden shadow-soft bg-white p-2 ring-1 ring-ink-100">
+              <img
+                src="images/kety-about.jpg"
+                alt="קטי שגב — מפתחת שיטת CureMindset"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover rounded-[1rem]"
+                onError={(e) => { e.currentTarget.src = "images/kety-640.jpg"; e.currentTarget.onerror = null; }}
+              />
+            </div>
+          </Reveal>
+
+          <Reveal className="text-center lg:text-start">
+            <Eyebrow>על קטי</Eyebrow>
+            <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px] mb-5">נעים להכיר, אני קטי שגב</h2>
+            <p className="text-ink-500 text-[18px] leading-[1.6] mb-5">
+              מאמנת ומטפלת רגשית-תודעתית, מפתחת שיטת CureMindset. אחרי שנים של עבודה עם בני נוער, נשים והורים,
+              למדתי שהשינוי האמיתי לא קורה בשכנוע — הוא קורה כשעובדים עם התת-מודע, ברגש, בגובה העיניים.
+            </p>
+            <p className="text-ink-500 text-[18px] leading-[1.6]">
+              <span className="font-semibold text-ink-700">המסע האישי שלי</span> התחיל בדיוק במקום שבו רבים מהמטופלים שלי
+              נמצאים היום — מול חסמים פנימיים שנראו גדולים ממני. הדרך שעברתי, ההכשרות שרכשתי והמאות שליוויתי
+              הפכו לשיטה אחת ברורה. זו השליחות שלי: לתת לכל אחד ואחת את הכלים לחוסן רגשי שמחזיק לכל החיים.
+            </p>
+          </Reveal>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {highlights.map((h, i) => (
             <Reveal key={h.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-6 text-center">
