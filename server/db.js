@@ -133,6 +133,15 @@ function getAccessStatus(deviceToken) {
   return { status: "expired", daysLeft: 0 };
 }
 
+// Day 1 is the first day of the trial; keeps counting past 14 for subscribers
+// so the AI knows the client moved into the maintenance phase.
+function getJourneyDay(deviceToken) {
+  const row = db.prepare("SELECT trial_start_at FROM patient_profile WHERE device_token = ?").get(deviceToken);
+  if (!row?.trial_start_at) return 1;
+  const started = new Date(row.trial_start_at.replace(" ", "T") + "Z").getTime();
+  return Math.max(1, Math.floor((Date.now() - started) / 86400000) + 1);
+}
+
 function getAgeGroup(deviceToken) {
   const row = db.prepare("SELECT age_group FROM patient_profile WHERE device_token = ?").get(deviceToken);
   return row?.age_group || "adult";
@@ -150,4 +159,4 @@ function scheduleEngagementNotifications(deviceToken) {
   msgs.forEach((m) => stmt.run(deviceToken, m));
 }
 
-module.exports = { db, ensurePatient, getAgeGroup, getAccessStatus, scheduleEngagementNotifications };
+module.exports = { db, ensurePatient, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications };

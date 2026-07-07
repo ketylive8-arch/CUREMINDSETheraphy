@@ -4,7 +4,7 @@ const crypto = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 
-const { db, getAgeGroup, getAccessStatus, scheduleEngagementNotifications } = require("./db");
+const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -88,9 +88,14 @@ api.post("/checkin", async (req, res) => {
     return res.status(400).json({ error: "text is too long" });
   }
 
+  // The paywall applies to the AI chat as well: day 15 with no code = locked.
+  if (getAccessStatus(req.deviceToken).status === "expired") {
+    return res.status(402).json({ error: "תקופת הניסיון הסתיימה — נדרש קוד גישה כדי להמשיך בליווי" });
+  }
+
   try {
     const ageGroup = getAgeGroup(req.deviceToken);
-    const result = await runBehavioralHealthCheck(text.trim(), ageGroup);
+    const result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken));
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));
     const triggers = withIds(result.triggers);
