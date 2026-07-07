@@ -249,6 +249,56 @@
     );
   }
 
+  // נרשמות חדשות לסדנאות — מהטופס בדף הבית
+  function WorkshopSignupsPanel({ authHeader }) {
+    const [rows, setRows] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+      fetch("/api/admin/signups", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : []))
+        .then(setRows)
+        .catch(() => {});
+    }, []);
+
+    return (
+      <section className="bg-white rounded-2xl border border-ink-100 p-5">
+        <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon name="calendar" size={17} className="text-gold-600" />
+            <h2 className="font-heading font-bold text-[16px] text-ink-800">
+              נרשמות לסדנאות
+              {rows.length > 0 && (
+                <span className="mr-2 px-2 py-0.5 rounded-full bg-gold-50 border border-gold-200 text-gold-700 text-[12px] font-semibold">
+                  {rows.length}
+                </span>
+              )}
+            </h2>
+          </div>
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={17} className="text-ink-400" />
+        </button>
+
+        {open && (
+          <ul className="mt-4 divide-y divide-ink-50 max-h-80 overflow-y-auto">
+            {rows.length === 0 && <li className="py-3 text-[13px] text-ink-400 text-center">עדיין אין נרשמות</li>}
+            {rows.map((s) => (
+              <li key={s.id} className="py-3 flex flex-col gap-0.5 text-[13.5px]">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-heading font-bold text-ink-800">{s.full_name}</span>
+                  <span className="text-ink-400 text-[12px] shrink-0">{formatDateTime(s.created_at)}</span>
+                </div>
+                <span className="text-ink-600">
+                  {s.workshop} · <a href={`tel:${s.phone}`} className="text-gold-700 font-semibold">{s.phone}</a>
+                  {s.email ? ` · ${s.email}` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  }
+
   function ClinicList({ authHeader, onOpenPatient, onLogout }) {
     const [patients, setPatients] = useState(null);
     const [error, setError] = useState(false);
@@ -286,6 +336,7 @@
         </header>
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
+          <WorkshopSignupsPanel authHeader={authHeader} />
           <AccessCodesPanel authHeader={authHeader} />
           {error ? (
             <p className="text-center text-[13px] text-ink-500 py-10">לא הצלחנו לטעון את רשימת המטופלים. נסי לרענן.</p>

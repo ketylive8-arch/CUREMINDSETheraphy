@@ -32,6 +32,43 @@ const PAYMENT_LINKS = {
   premium: "",
 };
 
+/* ═══════════════════════════════════════════════════════════════════
+   קטי — הקישורים הישירים שלך למרכז המדיה (ON AIR).
+   הדביקי כל קישור בין המרכאות. שדה שנשאר ריק ("") יוביל ללינקטרי,
+   ואם גם הוא ריק — לוואטסאפ. אין יותר קישורי חיפוש גנריים.
+   ═══════════════════════════════════════════════════════════════════ */
+const MEDIA_LINKS = {
+  linktree: "",        // ← הכניסי כאן את קישור ה-Linktree שלך (KETY SEGEV ON LINKTREE)
+  radio: "",           // ← קישור ישיר לארכיון תוכניות הרדיו שלך
+  spotify: "",         // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
+  youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך
+  video1: "",          // ← קישור לסרטון יוטיוב 1 (עומס רגשי אצל בני נוער)
+  video2: "",          // ← קישור לסרטון יוטיוב 2 (טכניקות NLP לחרדה חברתית)
+  article1: "",        // ← קישור למאמר 1 (מחיווט מחדש לפריצת דרך)
+  article2: "",        // ← קישור למאמר 2 (חוסן רגשי להורים ומתבגרים)
+};
+
+/* קטי — קישורי הפגישות האונליין שלך (מוצגים מתחת למסלולים):
+   calendar ← קישור לקביעת פגישה ביומן (Calendly / Google Calendar וכד')
+   zoom     ← קישור קבוע לחדר הזום האישי שלך
+   שדה ריק יוביל לוואטסאפ לתיאום ידני. */
+const BOOKING_LINKS = {
+  calendar: "",
+  zoom: "",
+};
+
+// שרשרת נפילה: קישור ישיר → לינקטרי → וואטסאפ
+function mediaHref(direct, waText) {
+  return direct || MEDIA_LINKS.linktree || waLink(waText);
+}
+
+// ממיר כל צורת קישור יוטיוב (watch / youtu.be / shorts) לכתובת embed לנגן
+function youtubeEmbed(url) {
+  if (!url) return "";
+  const m = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{6,})/);
+  return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+}
+
 /* ---------------------------------------------------------------- */
 /* Content                                                            */
 /* ---------------------------------------------------------------- */
@@ -84,16 +121,6 @@ const CONTENT = {
       { icon: "wind", title: "ויסות רגשי בזמן אמת", text: "כלים פרקטיים להחזיר את עצמכם לאיזון תוך דקות, בכל מצב." },
       { icon: "shield-check", title: "חיזוק ביטחון פנימי", text: "בונים תחושת ערך עצמי שלא תלויה באישור חיצוני." },
       { icon: "sparkles", title: "תגובה חדשה למצבי לחץ", text: "במקום להיסחף — יוצרים דרך תגובה חדשה, יציבה ובוחרת." },
-    ],
-  },
-  audience: {
-    eyebrow: "למי זה מתאים",
-    title: "השיטה מותאמת לכל שלב בחיים",
-    items: [
-      { icon: "graduation-cap", title: "בני נוער", tags: ["חרדה חברתית", "לחץ לימודי"], text: "כלים לבנות ביטחון עצמי אמיתי, להירגע מלחץ חברתי ולימודי, ולהפסיק לחיות עם המחשבות לבד." },
-      { icon: "heart", title: "נשים", tags: ["עומס רגשי", "תקיעות"], text: "לצאת ממעגל העומס והתקיעות, ולבנות מחדש ביטחון פנימי שמחזיק גם בלחץ היומיום." },
-      { icon: "users", title: "הורים", tags: ["כלים רגשיים", "תקשורת בבית"], text: "כלים רגשיים פרקטיים לוויסות עצמי וליצירת תקשורת רגועה ובריאה יותר בבית." },
-      { icon: "school", title: "בתי ספר וארגונים", tags: ["חוסן רגשי", "סדנאות העצמה"], text: "סדנאות חוסן והעצמה לקבוצות — לבני נוער, לצוותים ולקהילות." },
     ],
   },
   workshops: {
@@ -702,62 +729,6 @@ function Solution() {
 }
 
 /* ---------------------------------------------------------------- */
-/* Audience — expandable cards                                       */
-/* ---------------------------------------------------------------- */
-
-function AudienceCard({ item, idx }) {
-  const [open, setOpen] = useState(idx === 0);
-  return (
-    <Reveal as="li" style={{ transitionDelay: `${idx * 70}ms` }} className="border border-ink-100 rounded-2xl bg-white overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        className="w-full flex items-center gap-4 p-5 sm:p-6 text-start"
-      >
-        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gold-100 text-gold-700 shrink-0">
-          <Icon name={item.icon} size={22} />
-        </span>
-        <span className="flex-1">
-          <span className="block font-heading font-semibold text-ink-800 text-[17px]">{item.title}</span>
-          <span className="flex flex-wrap gap-2 mt-1.5">
-            {item.tags.map((t) => (
-              <span key={t} className="text-[12px] font-medium text-gold-700 bg-gold-50 px-2.5 py-1 rounded-full">
-                {t}
-              </span>
-            ))}
-          </span>
-        </span>
-        <Icon name={open ? "chevron-up" : "chevron-down"} size={20} className="text-ink-300 shrink-0" />
-      </button>
-      {open && (
-        <div className="px-5 sm:px-6 pb-6 -mt-1">
-          <p className="text-ink-500 text-[15px] leading-relaxed ps-16">{item.text}</p>
-        </div>
-      )}
-    </Reveal>
-  );
-}
-
-function Audience() {
-  return (
-    <section id="audience" className="py-16 sm:py-24 bg-white">
-      <div className="max-w-[880px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center mb-12">
-          <Eyebrow>{CONTENT.audience.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px]">{CONTENT.audience.title}</h2>
-        </Reveal>
-        <ul className="flex flex-col gap-3">
-          {CONTENT.audience.items.map((item, i) => (
-            <AudienceCard key={item.title} item={item} idx={i} />
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------------------------------------------------------- */
 /* Workshops / Services                                              */
 /* ---------------------------------------------------------------- */
 
@@ -797,13 +768,120 @@ function Workshops() {
           ))}
         </div>
 
-        <Reveal className="text-center mt-12">
-          <Button as="a" href="#contact" size="lg" icon="arrow-up-right" iconPos="end">
-            {CONTENT.workshops.cta}
-          </Button>
-        </Reveal>
+        {/* טופס הרשמה לסדנאות — נשמר ישירות ל-CRM של קטי */}
+        <WorkshopSignupForm />
       </div>
     </section>
+  );
+}
+
+function WorkshopSignupForm() {
+  const [form, setForm] = useState({ fullName: "", phone: "", email: "", workshop: "" });
+  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const workshopOptions = [
+    "סדנת חוסן רגשי לנוער",
+    "סדנאות לנשים",
+    "סדנה לארגון / בית ספר",
+    "עדיין לא בטוח/ה — אשמח לייעוץ",
+  ];
+
+  function update(field, value) {
+    setForm((f) => ({ ...f, [field]: value }));
+    if (status === "error") setStatus("idle");
+  }
+
+  function submit(e) {
+    e.preventDefault();
+    if (status === "loading") return;
+    setStatus("loading");
+    fetch("/api/workshop-signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || "משהו השתבש — נסי שוב");
+        setStatus("done");
+      })
+      .catch((err) => {
+        setStatus("error");
+        setErrorMsg(err.message);
+      });
+  }
+
+  const inputCls =
+    "w-full rounded-xl border border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
+
+  return (
+    <Reveal className="mt-14 max-w-[640px] mx-auto">
+      <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-[0_24px_56px_-16px_rgba(0,0,0,0.4)]">
+        {status === "done" ? (
+          <div className="text-center py-6">
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold-100 text-gold-600 mb-4">
+              <Icon name="check-circle-2" size={28} />
+            </span>
+            <h3 className="font-heading font-bold text-[22px] text-ink-800 mb-2">נרשמת בהצלחה!</h3>
+            <p className="text-[16px] text-ink-500 leading-relaxed">קיבלתי את הפרטים שלך ואחזור אלייך בהקדם לתיאום.</p>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="flex flex-col gap-4" dir="rtl">
+            <div className="text-center mb-2">
+              <h3 className="font-heading font-bold text-[24px] text-ink-800 mb-2">הרשמה לסדנה</h3>
+              <p className="text-[15.5px] text-ink-500">מלאי פרטים ואחזור אלייך עם כל המידע — ללא התחייבות</p>
+            </div>
+            <input
+              type="text"
+              required
+              value={form.fullName}
+              onChange={(e) => update("fullName", e.target.value)}
+              placeholder="שם מלא"
+              className={inputCls}
+            />
+            <input
+              type="tel"
+              required
+              value={form.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              placeholder="טלפון נייד"
+              className={inputCls}
+            />
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => update("email", e.target.value)}
+              placeholder="אימייל (לא חובה)"
+              className={inputCls}
+            />
+            <select
+              required
+              value={form.workshop}
+              onChange={(e) => update("workshop", e.target.value)}
+              className={`${inputCls} ${form.workshop ? "" : "text-ink-300"}`}
+            >
+              <option value="" disabled>
+                באיזו סדנה מדובר?
+              </option>
+              {workshopOptions.map((w) => (
+                <option key={w} value={w} className="text-ink-800">
+                  {w}
+                </option>
+              ))}
+            </select>
+            {status === "error" && <p className="text-[14px] text-red-500 font-medium text-center">{errorMsg}</p>}
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              className="w-full py-4 rounded-full bg-gold-500 text-white font-heading font-bold text-[17px] hover:bg-gold-600 transition-colors disabled:opacity-50 mt-1"
+            >
+              {status === "loading" ? "שולחת..." : "שמרי לי מקום בסדנה"}
+            </button>
+          </form>
+        )}
+      </div>
+    </Reveal>
   );
 }
 
@@ -908,6 +986,32 @@ function Plans() {
             <PlanCard key={plan.id} plan={plan} idx={i} />
           ))}
         </div>
+
+        {/* פגישות אונליין: זום + קביעה ביומן (BOOKING_LINKS) */}
+        <Reveal className="mt-12 max-w-[760px] mx-auto rounded-2xl bg-white border border-gold-200 px-7 py-7 text-center shadow-softer">
+          <h3 className="font-heading font-bold text-[20px] text-ink-800 mb-2">המפגשים מתקיימים אונליין — פשוט ונוח</h3>
+          <p className="text-[16px] text-ink-500 mb-5">בחרי מועד שנוח לך ביומן, וניפגש בזום מכל מקום.</p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <a
+              href={BOOKING_LINKS.calendar || waLink("היי קטי! אשמח לקבוע מועד לפגישה ביומן")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] hover:bg-gold-600 hover:-translate-y-0.5 transition-all"
+            >
+              <Icon name="calendar" size={17} />
+              לקביעת פגישה ביומן
+            </a>
+            <a
+              href={BOOKING_LINKS.zoom || waLink("היי קטי! אשמח לקישור לפגישת הזום שלנו")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gold-300 bg-gold-50 text-gold-700 font-heading font-semibold text-[15px] hover:bg-gold-100 hover:-translate-y-0.5 transition-all"
+            >
+              <Icon name="video" size={17} />
+              כניסה לפגישת הזום
+            </a>
+          </div>
+        </Reveal>
 
         <Reveal className="text-center mt-10">
           <p className="text-ink-400 text-[14px]">
@@ -1033,7 +1137,7 @@ function Results() {
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               הצטרפו אליי לתוכניות עומק מרתקות שבהן אנו מפרקים חסמים פנימיים, לומדים לנהל מתחים ומחווטים מחדש את המיינדסט לחוסן רגשי.
             </p>
-            <OnAirButton href="https://www.google.com/search?q=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+%D7%A8%D7%93%D7%99%D7%95" bg="#c5a880">
+            <OnAirButton href={mediaHref(MEDIA_LINKS.radio, "היי קטי! אשמח לקישור לתוכניות הרדיו שלך")} bg="#c5a880">
               להאזנה לתוכניות המלאות בארכיון הרדיו
             </OnAirButton>
           </Reveal>
@@ -1046,7 +1150,7 @@ function Results() {
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               פרקי פודקאסט ממוקדים, תרגילי ויסות רגשי מהירים ועגינה תודעתית שתוכלו לקחת איתכם לכל מקום ובכל זמן.
             </p>
-            <OnAirButton href="https://open.spotify.com/search/%D7%A7%D7%98%D7%99%20%D7%A9%D7%92%D7%91" bg="#1DB954">
+            <OnAirButton href={mediaHref(MEDIA_LINKS.spotify, "היי קטי! אשמח לקישור לפודקאסט שלך בספוטיפיי")} bg="#1DB954">
               לפתוח את CureMindset ב-Spotify
             </OnAirButton>
           </Reveal>
@@ -1058,57 +1162,91 @@ function Results() {
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { title: "עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" },
-            { title: "טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+NLP" },
+            { title: "עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", link: MEDIA_LINKS.video1 },
+            { title: "טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", link: MEDIA_LINKS.video2 },
           ].map((v, i) => (
             <Reveal key={v.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl overflow-hidden bg-white border border-ink-100 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
-              <iframe
-                width="100%"
-                height="250"
-                src={`https://www.youtube.com/embed?listType=search&list=${v.query}`}
-                title={v.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-              ></iframe>
+              {v.link ? (
+                <iframe
+                  width="100%"
+                  height="250"
+                  src={youtubeEmbed(v.link)}
+                  title={v.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  loading="lazy"
+                ></iframe>
+              ) : (
+                /* Placeholder אלגנטי עד שקטי מדביקה קישור סרטון ב-MEDIA_LINKS */
+                <div className="h-[250px] flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-gold-100 to-gold-200">
+                  <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/90 text-gold-600 shadow-soft">
+                    <Icon name="play" size={28} />
+                  </span>
+                  <p className="text-[14px] font-medium text-gold-700">הסרטון יעלה כאן בקרוב</p>
+                </div>
+              )}
               <h4 className="font-heading font-bold text-[20px] text-ink-800 p-6 leading-snug">{v.title}</h4>
             </Reveal>
           ))}
         </div>
         <Reveal>
-          <OnAirButton href="https://www.youtube.com/results?search_query=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" bg="#ff0000" block>
+          <OnAirButton href={mediaHref(MEDIA_LINKS.youtubeChannel, "היי קטי! אשמח לקישור לערוץ היוטיוב שלך")} bg="#ff0000" block>
             למעבר לערוץ ה-YouTube והרשמה
           </OnAirButton>
         </Reveal>
 
-        {/* מתחם 3 — ספריית הידע */}
+        {/* מתחם 3 — ספריית הידע (RSS דינמי עם נפילה לכרטיסים הקבועים) */}
         <div className="mt-20">
           <Reveal>
             <OnAirZoneTitle icon="book-open" title="מאמרים מקצועיים, כלים תודעתיים ופרקטיקה" />
           </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              "מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה",
-              "חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי",
-            ].map((title, i) => (
-              <Reveal key={title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.55)]">
-                <span className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600">מהבלוג של קטי</span>
-                <h4 className="font-heading font-bold text-[24px] leading-tight text-ink-800 flex-1">{title}</h4>
-                <a
-                  href={`https://www.google.com/search?q=${encodeURIComponent("קטי שגב " + title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] transition-all duration-300 hover:bg-gold-600 hover:-translate-y-0.5"
-                >
-                  לקריאת המאמר המלא
-                </a>
-              </Reveal>
-            ))}
-          </div>
+          <ArticlesGrid />
         </div>
       </div>
     </section>
+  );
+}
+
+function ArticlesGrid() {
+  const [items, setItems] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/articles")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => setItems(Array.isArray(rows) ? rows : []))
+      .catch(() => setItems([]));
+  }, []);
+
+  // כרטיסים קבועים (נפילה): הקישור מגיע מ-MEDIA_LINKS, ואם ריק — מהלינקטרי/וואטסאפ.
+  const fallback = [
+    { title: "מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה", link: MEDIA_LINKS.article1 },
+    { title: "חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי", link: MEDIA_LINKS.article2 },
+  ];
+
+  const cards =
+    items && items.length
+      ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
+      : fallback.map((a) => ({ title: a.title, link: mediaHref(a.link, `היי קטי! אשמח לקישור למאמר: ${a.title}`), desc: "" }));
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {cards.map((a, i) => (
+        <Reveal key={a.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.55)]">
+          <span className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600">מהבלוג של קטי</span>
+          <h4 className="font-heading font-bold text-[24px] leading-tight text-ink-800 flex-1">{a.title}</h4>
+          {a.desc ? <p className="text-[15px] text-ink-500 leading-relaxed">{a.desc}</p> : null}
+          <a
+            href={a.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] transition-all duration-300 hover:bg-gold-600 hover:-translate-y-0.5"
+          >
+            לקריאת המאמר המלא
+          </a>
+        </Reveal>
+      ))}
+    </div>
   );
 }
 

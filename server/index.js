@@ -59,6 +59,66 @@ function rateLimit(name, maxPerHour) {
   };
 }
 
+// ── נתיבים ציבוריים (בלי מזהה מכשיר): הרשמה לסדנאות + מאמרים מ-RSS ──
+// רשומים לפני ה-router של /api כדי שלא יידרשו ל-X-Device-Token.
+
+app.post("/api/workshop-signup", (req, res) => {
+  const { fullName, phone, email, workshop } = req.body || {};
+  if (typeof fullName !== "string" || fullName.trim().length < 2) {
+    return res.status(400).json({ error: "נא למלא שם מלא" });
+  }
+  if (typeof phone !== "string" || phone.replace(/\D/g, "").length < 8) {
+    return res.status(400).json({ error: "נא למלא מספר טלפון תקין" });
+  }
+  if (typeof workshop !== "string" || !workshop.trim()) {
+    return res.status(400).json({ error: "נא לבחור סדנה" });
+  }
+  db.prepare("INSERT INTO workshop_signups (full_name, phone, email, workshop) VALUES (?, ?, ?, ?)").run(
+    fullName.trim().slice(0, 120),
+    phone.trim().slice(0, 30),
+    typeof email === "string" ? email.trim().slice(0, 160) : null,
+    workshop.trim().slice(0, 120)
+  );
+  res.status(201).json({ ok: true });
+});
+
+// מאמרים: משיכה מערוץ ה-RSS של קטי (ARTICLES_RSS_URL ב-Environment ברנדר).
+// פירסור מינימלי ללא תלויות + מטמון 30 דקות; אם אין כתובת או שיש תקלה — [].
+let articlesCache = { at: 0, items: [] };
+function parseRssItems(xml) {
+  const items = [];
+  const itemRe = /<item[\s\S]*?<\/item>/g;
+  const pick = (block, tag) => {
+    const m = block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i"));
+    if (!m) return "";
+    return m[1].replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1").replace(/<[^>]+>/g, "").trim();
+  };
+  for (const block of xml.match(itemRe) || []) {
+    const title = pick(block, "title");
+    const link = pick(block, "link");
+    if (!title || !link) continue;
+    items.push({ title, link, pubDate: pick(block, "pubDate"), description: pick(block, "description").slice(0, 300) });
+    if (items.length >= 6) break;
+  }
+  return items;
+}
+
+app.get("/api/articles", async (req, res) => {
+  const rssUrl = process.env.ARTICLES_RSS_URL || "";
+  if (!rssUrl) return res.json([]);
+  if (Date.now() - articlesCache.at < 30 * 60 * 1000) return res.json(articlesCache.items);
+  try {
+    const r = await fetch(rssUrl, { headers: { "User-Agent": "CureMindset-Site/1.0" } });
+    if (!r.ok) throw new Error(`RSS fetch failed: ${r.status}`);
+    const items = parseRssItems(await r.text());
+    articlesCache = { at: Date.now(), items };
+    res.json(items);
+  } catch (err) {
+    console.error("articles rss failed:", err.message);
+    res.json(articlesCache.items);
+  }
+});
+
 const api = express.Router();
 api.use(deviceTokenMiddleware);
 
@@ -338,6 +398,14 @@ admin.post("/codes", (req, res) => {
 
   db.prepare("INSERT INTO access_codes (code, plan, note, months) VALUES (?, ?, ?, ?)").run(code, String(plan), String(note), monthsInt);
   res.json({ code, plan, note, months: monthsInt });
+});
+
+// נרשמות לסדנאות — מוצג בפאנל באזור הניהול של קטי
+admin.get("/signups", (req, res) => {
+  const rows = db
+    .prepare("SELECT id, full_name, phone, email, workshop, created_at FROM workshop_signups ORDER BY created_at DESC LIMIT 200")
+    .all();
+  res.json(rows);
 });
 
 // מצב מאגר הידע: אילו קבצים טעונים, כמה קטעים, ובדיקת שליפה ("מה יישלף לשאלה X?")

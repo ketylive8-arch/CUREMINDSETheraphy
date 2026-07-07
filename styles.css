@@ -89,3 +89,14 @@
 @media (min-width: 1024px) {
   .lg\:grid-cols-\[\.85fr_1\.15fr\] { grid-template-columns: .85fr 1.15fr; }
 }
+
+/* ── Workshop signup form + signups panel ── */
+.max-h-80 { max-height: 20rem; }
+.max-w-\[640px\] { max-width: 640px; }
+.h-\[250px\] { height: 250px; }
+.w-16 { width: 4rem; }
+.h-16 { height: 4rem; }
+.focus\:border-gold-500:focus { border-color: #C2974A; }
+@media (min-width: 640px) {
+  .sm\:p-10 { padding: 2.5rem; }
+}
