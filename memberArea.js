@@ -52,6 +52,11 @@
 
   const DEVICE_TOKEN_KEY = "cm_device_token";
 
+  // The device token is the client's private credential: a random 122-bit UUID.
+  // Every server query is scoped to it, so data is readable only with this exact
+  // token. If localStorage is blocked we still mint a unique in-memory token —
+  // never a shared constant, which would leak one visitor's data to another.
+  let inMemoryToken = null;
   function getDeviceToken() {
     try {
       let token = localStorage.getItem(DEVICE_TOKEN_KEY);
@@ -61,7 +66,8 @@
       }
       return token;
     } catch (e) {
-      return "anonymous";
+      if (!inMemoryToken) inMemoryToken = crypto.randomUUID();
+      return inMemoryToken;
     }
   }
 

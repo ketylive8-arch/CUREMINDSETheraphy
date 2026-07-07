@@ -27,9 +27,36 @@ const upload = multer({
   limits: { fileSize: 200 * 1024 * 1024 },
 });
 
+// Baseline hardening headers on every response.
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  next();
+});
+
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(STATIC_DIR));
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// Minimal in-memory rate limiter, keyed per device token + route. Protects the
+// access-code redeem endpoint from brute-force guessing and caps AI-chat cost.
+const rateBuckets = new Map();
+function rateLimit(name, maxPerHour) {
+  return (req, res, next) => {
+    const key = `${name}:${req.deviceToken || req.ip}`;
+    const now = Date.now();
+    let bucket = rateBuckets.get(key);
+    if (!bucket || now - bucket.start > 3600000) {
+      bucket = { start: now, count: 0 };
+      rateBuckets.set(key, bucket);
+    }
+    if (++bucket.count > maxPerHour) {
+      return res.status(429).json({ error: "יותר מדי ניסיונות — נסי שוב מאוחר יותר" });
+    }
+    next();
+  };
+}
 
 const api = express.Router();
 api.use(deviceTokenMiddleware);
@@ -79,7 +106,7 @@ api.get("/dashboard", (req, res) => {
   res.json(buildDashboardData(progress, sessions, checkinRows));
 });
 
-api.post("/checkin", async (req, res) => {
+api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
   const { text } = req.body || {};
   if (typeof text !== "string" || !text.trim()) {
     return res.status(400).json({ error: "text is required" });
@@ -155,7 +182,7 @@ api.get("/access", (req, res) => {
   res.json(getAccessStatus(req.deviceToken));
 });
 
-api.post("/access/redeem", (req, res) => {
+api.post("/access/redeem", rateLimit("redeem", 10), (req, res) => {
   const code = String(req.body?.code || "").trim().toUpperCase();
   if (!code) return res.status(400).json({ error: "code is required" });
 
