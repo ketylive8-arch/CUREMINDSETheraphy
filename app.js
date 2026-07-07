@@ -117,17 +117,17 @@ const CONTENT = {
         icon: "smartphone",
         badge: "ניסיון חינם",
         badgeColor: "#16A34A",
-        title: "ליווי דיגיטלי",
+        title: "📱 מאמן אישי ומטפל רגשי בכף היד",
         price: "₪340",
         priceNote: "לחודש",
-        trial: "14 יום ניסיון חינם",
+        trial: "לאחר 14 ימי ניסיון בחינם",
         highlight: false,
         features: [
-          "פרוטוקול עוגן — כלי ייצוב רגשי יומיומי",
-          "צ'אטבוט טיפולי אישי 24/7",
-          "חומרי השיטה נשלחים אוטומטית",
-          "מעקב התקדמות אישי",
-          "גישה לכל החומרים הדיגיטליים",
+          "צ'אטבוט טיפולי-אימוני אישי זמין עבורך 24/7",
+          "מענה מותאם אישית לחלוטין על בסיס חומרי השיטה הרשמיים",
+          "ניתוב מיינדסט, חוסן רגשי והטמעת עוגנים רגשיים",
+          "מעקב התקדמות אישי וזיהוי דפוסים אוטומטי",
+          "גישה מלאה לספריית החומרים הדיגיטליים",
         ],
         cta: "להתחיל ניסיון חינם",
       },
@@ -136,17 +136,17 @@ const CONTENT = {
         icon: "graduation-cap",
         badge: "לנוער",
         badgeColor: "#7C3AED",
-        title: "מפגשי זום לנוער",
+        title: "👥 סדנאות חוסן ומפגשי זום קבוצתיים",
         price: "₪750",
-        priceNote: "5 מפגשים",
+        priceNote: "תהליך של 6 מפגשים",
         trial: null,
         highlight: false,
         features: [
-          "דימוי עצמי וביטחון פנימי",
-          "כלים מעשיים לחרדה חברתית",
-          "חוסן רגשי יומיומי",
-          "מפגשים אישיים בזום",
-          "מותאם לגיל ולשלב ההתפתחותי",
+          "תהליך קבוצתי ממוקד ומותאם (3 עד 8 משתתפים בקבוצה)",
+          "מינימום 4 משתתפים לפתיחת קבוצה להבטחת דינמיקה מעצימה",
+          "כלים מעשיים לחיזוק הדימוי העצמי והביטחון הפנימי",
+          "שחרור דפוסים ופחדים בסביבה בטוחה ותומכת לגילם",
+          "ליווי וחיזוק החוסן החברתי והרגשי בתוך הקבוצה",
         ],
         cta: "להרשמה",
       },
@@ -155,18 +155,17 @@ const CONTENT = {
         icon: "star",
         badge: "מומלצת",
         badgeColor: "#D97706",
-        title: "ליווי אישי",
+        title: "🎯 ליווי אישי ממוקד תוצאות",
         price: "₪1,700",
-        priceNote: "5 מפגשים",
+        priceNote: "תהליך מובנה של 5 מפגשים",
         trial: null,
         highlight: true,
         features: [
-          "עבודה עמוקה על שורש הדפוס",
-          "ויסות רגשי בזמן אמת",
-          "כלי NLP לשינוי חשיבה",
-          "חיזוק ביטחון פנימי יציב",
-          "תמיכה בין מפגשים",
-          "גישה לחומרים דיגיטליים",
+          "עבודה עמוקה על שורש הדפוס לפי מתודולוגיית CureMindset",
+          "ניתוח תהליכים אישי ופירוק חסמים בזמן אמת",
+          "הטמעת כלי NLP יישומיים לשינוי חשיבה וניהול רגשי",
+          "חיזוק ביטחון פנימי יציב ועוגנים רגשיים מותאמים",
+          "חומרים דיגיטליים בהתאמה אישית ותמיכה מלאה בין המפגשים",
         ],
         cta: "לתחילת תהליך",
       },
@@ -175,18 +174,17 @@ const CONTENT = {
         icon: "award",
         badge: "פרימיום",
         badgeColor: "#B45309",
-        title: "תהליך מעמיק",
+        title: "👑 ליווי פרימיום בהתאמה אישית",
         price: "₪3,500",
-        priceNote: "11 מפגשים",
+        priceNote: "תהליך פרימיום של 11 מפגשים",
         trial: null,
         highlight: false,
         features: [
-          "תהליך שינוי מקיף ומעמיק",
-          "עבודה על כל שדות החיים",
-          "שחרור דפוסים מושרשים",
-          "עבודה עם טראומה והיסטוריה רגשית",
-          "ליווי אישי צמוד לכל אורך הדרך",
-          "גישה מלאה לכל החומרים הדיגיטליים",
+          "תהליך פרימיום מקיף בהתאמה אישית מלאה ומדויקת עבורך",
+          "הגדרת מטרות מורחבת ועבודה על כל שדות החיים",
+          "שחרור וניקוי דפוסים רגשיים מושרשים מהבסיס",
+          "מענה, עיבוד ועבודה עמוקה עם טראומה והיסטוריה רגשית",
+          "ליווי אישי צמוד, מעטפת עוטפת לאורך כל הדרך וגישה לכל התכנים",
         ],
         cta: "לתהליך פרימיום",
       },
@@ -687,7 +685,7 @@ function PlanCard({ plan, idx }) {
     >
       {plan.badge && (
         <span
-          className="absolute -top-3 right-6 px-3 py-1 rounded-full text-white text-[12px] font-heading font-bold tracking-wide"
+          className="absolute -top-3 right-6 px-4 py-1.5 rounded-full text-white text-[14px] font-heading font-bold tracking-wide"
           style={{ backgroundColor: plan.badgeColor }}
         >
           {plan.badge}
@@ -696,33 +694,33 @@ function PlanCard({ plan, idx }) {
 
       <div className="flex items-center gap-3 mb-5">
         <span
-          className={`inline-flex items-center justify-center w-11 h-11 rounded-xl ${
+          className={`inline-flex items-center justify-center w-12 h-12 rounded-xl shrink-0 ${
             plan.highlight ? "bg-gold-500/20 text-gold-400" : "bg-gold-50 text-gold-600"
           }`}
         >
-          <Icon name={plan.icon} size={22} />
+          <Icon name={plan.icon} size={24} />
         </span>
-        <h3 className={`font-heading font-bold text-[19px] ${plan.highlight ? "text-white" : "text-ink-800"}`}>
+        <h3 className={`font-heading font-bold text-[22px] leading-tight ${plan.highlight ? "text-white" : "text-ink-800"}`}>
           {plan.title}
         </h3>
       </div>
 
       <div className="mb-1">
-        <span className={`font-heading font-extrabold text-[38px] leading-none ${plan.highlight ? "text-gold-400" : "text-gold-600"}`}>
+        <span className={`font-heading font-extrabold text-[42px] leading-none ${plan.highlight ? "text-gold-400" : "text-gold-600"}`}>
           {plan.price}
         </span>
-        <span className={`text-[15px] mr-1.5 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>{plan.priceNote}</span>
+        <span className={`text-[17px] mr-2 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>{plan.priceNote}</span>
       </div>
       {plan.trial && (
-        <p className="text-[13px] font-semibold mb-4" style={{ color: plan.badgeColor }}>
+        <p className="text-[15px] font-semibold mb-4" style={{ color: plan.badgeColor }}>
           {plan.trial}
         </p>
       )}
 
-      <ul className={`flex flex-col gap-2.5 flex-1 mt-4 mb-6 ${plan.highlight ? "text-ink-200" : "text-ink-600"}`}>
+      <ul className={`flex flex-col gap-3 flex-1 mt-4 mb-7 ${plan.highlight ? "text-ink-200" : "text-ink-600"}`}>
         {plan.features.map((f) => (
-          <li key={f} className="flex items-start gap-2.5 text-[14px] leading-snug">
-            <Icon name="check" size={16} className={`mt-0.5 shrink-0 ${plan.highlight ? "text-gold-400" : "text-gold-500"}`} />
+          <li key={f} className="flex items-start gap-3 text-[18px] leading-[1.6]">
+            <Icon name="check" size={19} className={`mt-1.5 shrink-0 ${plan.highlight ? "text-gold-400" : "text-gold-500"}`} />
             {f}
           </li>
         ))}
@@ -732,7 +730,7 @@ function PlanCard({ plan, idx }) {
         href={ctaHref}
         target="_blank"
         rel="noopener noreferrer"
-        className={`w-full py-3.5 rounded-full text-center font-heading font-semibold text-[15px] transition-all duration-300 hover:-translate-y-0.5 ${
+        className={`w-full py-4 rounded-full text-center font-heading font-semibold text-[17px] transition-all duration-300 hover:-translate-y-0.5 ${
           plan.highlight
             ? "bg-gold-500 text-white hover:bg-gold-400 shadow-[0_8px_24px_-8px_rgba(194,151,74,0.6)]"
             : "bg-gold-50 text-gold-700 border border-gold-200 hover:bg-gold-100"
@@ -764,7 +762,7 @@ function Plans() {
           </span>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-7 items-start">
           {CONTENT.plans.items.map((plan, i) => (
             <PlanCard key={plan.id} plan={plan} idx={i} />
           ))}

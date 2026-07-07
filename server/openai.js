@@ -146,6 +146,31 @@ class NoApiKeyError extends Error {
   }
 }
 
+// RAG: הקטעים שנשלפו ממאגר הידע של קטי מוזרקים לפרומפט, יחד עם פקודת חסימה —
+// המודל מחויב לענות רק על בסיסם ולא מהידע הכללי שלו.
+function knowledgeContext(retrieved) {
+  const header = `
+
+## ⛔ כלל ברזל — מקור הידע (חובה):
+ענה/י למשתמש/ת אך ורק על בסיס המידע שנשלף ממאגר הידע של קטי (למטה) ומעקרונות השיטה שבפרומפט הזה.
+אסור להמציא תרגילים, שיטות או ידע כללי מהאינטרנט או מהאימון שלך.
+אם אין במאגר מידע רלוונטי לשאלה — אל תמציא/י: השתמש/י בטכניקות ה-NLP המוגדרות (תיקוף רגשי,
+שאלות עומק, שאלות כוח) כדי להעמיק ולהבין את המשתמש/ת, עד שיהיה בסיס לענות מתוך השיטה.`;
+
+  if (!retrieved || !retrieved.length) {
+    return `${header}
+
+## מאגר הידע של קטי — קטעים רלוונטיים לשאלה זו:
+(לא נמצאו קטעים רלוונטיים במאגר לשאלה הזו — העמק/י בשאלות NLP בלבד, אל תמציא/י תוכן.)`;
+  }
+
+  const blocks = retrieved.map((r, i) => `### קטע ${i + 1} (מתוך: ${r.file})\n${r.text}`).join("\n\n");
+  return `${header}
+
+## מאגר הידע של קטי — קטעים רלוונטיים לשאלה זו:
+${blocks}`;
+}
+
 // Maps a journey day (1-14+) to its gate so the model anchors the whole reply to it.
 function journeyContext(journeyDay) {
   if (!journeyDay) return "";
@@ -160,11 +185,14 @@ function journeyContext(journeyDay) {
   return `\n[הקשר מסע: יום ${journeyDay} מתוך 14 — ${gate}. התאם/י את התגובה והמשימה היומית לשער הזה.]`;
 }
 
-async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null) {
+async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null, retrievedKnowledge = []) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new NoApiKeyError();
 
-  const systemPrompt = (ageGroup === "youth" ? SYSTEM_PROMPT_YOUTH : SYSTEM_PROMPT_ADULT) + journeyContext(journeyDay);
+  const systemPrompt =
+    (ageGroup === "youth" ? SYSTEM_PROMPT_YOUTH : SYSTEM_PROMPT_ADULT) +
+    knowledgeContext(retrievedKnowledge) +
+    journeyContext(journeyDay);
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",

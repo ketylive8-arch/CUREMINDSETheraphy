@@ -10,6 +10,7 @@ const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
+const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 
 const app = express();
 const PORT = process.env.PORT || 8731;
@@ -122,7 +123,9 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
 
   try {
     const ageGroup = getAgeGroup(req.deviceToken);
-    const result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken));
+    // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI
+    const retrieved = retrieveKnowledge(text.trim());
+    const result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved);
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));
     const triggers = withIds(result.triggers);
@@ -335,6 +338,13 @@ admin.post("/codes", (req, res) => {
 
   db.prepare("INSERT INTO access_codes (code, plan, note, months) VALUES (?, ?, ?, ?)").run(code, String(plan), String(note), monthsInt);
   res.json({ code, plan, note, months: monthsInt });
+});
+
+// מצב מאגר הידע: אילו קבצים טעונים, כמה קטעים, ובדיקת שליפה ("מה יישלף לשאלה X?")
+admin.get("/knowledge", (req, res) => {
+  const files = knowledgeStats();
+  const test = typeof req.query.q === "string" && req.query.q.trim() ? retrieveKnowledge(req.query.q.trim()) : null;
+  res.json({ files, test });
 });
 
 admin.get("/patients", (req, res) => {
