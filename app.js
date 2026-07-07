@@ -943,26 +943,149 @@ function Testimonials({ quotes }) {
   );
 }
 
+/* CureMindset ON AIR — הבמה הדיגיטלית של קטי: רדיו/ספוטיפיי, יוטיוב ומאמרים.
+   מחליף את דף "תוצאות" — שומר על id="results" כדי שהתפריט ימשיך לעבוד. */
+
+function OnAirButton({ href, bg, children, block }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`font-heading font-bold text-[16px] text-white rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 shadow-soft ${
+        block ? "block text-center px-8 py-4 mx-auto max-w-[340px] mt-6" : "inline-block px-6 py-3"
+      }`}
+      style={{ background: bg }}
+    >
+      {children}
+    </a>
+  );
+}
+
+function OnAirZoneTitle({ emoji, title, subtitle }) {
+  return (
+    <div className="text-center max-w-[720px] mx-auto mb-10">
+      <h3 className="font-heading font-bold text-white text-[24px] sm:text-[28px] mb-3">
+        <span className="ml-2">{emoji}</span>
+        {title}
+      </h3>
+      {subtitle && <p className="text-ink-300 text-[18px] leading-[1.6]">{subtitle}</p>}
+    </div>
+  );
+}
+
 function Results() {
   return (
-    <section id="results" className="py-16 sm:py-24 bg-gold-50">
-      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-10">
-          <Eyebrow>{CONTENT.results.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px]">{CONTENT.results.title}</h2>
+    <section id="results" className="py-20 sm:py-28 bg-ink-800 relative overflow-hidden">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(50% 40% at 50% 0%, rgba(194,151,74,.16), transparent 70%)" }}
+        aria-hidden="true"
+      />
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7 relative">
+        {/* כותרת הבמה */}
+        <Reveal className="text-center max-w-[760px] mx-auto mb-16">
+          <p className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/10 border border-gold-400/40 font-heading text-[14px] font-bold text-gold-400 tracking-[0.18em] mb-6">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
+            ON AIR
+          </p>
+          <h2 className="font-heading font-extrabold text-white text-[30px] sm:text-[42px] leading-tight mb-4">
+            CureMindset ON AIR
+            <span className="block text-gold-400 text-[20px] sm:text-[24px] font-bold mt-2">הבמה הדיגיטלית של קטי שגב</span>
+          </h2>
         </Reveal>
 
-        <Reveal className="flex flex-wrap justify-center gap-3 mb-14">
-          {CONTENT.results.pills.map((p) => (
-            <span key={p} className="px-4 py-2 rounded-full bg-white border border-gold-200 text-ink-700 text-[14px] font-medium">
-              {p}
+        {/* מתחם 1 — רדיו וספוטיפיי */}
+        <Reveal>
+          <OnAirZoneTitle
+            emoji="🎙️"
+            title="CureMindset ברדיו ובפלטפורמות ההאזנה"
+            subtitle="מנפצים חסמים, מדברים על תת-המודע ומעניקים כלים לחוסן רגשי בשידור חי"
+          />
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+          <Reveal className="rounded-2xl bg-white p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_24px_56px_-24px_rgba(0,0,0,0.5)]">
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full text-[28px]" style={{ background: "linear-gradient(135deg,#F3E4C5,#C2974A)" }} aria-hidden="true">
+              🎙️
             </span>
+            <h4 className="font-heading font-bold text-[24px] text-ink-800">תוכנית הרדיו של קטי שגב</h4>
+            <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
+              הצטרפו אליי לתוכניות עומק מרתקות שבהן אנו מפרקים את פריצות הדרך הטיפוליות, מבינים דיכאון סמוי ומחווטים מחדש את המיינדסט.
+            </p>
+            <OnAirButton href="https://www.google.com/search?q=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+%D7%A8%D7%93%D7%99%D7%95" bg="#c5a880">
+              📻 להאזנה לתוכניות המלאות בארכיון הרדיו
+            </OnAirButton>
+          </Reveal>
+
+          <Reveal style={{ transitionDelay: "80ms" }} className="rounded-2xl bg-white p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_24px_56px_-24px_rgba(0,0,0,0.5)]">
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full text-[28px]" style={{ background: "rgba(29,185,84,.15)" }} aria-hidden="true">
+              🎧
+            </span>
+            <h4 className="font-heading font-bold text-[24px] text-ink-800">הפודקאסט והחומרים בספוטיפיי</h4>
+            <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
+              פרקי פודקאסט ממוקדים, תרגילי ויסות רגשי מהירים ועגינה תודעתית שתוכלו לקחת איתכם לכל מקום ובכל זמן.
+            </p>
+            <OnAirButton href="https://open.spotify.com/search/%D7%A7%D7%98%D7%99%20%D7%A9%D7%92%D7%91" bg="#1DB954">
+              🎧 לפתוח את CureMindset ב-Spotify
+            </OnAirButton>
+          </Reveal>
+        </div>
+
+        {/* מתחם 2 — יוטיוב */}
+        <Reveal>
+          <OnAirZoneTitle emoji="📺" title="לראות את השינוי בעיניים – ערוץ היוטיוב של קטי שגב" />
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {[
+            { title: "דיכאון סמוי אצל בני נוער – איך מזהים ומטפלים?", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" },
+            { title: "טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+NLP" },
+          ].map((v, i) => (
+            <Reveal key={v.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl overflow-hidden bg-white transition-all duration-300 hover:-translate-y-1 shadow-[0_24px_56px_-24px_rgba(0,0,0,0.5)]">
+              <iframe
+                width="100%"
+                height="250"
+                src={`https://www.youtube.com/embed?listType=search&list=${v.query}`}
+                title={v.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              ></iframe>
+              <h4 className="font-heading font-bold text-[20px] text-ink-800 p-6 leading-snug">{v.title}</h4>
+            </Reveal>
           ))}
+        </div>
+        <Reveal>
+          <OnAirButton href="https://www.youtube.com/results?search_query=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" bg="#ff0000" block>
+            🔴 למעבר לערוץ ה-YouTube הרשמי והרשמה
+          </OnAirButton>
         </Reveal>
 
-        <Reveal className="bg-white rounded-3xl shadow-soft p-8 sm:p-12">
-          <Testimonials quotes={CONTENT.results.quotes} />
-        </Reveal>
+        {/* מתחם 3 — ספריית הידע */}
+        <div className="mt-20">
+          <Reveal>
+            <OnAirZoneTitle emoji="📝" title="מאמרים מקצועיים, מחקרים וכלים לקריאה" />
+          </Reveal>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              "מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה",
+              "חוסן רגשי להורים ומתבגרים בעידן הדיגיטלי",
+            ].map((title, i) => (
+              <Reveal key={title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.55)]">
+                <span className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600">מהבלוג של קטי</span>
+                <h4 className="font-heading font-bold text-[24px] leading-tight text-ink-800 flex-1">{title}</h4>
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent("קטי שגב " + title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] transition-all duration-300 hover:bg-gold-600 hover:-translate-y-0.5"
+                >
+                  לקריאת המאמר המלא
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
