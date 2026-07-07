@@ -39,25 +39,24 @@ const PAYMENT_LINKS = {
 const CONTENT = {
   nav: {
     links: [
-      { label: "הבעיה", href: "#problem" },
-      { label: "השיטה", href: "#solution" },
-      { label: "למי זה מתאים", href: "#audience" },
-      { label: "סדנאות ושירותים", href: "#workshops" },
-      { label: "תוכניות ומחירים", href: "#plans" },
-      { label: "תוצאות", href: "#results" },
+      { label: "על קטי", href: "#about" },
+      { label: "השיטה שלי", href: "#solution" },
+      { label: "תחומי התמחות", href: "#journey" },
+      { label: "סדנאות ותוכניות ליווי", href: "#plans" },
+      { label: "סיפורי הצלחה ותוצאות", href: "#results" },
     ],
-    login: "כניסה למערכת / אזור אישי",
+    login: "אזור אישי / כניסה למערכת",
     cta: "קביעת שיחה ראשונית",
   },
   hero: {
     kicker: "CureMindset · קטי שגב",
-    headline: "משנים את התת־מודע — ומשם משתנה כל החיים",
+    headline: "לפרוץ את חסמי התודעה – וליצור חוסן רגשי לכל החיים",
     subhead:
-      "שיטה רגשית־תודעתית שעוזרת לבני נוער, נשים והורים להפוך חרדה, עומס רגשי וחוסר ביטחון לחוסן פנימי ויציבות רגשית אמיתית.",
+      "מתודולוגיית אימון ו-NLP מתקדמת המעניקה לבני נוער, מבוגרים והורים את הכלים המעשיים לשחרור חרדות, בניית דימוי עצמי חזק ויציבות רגשית עמוקה.",
     points: [
-      "מבוסס עבודה עם דפוסי תת־מודע",
-      "חיזוק ויסות רגשי וחוסן נפשי",
-      "שינוי שמחזיק לאורך זמן",
+      "פריצת דרך ממוקדת על דפוסי תת-המודע לפי שיטת CureMindset",
+      "ליווי מובנה וכלים פרקטיים המותאמים אישית לנוער ולמבוגרים",
+      "יצירת עוגנים רגשיים ושינוי מיינדסט שמחזיק לאורך זמן",
     ],
     ctaPrimary: "להתחיל תהליך שינוי – קבעו שיחה ראשונית",
     ctaSecondary: "להרשמה לסדנאות הקרובות",
@@ -259,15 +258,14 @@ function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
 function Logo({ size = 48 }) {
   const [err, setErr] = useState(false);
   if (err) {
+    // סימן מותג טיפוגרפי נקי — עד שקטי מעלה קובץ לוגו ל-images/logo.png
     return (
-      <div className="flex items-center gap-2.5">
-        <span
-          className="inline-flex items-center justify-center rounded-full bg-gradient-to-br from-gold-500 to-gold-700 text-white font-heading font-bold shrink-0"
-          style={{ width: 36, height: 36, fontSize: 15 }}
-        >
-          CM
+      <div className="flex flex-col items-start leading-none select-none">
+        <span className="font-heading font-extrabold text-[22px] tracking-tight">
+          <span className="text-ink-800">Cure</span>
+          <span className="text-gold-600">Mindset</span>
         </span>
-        <span className="font-heading font-bold text-ink-800 text-lg leading-none">CureMindset</span>
+        <span className="text-[11px] font-medium tracking-[0.22em] text-ink-400 mt-1">KETY SEGEV · NLP</span>
       </div>
     );
   }
@@ -438,10 +436,10 @@ function Hero() {
           <p className="text-ink-500 text-[17px] sm:text-[19px] leading-relaxed max-w-[540px] mx-auto lg:mx-0 mb-6">
             {CONTENT.hero.subhead}
           </p>
-          <ul className="flex flex-col gap-2.5 mb-8 max-w-[480px] mx-auto lg:mx-0" aria-label="עיקרי השיטה">
+          <ul className="flex flex-col gap-3 mb-8 max-w-[540px] mx-auto lg:mx-0" aria-label="עיקרי השיטה">
             {CONTENT.hero.points.map((p, i) => (
-              <li key={i} className="flex items-center gap-2.5 justify-center lg:justify-start text-ink-700 font-medium text-[15px]">
-                <Icon name="check-circle-2" size={18} className="text-gold-600 shrink-0" />
+              <li key={i} className="flex items-start gap-3 justify-center lg:justify-start text-ink-700 font-medium text-[18px] leading-[1.6]">
+                <Icon name="check-circle-2" size={20} className="text-gold-600 shrink-0 mt-1" />
                 {p}
               </li>
             ))}
@@ -472,7 +470,7 @@ function Hero() {
         </div>
 
         <div className="order-1 lg:order-2 flex justify-center">
-          <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[460px] aspect-[4/5] rounded-[1.75rem] overflow-hidden border border-ink-100 shadow-soft bg-gradient-to-br from-gold-100 to-gold-200">
+          <div className="relative w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[460px] aspect-[4/5] rounded-[1.25rem] overflow-hidden shadow-soft bg-white p-2 ring-1 ring-ink-100">
             <picture>
               <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 320px, 460px" />
               <img
@@ -484,13 +482,135 @@ function Hero() {
                 height={1150}
                 loading="eager"
                 decoding="async"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-[1rem]"
               />
             </picture>
           </div>
         </div>
       </div>
     </header>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Journey — שלושת עמודי התווך של המסע                                */
+/* ---------------------------------------------------------------- */
+
+const JOURNEY_STAGES = [
+  {
+    num: "01",
+    icon: "shield-check",
+    img: "images/journey-1.jpg",
+    title: "ניצחון על חרדות ופחדים",
+    subtitle: "שחרור עמוק של פחדים חברתיים, לחצי מבחנים ומחסומים רגשיים.",
+    text: "בשלב הראשון של המסע אנחנו נכנסים אל תת-המודע, מזהים את שורש הפחד ומפרקים את העומס הרגשי שמנהל את היום-יום, כדי לייצר שקט תודעתי ראשוני.",
+  },
+  {
+    num: "02",
+    icon: "heart",
+    img: "images/journey-2.jpg",
+    title: "בניית דימוי עצמי מנצח",
+    subtitle: "פיתוח הערכה עצמית גבוהה ואהבה עצמית – ללא תלות בסביבה.",
+    text: "השלב השני מוקדש לחיווט מחדש של האמונות המגבילות. לומדים להפסיק לחיות עם המחשבות לבד, ומחזקים עוגנים רגשיים פנימיים שלא תלויים באישור של אף אחד מבחוץ.",
+  },
+  {
+    num: "03",
+    icon: "sparkles",
+    img: "images/journey-3.jpg",
+    title: "כלים לחיים וחוסן רגשי",
+    subtitle: "ללמוד איך להתמודד עם לחצים בעוצמה, ביטחון ושקט פנימי.",
+    text: "שלב הנעילה של המסע שמבטיח חוסן ארוך טווח. המשתמש מקבל ארגז כלים פרקטי לחיים ומשימות אקטיביות, המאפשרים לו לנהל את הרגשות שלו בעצמו ולעבור מנוקשות רגשית לגמישות וצמיחה.",
+  },
+];
+
+function JourneyCard({ stage, idx }) {
+  return (
+    <Reveal
+      style={{ transitionDelay: `${idx * 100}ms` }}
+      className="flex flex-col rounded-2xl bg-white border border-ink-100 overflow-hidden shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1"
+    >
+      {/* חלון ויז'ואל: התמונה של קטי תוצג כאן; עד אז — רקע מותג אלגנטי עם האייקון */}
+      <div className="relative aspect-[4/3] bg-gradient-to-br from-gold-100 to-gold-200 overflow-hidden">
+        <img
+          src={stage.img}
+          alt={stage.title}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover"
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+        <span className="absolute top-4 right-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/90 text-gold-600 shadow-soft">
+          <Icon name={stage.icon} size={24} />
+        </span>
+        <span className="absolute bottom-3 left-4 font-heading font-extrabold text-[44px] leading-none text-white/80 select-none" aria-hidden="true">
+          {stage.num}
+        </span>
+      </div>
+
+      <div className="flex flex-col flex-1 p-8">
+        <p className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600 mb-2">שלב {idx + 1} במסע</p>
+        <h3 className="font-heading font-bold text-[24px] leading-tight text-ink-800 mb-3">{stage.title}</h3>
+        <p className="font-heading font-semibold text-[19px] leading-snug text-gold-700 mb-4">{stage.subtitle}</p>
+        <p className="text-[18px] leading-[1.6] text-ink-600">{stage.text}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+function Journey() {
+  return (
+    <section id="journey" className="py-20 sm:py-28" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%)" }}>
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
+          <Eyebrow>המסע שלך ב-CureMindset</Eyebrow>
+          <h2 className="font-heading font-bold text-ink-800 text-[28px] sm:text-[38px] mb-4">שלושה שלבים לחוסן רגשי שמחזיק לכל החיים</h2>
+          <p className="text-ink-500 text-[18px] leading-[1.6]">זה התהליך המדויק שכל מטופל ומטופלת עוברים איתי — שלב אחרי שלב, בקצב אישי.</p>
+        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+          {JOURNEY_STAGES.map((stage, i) => (
+            <JourneyCard key={stage.num} stage={stage} idx={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* About — על קטי                                                     */
+/* ---------------------------------------------------------------- */
+
+function About() {
+  const highlights = [
+    { icon: "sparkles", title: "+500 תהליכים אישיים", text: "ליווי של מאות מתבגרים, נשים והורים בתהליכי שינוי עמוקים." },
+    { icon: "graduation-cap", title: "הכשרות NLP בינלאומיות", text: "מתודולוגיה מבוססת כלים מוכחים לעבודה עם דפוסי תת-המודע." },
+    { icon: "heart", title: "שיטה אחת — CureMindset", text: "גישה רגשית-תודעתית שפיתחתי, שעובדת עם השורש ולא עם התסמין." },
+  ];
+  return (
+    <section id="about" className="py-16 sm:py-24 bg-white">
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-12">
+          <Eyebrow>על קטי</Eyebrow>
+          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px] mb-5">נעים להכיר, אני קטי שגב</h2>
+          <p className="text-ink-500 text-[18px] leading-[1.6]">
+            מאמנת ומטפלת רגשית-תודעתית, מפתחת שיטת CureMindset. אחרי שנים של עבודה עם בני נוער, נשים והורים,
+            למדתי שהשינוי האמיתי לא קורה בשכנוע — הוא קורה כשעובדים עם התת-מודע, ברגש, בגובה העיניים.
+            זו השליחות שלי: לתת לכל אחד ואחת את הכלים לחוסן רגשי שמחזיק לכל החיים.
+          </p>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {highlights.map((h, i) => (
+            <Reveal key={h.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-6 text-center">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white text-gold-600 mb-4">
+                <Icon name={h.icon} size={24} />
+              </span>
+              <h3 className="font-heading font-bold text-[19px] text-ink-800 mb-2">{h.title}</h3>
+              <p className="text-ink-500 text-[15.5px] leading-relaxed">{h.text}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -952,9 +1072,10 @@ function Home({ onEnterApp }) {
       <Nav onEnterApp={onEnterApp} />
       <main>
         <Hero />
+        <About />
         <Problem />
         <Solution />
-        <Audience />
+        <Journey />
         <Workshops />
         <Plans />
         <Results />
