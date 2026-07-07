@@ -26,7 +26,7 @@ function waLink(text) {
 // (Grow/משולם, PayBox, ביט לעסקים או PayPal). מסלול שהקישור שלו ריק ("")
 // ימשיך לשלוח את הלקוחה לוואטסאפ לתיאום תשלום.
 const PAYMENT_LINKS = {
-  digital: "",
+  digital: "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ",
   youth: "",
   recommended: "",
   premium: "",
