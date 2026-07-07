@@ -116,7 +116,7 @@ const CONTENT = {
         icon: "smartphone",
         badge: "ניסיון חינם",
         badgeColor: "#16A34A",
-        title: "📱 מאמן אישי ומטפל רגשי בכף היד",
+        title: "מאמן אישי ומטפל רגשי בכף היד",
         price: "₪340",
         priceNote: "לחודש",
         trial: "לאחר 14 ימי ניסיון בחינם",
@@ -135,7 +135,7 @@ const CONTENT = {
         icon: "graduation-cap",
         badge: "לנוער",
         badgeColor: "#7C3AED",
-        title: "👥 סדנאות חוסן ומפגשי זום קבוצתיים",
+        title: "סדנאות חוסן ומפגשי זום קבוצתיים",
         price: "₪750",
         priceNote: "תהליך של 6 מפגשים",
         trial: null,
@@ -154,7 +154,7 @@ const CONTENT = {
         icon: "star",
         badge: "מומלצת",
         badgeColor: "#D97706",
-        title: "🎯 ליווי אישי ממוקד תוצאות",
+        title: "ליווי אישי ממוקד תוצאות",
         price: "₪1,700",
         priceNote: "תהליך מובנה של 5 מפגשים",
         trial: null,
@@ -173,7 +173,7 @@ const CONTENT = {
         icon: "award",
         badge: "פרימיום",
         badgeColor: "#B45309",
-        title: "👑 ליווי פרימיום בהתאמה אישית",
+        title: "ליווי פרימיום בהתאמה אישית",
         price: "₪3,500",
         priceNote: "תהליך פרימיום של 11 מפגשים",
         trial: null,
@@ -983,13 +983,13 @@ function OnAirButton({ href, bg, children, block }) {
   );
 }
 
-function OnAirZoneTitle({ emoji, title, subtitle }) {
+function OnAirZoneTitle({ icon, title, subtitle }) {
   return (
     <div className="text-center max-w-[720px] mx-auto mb-10">
-      <h3 className="font-heading font-bold text-ink-800 text-[24px] sm:text-[28px] mb-3">
-        <span className="ml-2">{emoji}</span>
-        {title}
-      </h3>
+      <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white border border-gold-200 text-gold-600 mb-4 shadow-softer">
+        <Icon name={icon} size={22} />
+      </span>
+      <h3 className="font-heading font-bold text-ink-800 text-[24px] sm:text-[28px] mb-3">{title}</h3>
       {subtitle && <p className="text-ink-500 text-[18px] leading-[1.6]">{subtitle}</p>}
     </div>
   );
@@ -1019,47 +1019,47 @@ function Results() {
         {/* מתחם 1 — רדיו וספוטיפיי */}
         <Reveal>
           <OnAirZoneTitle
-            emoji="🎙️"
+            icon="mic"
             title="CureMindset ברדיו ובפלטפורמות ההאזנה"
             subtitle="מנפצים חסמים, מדברים על תת-המודע ומעניקים כלים לחוסן רגשי בשידור חי"
           />
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
           <Reveal className="rounded-2xl bg-white border border-ink-100 p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
-            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full text-[28px]" style={{ background: "linear-gradient(135deg,#F3E4C5,#C2974A)" }} aria-hidden="true">
-              🎙️
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gold-50 border border-gold-200 text-gold-600">
+              <Icon name="mic" size={26} />
             </span>
             <h4 className="font-heading font-bold text-[24px] text-ink-800">תוכנית הרדיו של קטי שגב</h4>
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               הצטרפו אליי לתוכניות עומק מרתקות שבהן אנו מפרקים חסמים פנימיים, לומדים לנהל מתחים ומחווטים מחדש את המיינדסט לחוסן רגשי.
             </p>
             <OnAirButton href="https://www.google.com/search?q=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+%D7%A8%D7%93%D7%99%D7%95" bg="#c5a880">
-              📻 להאזנה לתוכניות המלאות בארכיון הרדיו
+              להאזנה לתוכניות המלאות בארכיון הרדיו
             </OnAirButton>
           </Reveal>
 
-          <Reveal style={{ transitionDelay: "80ms" }} className="rounded-2xl bg-white border border-ink-100 p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(29,185,84,0.35)]">
-            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full text-[28px]" style={{ background: "rgba(29,185,84,.15)" }} aria-hidden="true">
-              🎧
+          <Reveal style={{ transitionDelay: "80ms" }} className="rounded-2xl bg-white border border-ink-100 p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gold-50 border border-gold-200 text-gold-600">
+              <Icon name="headphones" size={26} />
             </span>
             <h4 className="font-heading font-bold text-[24px] text-ink-800">הפודקאסט והחומרים בספוטיפיי</h4>
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               פרקי פודקאסט ממוקדים, תרגילי ויסות רגשי מהירים ועגינה תודעתית שתוכלו לקחת איתכם לכל מקום ובכל זמן.
             </p>
             <OnAirButton href="https://open.spotify.com/search/%D7%A7%D7%98%D7%99%20%D7%A9%D7%92%D7%91" bg="#1DB954">
-              🎧 לפתוח את CureMindset ב-Spotify
+              לפתוח את CureMindset ב-Spotify
             </OnAirButton>
           </Reveal>
         </div>
 
         {/* מתחם 2 — יוטיוב */}
         <Reveal>
-          <OnAirZoneTitle emoji="🎥" title="לראות את השינוי בעיניים – ערוץ היוטיוב של קטי שגב" />
+          <OnAirZoneTitle icon="play" title="לראות את השינוי בעיניים – ערוץ היוטיוב של קטי שגב" />
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { title: "🛡️ עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" },
-            { title: "🎯 טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+NLP" },
+            { title: "עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" },
+            { title: "טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", query: "%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91+NLP" },
           ].map((v, i) => (
             <Reveal key={v.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl overflow-hidden bg-white border border-ink-100 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
               <iframe
@@ -1078,19 +1078,19 @@ function Results() {
         </div>
         <Reveal>
           <OnAirButton href="https://www.youtube.com/results?search_query=%D7%A7%D7%98%D7%99+%D7%A9%D7%92%D7%91" bg="#ff0000" block>
-            🔴 למעבר לערוץ ה-YouTube והרשמה
+            למעבר לערוץ ה-YouTube והרשמה
           </OnAirButton>
         </Reveal>
 
         {/* מתחם 3 — ספריית הידע */}
         <div className="mt-20">
           <Reveal>
-            <OnAirZoneTitle emoji="✨" title="מאמרים מקצועיים, כלים תודעתיים ופרקטיקה" />
+            <OnAirZoneTitle icon="book-open" title="מאמרים מקצועיים, כלים תודעתיים ופרקטיקה" />
           </Reveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              "🧠 מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה",
-              "🏡 חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי",
+              "מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה",
+              "חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי",
             ].map((title, i) => (
               <Reveal key={title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-gold-50 border border-gold-200 p-8 flex flex-col gap-5 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.55)]">
                 <span className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600">מהבלוג של קטי</span>
