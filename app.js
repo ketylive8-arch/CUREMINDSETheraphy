@@ -40,7 +40,7 @@ const PAYMENT_LINKS = {
 const MEDIA_LINKS = {
   linktree: "",        // ← הכניסי כאן את קישור ה-Linktree שלך (KETY SEGEV ON LINKTREE)
   radio: "",           // ← קישור ישיר לארכיון תוכניות הרדיו שלך
-  spotify: "",         // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
+  spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",  // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
   youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך
   video1: "",          // ← קישור לסרטון יוטיוב 1 (עומס רגשי אצל בני נוער)
   video2: "",          // ← קישור לסרטון יוטיוב 2 (טכניקות NLP לחרדה חברתית)
@@ -67,6 +67,13 @@ function youtubeEmbed(url) {
   if (!url) return "";
   const m = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{6,})/);
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+}
+
+// ממיר קישור פרק/פלייליסט/פרופיל ספוטיפיי לכתובת embed לנגן המוטמע
+function spotifyEmbed(url) {
+  if (!url) return "";
+  const m = url.match(/open\.spotify\.com\/(episode|show|playlist|track|album)\/([\w]+)/);
+  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}` : "";
 }
 
 /* ---------------------------------------------------------------- */
@@ -1148,8 +1155,20 @@ function Results() {
             </span>
             <h4 className="font-heading font-bold text-[24px] text-ink-800">הפודקאסט והחומרים בספוטיפיי</h4>
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
-              פרקי פודקאסט ממוקדים, תרגילי ויסות רגשי מהירים ועגינה תודעתית שתוכלו לקחת איתכם לכל מקום ובכל זמן.
+              פרקי פודקאסט ממוקדים על התמודדות עם חרדה, תרגילי ויסות רגשי מהירים ועגינה תודעתית שתוכלו לקחת איתכם לכל מקום ובכל זמן.
             </p>
+            {spotifyEmbed(MEDIA_LINKS.spotify) && (
+              <iframe
+                src={spotifyEmbed(MEDIA_LINKS.spotify)}
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                title="פרק פודקאסט של קטי שגב"
+                style={{ borderRadius: "12px" }}
+              ></iframe>
+            )}
             <OnAirButton href={mediaHref(MEDIA_LINKS.spotify, "היי קטי! אשמח לקישור לפודקאסט שלך בספוטיפיי")} bg="#1DB954">
               לפתוח את CureMindset ב-Spotify
             </OnAirButton>
