@@ -869,6 +869,41 @@
     );
   }
 
+  // פתיח קצר וממוקד על גמישות מוחית — נפתח כשנכנסים לצ'אט ה-AI, טקסט נקי בלי אימוג'ים.
+  function NeuroplasticityIntro() {
+    const [open, setOpen] = useState(false);
+    return (
+      <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-400/25 bg-white/[0.04] backdrop-blur-xl overflow-hidden">
+        <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-right">
+          <span className="flex items-center gap-2">
+            <Icon name="sparkles" size={14} className="text-gold-400 shrink-0" />
+            <span className="font-heading font-semibold text-[14px] text-white">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
+          </span>
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={16} className="text-white/50 shrink-0" />
+        </button>
+        {open && (
+          <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-white/70 space-y-3" dir="rtl">
+            <p>
+              המוח שלנו הוא איבר דינמי שמשתנה כל הזמן בתגובה לחוויות וללמידה. גמישות מוחית (Neuroplasticity) היא
+              היכולת של המוח ליצור קשרים חדשים בין תאי עצב, לחזק קשרים קיימים ולשנות את מבנהו ותפקודו לאורך החיים.
+            </p>
+            <div>
+              <p className="font-semibold text-white/90 mb-1">איך זה קורה?</p>
+              <p>כשאנחנו לומדים או חווים דברים חדשים, נוצרים קשרים חדשים בין תאי עצב. ככל שחוזרים על פעולה או מחשבה מסוימת, הקשרים מתחזקים — וכך המוח לומד, זוכר ומסתגל.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-white/90 mb-1">מה משפיע על הגמישות המוחית?</p>
+              <p>גיל (גבוהה יותר בגיל צעיר אך נמשכת גם בבגרות), סביבה עשירה בגירויים ותמיכה חברתית, פעילות גופנית סדירה, ותזונה מאוזנת.</p>
+            </div>
+            <p className="text-white/60">
+              בדיוק על העיקרון הזה בנויה שיטת CureMindset: כשמלמדים את המוח דפוסים חדשים, בעדינות ובעקביות — השינוי מחזיק. עכשיו, ספרי לי מה עובר עלייך.
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   function CheckInStage({ onDashboardUpdate, onNavigateStage }) {
     const [text, setText] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | done | error
@@ -925,6 +960,7 @@
                   ספרי לי איך עבר עלייך היום ומה שלומך עכשיו?
                 </p>
               </header>
+              <NeuroplasticityIntro />
               <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
               {status === "error" ? (
                 <div className="cm-fade-in-soft mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center">

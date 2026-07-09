@@ -305,7 +305,7 @@ function Logo({ size = 48 }) {
   }
   return (
     <img
-      src="/images/logo.png"
+      src="images/logo.png"
       alt="CureMindset — By Kety Segev"
       style={{ height: size, width: "auto", objectFit: "contain" }}
       onError={() => setErr(true)}
@@ -642,13 +642,19 @@ function About() {
             <Eyebrow>על קטי</Eyebrow>
             <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px] mb-5">נעים להכיר, אני קטי שגב</h2>
             <p className="text-ink-500 text-[18px] leading-[1.6] mb-5">
-              מאמנת ומטפלת רגשית-תודעתית, מפתחת שיטת CureMindset. אחרי שנים של עבודה עם בני נוער, נשים והורים,
-              למדתי שהשינוי האמיתי לא קורה בשכנוע — הוא קורה כשעובדים עם התת-מודע, ברגש, בגובה העיניים.
+              מאמנת ומטפלת רגשית-תודעתית ומפתחת שיטת CureMindset — גישה המשלבת עבודה עם התת-מודע, כלי NLP
+              ועקרונות הגמישות המוחית (Neuroplasticity). אני מלווה בני נוער, נשים והורים בדרך מחרדה, עומס
+              רגשי וחוסר ביטחון — אל חוסן פנימי, דימוי עצמי חזק ויציבות רגשית אמיתית.
+            </p>
+            <p className="text-ink-500 text-[18px] leading-[1.6] mb-5">
+              <span className="font-semibold text-ink-700">המסע האישי שלי</span> התחיל בדיוק במקום שבו רבים
+              מהמטופלים שלי נמצאים היום — מול חסמים פנימיים שנראו גדולים ממני. הדרך שעברתי, ההכשרות שרכשתי
+              והמאות שליוויתי הפכו לשיטה אחת ברורה ומעשית.
             </p>
             <p className="text-ink-500 text-[18px] leading-[1.6]">
-              <span className="font-semibold text-ink-700">המסע האישי שלי</span> התחיל בדיוק במקום שבו רבים מהמטופלים שלי
-              נמצאים היום — מול חסמים פנימיים שנראו גדולים ממני. הדרך שעברתי, ההכשרות שרכשתי והמאות שליוויתי
-              הפכו לשיטה אחת ברורה. זו השליחות שלי: לתת לכל אחד ואחת את הכלים לחוסן רגשי שמחזיק לכל החיים.
+              האמונה שמנחה אותי פשוטה: <span className="font-semibold text-ink-700">המוח שלנו יכול להשתנות בכל
+              גיל.</span> כשמלמדים אותו דפוסים חדשים, בעדינות ובעקביות — השינוי מחזיק. זו השליחות שלי: לתת לכל
+              אחד ואחת את הכלים לחוסן רגשי שנשאר לכל החיים.
             </p>
           </Reveal>
         </div>
@@ -1304,7 +1310,14 @@ function Footer() {
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 border-b border-white/10">
           <div>
-            <Logo size={34} />
+            <div className="inline-flex bg-white rounded-2xl p-4 shadow-soft">
+              <img
+                src="images/logo.png"
+                alt="CureMindset — By Kety Segev"
+                style={{ height: 72, width: "auto", objectFit: "contain" }}
+                onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
+              />
+            </div>
             <p className="text-ink-300 text-[14px] leading-relaxed mt-4 max-w-[280px]">{CONTENT.footer.tagline}</p>
           </div>
           <div>
