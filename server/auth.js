@@ -74,4 +74,4 @@ function loginAccount({ email, password }) {
   return { accountId: row.id, token: createSession(row.id), fullName: row.full_name, email: normEmail };
 }
 
-module.exports = { registerAccount, loginAccount, destroySession, accountIdFromToken };
+module.exports = { registerAccount, loginAccount, destroySession, accountIdFromToken, hashPassword };

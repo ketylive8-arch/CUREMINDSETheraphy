@@ -538,6 +538,17 @@ admin.delete("/materials/:id", (req, res) => {
 app.use("/api/admin", admin);
 app.use("/api", api);
 
+// זריעת משתמשת בדיקה (יעל) — רק כשמוגדר SEED_DEMO_USER=1 ב-Environment.
+if (process.env.SEED_DEMO_USER === "1") {
+  try {
+    const { seedDemoUser } = require("./seed");
+    const r = seedDemoUser();
+    console.log(r.already ? `Demo user already exists: ${r.email}` : `Seeded demo user: ${r.email} / ${r.password}`);
+  } catch (e) {
+    console.error("demo seed failed:", e.message);
+  }
+}
+
 app.listen(PORT, () => {
   console.log(`CureMindset server listening on http://localhost:${PORT}`);
 });
