@@ -72,6 +72,28 @@
   }
 
   const AGE_GROUP_KEY = "cm_age_group_set";
+  const AUTH_TOKEN_KEY = "cm_auth_token";
+  const AUTH_NAME_KEY = "cm_auth_name";
+
+  function getAuthToken() {
+    try { return localStorage.getItem(AUTH_TOKEN_KEY) || ""; } catch (e) { return ""; }
+  }
+  function setAuth(token, name) {
+    try {
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
+      if (name) localStorage.setItem(AUTH_NAME_KEY, name);
+    } catch (e) {}
+  }
+  function clearAuth() {
+    try { localStorage.removeItem(AUTH_TOKEN_KEY); localStorage.removeItem(AUTH_NAME_KEY); } catch (e) {}
+  }
+  // כותרות לכל קריאה לשרת: מזהה מכשיר + אסימון התחברות (אם מחוברים).
+  function authHeaders(extra) {
+    const h = Object.assign({ "X-Device-Token": getDeviceToken() }, extra || {});
+    const t = getAuthToken();
+    if (t) h["X-Auth-Token"] = t;
+    return h;
+  }
 
   /* ---------------------------------------------------------------- */
   /* Age group onboarding                                              */
@@ -86,7 +108,7 @@
       setSaving(true);
       fetch("/api/profile", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+        headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ ageGroup: selected }),
       })
         .catch(() => {})
@@ -159,7 +181,7 @@
       setStatus("loading");
       fetch("/api/access/redeem", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+        headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ code: trimmed }),
       })
         .then(async (r) => {
@@ -250,7 +272,7 @@
     const [data, setData] = useState(null);
 
     useEffect(() => {
-      fetch("/api/journey-summary", { headers: { "X-Device-Token": getDeviceToken() } })
+      fetch("/api/journey-summary", { headers: authHeaders() })
         .then((r) => (r.ok ? r.json() : null))
         .then(setData)
         .catch(() => {});
@@ -862,7 +884,7 @@
       try {
         const res = await fetch("/api/checkin", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Device-Token": getDeviceToken() },
+          headers: authHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({ text: trimmed }),
         });
         if (!res.ok) throw new Error("request failed");
@@ -991,7 +1013,7 @@
     const [error, setError] = useState(false);
 
     useEffect(() => {
-      fetch("/api/materials", { headers: { "X-Device-Token": getDeviceToken() } })
+      fetch("/api/materials", { headers: authHeaders() })
         .then((res) => (res.ok ? res.json() : Promise.reject()))
         .then((data) => setMaterials(Array.isArray(data) ? data : []))
         .catch(() => setError(true));
@@ -1051,7 +1073,7 @@
     const [completing, setCompleting] = useState(null);
 
     useEffect(() => {
-      fetch("/api/tasks", { headers: { "X-Device-Token": getDeviceToken() } })
+      fetch("/api/tasks", { headers: authHeaders() })
         .then((r) => r.json())
         .then((data) => setTasks(Array.isArray(data) ? data : []))
         .catch(() => setTasks([]));
@@ -1059,7 +1081,7 @@
 
     function completeTask(id) {
       setCompleting(id);
-      fetch(`/api/tasks/${id}/complete`, { method: "POST", headers: { "X-Device-Token": getDeviceToken() } })
+      fetch(`/api/tasks/${id}/complete`, { method: "POST", headers: authHeaders() })
         .then(() => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: 1 } : t))))
         .finally(() => setCompleting(null));
     }
@@ -1148,7 +1170,7 @@
 
     useEffect(() => {
       function loadUnread() {
-        fetch("/api/notifications", { headers: { "X-Device-Token": getDeviceToken() } })
+        fetch("/api/notifications", { headers: authHeaders() })
           .then((r) => r.ok ? r.json() : [])
           .then((rows) => setUnread(rows.filter((n) => !n.read).length))
           .catch(() => {});
@@ -1234,19 +1256,19 @@
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      fetch("/api/notifications", { headers: { "X-Device-Token": getDeviceToken() } })
+      fetch("/api/notifications", { headers: authHeaders() })
         .then((r) => r.ok ? r.json() : [])
         .then((rows) => { setNotifications(rows); setLoading(false); })
         .catch(() => setLoading(false));
     }, []);
 
     function markAllRead() {
-      fetch("/api/notifications/read-all", { method: "POST", headers: { "X-Device-Token": getDeviceToken() } });
+      fetch("/api/notifications/read-all", { method: "POST", headers: authHeaders() });
       setNotifications((prev) => prev.map((n) => ({ ...n, read: 1 })));
     }
 
     function markRead(id) {
-      fetch(`/api/notifications/${id}/read`, { method: "POST", headers: { "X-Device-Token": getDeviceToken() } });
+      fetch(`/api/notifications/${id}/read`, { method: "POST", headers: authHeaders() });
       setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: 1 } : n));
     }
 
@@ -1292,7 +1314,91 @@
   /* Root                                                               */
   /* ---------------------------------------------------------------- */
 
+  /* ---------------------------------------------------------------- */
+  /* Auth gate — הרשמה והתחברות עם מייל וסיסמה                          */
+  /* ---------------------------------------------------------------- */
+
+  function AuthGate({ onAuthed, onExit }) {
+    const [mode, setMode] = useState("register"); // register | login
+    const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+    const [status, setStatus] = useState("idle"); // idle | loading | error
+    const [errorMsg, setErrorMsg] = useState("");
+
+    function update(field, value) {
+      setForm((f) => ({ ...f, [field]: value }));
+      if (status === "error") setStatus("idle");
+    }
+
+    function submit(e) {
+      e.preventDefault();
+      if (status === "loading") return;
+      setStatus("loading");
+      const url = mode === "register" ? "/api/auth/register" : "/api/auth/login";
+      const body = mode === "register" ? form : { email: form.email, password: form.password };
+      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(async (r) => {
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
+          setAuth(data.token, data.fullName);
+          onAuthed();
+        })
+        .catch((err) => { setStatus("error"); setErrorMsg(err.message); });
+    }
+
+    const inputCls =
+      "w-full rounded-2xl border-2 border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
+
+    return (
+      <div className="absolute inset-0 z-50 bg-white flex flex-col justify-center px-7 overflow-y-auto py-8" dir="rtl">
+        <div className="w-full max-w-[380px] mx-auto">
+          <div className="text-center mb-6">
+            <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-3">
+              <Icon name="heart-handshake" size={26} className="text-gold-600" />
+            </div>
+            <p className="font-heading font-extrabold text-[20px] text-ink-800">
+              {mode === "register" ? "הרשמה לאזור האישי" : "כניסה לאזור האישי"}
+            </p>
+            <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
+              {mode === "register"
+                ? "פותחים חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
+                : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
+            </p>
+          </div>
+
+          <form onSubmit={submit} className="flex flex-col gap-3">
+            {mode === "register" && (
+              <input type="text" required value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className={inputCls} />
+            )}
+            <input type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
+            <input type="password" required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
+            {status === "error" && <p className="text-[13.5px] text-red-500 font-medium text-center">{errorMsg}</p>}
+            <button type="submit" disabled={status === "loading"} className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors disabled:opacity-50 mt-1">
+              {status === "loading" ? "רק רגע..." : mode === "register" ? "יוצרים חשבון ומתחילים" : "כניסה"}
+            </button>
+          </form>
+
+          <p className="text-center text-[13.5px] text-ink-500 mt-5">
+            {mode === "register" ? "כבר יש לך חשבון?" : "עדיין אין לך חשבון?"}{" "}
+            <button type="button" onClick={() => { setMode(mode === "register" ? "login" : "register"); setStatus("idle"); }} className="font-bold text-gold-700 underline">
+              {mode === "register" ? "להתחברות" : "להרשמה"}
+            </button>
+          </p>
+
+          <p className="text-center text-[11.5px] text-ink-400 mt-6 leading-relaxed flex items-center justify-center gap-1.5">
+            <Icon name="shield-check" size={13} className="text-gold-500" />
+            הפרטים שלך מאובטחים ומוצפנים. רק את רואה את השיחות שלך.
+          </p>
+
+          <button type="button" onClick={onExit} className="block mx-auto mt-5 text-[13px] text-ink-400 underline">
+            חזרה לאתר
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   function MemberArea({ onExit }) {
+    const [loggedIn, setLoggedIn] = useState(() => !!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
     const [current, setCurrent] = useState(() => loadProgress().unlocked);
     const [serverDashboard, setServerDashboard] = useState(null);
@@ -1311,18 +1417,27 @@
     }, []);
 
     useEffect(() => {
-      fetch("/api/access", { headers: { "X-Device-Token": getDeviceToken() } })
+      if (!loggedIn) return;
+      fetch("/api/access", { headers: authHeaders() })
         .then((res) => (res.ok ? res.json() : { status: "trial", daysLeft: 14 }))
         .then(setAccess)
         .catch(() => setAccess({ status: "trial", daysLeft: 14 }));
-    }, []);
+    }, [loggedIn]);
 
     useEffect(() => {
-      fetch("/api/dashboard", { headers: { "X-Device-Token": getDeviceToken() } })
+      if (!loggedIn) return;
+      fetch("/api/dashboard", { headers: authHeaders() })
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => data && setServerDashboard(data))
         .catch(() => {});
-    }, []);
+    }, [loggedIn]);
+
+    function logout() {
+      fetch("/api/auth/logout", { method: "POST", headers: authHeaders() }).catch(() => {});
+      clearAuth();
+      setLoggedIn(false);
+      onExit();
+    }
 
     function unlock(stageId, nextUnlocked) {
       setProgress((prev) => {
@@ -1343,9 +1458,18 @@
 
     const expired = access && access.status === "expired";
 
+    // שער כניסה: בלי חשבון מחובר — אין גישה לאזור האישי.
+    if (!loggedIn) {
+      return (
+        <PhoneFrame>
+          <AuthGate onAuthed={() => setLoggedIn(true)} onExit={onExit} />
+        </PhoneFrame>
+      );
+    }
+
     return (
       <PhoneFrame>
-        <Header subtitle={stage ? stage.subtitle : ""} onExit={onExit} onNotifications={() => setShowNotifications(true)} />
+        <Header subtitle={stage ? stage.subtitle : ""} onExit={logout} onNotifications={() => setShowNotifications(true)} />
         {access && access.status === "trial" && (
           <TrialBanner daysLeft={access.daysLeft} onEnterCode={() => setShowCodeEntry(true)} />
         )}

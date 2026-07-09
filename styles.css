@@ -100,3 +100,7 @@
 @media (min-width: 640px) {
   .sm\:p-10 { padding: 2.5rem; }
 }
+
+/* ── Auth gate ── */
+.max-w-\[380px\] { max-width: 380px; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }

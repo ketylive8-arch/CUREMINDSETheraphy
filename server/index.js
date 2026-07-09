@@ -11,6 +11,7 @@ const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
+const { registerAccount, loginAccount, destroySession } = require("./auth");
 
 const app = express();
 const PORT = process.env.PORT || 8731;
@@ -61,6 +62,26 @@ function rateLimit(name, maxPerHour) {
 
 // ── נתיבים ציבוריים (בלי מזהה מכשיר): הרשמה לסדנאות + מאמרים מ-RSS ──
 // רשומים לפני ה-router של /api כדי שלא יידרשו ל-X-Device-Token.
+
+// ── אימות: הרשמה / התחברות / התנתקות (ציבורי, בלי מזהה מכשיר) ──
+app.post("/api/auth/register", rateLimit("register", 15), (req, res) => {
+  const { email, password, fullName, phone } = req.body || {};
+  const result = registerAccount({ email, password, fullName, phone });
+  if (result.error) return res.status(result.status).json({ error: result.error });
+  res.status(201).json({ token: result.token, fullName: result.fullName, email: result.email });
+});
+
+app.post("/api/auth/login", rateLimit("login", 20), (req, res) => {
+  const { email, password } = req.body || {};
+  const result = loginAccount({ email, password });
+  if (result.error) return res.status(result.status).json({ error: result.error });
+  res.json({ token: result.token, fullName: result.fullName, email: result.email });
+});
+
+app.post("/api/auth/logout", (req, res) => {
+  destroySession(req.header("X-Auth-Token"));
+  res.json({ ok: true });
+});
 
 app.post("/api/workshop-signup", (req, res) => {
   const { fullName, phone, email, workshop } = req.body || {};
