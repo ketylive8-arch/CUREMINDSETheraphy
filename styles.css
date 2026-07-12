@@ -104,3 +104,8 @@
 /* ── Auth gate ── */
 .max-w-\[380px\] { max-width: 380px; }
 .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+/* ── Legal consent box in auth gate ── */
+.h-28 { height: 7rem; }
+.space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
+.accent-gold-600 { accent-color: #C2974A; }

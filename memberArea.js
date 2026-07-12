@@ -1359,6 +1359,7 @@
     const [form, setForm] = useState({ fullName: "", email: "", password: "" });
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
+    const [agreed, setAgreed] = useState(false); // הסכמה לתנאים (חובה בהרשמה)
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
@@ -1407,8 +1408,31 @@
             )}
             <input type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
             <input type="password" required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
+
+            {/* הסכמה משפטית — הצהרת AI, אי-ייעוץ רפואי ותנאי שימוש (חובה בהרשמה) */}
+            {mode === "register" && (
+              <div className="mt-1">
+                <p className="text-[12px] font-semibold text-ink-700 mb-1.5">תנאי שימוש, הצהרת AI ואי-ייעוץ רפואי:</p>
+                <div className="h-28 overflow-y-auto rounded-xl border border-ink-200 bg-ink-50 p-3 text-[11.5px] leading-relaxed text-ink-600 space-y-2">
+                  <p><span className="font-bold text-ink-700">1. מהות השירות ואינטראקציית AI:</span> מערכת זו מופעלת באמצעות בינה מלאכותית (AI) על בסיס מודל התוכן המקצועי של קטי שגב. המערכת פועלת אוטומטית ועלולה להציג מידע לא מדויק.</p>
+                  <p><span className="font-bold text-ink-700">2. אי-חלופה לייעוץ רפואי:</span> התכנים והתרגילים אינם מהווים ייעוץ רפואי, אבחנה או טיפול נפשי/פסיכיאטרי, ואינם מחליפים התייעצות עם רופא או מטפל מוסמך. השימוש באחריות המשתמש/ת בלבד. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.</p>
+                  <p><span className="font-bold text-ink-700">3. פרטיות:</span> נתוני הרישום נשמרים בבסיס נתונים מאובטח, ותוכן השיחה מעובד באופן מאובטח לצורך מתן המענה בלבד.</p>
+                </div>
+                <label className="flex items-start gap-2 mt-2.5 cursor-pointer">
+                  <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 shrink-0 accent-gold-600" />
+                  <span className="text-[12px] font-semibold text-ink-700 leading-snug">
+                    קראתי, הבנתי ואני מסכימ/ה לתנאי השימוש ולהצהרת ה-AI (השירות אינו מחליף ייעוץ רפואי).
+                  </span>
+                </label>
+              </div>
+            )}
+
             {status === "error" && <p className="text-[13.5px] text-red-500 font-medium text-center">{errorMsg}</p>}
-            <button type="submit" disabled={status === "loading"} className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors disabled:opacity-50 mt-1">
+            <button
+              type="submit"
+              disabled={status === "loading" || (mode === "register" && !agreed)}
+              className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors disabled:opacity-40 mt-1"
+            >
               {status === "loading" ? "רק רגע..." : mode === "register" ? "יוצרים חשבון ומתחילים" : "כניסה"}
             </button>
           </form>
