@@ -109,3 +109,14 @@
 .h-28 { height: 7rem; }
 .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
 .accent-gold-600 { accent-color: #C2974A; }
+
+/* ── Vision section utilities ── */
+.w-13 { width: 3.25rem; }
+.h-13 { height: 3.25rem; }
+.text-\[40px\] { font-size: 40px; }
+.text-\[64px\] { font-size: 64px; }
+.leading-\[1\.7\] { line-height: 1.7; }
+.min-w-\[640px\] { min-width: 640px; }
+.grid-cols-\[auto_1\.3fr_1\.3fr\] { grid-template-columns: auto 1.3fr 1.3fr; }
+.bg-gold-50\/50 { background-color: rgb(250 245 235 / 0.5); }
+.-mx-5 { margin-left: -1.25rem; margin-right: -1.25rem; }

@@ -84,7 +84,7 @@ const CONTENT = {
   nav: {
     links: [
       { label: "על קטי", href: "#about" },
-      { label: "השיטה שלי", href: "#solution" },
+      { label: "החזון והשיטה", href: "#vision" },
       { label: "תחומי התמחות", href: "#journey" },
       { label: "סדנאות ותוכניות ליווי", href: "#plans" },
       { label: "סיפורי הצלחה ותוצאות", href: "#results" },
@@ -670,6 +670,113 @@ function About() {
             </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Vision — חזון ושיטת CURE MINDSET                                   */
+/* ---------------------------------------------------------------- */
+
+const VISION_PILLARS = [
+  {
+    icon: "brain",
+    title: "חיבור ישיר למשאבי הליבה בתת-המודע",
+    text: "כל האנרגיה, היצירתיות והחוסן שאת זקוקה להם כבר קיימים בתוכך. בעבודה מעמיקה ברמת תת-המודע ועל קו הזמן האישי, אנו מציפים את חוזקות האופי והניסיון שצברת — והופכים אותם למנוע צמיחה עוצמתי ושקט.",
+  },
+  {
+    icon: "compass",
+    title: "מנהיגות עצמית מתוך בחירה חופשית",
+    text: "כשהפעולה מונעת מערכים מדויקים וחזון ברור, העשייה הופכת לטבעית, קולחת ומלאת השראה. השיטה מעבירה אותך לפעולה מתוך תשוקה, הגשמה וסדר עדיפויות פנימי — להוביל את חייך בביטחון מלא ובנחישות רכה.",
+  },
+  {
+    icon: "shield-check",
+    title: "עיגון סומטי של נוכחות, רוגע וחוסן",
+    text: "חוסן מנטלי נמדד ביכולת להישאר יציב ורגוע גם בלב סערה. בטכניקות עומק סומטיות ועוגנים תחושתיים (VAKOG) אנו מטמיעים במערכת הנוירולוגית גישה מיידית למצבי משאב גבוהים — בהירות מוחלטת ושקט פנימי בזמן אמת.",
+  },
+];
+
+const VISION_JOURNEY = [
+  { step: "01", stage: "כיול המצפן האישי", focus: "זיקוק מטרות מדויקות, חיוביות ומעוררות השראה בעלות חיבור רגשי עמוק.", result: "סנכרון מלא של תת-המודע לעבר השגת המטרות בבהירות ובמיקוד." },
+  { step: "02", stage: "יציבות דינמית ואינטגרציה", focus: "איחוד החלקים הפנימיים ליצירת סנכרון בין חופש, יצירתיות ומבנה יציב.", result: "זרימה מלאה בעשייה, הרמוניה פנימית ופתיחת אפשרויות חדשות." },
+  { step: "03", stage: "שחרור פוטנציאל לאורך קו הזמן", focus: "הענקת משאבים ולמידות חיוביות לזיכרון הקיים, וחיזוק הערך העצמי.", result: "תחושת ערך עצמי מוחלטת, חופש פעולה ורוגע פנימי עמוק." },
+  { step: "04", stage: "התקנת עוגני עוצמה ונסיקה", focus: "חיווט נוירולוגי של מצבי משאב גבוהים ותרגומם לצעדי איכות ביום-יום.", result: "מנהיגות עצמית, חוסן רגשי גבוה ויכולת מימוש גבוהה." },
+];
+
+function Vision() {
+  return (
+    <section id="vision" className="py-20 sm:py-28 overflow-hidden" style={{ background: "linear-gradient(180deg, #FFF8F0 0%, #FDFBF7 100%)" }}>
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[760px] mx-auto mb-6">
+          <Eyebrow>החזון והשיטה</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[40px] leading-tight mb-3">
+            CURE MINDSET — החופש להוביל.<br className="hidden sm:block" /> העוצמה להגשים.
+          </h2>
+        </Reveal>
+        <Reveal className="max-w-[820px] mx-auto text-center mb-14">
+          <p className="text-ink-600 text-[18px] leading-[1.7]">
+            מאחורי כל פריצת דרך משמעותית עומדת תודעה שפתחה את השער לעוצמה הפנימית שלה. שיטת CURE MINDSET, שפותחה
+            על ידי קטי שגב, נולדה מגישה אינטגרטיבית פורצת דרך המשלבת כלי NLP מתקדמים, דינמיקה סומטית ואימון מנטלי
+            ממוקד תוצאה. השיטה פועלת ישירות ברמת תת-המודע ומערכת העצבים — המקום שבו נוצרות ההחלטות הגדולות, נבנה
+            החוסן ונחרת הביטחון העצמי האמיתי. אנחנו לא מסתפקים בשינוי קוגניטיבי שטחי — אנו מחווטים מחדש את מערכת
+            ההפעלה האישית ליצירת חיבור מלא למשאבים, לתשוקה ולסמכות הפנימית.
+          </p>
+        </Reveal>
+
+        {/* אבני ליבה */}
+        <Reveal className="text-center mb-8">
+          <h3 className="font-heading font-bold text-ink-800 text-[22px] sm:text-[26px]">אבני הליבה של חזון השיטה</h3>
+        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20">
+          {VISION_PILLARS.map((p, i) => (
+            <Reveal key={p.title} style={{ transitionDelay: `${i * 90}ms` }} className="rounded-2xl bg-white border border-gold-200 p-7 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-transform">
+              <span className="inline-flex items-center justify-center w-13 h-13 rounded-xl bg-gold-50 text-gold-600 mb-5">
+                <Icon name={p.icon} size={24} />
+              </span>
+              <h4 className="font-heading font-bold text-[19px] text-ink-800 mb-3 leading-snug">{p.title}</h4>
+              <p className="text-ink-600 text-[16px] leading-[1.7]">{p.text}</p>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* המסע התהליכי — טבלה מעוצבת, נגללת בנייד */}
+        <Reveal className="text-center mb-8">
+          <h3 className="font-heading font-bold text-ink-800 text-[22px] sm:text-[26px]">המסע התהליכי: מבהירות להגשמה מלאה</h3>
+        </Reveal>
+        <Reveal className="overflow-x-auto mb-20 max-w-full">
+          <div className="min-w-[640px] rounded-2xl overflow-hidden border border-gold-200 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+            <div className="grid grid-cols-[auto_1.3fr_1.3fr] bg-ink-800 text-white text-[14px] font-heading font-bold">
+              <div className="px-5 py-4">שלב</div>
+              <div className="px-5 py-4">מיקוד מעצים</div>
+              <div className="px-5 py-4">התוצאה בשטח</div>
+            </div>
+            {VISION_JOURNEY.map((r, i) => (
+              <div key={r.step} className={`grid grid-cols-[auto_1.3fr_1.3fr] text-[15px] ${i % 2 ? "bg-gold-50/50" : "bg-white"}`}>
+                <div className="px-5 py-4 font-heading font-extrabold text-gold-600 text-[20px] flex items-start gap-2">
+                  <span>{r.step}</span>
+                </div>
+                <div className="px-5 py-4 text-ink-700">
+                  <span className="font-semibold text-ink-800 block mb-1">{r.stage}</span>
+                  {r.focus}
+                </div>
+                <div className="px-5 py-4 text-ink-600">{r.result}</div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        {/* כרטיס ציטוט מרכזי */}
+        <Reveal className="max-w-[860px] mx-auto">
+          <div className="relative rounded-3xl bg-ink-800 px-8 py-12 sm:px-14 text-center overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(194,151,74,.18), transparent 70%)" }} aria-hidden="true" />
+            <span className="relative font-heading text-gold-400 text-[64px] leading-none block mb-2" aria-hidden="true">”</span>
+            <p className="relative font-heading font-bold text-white text-[20px] sm:text-[26px] leading-[1.6] mb-5">
+              המפתח לעוצמה אמיתית אינו טמון במאמץ חיצוני, אלא ביכולת להתחבר למשאבים העמוקים של תת-המודע ולהוביל את חייך מתוך סמכות, שקט והגשמה מלאה.
+            </p>
+            <p className="relative text-gold-300 text-[15px] font-heading font-semibold tracking-wide">— קטי שגב, מפתחת שיטת CURE MINDSET</p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -1387,6 +1494,7 @@ function Home({ onEnterApp }) {
       <main>
         <Hero />
         <About />
+        <Vision />
         <Problem />
         <Solution />
         <Journey />
