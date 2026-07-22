@@ -1,8 +1,11 @@
 const path = require("node:path");
-const { DatabaseSync } = require("node:sqlite");
+// better-sqlite3: standard, synchronous SQLite with the same prepare/run/get/all API
+// as node:sqlite, but ships prebuilt binaries and runs on any Node version on Render
+// (no experimental flag, no Node 22.5+ requirement). Drop-in replacement.
+const Database = require("better-sqlite3");
 
 const DB_PATH = path.join(__dirname, "curemindset.db");
-const db = new DatabaseSync(DB_PATH);
+const db = new Database(DB_PATH);
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS patients (
