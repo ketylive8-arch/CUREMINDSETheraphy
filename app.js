@@ -13,7 +13,6 @@ const CONTACT = {
   whatsapp: "972543032349",
   phoneDisplay: "054-303-2349",
   email: "ketylive8@gmail.com",
-  facebook: "https://www.facebook.com/Ketyse",
   founder: "קטי שגב",
   brand: "CureMindset",
   social: "שיטה פרקטית לשינוי דפוסי תת־מודע, חיזוק חוסן רגשי ובניית ביטחון פנימי אמיתי.",
@@ -1459,12 +1458,6 @@ function Footer() {
                 <a href={waLink("היי קטי!")} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
                   <Icon name="whatsapp" size={16} />
                   וואטסאפ
-                </a>
-              </li>
-              <li>
-                <a href={CONTACT.facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
-                  <Icon name="facebook" size={16} />
-                  פייסבוק
                 </a>
               </li>
             </ul>
