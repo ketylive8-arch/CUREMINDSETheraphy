@@ -1,20 +1,20 @@
-// CureMindset —"מדד חוסן והתקדמות אישי" (My Resilience Dashboard).
+// CureMindset — "מדד חוסן והתקדמות אישי" (My Resilience Dashboard).
 // IIFE-wrapped like memberArea.js; reads window.Icon (icons.js) and window.Button (app.js).
 // Wins + balance alerts are computed for real from the visitor's own localStorage
 // progress/session data (see buildResilienceData below). Triggers & mindset patterns
 // would need a journal/mood-log feature the app doesn't have yet, so until that exists
-// they render an honest"still collecting" placeholder instead of invented insights —
+// they render an honest "still collecting" placeholder instead of invented insights —
 // the moment real input exists, feed it into those two arrays and the UI is ready.
 (function () {
-"use strict";
+  "use strict";
 
   const Icon = window.Icon;
   const Button = window.Button;
 
   const INTENSITY_MAP = {
-    low: { label:"עומס קל", width:"30%" },
-    medium: { label:"עומס מתון", width:"60%" },
-    high: { label:"עומס גבוה", width:"90%" },
+    low: { label: "עומס קל", width: "30%" },
+    medium: { label: "עומס מתון", width: "60%" },
+    high: { label: "עומס גבוה", width: "90%" },
   };
 
   function SectionHeader({ icon, title, subtitle }) {
@@ -61,7 +61,7 @@
           ))}
         </div>
         <h3 className="relative font-heading text-xl font-extrabold text-white">המערכת הרגשית שלך באיזון ובוויסות</h3>
-        <p className="relative mt-2 text-[14px] font-heading font-semibold text-gold-300">את/ה במסלול הצמיחה! </p>
+        <p className="relative mt-2 text-[14px] font-heading font-semibold text-gold-300">את/ה במסלול הצמיחה!</p>
         <p className="relative mt-3 text-[12.5px] leading-relaxed text-white/60">
           המשיכו לשמור על הקצב הזה — כל תרגול, כל רגע של מודעות, הוא עוד אבן דרך בתהליך שלכם.
         </p>
@@ -245,33 +245,33 @@
 
     const wins = [];
     if (completed.includes(1)) {
-      wins.push({ id:"win-anchor", title:"השלמת בהצלחה את שלב העוגן הרגשי", description:"בנית נקודת יציבות שאפשר לחזור אליה בכל רגע שמרגישים גודש." });
+      wins.push({ id: "win-anchor", title: "השלמת בהצלחה את שלב העוגן הרגשי", description: "בנית נקודת יציבות שאפשר לחזור אליה בכל רגע שמרגישים גודש." });
     }
     if (completed.includes(2)) {
-      wins.push({ id:"win-border", title:"הצלחת להפריד בין רגש, מחשבה ומציאות בגבול ההבחנה", description:"מיומנות מרכזית להפחתת עומס רגשי ולבהירות פנימית." });
+      wins.push({ id: "win-border", title: "הצלחת להפריד בין רגש, מחשבה ומציאות בגבול ההבחנה", description: "מיומנות מרכזית להפחתת עומס רגשי ולבהירות פנימית." });
     }
     if (sessions.length > 0) {
       wins.push({
-        id:"win-ground",
-        title: `השלמת בהצלחה ${sessions.length} ${sessions.length === 1 ?"תרגיל קרקוע" :"תרגילי קרקוע"}`,
+        id: "win-ground",
+        title: `השלמת בהצלחה ${sessions.length} ${sessions.length === 1 ? "תרגיל קרקוע" : "תרגילי קרקוע"}`,
         metric: trendPercent !== null && trendPercent > 0 ? `ירידה של ${trendPercent}% בעומס המחשבתי לאורך התרגולים` : undefined,
       });
     }
     if (sessions.length >= 2 && avgRecentScore >= 70) {
-      wins.push({ id:"win-score", title:"מדד הירידה בעומס הרגשי שלך גבוה ויציב", description: `בתרגולים האחרונים העומס ירד בממוצע ${Math.round(avgRecentScore)}%.` });
+      wins.push({ id: "win-score", title: "מדד הירידה בעומס הרגשי שלך גבוה ויציב", description: `בתרגולים האחרונים העומס ירד בממוצע ${Math.round(avgRecentScore)}%.` });
     }
 
     const balanceAlerts = [];
     if (sessions.length > 0 && daysSinceLastSession !== null && daysSinceLastSession >= 3) {
       balanceAlerts.push({
-        id:"alert-inactive",
+        id: "alert-inactive",
         message: `לא נכנסת לתרגל כבר ${daysSinceLastSession} ימים — זה בסדר, אפשר לחזור בעדינות.`,
-        actionLabel:"לחצי כאן לחזרה מהירה לתרגול",
+        actionLabel: "לחצי כאן לחזרה מהירה לתרגול",
         stageId: 3,
       });
     }
     if (lateNightCount > 0) {
-      balanceAlerts.push({ id:"alert-latenight", message:"זיהינו תרגול בשעות לילה מאוחרות — סימן אפשרי לחוסר שקט. שימו לב לעצמכם." });
+      balanceAlerts.push({ id: "alert-latenight", message: "זיהינו תרגול בשעות לילה מאוחרות — סימן אפשרי לחוסר שקט. שימו לב לעצמכם." });
     }
 
     const isFullyBalanced =
