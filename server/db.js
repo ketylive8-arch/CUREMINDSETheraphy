@@ -1,12 +1,30 @@
-const path = require("node:path");
-// node:sqlite is built into Node itself (22.5+, pinned via .node-version + engines).
-// Because it ships inside the Node binary there is no separate native addon to
-// mismatch the runtime ABI — unlike better-sqlite3, whose prebuilt binary segfaulted
-// (exit 139) on Render. Same prepare/run/get/all API.
-const { DatabaseSync } = require("node:sqlite");
+// Storage: node-sqlite3-wasm — SQLite compiled to WebAssembly, PURE JavaScript.
+// No native addon (so no ABI segfaults like better-sqlite3) and no built-in-module
+// version requirement (so no "node:sqlite not found" like on older Node). It runs
+// identically on ANY Node version Render picks — which is what finally makes the
+// deploy stable. Uses in-memory storage; the app re-seeds on startup.
+//
+// A tiny adapter below re-exposes the exact prepare().run/get/all + exec() API that
+// node:sqlite used, so none of the existing SQL across the codebase had to change.
+const { Database } = require("node-sqlite3-wasm");
 
-const DB_PATH = path.join(__dirname, "curemindset.db");
-const db = new DatabaseSync(DB_PATH);
+const rawDb = new Database(":memory:");
+
+// node-sqlite3-wasm takes bind params as an array; the codebase calls .run(a, b, c)
+// with spread args (node:sqlite style). Normalize both forms to an array.
+function toArgs(params) {
+  if (params.length === 1 && Array.isArray(params[0])) return params[0];
+  return params;
+}
+
+const db = {
+  exec: (sql) => rawDb.exec(sql),
+  prepare: (sql) => ({
+    run: (...params) => rawDb.run(sql, toArgs(params)),
+    get: (...params) => rawDb.get(sql, toArgs(params)) ?? undefined,
+    all: (...params) => rawDb.all(sql, toArgs(params)),
+  }),
+};
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS patients (
