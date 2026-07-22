@@ -12,6 +12,7 @@ const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { registerAccount, loginAccount, destroySession } = require("./auth");
+const { notifyLead } = require("./notify");
 
 const app = express();
 const PORT = process.env.PORT || 8731;
@@ -68,6 +69,16 @@ app.post("/api/auth/register", rateLimit("register", 15), (req, res) => {
   const { email, password, fullName, phone } = req.body || {};
   const result = registerAccount({ email, password, fullName, phone });
   if (result.error) return res.status(result.status).json({ error: result.error });
+
+  // התראת מייל מיידית לקטי על לקוח/ה חדש/ה שנרשם/ה למערכת.
+  notifyLead("לקוח/ה חדש/ה נרשם/ה למערכת", {
+    "שם מלא": result.fullName,
+    "אימייל": result.email,
+    "טלפון": typeof phone === "string" ? phone : "",
+  }).then((r) => {
+    if (r.error) console.warn("[notify] new-account email failed:", r.error);
+  });
+
   res.status(201).json({ token: result.token, fullName: result.fullName, email: result.email });
 });
 
@@ -94,12 +105,29 @@ app.post("/api/workshop-signup", (req, res) => {
   if (typeof workshop !== "string" || !workshop.trim()) {
     return res.status(400).json({ error: "נא לבחור סדנה" });
   }
+  const cleanName = fullName.trim().slice(0, 120);
+  const cleanPhone = phone.trim().slice(0, 30);
+  const cleanEmail = typeof email === "string" ? email.trim().slice(0, 160) : null;
+  const cleanWorkshop = workshop.trim().slice(0, 120);
+
   db.prepare("INSERT INTO workshop_signups (full_name, phone, email, workshop) VALUES (?, ?, ?, ?)").run(
-    fullName.trim().slice(0, 120),
-    phone.trim().slice(0, 30),
-    typeof email === "string" ? email.trim().slice(0, 160) : null,
-    workshop.trim().slice(0, 120)
+    cleanName,
+    cleanPhone,
+    cleanEmail,
+    cleanWorkshop
   );
+
+  // התראת מייל מיידית לקטי (אם RESEND_API_KEY מוגדר). לא חוסם את התשובה למשתמש.
+  notifyLead("ליד חדש מהאתר — הרשמה לסדנה", {
+    "שם מלא": cleanName,
+    "טלפון": cleanPhone,
+    "אימייל": cleanEmail,
+    "סדנה": cleanWorkshop,
+  }).then((r) => {
+    if (r.error) console.warn("[notify] workshop lead email failed:", r.error);
+    else if (r.skipped) console.log("[notify] RESEND_API_KEY not set — lead saved to DB only");
+  });
+
   res.status(201).json({ ok: true });
 });
 
