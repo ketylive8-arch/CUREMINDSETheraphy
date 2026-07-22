@@ -10,12 +10,12 @@ const Icon = window.Icon;
 /* ---------------------------------------------------------------- */
 
 const CONTACT = {
-  whatsapp: "972543032349",
-  phoneDisplay: "054-303-2349",
-  email: "ketylive8@gmail.com",
-  founder: "קטי שגב",
-  brand: "CureMindset",
-  social: "שיטה פרקטית לשינוי דפוסי תת־מודע, חיזוק חוסן רגשי ובניית ביטחון פנימי אמיתי.",
+  whatsapp:"972543032349",
+  phoneDisplay:"054-303-2349",
+  email:"ketylive8@gmail.com",
+  founder:"קטי שגב",
+  brand:"CureMindset",
+  social:"שיטה פרקטית לשינוי דפוסי תת־מודע, חיזוק חוסן רגשי ובניית ביטחון פנימי אמיתי.",
 };
 
 function waLink(text) {
@@ -26,10 +26,10 @@ function waLink(text) {
 // (Grow/משולם, PayBox, ביט לעסקים או PayPal). מסלול שהקישור שלו ריק ("")
 // ימשיך לשלוח את הלקוחה לוואטסאפ לתיאום תשלום.
 const PAYMENT_LINKS = {
-  digital: "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ",
-  youth: "",
-  recommended: "",
-  premium: "",
+  digital:"https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ",
+  youth:"",
+  recommended:"",
+  premium:"",
 };
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -38,14 +38,14 @@ const PAYMENT_LINKS = {
    ואם גם הוא ריק — לוואטסאפ. אין יותר קישורי חיפוש גנריים.
    ═══════════════════════════════════════════════════════════════════ */
 const MEDIA_LINKS = {
-  linktree: "",        // ← הכניסי כאן את קישור ה-Linktree שלך (KETY SEGEV ON LINKTREE)
-  radio: "",           // ← קישור ישיר לארכיון תוכניות הרדיו שלך
-  spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",  // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
-  youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך
-  video1: "",          // ← קישור לסרטון יוטיוב 1 (עומס רגשי אצל בני נוער)
-  video2: "",          // ← קישור לסרטון יוטיוב 2 (טכניקות NLP לחרדה חברתית)
-  article1: "",        // ← קישור למאמר 1 (מחיווט מחדש לפריצת דרך)
-  article2: "",        // ← קישור למאמר 2 (חוסן רגשי להורים ומתבגרים)
+  linktree:"",        // ← הכניסי כאן את קישור ה-Linktree שלך (KETY SEGEV ON LINKTREE)
+  radio:"",           // ← קישור ישיר לארכיון תוכניות הרדיו שלך
+  spotify:"https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",  // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
+  youtubeChannel:"",  // ← קישור ישיר לערוץ היוטיוב שלך
+  video1:"",          // ← קישור לסרטון יוטיוב 1 (עומס רגשי אצל בני נוער)
+  video2:"",          // ← קישור לסרטון יוטיוב 2 (טכניקות NLP לחרדה חברתית)
+  article1:"",        // ← קישור למאמר 1 (מחיווט מחדש לפריצת דרך)
+  article2:"",        // ← קישור למאמר 2 (חוסן רגשי להורים ומתבגרים)
 };
 
 /* קטי — קישורי הפגישות האונליין שלך (מוצגים מתחת למסלולים):
@@ -53,8 +53,8 @@ const MEDIA_LINKS = {
    zoom     ← קישור קבוע לחדר הזום האישי שלך
    שדה ריק יוביל לוואטסאפ לתיאום ידני. */
 const BOOKING_LINKS = {
-  calendar: "",
-  zoom: "",
+  calendar:"",
+  zoom:"",
 };
 
 // שרשרת נפילה: קישור ישיר → לינקטרי → וואטסאפ
@@ -64,16 +64,16 @@ function mediaHref(direct, waText) {
 
 // ממיר כל צורת קישור יוטיוב (watch / youtu.be / shorts) לכתובת embed לנגן
 function youtubeEmbed(url) {
-  if (!url) return "";
+  if (!url) return"";
   const m = url.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{6,})/);
   return m ? `https://www.youtube.com/embed/${m[1]}` : url;
 }
 
 // ממיר קישור פרק/פלייליסט/פרופיל ספוטיפיי לכתובת embed לנגן המוטמע
 function spotifyEmbed(url) {
-  if (!url) return "";
+  if (!url) return"";
   const m = url.match(/open\.spotify\.com\/(episode|show|playlist|track|album)\/([\w]+)/);
-  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}` : "";
+  return m ? `https://open.spotify.com/embed/${m[1]}/${m[2]}` :"";
 }
 
 /* ---------------------------------------------------------------- */
@@ -83,161 +83,161 @@ function spotifyEmbed(url) {
 const CONTENT = {
   nav: {
     links: [
-      { label: "על קטי", href: "#about" },
-      { label: "החזון והשיטה", href: "#vision" },
-      { label: "תחומי התמחות", href: "#journey" },
-      { label: "סדנאות ותוכניות ליווי", href: "#plans" },
-      { label: "סיפורי הצלחה ותוצאות", href: "#results" },
+      { label:"על קטי", href:"#about" },
+      { label:"החזון והשיטה", href:"#vision" },
+      { label:"תחומי התמחות", href:"#journey" },
+      { label:"סדנאות ותוכניות ליווי", href:"#plans" },
+      { label:"סיפורי הצלחה ותוצאות", href:"#results" },
     ],
-    login: "אזור אישי / כניסה למערכת",
-    cta: "קביעת שיחה ראשונית",
+    login:"אזור אישי / כניסה למערכת",
+    cta:"קביעת שיחה ראשונית",
   },
   hero: {
-    kicker: "CureMindset · קטי שגב",
-    headline: "לפרוץ את חסמי התודעה – וליצור חוסן רגשי לכל החיים",
+    kicker:"CureMindset · קטי שגב",
+    headline:"לפרוץ את חסמי התודעה – וליצור חוסן רגשי לכל החיים",
     subhead:
-      "מתודולוגיית אימון ו-NLP מתקדמת המעניקה לבני נוער, מבוגרים והורים את הכלים המעשיים לשחרור חרדות, בניית דימוי עצמי חזק ויציבות רגשית עמוקה.",
+"מתודולוגיית אימון ו-NLP מתקדמת המעניקה לבני נוער, מבוגרים והורים את הכלים המעשיים לשחרור חרדות, בניית דימוי עצמי חזק ויציבות רגשית עמוקה.",
     points: [
-      "פריצת דרך ממוקדת על דפוסי תת-המודע לפי שיטת CureMindset",
-      "ליווי מובנה וכלים פרקטיים המותאמים אישית לנוער ולמבוגרים",
-      "יצירת עוגנים רגשיים ושינוי מיינדסט שמחזיק לאורך זמן",
+"פריצת דרך ממוקדת על דפוסי תת-המודע לפי שיטת CureMindset",
+"ליווי מובנה וכלים פרקטיים המותאמים אישית לנוער ולמבוגרים",
+"יצירת עוגנים רגשיים ושינוי מיינדסט שמחזיק לאורך זמן",
     ],
-    ctaPrimary: "להתחיל תהליך שינוי – קבעו שיחה ראשונית",
-    ctaSecondary: "להרשמה לסדנאות הקרובות",
-    stats: ["+500 תהליכים אישיים", "הכשרות NLP בינלאומיות", "לנוער · לנשים · להורים"],
-    imgAlt: "קטי שגב, מייסדת שיטת CureMindset",
+    ctaPrimary:"להתחיל תהליך שינוי – קבעו שיחה ראשונית",
+    ctaSecondary:"להרשמה לסדנאות הקרובות",
+    stats: ["+500 תהליכים אישיים","הכשרות NLP בינלאומיות","לנוער · לנשים · להורים"],
+    imgAlt:"קטי שגב, מייסדת שיטת CureMindset",
   },
   problem: {
-    eyebrow: "מה שמרגישים בפנים",
-    title: "לפעמים זה לא משהו אחד ברור. זה פשוט תחושה פנימית:",
+    eyebrow:"מה שמרגישים בפנים",
+    title:"לפעמים זה לא משהו אחד ברור. זה פשוט תחושה פנימית:",
     items: [
-      { icon: "wind", text: "עומס רגשי שלא נרגע" },
-      { icon: "brain", text: "מחשבות שלא מפסיקות" },
-      { icon: "sparkles", text: "חרדה שמופיעה בלי שליטה" },
-      { icon: "compass", text: "חוסר ביטחון שמנהל החלטות" },
-      { icon: "circle", text: "תחושת “אני לא יציב/ה בתוכי”" },
+      { icon:"wind", text:"עומס רגשי שלא נרגע" },
+      { icon:"brain", text:"מחשבות שלא מפסיקות" },
+      { icon:"sparkles", text:"חרדה שמופיעה בלי שליטה" },
+      { icon:"compass", text:"חוסר ביטחון שמנהל החלטות" },
+      { icon:"circle", text:"תחושת “אני לא יציב/ה בתוכי”" },
     ],
-    closing: "וזה קורה גם כשכלפי חוץ הכול נראה בסדר.",
+    closing:"וזה קורה גם כשכלפי חוץ הכול נראה בסדר.",
   },
   solution: {
-    eyebrow: "הפתרון",
-    title: "CureMindset — לעבוד עם השורש, לא רק עם התסמין",
-    lead: "השיטה עובדת ישירות עם דפוסי התת־מודע והמערכת הרגשית — לא רק עם המחשבות שעל פני השטח. כשמשנים את הדפוס מבפנים, השינוי מחזיק.",
+    eyebrow:"הפתרון",
+    title:"CureMindset — לעבוד עם השורש, לא רק עם התסמין",
+    lead:"השיטה עובדת ישירות עם דפוסי התת־מודע והמערכת הרגשית — לא רק עם המחשבות שעל פני השטח. כשמשנים את הדפוס מבפנים, השינוי מחזיק.",
     items: [
-      { icon: "brain", title: "עבודה עם דפוסי חשיבה עמוקים", text: "מאתרים את הדפוס שמייצר את התחושה הקבועה, ועובדים איתו בשורש." },
-      { icon: "wind", title: "ויסות רגשי בזמן אמת", text: "כלים פרקטיים להחזיר את עצמכם לאיזון תוך דקות, בכל מצב." },
-      { icon: "shield-check", title: "חיזוק ביטחון פנימי", text: "בונים תחושת ערך עצמי שלא תלויה באישור חיצוני." },
-      { icon: "sparkles", title: "תגובה חדשה למצבי לחץ", text: "במקום להיסחף — יוצרים דרך תגובה חדשה, יציבה ובוחרת." },
+      { icon:"brain", title:"עבודה עם דפוסי חשיבה עמוקים", text:"מאתרים את הדפוס שמייצר את התחושה הקבועה, ועובדים איתו בשורש." },
+      { icon:"wind", title:"ויסות רגשי בזמן אמת", text:"כלים פרקטיים להחזיר את עצמכם לאיזון תוך דקות, בכל מצב." },
+      { icon:"shield-check", title:"חיזוק ביטחון פנימי", text:"בונים תחושת ערך עצמי שלא תלויה באישור חיצוני." },
+      { icon:"sparkles", title:"תגובה חדשה למצבי לחץ", text:"במקום להיסחף — יוצרים דרך תגובה חדשה, יציבה ובוחרת." },
     ],
   },
   workshops: {
-    eyebrow: "סדנאות ושירותים",
-    title: "תוכניות וסדנאות פעילות",
+    eyebrow:"סדנאות ושירותים",
+    title:"תוכניות וסדנאות פעילות",
     items: [
-      { icon: "graduation-cap", title: "סדנת חוסן רגשי לנוער", meta: "קבוצות קטנות · מותאם גילאים", text: "סדנה חווייתית שמלמדת בני נוער לזהות דפוסים, לווסת רגשות וחרדה, ולבנות ביטחון עצמי יציב." },
-      { icon: "heart-handshake", title: "סדנאות לנשים", meta: "מפגש קבוצתי · יום/בוקר", text: "מרחב בטוח לעבודה על עומס רגשי, תקיעות ודימוי עצמי — עם כלים פרקטיים ליישום מהרגע הראשון." },
-      { icon: "building-2", title: "סדנאות לארגונים ובתי ספר", meta: "בנייה לפי צרכי הארגון", text: "תוכנית חוסן רגשי מותאמת אישית לבית הספר, עמותה או ארגון — החל מסדנה חד-פעמית ועד מסלול שנתי מלא. לבקשת מידע והצעת מחיר מותאמת." },
+      { icon:"graduation-cap", title:"סדנת חוסן רגשי לנוער", meta:"קבוצות קטנות · מותאם גילאים", text:"סדנה חווייתית שמלמדת בני נוער לזהות דפוסים, לווסת רגשות וחרדה, ולבנות ביטחון עצמי יציב." },
+      { icon:"heart-handshake", title:"סדנאות לנשים", meta:"מפגש קבוצתי · יום/בוקר", text:"מרחב בטוח לעבודה על עומס רגשי, תקיעות ודימוי עצמי — עם כלים פרקטיים ליישום מהרגע הראשון." },
+      { icon:"building-2", title:"סדנאות לארגונים ובתי ספר", meta:"בנייה לפי צרכי הארגון", text:"תוכנית חוסן רגשי מותאמת אישית לבית הספר, עמותה או ארגון — החל מסדנה חד-פעמית ועד מסלול שנתי מלא. לבקשת מידע והצעת מחיר מותאמת." },
     ],
-    cta: "לבדוק זמינות לסדנה הקרובה",
+    cta:"לבדוק זמינות לסדנה הקרובה",
   },
   plans: {
-    eyebrow: "תוכניות ומחירים",
-    title: "בחרי את המסלול שמתאים לך",
-    subtitle: "כל התוכניות כוללות שיחת היכרות חינמית של 30 דקות — ללא התחייבות",
+    eyebrow:"תוכניות ומחירים",
+    title:"בחרי את המסלול שמתאים לך",
+    subtitle:"כל התוכניות כוללות שיחת היכרות חינמית של 30 דקות — ללא התחייבות",
     items: [
       {
-        id: "digital",
-        icon: "smartphone",
-        badge: "ניסיון חינם",
-        badgeColor: "#16A34A",
-        title: "מאמן אישי ומטפל רגשי בכף היד",
-        price: "₪340",
-        priceNote: "לחודש",
-        trial: "לאחר 14 ימי ניסיון בחינם",
+        id:"digital",
+        icon:"smartphone",
+        badge:"ניסיון חינם",
+        badgeColor:"#16A34A",
+        title:"מאמן אישי ומטפל רגשי בכף היד",
+        price:"₪340",
+        priceNote:"לחודש",
+        trial:"לאחר 14 ימי ניסיון בחינם",
         highlight: false,
         features: [
-          "צ'אטבוט טיפולי-אימוני אישי זמין עבורך 24/7",
-          "מענה מותאם אישית לחלוטין על בסיס חומרי השיטה הרשמיים",
-          "ניתוב מיינדסט, חוסן רגשי והטמעת עוגנים רגשיים",
-          "מעקב התקדמות אישי וזיהוי דפוסים אוטומטי",
-          "גישה מלאה לספריית החומרים הדיגיטליים",
+"צ'אטבוט טיפולי-אימוני אישי זמין עבורך 24/7",
+"מענה מותאם אישית לחלוטין על בסיס חומרי השיטה הרשמיים",
+"ניתוב מיינדסט, חוסן רגשי והטמעת עוגנים רגשיים",
+"מעקב התקדמות אישי וזיהוי דפוסים אוטומטי",
+"גישה מלאה לספריית החומרים הדיגיטליים",
         ],
-        cta: "להתחיל ניסיון חינם",
+        cta:"להתחיל ניסיון חינם",
       },
       {
-        id: "youth",
-        icon: "graduation-cap",
-        badge: "לנוער",
-        badgeColor: "#7C3AED",
-        title: "סדנאות חוסן ומפגשי זום קבוצתיים",
-        price: "₪750",
-        priceNote: "תהליך של 6 מפגשים",
+        id:"youth",
+        icon:"graduation-cap",
+        badge:"לנוער",
+        badgeColor:"#7C3AED",
+        title:"סדנאות חוסן ומפגשי זום קבוצתיים",
+        price:"₪750",
+        priceNote:"תהליך של 6 מפגשים",
         trial: null,
         highlight: false,
         features: [
-          "תהליך קבוצתי ממוקד ומותאם (3 עד 8 משתתפים בקבוצה)",
-          "מינימום 4 משתתפים לפתיחת קבוצה להבטחת דינמיקה מעצימה",
-          "כלים מעשיים לחיזוק הדימוי העצמי והביטחון הפנימי",
-          "שחרור דפוסים ופחדים בסביבה בטוחה ותומכת לגילם",
-          "ליווי וחיזוק החוסן החברתי והרגשי בתוך הקבוצה",
+"תהליך קבוצתי ממוקד ומותאם (3 עד 8 משתתפים בקבוצה)",
+"מינימום 4 משתתפים לפתיחת קבוצה להבטחת דינמיקה מעצימה",
+"כלים מעשיים לחיזוק הדימוי העצמי והביטחון הפנימי",
+"שחרור דפוסים ופחדים בסביבה בטוחה ותומכת לגילם",
+"ליווי וחיזוק החוסן החברתי והרגשי בתוך הקבוצה",
         ],
-        cta: "להרשמה",
+        cta:"להרשמה",
       },
       {
-        id: "recommended",
-        icon: "star",
-        badge: "מומלצת",
-        badgeColor: "#D97706",
-        title: "ליווי אישי ממוקד תוצאות",
-        price: "₪1,700",
-        priceNote: "תהליך מובנה של 5 מפגשים",
+        id:"recommended",
+        icon:"star",
+        badge:"מומלצת",
+        badgeColor:"#D97706",
+        title:"ליווי אישי ממוקד תוצאות",
+        price:"₪1,700",
+        priceNote:"תהליך מובנה של 5 מפגשים",
         trial: null,
         highlight: true,
         features: [
-          "עבודה עמוקה על שורש הדפוס לפי מתודולוגיית CureMindset",
-          "ניתוח תהליכים אישי ופירוק חסמים בזמן אמת",
-          "הטמעת כלי NLP יישומיים לשינוי חשיבה וניהול רגשי",
-          "חיזוק ביטחון פנימי יציב ועוגנים רגשיים מותאמים",
-          "חומרים דיגיטליים בהתאמה אישית ותמיכה מלאה בין המפגשים",
+"עבודה עמוקה על שורש הדפוס לפי מתודולוגיית CureMindset",
+"ניתוח תהליכים אישי ופירוק חסמים בזמן אמת",
+"הטמעת כלי NLP יישומיים לשינוי חשיבה וניהול רגשי",
+"חיזוק ביטחון פנימי יציב ועוגנים רגשיים מותאמים",
+"חומרים דיגיטליים בהתאמה אישית ותמיכה מלאה בין המפגשים",
         ],
-        cta: "לתחילת תהליך",
+        cta:"לתחילת תהליך",
       },
       {
-        id: "premium",
-        icon: "award",
-        badge: "פרימיום",
-        badgeColor: "#B45309",
-        title: "ליווי פרימיום בהתאמה אישית",
-        price: "₪3,500",
-        priceNote: "תהליך פרימיום של 11 מפגשים",
+        id:"premium",
+        icon:"award",
+        badge:"פרימיום",
+        badgeColor:"#B45309",
+        title:"ליווי פרימיום בהתאמה אישית",
+        price:"₪3,500",
+        priceNote:"תהליך פרימיום של 11 מפגשים",
         trial: null,
         highlight: false,
         features: [
-          "תהליך פרימיום מקיף בהתאמה אישית מלאה ומדויקת עבורך",
-          "הגדרת מטרות מורחבת ועבודה על כל שדות החיים",
-          "שחרור וניקוי דפוסים רגשיים מושרשים מהבסיס",
-          "מענה, עיבוד ועבודה עמוקה עם טראומה והיסטוריה רגשית",
-          "ליווי אישי צמוד, מעטפת עוטפת לאורך כל הדרך וגישה לכל התכנים",
+"תהליך פרימיום מקיף בהתאמה אישית מלאה ומדויקת עבורך",
+"הגדרת מטרות מורחבת ועבודה על כל שדות החיים",
+"שחרור וניקוי דפוסים רגשיים מושרשים מהבסיס",
+"מענה, עיבוד ועבודה עמוקה עם טראומה והיסטוריה רגשית",
+"ליווי אישי צמוד, מעטפת עוטפת לאורך כל הדרך וגישה לכל התכנים",
         ],
-        cta: "לתהליך פרימיום",
+        cta:"לתהליך פרימיום",
       },
     ],
   },
   results: {
-    eyebrow: "תוצאות",
-    title: "מה משתנה כשעובדים עם השיטה",
-    pills: ["פחות חרדה יומיומית", "ביטחון עצמי גבוה יותר", "ויסות רגשי מהיר יותר", "תקשורת בריאה יותר בבית", "שינוי שמחזיק בזמן"],
+    eyebrow:"תוצאות",
+    title:"מה משתנה כשעובדים עם השיטה",
+    pills: ["פחות חרדה יומיומית","ביטחון עצמי גבוה יותר","ויסות רגשי מהיר יותר","תקשורת בריאה יותר בבית","שינוי שמחזיק בזמן"],
     quotes: [
-      { text: "תוך כמה שבועות הבת שלי הפסיקה לפחד לדבר על מה שמרגישה. זה שינה את היחסים בינינו.", who: "אמא לנערה בתהליך" },
-      { text: "למדתי לעצור את עצמי באמצע התקף חרדה ולחזור לאיזון בלי שאף אחד ידע שזה קרה.", who: "משתתפת בתהליך אישי" },
-      { text: "הסדנה בבית הספר היתה הדבר הראשון שבאמת דיבר אל התלמידים בגובה העיניים.", who: "יועצת חינוכית" },
+      { text:"תוך כמה שבועות הבת שלי הפסיקה לפחד לדבר על מה שמרגישה. זה שינה את היחסים בינינו.", who:"אמא לנערה בתהליך" },
+      { text:"למדתי לעצור את עצמי באמצע התקף חרדה ולחזור לאיזון בלי שאף אחד ידע שזה קרה.", who:"משתתפת בתהליך אישי" },
+      { text:"הסדנה בבית הספר היתה הדבר הראשון שבאמת דיבר אל התלמידים בגובה העיניים.", who:"יועצת חינוכית" },
     ],
   },
   finalCta: {
-    title: "השינוי מתחיל בשיחה אחת",
-    text: "אין צורך להגיע מוכנים. רק רוצים לדבר ולבדוק אם זה מתאים לכם.",
-    ctaPrimary: "להתחיל תהליך שינוי – קבעו שיחה ראשונית",
-    ctaSecondary: "להרשמה לסדנאות הקרובות",
+    title:"השינוי מתחיל בשיחה אחת",
+    text:"אין צורך להגיע מוכנים. רק רוצים לדבר ולבדוק אם זה מתאים לכם.",
+    ctaPrimary:"להתחיל תהליך שינוי – קבעו שיחה ראשונית",
+    ctaSecondary:"להרשמה לסדנאות הקרובות",
   },
   footer: {
     tagline: CONTACT.social,
@@ -272,12 +272,12 @@ function useInView(options) {
   return [ref, inView];
 }
 
-function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
+function Reveal({ as: Tag ="div", className ="", children, ...rest }) {
   const [ref, inView] = useInView();
   return (
     <Tag
       ref={ref}
-      className={`transition-all duration-700 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} ${className}`}
+      className={`transition-all duration-700 ease-out ${inView ?"opacity-100 translate-y-0" :"opacity-0 translate-y-6"} ${className}`}
       {...rest}
     >
       {children}
@@ -307,7 +307,7 @@ function Logo({ size = 48 }) {
     <img
       src="images/logo.png"
       alt="CureMindset — By Kety Segev"
-      style={{ height: size, width: "auto", objectFit: "contain" }}
+      style={{ height: size, width:"auto", objectFit:"contain" }}
       onError={() => setErr(true)}
     />
   );
@@ -321,24 +321,24 @@ function Eyebrow({ children }) {
   );
 }
 
-function Button({ as = "a", variant = "primary", size = "md", icon, iconPos = "start", className = "", children, ...rest }) {
+function Button({ as ="a", variant ="primary", size ="md", icon, iconPos ="start", className ="", children, ...rest }) {
   const Tag = as;
   const base =
-    "inline-flex items-center justify-center gap-2.5 font-heading font-semibold rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gold-600 select-none";
-  const sizes = { md: "px-6 py-3.5 text-[15px] sm:text-base", lg: "px-7 py-4 text-base sm:text-lg" };
+"inline-flex items-center justify-center gap-2.5 font-heading font-semibold rounded-full transition-all duration-300 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-gold-600 select-none";
+  const sizes = { md:"px-6 py-3.5 text-[15px] sm:text-base", lg:"px-7 py-4 text-base sm:text-lg" };
   const variants = {
     primary:
-      "bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(194,151,74,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(194,151,74,0.85)]",
+"bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(194,151,74,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(194,151,74,0.85)]",
     secondary:
-      "bg-white text-ink-800 border border-ink-100 hover:bg-gold-50 hover:border-gold-300 hover:-translate-y-0.5",
-    dark: "bg-ink-800 text-white hover:bg-ink-700 hover:-translate-y-0.5",
-    ghost: "bg-transparent text-ink-700 hover:bg-ink-50",
+"bg-white text-ink-800 border border-ink-100 hover:bg-gold-50 hover:border-gold-300 hover:-translate-y-0.5",
+    dark:"bg-ink-800 text-white hover:bg-ink-700 hover:-translate-y-0.5",
+    ghost:"bg-transparent text-ink-700 hover:bg-ink-50",
   };
   return (
     <Tag className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...rest}>
-      {icon && iconPos === "start" ? <Icon name={icon} size={18} className="shrink-0" /> : null}
+      {icon && iconPos ==="start" ? <Icon name={icon} size={18} className="shrink-0" /> : null}
       <span>{children}</span>
-      {icon && iconPos === "end" ? <Icon name={icon} size={18} className="shrink-0 rtl-flip" /> : null}
+      {icon && iconPos ==="end" ? <Icon name={icon} size={18} className="shrink-0 rtl-flip" /> : null}
     </Tag>
   );
 }
@@ -363,7 +363,7 @@ function Nav({ onEnterApp }) {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/85 backdrop-blur-md shadow-softer border-b border-ink-100/70" : "bg-transparent"
+        scrolled ?"bg-white/85 backdrop-blur-md shadow-softer border-b border-ink-100/70" :"bg-transparent"
       }`}
     >
       <nav className="max-w-[1180px] mx-auto px-5 sm:px-7 h-[68px] flex items-center justify-between" aria-label="ניווט ראשי">
@@ -390,7 +390,7 @@ function Nav({ onEnterApp }) {
             <Icon name="lock" size={16} />
             {CONTENT.nav.login}
           </button>
-          <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית 🌿")} target="_blank" rel="noopener noreferrer" size="md" icon="whatsapp">
+          <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית")} target="_blank" rel="noopener noreferrer" size="md" icon="whatsapp">
             {CONTENT.nav.cta}
           </Button>
         </div>
@@ -398,11 +398,11 @@ function Nav({ onEnterApp }) {
         <button
           type="button"
           className="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full text-ink-700 hover:bg-ink-50"
-          aria-label={open ? "סגירת תפריט" : "פתיחת תפריט"}
+          aria-label={open ?"סגירת תפריט" :"פתיחת תפריט"}
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
-          <Icon name={open ? "x" : "menu"} size={24} />
+          <Icon name={open ?"x" :"menu"} size={24} />
         </button>
       </nav>
 
@@ -433,7 +433,7 @@ function Nav({ onEnterApp }) {
               <Icon name="lock" size={16} />
               {CONTENT.nav.login}
             </button>
-            <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית 🌿")} target="_blank" rel="noopener noreferrer" icon="whatsapp" className="w-full">
+            <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית")} target="_blank" rel="noopener noreferrer" icon="whatsapp" className="w-full">
               {CONTENT.nav.cta}
             </Button>
           </div>
@@ -454,7 +454,7 @@ function Hero() {
         className="absolute inset-0 -z-10 pointer-events-none"
         style={{
           background:
-            "radial-gradient(42% 42% at 78% 25%, rgba(194,151,74,.18), transparent 70%), radial-gradient(38% 38% at 18% 80%, rgba(190,114,64,.14), transparent 70%)",
+"radial-gradient(42% 42% at 78% 25%, rgba(194,151,74,.18), transparent 70%), radial-gradient(38% 38% at 18% 80%, rgba(190,114,64,.14), transparent 70%)",
         }}
         aria-hidden="true"
       />
@@ -481,7 +481,7 @@ function Hero() {
           <div className="flex flex-wrap gap-4 justify-center lg:justify-start mb-7">
             <Button
               as="a"
-              href={waLink("היי קטי! אשמח לשמוע עוד על השיטה 🌿")}
+              href={waLink("היי קטי! אשמח לשמוע עוד על השיטה")}
               target="_blank"
               rel="noopener noreferrer"
               size="lg"
@@ -532,28 +532,28 @@ function Hero() {
 
 const JOURNEY_STAGES = [
   {
-    num: "01",
-    icon: "shield-check",
-    img: "images/journey-1.jpg",
-    title: "ניצחון על חרדות ופחדים",
-    subtitle: "שחרור עמוק של פחדים חברתיים, לחצי מבחנים ומחסומים רגשיים.",
-    text: "בשלב הראשון של המסע אנחנו נכנסים אל תת-המודע, מזהים את שורש הפחד ומפרקים את העומס הרגשי שמנהל את היום-יום, כדי לייצר שקט תודעתי ראשוני.",
+    num:"01",
+    icon:"shield-check",
+    img:"images/journey-1.jpg",
+    title:"ניצחון על חרדות ופחדים",
+    subtitle:"שחרור עמוק של פחדים חברתיים, לחצי מבחנים ומחסומים רגשיים.",
+    text:"בשלב הראשון של המסע אנחנו נכנסים אל תת-המודע, מזהים את שורש הפחד ומפרקים את העומס הרגשי שמנהל את היום-יום, כדי לייצר שקט תודעתי ראשוני.",
   },
   {
-    num: "02",
-    icon: "heart",
-    img: "images/journey-2.jpg",
-    title: "בניית דימוי עצמי מנצח",
-    subtitle: "פיתוח הערכה עצמית גבוהה ואהבה עצמית – ללא תלות בסביבה.",
-    text: "השלב השני מוקדש לחיווט מחדש של האמונות המגבילות. לומדים להפסיק לחיות עם המחשבות לבד, ומחזקים עוגנים רגשיים פנימיים שלא תלויים באישור של אף אחד מבחוץ.",
+    num:"02",
+    icon:"heart",
+    img:"images/journey-2.jpg",
+    title:"בניית דימוי עצמי מנצח",
+    subtitle:"פיתוח הערכה עצמית גבוהה ואהבה עצמית – ללא תלות בסביבה.",
+    text:"השלב השני מוקדש לחיווט מחדש של האמונות המגבילות. לומדים להפסיק לחיות עם המחשבות לבד, ומחזקים עוגנים רגשיים פנימיים שלא תלויים באישור של אף אחד מבחוץ.",
   },
   {
-    num: "03",
-    icon: "sparkles",
-    img: "images/journey-3.jpg",
-    title: "כלים לחיים וחוסן רגשי",
-    subtitle: "ללמוד איך להתמודד עם לחצים בעוצמה, ביטחון ושקט פנימי.",
-    text: "שלב הנעילה של המסע שמבטיח חוסן ארוך טווח. המשתמש מקבל ארגז כלים פרקטי לחיים ומשימות אקטיביות, המאפשרים לו לנהל את הרגשות שלו בעצמו ולעבור מנוקשות רגשית לגמישות וצמיחה.",
+    num:"03",
+    icon:"sparkles",
+    img:"images/journey-3.jpg",
+    title:"כלים לחיים וחוסן רגשי",
+    subtitle:"ללמוד איך להתמודד עם לחצים בעוצמה, ביטחון ושקט פנימי.",
+    text:"שלב הנעילה של המסע שמבטיח חוסן ארוך טווח. המשתמש מקבל ארגז כלים פרקטי לחיים ומשימות אקטיביות, המאפשרים לו לנהל את הרגשות שלו בעצמו ולעבור מנוקשות רגשית לגמישות וצמיחה.",
   },
 ];
 
@@ -571,7 +571,7 @@ function JourneyCard({ stage, idx }) {
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover"
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
+          onError={(e) => { e.currentTarget.style.display ="none"; }}
         />
         <span className="absolute top-4 right-4 inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/90 text-gold-600 shadow-soft">
           <Icon name={stage.icon} size={24} />
@@ -593,7 +593,7 @@ function JourneyCard({ stage, idx }) {
 
 function Journey() {
   return (
-    <section id="journey" className="py-20 sm:py-28" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%)" }}>
+    <section id="journey" className="py-20 sm:py-28" style={{ background:"linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%)" }}>
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[680px] mx-auto mb-14">
           <Eyebrow>המסע שלך ב-CureMindset</Eyebrow>
@@ -616,9 +616,9 @@ function Journey() {
 
 function About() {
   const highlights = [
-    { icon: "sparkles", title: "+500 תהליכים אישיים", text: "ליווי של מאות מתבגרים, נשים והורים בתהליכי שינוי עמוקים." },
-    { icon: "graduation-cap", title: "הכשרות NLP בינלאומיות", text: "מתודולוגיה מבוססת כלים מוכחים לעבודה עם דפוסי תת-המודע." },
-    { icon: "heart", title: "שיטה אחת — CureMindset", text: "גישה רגשית-תודעתית שפיתחתי, שעובדת עם השורש ולא עם התסמין." },
+    { icon:"sparkles", title:"+500 תהליכים אישיים", text:"ליווי של מאות מתבגרים, נשים והורים בתהליכי שינוי עמוקים." },
+    { icon:"graduation-cap", title:"הכשרות NLP בינלאומיות", text:"מתודולוגיה מבוססת כלים מוכחים לעבודה עם דפוסי תת-המודע." },
+    { icon:"heart", title:"שיטה אחת — CureMindset", text:"גישה רגשית-תודעתית שפיתחתי, שעובדת עם השורש ולא עם התסמין." },
   ];
   return (
     <section id="about" className="py-16 sm:py-24 bg-white">
@@ -633,7 +633,7 @@ function About() {
                 loading="lazy"
                 decoding="async"
                 className="w-full h-full object-cover rounded-[1rem]"
-                onError={(e) => { e.currentTarget.src = "images/kety-640.jpg"; e.currentTarget.onerror = null; }}
+                onError={(e) => { e.currentTarget.src ="images/kety-640.jpg"; e.currentTarget.onerror = null; }}
               />
             </div>
           </Reveal>
@@ -681,32 +681,32 @@ function About() {
 
 const VISION_PILLARS = [
   {
-    icon: "brain",
-    title: "חיבור ישיר למשאבי הליבה בתת-המודע",
-    text: "כל האנרגיה, היצירתיות והחוסן שאת זקוקה להם כבר קיימים בתוכך. בעבודה מעמיקה ברמת תת-המודע ועל קו הזמן האישי, אנו מציפים את חוזקות האופי והניסיון שצברת — והופכים אותם למנוע צמיחה עוצמתי ושקט.",
+    icon:"brain",
+    title:"חיבור ישיר למשאבי הליבה בתת-המודע",
+    text:"כל האנרגיה, היצירתיות והחוסן שאת זקוקה להם כבר קיימים בתוכך. בעבודה מעמיקה ברמת תת-המודע ועל קו הזמן האישי, אנו מציפים את חוזקות האופי והניסיון שצברת — והופכים אותם למנוע צמיחה עוצמתי ושקט.",
   },
   {
-    icon: "compass",
-    title: "מנהיגות עצמית מתוך בחירה חופשית",
-    text: "כשהפעולה מונעת מערכים מדויקים וחזון ברור, העשייה הופכת לטבעית, קולחת ומלאת השראה. השיטה מעבירה אותך לפעולה מתוך תשוקה, הגשמה וסדר עדיפויות פנימי — להוביל את חייך בביטחון מלא ובנחישות רכה.",
+    icon:"compass",
+    title:"מנהיגות עצמית מתוך בחירה חופשית",
+    text:"כשהפעולה מונעת מערכים מדויקים וחזון ברור, העשייה הופכת לטבעית, קולחת ומלאת השראה. השיטה מעבירה אותך לפעולה מתוך תשוקה, הגשמה וסדר עדיפויות פנימי — להוביל את חייך בביטחון מלא ובנחישות רכה.",
   },
   {
-    icon: "shield-check",
-    title: "עיגון סומטי של נוכחות, רוגע וחוסן",
-    text: "חוסן מנטלי נמדד ביכולת להישאר יציב ורגוע גם בלב סערה. בטכניקות עומק סומטיות ועוגנים תחושתיים (VAKOG) אנו מטמיעים במערכת הנוירולוגית גישה מיידית למצבי משאב גבוהים — בהירות מוחלטת ושקט פנימי בזמן אמת.",
+    icon:"shield-check",
+    title:"עיגון סומטי של נוכחות, רוגע וחוסן",
+    text:"חוסן מנטלי נמדד ביכולת להישאר יציב ורגוע גם בלב סערה. בטכניקות עומק סומטיות ועוגנים תחושתיים (VAKOG) אנו מטמיעים במערכת הנוירולוגית גישה מיידית למצבי משאב גבוהים — בהירות מוחלטת ושקט פנימי בזמן אמת.",
   },
 ];
 
 const VISION_JOURNEY = [
-  { step: "01", stage: "כיול המצפן האישי", focus: "זיקוק מטרות מדויקות, חיוביות ומעוררות השראה בעלות חיבור רגשי עמוק.", result: "סנכרון מלא של תת-המודע לעבר השגת המטרות בבהירות ובמיקוד." },
-  { step: "02", stage: "יציבות דינמית ואינטגרציה", focus: "איחוד החלקים הפנימיים ליצירת סנכרון בין חופש, יצירתיות ומבנה יציב.", result: "זרימה מלאה בעשייה, הרמוניה פנימית ופתיחת אפשרויות חדשות." },
-  { step: "03", stage: "שחרור פוטנציאל לאורך קו הזמן", focus: "הענקת משאבים ולמידות חיוביות לזיכרון הקיים, וחיזוק הערך העצמי.", result: "תחושת ערך עצמי מוחלטת, חופש פעולה ורוגע פנימי עמוק." },
-  { step: "04", stage: "התקנת עוגני עוצמה ונסיקה", focus: "חיווט נוירולוגי של מצבי משאב גבוהים ותרגומם לצעדי איכות ביום-יום.", result: "מנהיגות עצמית, חוסן רגשי גבוה ויכולת מימוש גבוהה." },
+  { step:"01", stage:"כיול המצפן האישי", focus:"זיקוק מטרות מדויקות, חיוביות ומעוררות השראה בעלות חיבור רגשי עמוק.", result:"סנכרון מלא של תת-המודע לעבר השגת המטרות בבהירות ובמיקוד." },
+  { step:"02", stage:"יציבות דינמית ואינטגרציה", focus:"איחוד החלקים הפנימיים ליצירת סנכרון בין חופש, יצירתיות ומבנה יציב.", result:"זרימה מלאה בעשייה, הרמוניה פנימית ופתיחת אפשרויות חדשות." },
+  { step:"03", stage:"שחרור פוטנציאל לאורך קו הזמן", focus:"הענקת משאבים ולמידות חיוביות לזיכרון הקיים, וחיזוק הערך העצמי.", result:"תחושת ערך עצמי מוחלטת, חופש פעולה ורוגע פנימי עמוק." },
+  { step:"04", stage:"התקנת עוגני עוצמה ונסיקה", focus:"חיווט נוירולוגי של מצבי משאב גבוהים ותרגומם לצעדי איכות ביום-יום.", result:"מנהיגות עצמית, חוסן רגשי גבוה ויכולת מימוש גבוהה." },
 ];
 
 function Vision() {
   return (
-    <section id="vision" className="py-20 sm:py-28 overflow-hidden" style={{ background: "linear-gradient(180deg, #FFF8F0 0%, #FDFBF7 100%)" }}>
+    <section id="vision" className="py-20 sm:py-28 overflow-hidden" style={{ background:"linear-gradient(180deg, #FFF8F0 0%, #FDFBF7 100%)" }}>
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[760px] mx-auto mb-6">
           <Eyebrow>החזון והשיטה</Eyebrow>
@@ -752,7 +752,7 @@ function Vision() {
               <div className="px-5 py-4">התוצאה בשטח</div>
             </div>
             {VISION_JOURNEY.map((r, i) => (
-              <div key={r.step} className={`grid grid-cols-[auto_1.3fr_1.3fr] text-[15px] ${i % 2 ? "bg-gold-50/50" : "bg-white"}`}>
+              <div key={r.step} className={`grid grid-cols-[auto_1.3fr_1.3fr] text-[15px] ${i % 2 ?"bg-gold-50/50" :"bg-white"}`}>
                 <div className="px-5 py-4 font-heading font-extrabold text-gold-600 text-[20px] flex items-start gap-2">
                   <span>{r.step}</span>
                 </div>
@@ -769,7 +769,7 @@ function Vision() {
         {/* כרטיס ציטוט מרכזי */}
         <Reveal className="max-w-[860px] mx-auto">
           <div className="relative rounded-3xl bg-ink-800 px-8 py-12 sm:px-14 text-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(194,151,74,.18), transparent 70%)" }} aria-hidden="true" />
+            <div className="absolute inset-0 pointer-events-none" style={{ background:"radial-gradient(60% 60% at 50% 0%, rgba(194,151,74,.18), transparent 70%)" }} aria-hidden="true" />
             <span className="relative font-heading text-gold-400 text-[64px] leading-none block mb-2" aria-hidden="true">”</span>
             <p className="relative font-heading font-bold text-white text-[20px] sm:text-[26px] leading-[1.6] mb-5">
               המפתח לעוצמה אמיתית אינו טמון במאמץ חיצוני, אלא ביכולת להתחבר למשאבים העמוקים של תת-המודע ולהוביל את חייך מתוך סמכות, שקט והגשמה מלאה.
@@ -857,7 +857,7 @@ function Workshops() {
     <section id="workshops" className="py-16 sm:py-24 bg-ink-800 relative overflow-hidden">
       <div
         className="absolute inset-0 -z-10 pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(50% 50% at 50% 0%, rgba(194,151,74,.25), transparent 70%)" }}
+        style={{ background:"radial-gradient(50% 50% at 50% 0%, rgba(194,151,74,.25), transparent 70%)" }}
         aria-hidden="true"
       />
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
@@ -896,34 +896,34 @@ function Workshops() {
 }
 
 function WorkshopSignupForm() {
-  const [form, setForm] = useState({ fullName: "", phone: "", email: "", workshop: "" });
+  const [form, setForm] = useState({ fullName:"", phone:"", email:"", workshop:"" });
   const [status, setStatus] = useState("idle"); // idle | loading | done | error
   const [errorMsg, setErrorMsg] = useState("");
 
   const workshopOptions = [
-    "סדנת חוסן רגשי לנוער",
-    "סדנאות לנשים",
-    "סדנה לארגון / בית ספר",
-    "עדיין לא בטוח/ה — אשמח לייעוץ",
+"סדנת חוסן רגשי לנוער",
+"סדנאות לנשים",
+"סדנה לארגון / בית ספר",
+"עדיין לא בטוח/ה — אשמח לייעוץ",
   ];
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
-    if (status === "error") setStatus("idle");
+    if (status ==="error") setStatus("idle");
   }
 
   function submit(e) {
     e.preventDefault();
-    if (status === "loading") return;
+    if (status ==="loading") return;
     setStatus("loading");
     fetch("/api/workshop-signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method:"POST",
+      headers: {"Content-Type":"application/json" },
       body: JSON.stringify(form),
     })
       .then(async (r) => {
         const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data.error || "משהו השתבש — נסי שוב");
+        if (!r.ok) throw new Error(data.error ||"משהו השתבש — נסי שוב");
         setStatus("done");
       })
       .catch((err) => {
@@ -933,12 +933,12 @@ function WorkshopSignupForm() {
   }
 
   const inputCls =
-    "w-full rounded-xl border border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
+"w-full rounded-xl border border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
 
   return (
     <Reveal className="mt-14 max-w-[640px] mx-auto">
       <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-[0_24px_56px_-16px_rgba(0,0,0,0.4)]">
-        {status === "done" ? (
+        {status ==="done" ? (
           <div className="text-center py-6">
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gold-100 text-gold-600 mb-4">
               <Icon name="check-circle-2" size={28} />
@@ -979,7 +979,7 @@ function WorkshopSignupForm() {
               required
               value={form.workshop}
               onChange={(e) => update("workshop", e.target.value)}
-              className={`${inputCls} ${form.workshop ? "" : "text-ink-300"}`}
+              className={`${inputCls} ${form.workshop ?"" :"text-ink-300"}`}
             >
               <option value="" disabled>
                 באיזו סדנה מדובר?
@@ -990,13 +990,13 @@ function WorkshopSignupForm() {
                 </option>
               ))}
             </select>
-            {status === "error" && <p className="text-[14px] text-red-500 font-medium text-center">{errorMsg}</p>}
+            {status ==="error" && <p className="text-[14px] text-red-500 font-medium text-center">{errorMsg}</p>}
             <button
               type="submit"
-              disabled={status === "loading"}
+              disabled={status ==="loading"}
               className="w-full py-4 rounded-full bg-gold-500 text-white font-heading font-bold text-[17px] hover:bg-gold-600 transition-colors disabled:opacity-50 mt-1"
             >
-              {status === "loading" ? "שולחת..." : "שמרי לי מקום בסדנה"}
+              {status ==="loading" ?"שולחת..." :"שמרי לי מקום בסדנה"}
             </button>
           </form>
         )}
@@ -1010,16 +1010,16 @@ function WorkshopSignupForm() {
 /* ---------------------------------------------------------------- */
 
 function PlanCard({ plan, idx }) {
-  const waText = `היי קטי! אני מעוניינ/ת ב${plan.title} 🌿`;
-  const payLink = PAYMENT_LINKS[plan.id] || "";
+  const waText = `היי קטי! אני מעוניינ/ת ב${plan.title} `;
+  const payLink = PAYMENT_LINKS[plan.id] ||"";
   const ctaHref = payLink || `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(waText)}`;
   return (
     <Reveal
       style={{ transitionDelay: `${idx * 80}ms` }}
       className={`relative flex flex-col rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 ${
         plan.highlight
-          ? "bg-ink-800 shadow-[0_24px_56px_-16px_rgba(194,151,74,0.45)] ring-2 ring-gold-400"
-          : "bg-white border border-ink-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]"
+          ?"bg-ink-800 shadow-[0_24px_56px_-16px_rgba(194,151,74,0.45)] ring-2 ring-gold-400"
+          :"bg-white border border-ink-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]"
       }`}
     >
       {plan.badge && (
@@ -1034,21 +1034,21 @@ function PlanCard({ plan, idx }) {
       <div className="flex items-center gap-3 mb-5">
         <span
           className={`inline-flex items-center justify-center w-12 h-12 rounded-xl shrink-0 ${
-            plan.highlight ? "bg-gold-500/20 text-gold-400" : "bg-gold-50 text-gold-600"
+            plan.highlight ?"bg-gold-500/20 text-gold-400" :"bg-gold-50 text-gold-600"
           }`}
         >
           <Icon name={plan.icon} size={24} />
         </span>
-        <h3 className={`font-heading font-bold text-[22px] leading-tight ${plan.highlight ? "text-white" : "text-ink-800"}`}>
+        <h3 className={`font-heading font-bold text-[22px] leading-tight ${plan.highlight ?"text-white" :"text-ink-800"}`}>
           {plan.title}
         </h3>
       </div>
 
       <div className="mb-1">
-        <span className={`font-heading font-extrabold text-[42px] leading-none ${plan.highlight ? "text-gold-400" : "text-gold-600"}`}>
+        <span className={`font-heading font-extrabold text-[42px] leading-none ${plan.highlight ?"text-gold-400" :"text-gold-600"}`}>
           {plan.price}
         </span>
-        <span className={`text-[17px] mr-2 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>{plan.priceNote}</span>
+        <span className={`text-[17px] mr-2 ${plan.highlight ?"text-ink-300" :"text-ink-400"}`}>{plan.priceNote}</span>
       </div>
       {plan.trial && (
         <p className="text-[15px] font-semibold mb-4" style={{ color: plan.badgeColor }}>
@@ -1056,10 +1056,10 @@ function PlanCard({ plan, idx }) {
         </p>
       )}
 
-      <ul className={`flex flex-col gap-3 flex-1 mt-4 mb-7 ${plan.highlight ? "text-ink-200" : "text-ink-600"}`}>
+      <ul className={`flex flex-col gap-3 flex-1 mt-4 mb-7 ${plan.highlight ?"text-ink-200" :"text-ink-600"}`}>
         {plan.features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-[18px] leading-[1.6]">
-            <Icon name="check" size={19} className={`mt-1.5 shrink-0 ${plan.highlight ? "text-gold-400" : "text-gold-500"}`} />
+            <Icon name="check" size={19} className={`mt-1.5 shrink-0 ${plan.highlight ?"text-gold-400" :"text-gold-500"}`} />
             {f}
           </li>
         ))}
@@ -1071,14 +1071,14 @@ function PlanCard({ plan, idx }) {
         rel="noopener noreferrer"
         className={`w-full py-4 rounded-full text-center font-heading font-semibold text-[17px] transition-all duration-300 hover:-translate-y-0.5 ${
           plan.highlight
-            ? "bg-gold-500 text-white hover:bg-gold-400 shadow-[0_8px_24px_-8px_rgba(194,151,74,0.6)]"
-            : "bg-gold-50 text-gold-700 border border-gold-200 hover:bg-gold-100"
+            ?"bg-gold-500 text-white hover:bg-gold-400 shadow-[0_8px_24px_-8px_rgba(194,151,74,0.6)]"
+            :"bg-gold-50 text-gold-700 border border-gold-200 hover:bg-gold-100"
         }`}
       >
         {payLink ? `${plan.cta} · תשלום מאובטח` : plan.cta}
       </a>
       {payLink && (
-        <p className={`text-center text-[12px] mt-2 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>
+        <p className={`text-center text-[12px] mt-2 ${plan.highlight ?"text-ink-300" :"text-ink-400"}`}>
           לאחר התשלום תקבלי קוד אישי לכניסה למערכת
         </p>
       )}
@@ -1088,7 +1088,7 @@ function PlanCard({ plan, idx }) {
 
 function Plans() {
   return (
-    <section id="plans" className="py-16 sm:py-24" style={{ background: "linear-gradient(180deg, #FAFAF8 0%, #FFF8F0 100%)" }}>
+    <section id="plans" className="py-16 sm:py-24" style={{ background:"linear-gradient(180deg, #FAFAF8 0%, #FFF8F0 100%)" }}>
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[640px] mx-auto mb-4">
           <Eyebrow>{CONTENT.plans.eyebrow}</Eyebrow>
@@ -1135,9 +1135,9 @@ function Plans() {
 
         <Reveal className="text-center mt-10">
           <p className="text-ink-400 text-[14px]">
-            לסדנאות לארגונים, בתי ספר ועמותות —{" "}
+            לסדנאות לארגונים, בתי ספר ועמותות —{""}
             <a
-              href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("היי קטי! אני מעוניינ/ת בסדנה לארגון/בית ספר, אשמח לקבל פרטים 🌿")}`}
+              href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent("היי קטי! אני מעוניינ/ת בסדנה לארגון/בית ספר, אשמח לקבל פרטים")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-gold-600 font-semibold hover:underline"
@@ -1180,7 +1180,7 @@ function Testimonials({ quotes }) {
             aria-selected={i === idx}
             aria-label={`עדות ${i + 1}`}
             onClick={() => setIdx(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${i === idx ? "bg-gold-500 w-6" : "bg-ink-100"}`}
+            className={`w-2.5 h-2.5 rounded-full transition-all ${i === idx ?"bg-gold-500 w-6" :"bg-ink-100"}`}
           />
         ))}
       </div>
@@ -1189,7 +1189,7 @@ function Testimonials({ quotes }) {
 }
 
 /* CureMindset ON AIR — הבמה הדיגיטלית של קטי: רדיו/ספוטיפיי, יוטיוב ומאמרים.
-   מחליף את דף "תוצאות" — שומר על id="results" כדי שהתפריט ימשיך לעבוד. */
+   מחליף את דף"תוצאות" — שומר על id="results" כדי שהתפריט ימשיך לעבוד. */
 
 function OnAirButton({ href, bg, children, block }) {
   return (
@@ -1198,7 +1198,7 @@ function OnAirButton({ href, bg, children, block }) {
       target="_blank"
       rel="noopener noreferrer"
       className={`font-heading font-bold text-[16px] text-white rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 shadow-soft ${
-        block ? "block text-center px-8 py-4 mx-auto max-w-[340px] mt-6" : "inline-block px-6 py-3"
+        block ?"block text-center px-8 py-4 mx-auto max-w-[340px] mt-6" :"inline-block px-6 py-3"
       }`}
       style={{ background: bg }}
     >
@@ -1221,10 +1221,10 @@ function OnAirZoneTitle({ icon, title, subtitle }) {
 
 function Results() {
   return (
-    <section id="results" className="py-20 sm:py-28 relative overflow-hidden" style={{ background: "linear-gradient(180deg, #FDFBF7 0%, #FFF8F0 100%)" }}>
+    <section id="results" className="py-20 sm:py-28 relative overflow-hidden" style={{ background:"linear-gradient(180deg, #FDFBF7 0%, #FFF8F0 100%)" }}>
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(50% 40% at 50% 0%, rgba(194,151,74,.10), transparent 70%)" }}
+        style={{ background:"radial-gradient(50% 40% at 50% 0%, rgba(194,151,74,.10), transparent 70%)" }}
         aria-hidden="true"
       />
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7 relative">
@@ -1257,12 +1257,12 @@ function Results() {
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               הצטרפו אליי לתוכניות עומק מרתקות שבהן אנו מפרקים חסמים פנימיים, לומדים לנהל מתחים ומחווטים מחדש את המיינדסט לחוסן רגשי.
             </p>
-            <OnAirButton href={mediaHref(MEDIA_LINKS.radio, "היי קטי! אשמח לקישור לתוכניות הרדיו שלך")} bg="#c5a880">
+            <OnAirButton href={mediaHref(MEDIA_LINKS.radio,"היי קטי! אשמח לקישור לתוכניות הרדיו שלך")} bg="#c5a880">
               להאזנה לתוכניות המלאות בארכיון הרדיו
             </OnAirButton>
           </Reveal>
 
-          <Reveal style={{ transitionDelay: "80ms" }} className="rounded-2xl bg-white border border-ink-100 p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
+          <Reveal style={{ transitionDelay:"80ms" }} className="rounded-2xl bg-white border border-ink-100 p-8 flex flex-col items-start gap-4 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gold-50 border border-gold-200 text-gold-600">
               <Icon name="headphones" size={26} />
             </span>
@@ -1279,10 +1279,10 @@ function Results() {
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                 loading="lazy"
                 title="פרק פודקאסט של קטי שגב"
-                style={{ borderRadius: "12px" }}
+                style={{ borderRadius:"12px" }}
               ></iframe>
             )}
-            <OnAirButton href={mediaHref(MEDIA_LINKS.spotify, "היי קטי! אשמח לקישור לפודקאסט שלך בספוטיפיי")} bg="#1DB954">
+            <OnAirButton href={mediaHref(MEDIA_LINKS.spotify,"היי קטי! אשמח לקישור לפודקאסט שלך בספוטיפיי")} bg="#1DB954">
               לפתוח את CureMindset ב-Spotify
             </OnAirButton>
           </Reveal>
@@ -1294,8 +1294,8 @@ function Results() {
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[
-            { title: "עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", link: MEDIA_LINKS.video1 },
-            { title: "טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", link: MEDIA_LINKS.video2 },
+            { title:"עומס רגשי אצל בני נוער – איך מזהים ומעניקים חוסן פנימי?", link: MEDIA_LINKS.video1 },
+            { title:"טכניקות NLP מנצחות לשבירת חרדה חברתית בלייב", link: MEDIA_LINKS.video2 },
           ].map((v, i) => (
             <Reveal key={v.title} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl overflow-hidden bg-white border border-ink-100 transition-all duration-300 hover:-translate-y-1 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)]">
               {v.link ? (
@@ -1323,7 +1323,7 @@ function Results() {
           ))}
         </div>
         <Reveal>
-          <OnAirButton href={mediaHref(MEDIA_LINKS.youtubeChannel, "היי קטי! אשמח לקישור לערוץ היוטיוב שלך")} bg="#ff0000" block>
+          <OnAirButton href={mediaHref(MEDIA_LINKS.youtubeChannel,"היי קטי! אשמח לקישור לערוץ היוטיוב שלך")} bg="#ff0000" block>
             למעבר לערוץ ה-YouTube והרשמה
           </OnAirButton>
         </Reveal>
@@ -1352,14 +1352,14 @@ function ArticlesGrid() {
 
   // כרטיסים קבועים (נפילה): הקישור מגיע מ-MEDIA_LINKS, ואם ריק — מהלינקטרי/וואטסאפ.
   const fallback = [
-    { title: "מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה", link: MEDIA_LINKS.article1 },
-    { title: "חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי", link: MEDIA_LINKS.article2 },
+    { title:"מחיווט מחדש לפריצת דרך: שיטת CureMindset ככלי לשינוי דפוסי חשיבה", link: MEDIA_LINKS.article1 },
+    { title:"חוסן רגשי ומיינדסט מנצח להורים ומתבגרים בעידן הדיגיטלי", link: MEDIA_LINKS.article2 },
   ];
 
   const cards =
     items && items.length
       ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
-      : fallback.map((a) => ({ title: a.title, link: mediaHref(a.link, `היי קטי! אשמח לקישור למאמר: ${a.title}`), desc: "" }));
+      : fallback.map((a) => ({ title: a.title, link: mediaHref(a.link, `היי קטי! אשמח לקישור למאמר: ${a.title}`), desc:"" }));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1394,7 +1394,7 @@ function FinalCta() {
           <h2 className="font-heading font-bold text-ink-800 text-[28px] sm:text-[38px] mb-4">{CONTENT.finalCta.title}</h2>
           <p className="text-ink-500 text-[17px] mb-9">{CONTENT.finalCta.text}</p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית 🌿")} target="_blank" rel="noopener noreferrer" size="lg" icon="whatsapp">
+            <Button as="a" href={waLink("היי קטי! אשמח לקבוע שיחה ראשונית")} target="_blank" rel="noopener noreferrer" size="lg" icon="whatsapp">
               {CONTENT.finalCta.ctaPrimary}
             </Button>
             <Button as="a" href="#workshops" variant="secondary" size="lg" icon="arrow-left" iconPos="end">
@@ -1421,8 +1421,8 @@ function Footer() {
               <img
                 src="images/logo.png"
                 alt="CureMindset — By Kety Segev"
-                style={{ height: 72, width: "auto", objectFit: "contain" }}
-                onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
+                style={{ height: 72, width:"auto", objectFit:"contain" }}
+                onError={(e) => { e.currentTarget.parentElement.style.display ="none"; }}
               />
             </div>
             <p className="text-ink-300 text-[14px] leading-relaxed mt-4 max-w-[280px]">{CONTENT.footer.tagline}</p>
@@ -1449,7 +1449,7 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href={`tel:${CONTACT.phoneDisplay.replace(/-/g, "")}`} className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
+                <a href={`tel:${CONTACT.phoneDisplay.replace(/-/g,"")}`} className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
                   <Icon name="phone" size={16} />
                   {CONTACT.phoneDisplay}
                 </a>
@@ -1472,7 +1472,7 @@ function Footer() {
 function WhatsAppFloat() {
   return (
     <a
-      href={waLink("היי קטי! אשמח לדבר 🌿")}
+      href={waLink("היי קטי! אשמח לדבר")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="פתיחת שיחה בוואטסאפ"

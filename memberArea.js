@@ -2,7 +2,7 @@
 // Wrapped in an IIFE so top-level declarations never collide with app.js's globals;
 // communication with app.js happens only through window.* (Icon, Button, CONTACT).
 (function () {
-  "use strict";
+"use strict";
 
   const { useState, useEffect } = React;
   const Icon = window.Icon;
@@ -13,8 +13,8 @@
   /* Persistence                                                       */
   /* ---------------------------------------------------------------- */
 
-  const PROGRESS_KEY = "cm_protocol_progress";
-  const SESSIONS_KEY = "cm_grounding_sessions";
+  const PROGRESS_KEY ="cm_protocol_progress";
+  const SESSIONS_KEY ="cm_grounding_sessions";
 
   function loadProgress() {
     try {
@@ -50,7 +50,7 @@
     }
   }
 
-  const DEVICE_TOKEN_KEY = "cm_device_token";
+  const DEVICE_TOKEN_KEY ="cm_device_token";
 
   // The device token is the client's private credential: a random 122-bit UUID.
   // Every server query is scoped to it, so data is readable only with this exact
@@ -71,12 +71,12 @@
     }
   }
 
-  const AGE_GROUP_KEY = "cm_age_group_set";
-  const AUTH_TOKEN_KEY = "cm_auth_token";
-  const AUTH_NAME_KEY = "cm_auth_name";
+  const AGE_GROUP_KEY ="cm_age_group_set";
+  const AUTH_TOKEN_KEY ="cm_auth_token";
+  const AUTH_NAME_KEY ="cm_auth_name";
 
   function getAuthToken() {
-    try { return localStorage.getItem(AUTH_TOKEN_KEY) || ""; } catch (e) { return ""; }
+    try { return localStorage.getItem(AUTH_TOKEN_KEY) ||""; } catch (e) { return""; }
   }
   function setAuth(token, name) {
     try {
@@ -89,7 +89,7 @@
   }
   // כותרות לכל קריאה לשרת: מזהה מכשיר + אסימון התחברות (אם מחוברים).
   function authHeaders(extra) {
-    const h = Object.assign({ "X-Device-Token": getDeviceToken() }, extra || {});
+    const h = Object.assign({"X-Device-Token": getDeviceToken() }, extra || {});
     const t = getAuthToken();
     if (t) h["X-Auth-Token"] = t;
     return h;
@@ -107,20 +107,20 @@
       if (!selected) return;
       setSaving(true);
       fetch("/api/profile", {
-        method: "PUT",
-        headers: authHeaders({ "Content-Type": "application/json" }),
+        method:"PUT",
+        headers: authHeaders({"Content-Type":"application/json" }),
         body: JSON.stringify({ ageGroup: selected }),
       })
         .catch(() => {})
         .finally(() => {
-          localStorage.setItem(AGE_GROUP_KEY, "1");
+          localStorage.setItem(AGE_GROUP_KEY,"1");
           onDone(selected);
         });
     }
 
     const options = [
-      { value: "adult", label: "מבוגר/ת", desc: "18+", icon: "user" },
-      { value: "youth", label: "נוער", desc: "עד גיל 18", icon: "users" },
+      { value:"adult", label:"מבוגר/ת", desc:"18+", icon:"user" },
+      { value:"youth", label:"נוער", desc:"עד גיל 18", icon:"users" },
     ];
 
     return (
@@ -140,14 +140,14 @@
               onClick={() => setSelected(opt.value)}
               className={`flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl border-2 transition-all ${
                 selected === opt.value
-                  ? "border-gold-500 bg-gold-50"
-                  : "border-ink-200 bg-ink-50 hover:border-gold-300"
+                  ?"border-gold-500 bg-gold-50"
+                  :"border-ink-200 bg-ink-50 hover:border-gold-300"
               }`}
             >
-              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value ? "bg-gold-500 text-white" : "bg-ink-200 text-ink-600"}`}>
+              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value ?"bg-gold-500 text-white" :"bg-ink-200 text-ink-600"}`}>
                 <Icon name={opt.icon} size={20} />
               </span>
-              <span className={`font-heading font-bold text-[15px] ${selected === opt.value ? "text-gold-700" : "text-ink-700"}`}>{opt.label}</span>
+              <span className={`font-heading font-bold text-[15px] ${selected === opt.value ?"text-gold-700" :"text-ink-700"}`}>{opt.label}</span>
               <span className="text-[12px] text-ink-400">{opt.desc}</span>
             </button>
           ))}
@@ -158,7 +158,7 @@
           onClick={confirm}
           className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
         >
-          {saving ? "שומר..." : "מתחילים"}
+          {saving ?"שומר..." :"מתחילים"}
         </button>
       </div>
     );
@@ -169,7 +169,7 @@
   /* ---------------------------------------------------------------- */
 
   // Shown as a blocking overlay when the trial expired (dismissible=false), or as a
-  // dismissible sheet when the client taps "יש לי קוד" from the trial banner.
+  // dismissible sheet when the client taps"יש לי קוד" from the trial banner.
   function AccessGate({ expired, onUnlocked, onClose, onExit, onShowSummary }) {
     const [code, setCode] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | error
@@ -177,16 +177,16 @@
 
     function redeem() {
       const trimmed = code.trim();
-      if (!trimmed || status === "loading") return;
+      if (!trimmed || status ==="loading") return;
       setStatus("loading");
       fetch("/api/access/redeem", {
-        method: "POST",
-        headers: authHeaders({ "Content-Type": "application/json" }),
+        method:"POST",
+        headers: authHeaders({"Content-Type":"application/json" }),
         body: JSON.stringify({ code: trimmed }),
       })
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
-          if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
+          if (!r.ok) throw new Error(data.error ||"משהו השתבש, נסי שוב");
           onUnlocked(data);
         })
         .catch((e) => {
@@ -202,12 +202,12 @@
         </div>
         <div>
           <p className="font-heading font-bold text-[18px] text-ink-800">
-            {expired ? "תקופת ההתנסות שלך הסתיימה" : "הפעלת קוד אישי"}
+            {expired ?"תקופת ההתנסות שלך הסתיימה" :"הפעלת קוד אישי"}
           </p>
           <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
             {expired
-              ? "כדי להמשיך את המסע — בחרי מסלול ובצעי תשלום, ומיד תקבלי ממני קוד אישי לכניסה."
-              : "קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח."}
+              ?"כדי להמשיך את המסע — בחרי מסלול ובצעי תשלום, ומיד תקבלי ממני קוד אישי לכניסה."
+              :"קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח."}
           </p>
         </div>
 
@@ -216,19 +216,19 @@
             type="text"
             value={code}
             onChange={(e) => { setCode(e.target.value); setStatus("idle"); }}
-            onKeyDown={(e) => e.key === "Enter" && redeem()}
+            onKeyDown={(e) => e.key ==="Enter" && redeem()}
             placeholder="CM-XXXX-XXXX"
             dir="ltr"
             className="w-full text-center tracking-widest font-heading font-bold text-[16px] py-3.5 rounded-2xl border-2 border-ink-200 focus:border-gold-500 outline-none text-ink-800 placeholder:text-ink-300"
           />
-          {status === "error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
+          {status ==="error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
           <button
             type="button"
-            disabled={!code.trim() || status === "loading"}
+            disabled={!code.trim() || status ==="loading"}
             onClick={redeem}
             className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
           >
-            {status === "loading" ? "בודק..." : "הפעלת הקוד"}
+            {status ==="loading" ?"בודק..." :"הפעלת הקוד"}
           </button>
         </div>
 
@@ -239,7 +239,7 @@
               onClick={onShowSummary}
               className="w-full py-3 rounded-2xl bg-gold-50 border border-gold-300 text-gold-700 font-heading font-bold text-[14px] hover:bg-gold-100 transition-colors"
             >
-              🌟 מה עברתי במסע — הסיכום שלי
+ מה עברתי במסע — הסיכום שלי
             </button>
             <button
               type="button"
@@ -288,23 +288,23 @@
 
     const s = data.stats;
     const statItems = [
-      { value: data.journeyDay, label: "ימים במסע" },
-      { value: s.checkins, label: "שיחות צ'ק-אין" },
-      { value: s.groundingSessions, label: "תרגילי קרקוע" },
-      { value: s.tasksDone, label: "משימות שהושלמו" },
-    ].filter((it) => it.value > 0 || it.label === "ימים במסע");
+      { value: data.journeyDay, label:"ימים במסע" },
+      { value: s.checkins, label:"שיחות צ'ק-אין" },
+      { value: s.groundingSessions, label:"תרגילי קרקוע" },
+      { value: s.tasksDone, label:"משימות שהושלמו" },
+    ].filter((it) => it.value > 0 || it.label ==="ימים במסע");
 
     const emailBody = [
       `סיכום המסע שלי ב-CureMindset · ${data.journeyDay} ימים`,
-      "",
+"",
       `שיחות צ'ק-אין: ${s.checkins}`,
-      `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief ? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)` : ""}`,
+      `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief ? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)` :""}`,
       `משימות יומיות שהושלמו: ${s.tasksDone} מתוך ${s.tasksTotal}`,
-      "",
-      data.wins.length ? "הניצחונות שלי:\n" + data.wins.map((w) => `• ${w.title || w.text}`).join("\n") : "",
-      data.patterns.length ? "\nדפוסים שזיהינו יחד:\n" + data.patterns.map((p) => `• ${p.title}`).join("\n") : "",
-      "",
-      "CureMindset · שיטת קטי שגב",
+"",
+      data.wins.length ?"הניצחונות שלי:\n" + data.wins.map((w) => `• ${w.title || w.text}`).join("\n") :"",
+      data.patterns.length ?"\nדפוסים שזיהינו יחד:\n" + data.patterns.map((p) => `• ${p.title}`).join("\n") :"",
+"",
+"CureMindset · שיטת קטי שגב",
     ].join("\n");
     const mailtoHref = `mailto:?subject=${encodeURIComponent("סיכום המסע שלי ב-CureMindset")}&body=${encodeURIComponent(emailBody)}`;
 
@@ -337,7 +337,7 @@
 
           {data.wins.length > 0 && (
             <div>
-              <p className="font-heading font-bold text-[15px] text-ink-800 mb-2.5">הניצחונות שלך 🌟</p>
+              <p className="font-heading font-bold text-[15px] text-ink-800 mb-2.5">הניצחונות שלך </p>
               <ul className="flex flex-col gap-2">
                 {data.wins.map((w, i) => (
                   <li key={i} className="flex items-start gap-2.5 rounded-xl bg-ink-50 px-3.5 py-3 text-[13.5px] text-ink-700 leading-snug">
@@ -359,7 +359,7 @@
                 {data.patterns.map((p, i) => (
                   <li key={i} className="rounded-xl border border-ink-100 px-3.5 py-3 text-[13.5px] text-ink-600 leading-snug">
                     <span className="font-semibold text-ink-800">{p.title}</span>
-                    {p.description ? ` — ${p.description}` : ""}
+                    {p.description ? ` — ${p.description}` :""}
                   </li>
                 ))}
               </ul>
@@ -367,7 +367,7 @@
           )}
 
           <div className="rounded-2xl bg-gold-50 border border-gold-200 px-5 py-5 text-center">
-            <p className="font-heading font-bold text-[16px] text-ink-800">זה רק השער הראשון של המסע 🌿</p>
+            <p className="font-heading font-bold text-[16px] text-ink-800">זה רק השער הראשון של המסע </p>
             <p className="text-[13px] text-ink-600 mt-1.5 leading-relaxed">
               העבודה האמיתית על הדפוס שזיהינו מתחילה עכשיו. בליווי הדיגיטלי נמשיך יחד — יום אחר יום, בקצב שלך.
             </p>
@@ -396,7 +396,7 @@
     return (
       <div className="flex items-center justify-between gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
         <span className="text-[12.5px] text-gold-700 font-medium">
-          ניסיון חינם — {daysLeft === 1 ? "יום אחרון" : `נותרו ${daysLeft} ימים`}
+          ניסיון חינם — {daysLeft === 1 ?"יום אחרון" : `נותרו ${daysLeft} ימים`}
         </span>
         <button type="button" onClick={onEnterCode} className="text-[12.5px] font-bold text-gold-700 underline shrink-0">
           יש לי קוד אישי
@@ -410,13 +410,13 @@
   /* ---------------------------------------------------------------- */
 
   const STAGES = [
-    { id: 1, icon: "anchor", title: "עוגן", subtitle: "יצירת יציבות ראשונית ועוגן רגשי" },
-    { id: 2, icon: "compass", title: "גבול ההבחנה", subtitle: "הפרדה בין רגש, מחשבה ומציאות" },
-    { id: 3, icon: "footprints", title: "קרקוע", subtitle: "חזרה לגוף ולכאן ועכשיו" },
-    { id: 4, icon: "sparkles", title: "מדד חוסן", subtitle: "השיקוף האישי שלך", alwaysUnlocked: true },
-    { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
-    { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
-    { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
+    { id: 1, icon:"anchor", title:"עוגן", subtitle:"יצירת יציבות ראשונית ועוגן רגשי" },
+    { id: 2, icon:"compass", title:"גבול ההבחנה", subtitle:"הפרדה בין רגש, מחשבה ומציאות" },
+    { id: 3, icon:"footprints", title:"קרקוע", subtitle:"חזרה לגוף ולכאן ועכשיו" },
+    { id: 4, icon:"sparkles", title:"מדד חוסן", subtitle:"השיקוף האישי שלך", alwaysUnlocked: true },
+    { id: 5, icon:"message-circle", title:"צ'ק-אין", subtitle:"שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
+    { id: 6, icon:"book-open", title:"החומרים שלי", subtitle:"חומרים שהוקצו לך אישית", alwaysUnlocked: true },
+    { id: 7, icon:"check-circle", title:"משימות יומיות", subtitle:"המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
   ];
 
   /* ---------------------------------------------------------------- */
@@ -425,7 +425,7 @@
 
   function Field({ icon, label, value, onChange, placeholder, textarea }) {
     const inputClass =
-      "w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 text-[14px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-gold-300";
+"w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 text-[14px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-gold-300";
     return (
       <label className="block">
         <span className="flex items-center gap-2 mb-2 text-[13px] font-heading font-semibold text-ink-700">
@@ -459,7 +459,7 @@
         type="button"
         onClick={onClick}
         className={`px-3.5 py-2 rounded-full text-[13px] font-heading font-semibold border transition-colors ${
-          active ? "bg-gold-500 text-white border-gold-500" : "bg-white text-ink-600 border-ink-200 hover:border-gold-300"
+          active ?"bg-gold-500 text-white border-gold-500" :"bg-white text-ink-600 border-ink-200 hover:border-gold-300"
         }`}
       >
         {children}
@@ -473,7 +473,7 @@
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}
-            className={`h-1.5 rounded-full transition-all ${i + 1 === current ? "w-6 bg-gold-500" : "w-1.5 bg-ink-200"}`}
+            className={`h-1.5 rounded-full transition-all ${i + 1 === current ?"w-6 bg-gold-500" :"w-1.5 bg-ink-200"}`}
           />
         ))}
       </div>
@@ -523,7 +523,7 @@
           iconPos="end"
           disabled={!canContinue}
           onClick={() => canContinue && onComplete(anchorWord.trim())}
-          style={!canContinue ? { opacity: 0.45, cursor: "not-allowed" } : undefined}
+          style={!canContinue ? { opacity: 0.45, cursor:"not-allowed" } : undefined}
         >
           השלמתי את העוגן · למעבר לשלב הבא
         </Button>
@@ -587,13 +587,13 @@
   /* Stage 3 — Grounding (3-2-1 protocol)                               */
   /* ---------------------------------------------------------------- */
 
-  const TENSION_AREAS = ["כתפיים", "חזה", "בטן", "צוואר וגרון", "ידיים", "ראש"];
+  const TENSION_AREAS = ["כתפיים","חזה","בטן","צוואר וגרון","ידיים","ראש"];
 
   function GroundStage({ onComplete }) {
     const [step, setStep] = useState(1);
     const [tension, setTension] = useState([]);
-    const [seen, setSeen] = useState(["", "", ""]);
-    const [heard, setHeard] = useState(["", ""]);
+    const [seen, setSeen] = useState(["","",""]);
+    const [heard, setHeard] = useState(["",""]);
     const [felt, setFelt] = useState("");
     const [score, setScore] = useState(50);
     const [saved, setSaved] = useState(false);
@@ -612,8 +612,8 @@
     function resetForAnotherRound() {
       setStep(1);
       setTension([]);
-      setSeen(["", "", ""]);
-      setHeard(["", ""]);
+      setSeen(["","",""]);
+      setHeard(["",""]);
       setFelt("");
       setScore(50);
       setSaved(false);
@@ -721,7 +721,7 @@
             </div>
             <BreathingOrb />
             <p className="text-center font-heading font-bold text-xl text-ink-800 leading-snug px-2">
-              "אני כאן. עכשיו.
+"אני כאן. עכשיו.
               <br />
               אני בטוח/ה ברגע הזה."
             </p>
@@ -799,7 +799,7 @@
             <span
               key={i}
               className="cm-wave-bar w-2 rounded-full bg-gradient-to-t from-gold-300 to-gold-500"
-              style={{ height: "100%", animationDelay: `${i * 0.12}s` }}
+              style={{ height:"100%", animationDelay: `${i * 0.12}s` }}
             />
           ))}
         </div>
@@ -811,13 +811,13 @@
   function CheckInComposer({ text, setText, onSend, disabled }) {
     const filled = text.trim().length > 0;
     return (
-      <div className="cm-fade-in-soft" style={{ animationDelay: "0.15s" }}>
+      <div className="cm-fade-in-soft" style={{ animationDelay:"0.15s" }}>
         <div
           className="relative rounded-3xl border backdrop-blur-xl transition-all duration-500"
           style={{
-            borderColor: filled ? "rgba(211,168,87,0.65)" : "rgba(255,255,255,0.12)",
-            boxShadow: filled ? "0 0 34px -6px rgba(211,168,87,0.45)" : "0 0 0 rgba(0,0,0,0)",
-            background: "rgba(255,255,255,0.05)",
+            borderColor: filled ?"rgba(211,168,87,0.65)" :"rgba(255,255,255,0.12)",
+            boxShadow: filled ?"0 0 34px -6px rgba(211,168,87,0.45)" :"0 0 0 rgba(0,0,0,0)",
+            background:"rgba(255,255,255,0.05)",
           }}
         >
           <textarea
@@ -836,7 +836,7 @@
               disabled={!filled || disabled}
               aria-label="שליחה"
               className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-gold-300 to-gold-500 text-ink-800 shadow-soft transition-all ${
-                filled && !disabled ? "cm-send-pulse opacity-100 scale-100" : "opacity-35 scale-95"
+                filled && !disabled ?"cm-send-pulse opacity-100 scale-100" :"opacity-35 scale-95"
               }`}
             >
               <Icon name="arrow-up" size={18} strokeWidth={2.5} />
@@ -879,7 +879,7 @@
             <Icon name="sparkles" size={14} className="text-gold-400 shrink-0" />
             <span className="font-heading font-semibold text-[14px] text-white">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
           </span>
-          <Icon name={open ? "chevron-up" : "chevron-down"} size={16} className="text-white/50 shrink-0" />
+          <Icon name={open ?"chevron-up" :"chevron-down"} size={16} className="text-white/50 shrink-0" />
         </button>
         {open && (
           <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-white/70 space-y-3" dir="rtl">
@@ -913,18 +913,18 @@
 
     async function handleSend() {
       const trimmed = text.trim();
-      if (!trimmed || status === "loading") return;
+      if (!trimmed || status ==="loading") return;
       setStatus("loading");
       setShowDashboard(false);
       try {
         const res = await fetch("/api/checkin", {
-          method: "POST",
-          headers: authHeaders({ "Content-Type": "application/json" }),
+          method:"POST",
+          headers: authHeaders({"Content-Type":"application/json" }),
           body: JSON.stringify({ text: trimmed }),
         });
         if (!res.ok) throw new Error("request failed");
         const data = await res.json();
-        setReply(data.reply || "תודה שחלקת את זה איתי. אני כאן.");
+        setReply(data.reply ||"תודה שחלקת את זה איתי. אני כאן.");
         setDashboardData(data.dashboard || null);
         if (onDashboardUpdate) onDashboardUpdate(data.dashboard || null);
         setStatus("done");
@@ -947,7 +947,7 @@
         <div className="pointer-events-none absolute bottom-[-90px] -left-12 h-64 w-64 rounded-full bg-gold-300/15 blur-3xl cm-glow-drift-slow" />
 
         <div className="relative z-10 px-1 pb-4">
-          {status === "idle" || status === "error" ? (
+          {status ==="idle" || status ==="error" ? (
             <>
               <header className="mb-6 px-1 cm-fade-in-soft">
                 <div className="flex items-center gap-2 mb-3">
@@ -961,8 +961,8 @@
                 </p>
               </header>
               <NeuroplasticityIntro />
-              <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
-              {status === "error" ? (
+              <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status ==="loading"} />
+              {status ==="error" ? (
                 <div className="cm-fade-in-soft mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center">
                   <p className="text-[13px] leading-relaxed text-white/60">לא הצלחנו כרגע להתחבר אלייך — זה בסדר, את לא לבד. נסי שוב בעוד רגע.</p>
                 </div>
@@ -970,9 +970,9 @@
             </>
           ) : null}
 
-          {status === "loading" ? <ListeningWaveform /> : null}
+          {status ==="loading" ? <ListeningWaveform /> : null}
 
-          {status === "done" ? (
+          {status ==="done" ? (
             <div className="space-y-6">
               <div className="cm-fade-in-soft rounded-3xl border border-gold-400/25 bg-white/[0.04] px-5 py-5 backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2.5">
@@ -1005,10 +1005,10 @@
   /* ---------------------------------------------------------------- */
 
   const MATERIAL_TYPE_META = {
-    audio: { icon: "headphones", label: "קובץ שמע" },
-    worksheet: { icon: "file-text", label: "דף עבודה" },
-    summary: { icon: "book-open", label: "סיכום פגישה" },
-    other: { icon: "file-text", label: "חומר" },
+    audio: { icon:"headphones", label:"קובץ שמע" },
+    worksheet: { icon:"file-text", label:"דף עבודה" },
+    summary: { icon:"book-open", label:"סיכום פגישה" },
+    other: { icon:"file-text", label:"חומר" },
   };
 
   function MaterialCard({ material }) {
@@ -1026,7 +1026,7 @@
           </div>
         </div>
         <div className="mt-3">
-          {material.type === "audio" ? (
+          {material.type ==="audio" ? (
             <audio controls src={material.url} className="w-full" />
           ) : (
             <a
@@ -1089,19 +1089,19 @@
   /* ---------------------------------------------------------------- */
 
   const TASK_CATEGORY_ICONS = {
-    breathing: "wind",
-    journaling: "pen-line",
-    movement: "activity",
-    social: "users",
-    mindfulness: "sparkles",
+    breathing:"wind",
+    journaling:"pen-line",
+    movement:"activity",
+    social:"users",
+    mindfulness:"sparkles",
   };
 
   const TASK_CATEGORY_LABELS = {
-    breathing: "נשימה",
-    journaling: "כתיבה",
-    movement: "תנועה",
-    social: "חברתי",
-    mindfulness: "מיינדפולנס",
+    breathing:"נשימה",
+    journaling:"כתיבה",
+    movement:"תנועה",
+    social:"חברתי",
+    mindfulness:"מיינדפולנס",
   };
 
   function TasksStage() {
@@ -1117,7 +1117,7 @@
 
     function completeTask(id) {
       setCompleting(id);
-      fetch(`/api/tasks/${id}/complete`, { method: "POST", headers: authHeaders() })
+      fetch(`/api/tasks/${id}/complete`, { method:"POST", headers: authHeaders() })
         .then(() => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: 1 } : t))))
         .finally(() => setCompleting(null));
     }
@@ -1149,13 +1149,13 @@
             {pending.map((task) => (
               <div key={task.id} className="rounded-2xl border border-gold-200 bg-gold-50 px-4 py-4 flex items-start gap-3">
                 <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gold-100 text-gold-600 shrink-0 mt-0.5">
-                  <Icon name={TASK_CATEGORY_ICONS[task.category] || "sparkles"} size={17} />
+                  <Icon name={TASK_CATEGORY_ICONS[task.category] ||"sparkles"} size={17} />
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="font-heading font-semibold text-ink-800 text-[14px] mb-0.5">{task.title}</p>
                   <p className="text-[13px] text-ink-500 leading-snug">{task.description}</p>
                   <span className="inline-block mt-2 text-[11px] px-2 py-0.5 rounded-full bg-gold-100 text-gold-700 font-medium">
-                    {TASK_CATEGORY_LABELS[task.category] || "כללי"}
+                    {TASK_CATEGORY_LABELS[task.category] ||"כללי"}
                   </span>
                 </div>
                 <button
@@ -1163,7 +1163,7 @@
                   disabled={completing === task.id}
                   className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-gold-500 text-white hover:bg-gold-600 transition-colors disabled:opacity-50"
                 >
-                  {completing === task.id ? "..." : "עשיתי!"}
+                  {completing === task.id ?"..." :"עשיתי!"}
                 </button>
               </div>
             ))}
@@ -1232,7 +1232,7 @@
             <Icon name="bell" size={18} />
             {unread > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
-                {unread > 9 ? "9+" : unread}
+                {unread > 9 ?"9+" : unread}
               </span>
             )}
           </button>
@@ -1263,17 +1263,17 @@
                 disabled={locked}
                 onClick={() => !locked && onSelect(s.id)}
                 className={`flex flex-col items-center gap-1.5 flex-1 py-1 rounded-xl transition-colors ${
-                  locked ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-gold-50"
+                  locked ?"opacity-40 cursor-not-allowed" :"cursor-pointer hover:bg-gold-50"
                 }`}
               >
                 <span
                   className={`w-9 h-9 rounded-full flex items-center justify-center ${
-                    isCurrent ? "bg-gold-500 text-white" : done ? "bg-gold-100 text-gold-600" : "bg-ink-100 text-ink-400"
+                    isCurrent ?"bg-gold-500 text-white" : done ?"bg-gold-100 text-gold-600" :"bg-ink-100 text-ink-400"
                   }`}
                 >
-                  <Icon name={locked ? "lock" : done && !isCurrent ? "check-circle-2" : s.icon} size={16} />
+                  <Icon name={locked ?"lock" : done && !isCurrent ?"check-circle-2" : s.icon} size={16} />
                 </span>
-                <span className={`text-[10.5px] font-heading font-semibold ${isCurrent ? "text-ink-800" : "text-ink-400"}`}>{s.title}</span>
+                <span className={`text-[10.5px] font-heading font-semibold ${isCurrent ?"text-ink-800" :"text-ink-400"}`}>{s.title}</span>
               </button>
               {i < stages.length - 1 ? <span className="h-px w-3 bg-ink-100 mt-[-14px]" aria-hidden="true" /> : null}
             </React.Fragment>
@@ -1299,16 +1299,16 @@
     }, []);
 
     function markAllRead() {
-      fetch("/api/notifications/read-all", { method: "POST", headers: authHeaders() });
+      fetch("/api/notifications/read-all", { method:"POST", headers: authHeaders() });
       setNotifications((prev) => prev.map((n) => ({ ...n, read: 1 })));
     }
 
     function markRead(id) {
-      fetch(`/api/notifications/${id}/read`, { method: "POST", headers: authHeaders() });
+      fetch(`/api/notifications/${id}/read`, { method:"POST", headers: authHeaders() });
       setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: 1 } : n));
     }
 
-    const typeIcon = { reminder: "clock", win: "trophy", info: "info" };
+    const typeIcon = { reminder:"clock", win:"trophy", info:"info" };
 
     return (
       <div className="absolute inset-0 z-30 bg-white flex flex-col" dir="rtl">
@@ -1329,13 +1329,13 @@
               key={n.id}
               type="button"
               onClick={() => markRead(n.id)}
-              className={`w-full text-right flex gap-3 px-5 py-4 transition-colors hover:bg-gold-50 ${n.read ? "opacity-60" : "bg-gold-50/40"}`}
+              className={`w-full text-right flex gap-3 px-5 py-4 transition-colors hover:bg-gold-50 ${n.read ?"opacity-60" :"bg-gold-50/40"}`}
             >
-              <span className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type === "win" ? "bg-gold-100 text-gold-600" : "bg-ink-100 text-ink-500"}`}>
-                <Icon name={typeIcon[n.type] || "bell"} size={15} />
+              <span className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type ==="win" ?"bg-gold-100 text-gold-600" :"bg-ink-100 text-ink-500"}`}>
+                <Icon name={typeIcon[n.type] ||"bell"} size={15} />
               </span>
               <div className="flex-1 min-w-0">
-                <p className={`text-[13px] leading-snug ${n.read ? "text-ink-500" : "text-ink-800 font-medium"}`}>{n.message}</p>
+                <p className={`text-[13px] leading-snug ${n.read ?"text-ink-500" :"text-ink-800 font-medium"}`}>{n.message}</p>
                 <p className="text-[11px] text-ink-400 mt-1">{new Date(n.created_at).toLocaleDateString("he-IL")}</p>
               </div>
               {!n.read && <span className="w-2 h-2 rounded-full bg-gold-500 mt-1.5 shrink-0" />}
@@ -1356,26 +1356,26 @@
 
   function AuthGate({ onAuthed, onExit }) {
     const [mode, setMode] = useState("register"); // register | login
-    const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+    const [form, setForm] = useState({ fullName:"", email:"", password:"" });
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
     const [agreed, setAgreed] = useState(false); // הסכמה לתנאים (חובה בהרשמה)
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
-      if (status === "error") setStatus("idle");
+      if (status ==="error") setStatus("idle");
     }
 
     function submit(e) {
       e.preventDefault();
-      if (status === "loading") return;
+      if (status ==="loading") return;
       setStatus("loading");
-      const url = mode === "register" ? "/api/auth/register" : "/api/auth/login";
-      const body = mode === "register" ? form : { email: form.email, password: form.password };
-      fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      const url = mode ==="register" ?"/api/auth/register" :"/api/auth/login";
+      const body = mode ==="register" ? form : { email: form.email, password: form.password };
+      fetch(url, { method:"POST", headers: {"Content-Type":"application/json" }, body: JSON.stringify(body) })
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
-          if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
+          if (!r.ok) throw new Error(data.error ||"משהו השתבש, נסי שוב");
           setAuth(data.token, data.fullName);
           onAuthed();
         })
@@ -1383,7 +1383,7 @@
     }
 
     const inputCls =
-      "w-full rounded-2xl border-2 border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
+"w-full rounded-2xl border-2 border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
 
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col justify-center px-7 overflow-y-auto py-8" dir="rtl">
@@ -1393,24 +1393,24 @@
               <Icon name="heart-handshake" size={26} className="text-gold-600" />
             </div>
             <p className="font-heading font-extrabold text-[20px] text-ink-800">
-              {mode === "register" ? "הרשמה לאזור האישי" : "כניסה לאזור האישי"}
+              {mode ==="register" ?"הרשמה לאזור האישי" :"כניסה לאזור האישי"}
             </p>
             <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
-              {mode === "register"
-                ? "פותחים חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
-                : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
+              {mode ==="register"
+                ?"פותחים חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
+                :"טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
             </p>
           </div>
 
           <form onSubmit={submit} className="flex flex-col gap-3">
-            {mode === "register" && (
+            {mode ==="register" && (
               <input type="text" required value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className={inputCls} />
             )}
             <input type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
             <input type="password" required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
 
             {/* הסכמה משפטית — הצהרת AI, אי-ייעוץ רפואי ותנאי שימוש (חובה בהרשמה) */}
-            {mode === "register" && (
+            {mode ==="register" && (
               <div className="mt-1">
                 <p className="text-[12px] font-semibold text-ink-700 mb-1.5">תנאי שימוש, הצהרת AI ואי-ייעוץ רפואי:</p>
                 <div className="h-28 overflow-y-auto rounded-xl border border-ink-200 bg-ink-50 p-3 text-[11.5px] leading-relaxed text-ink-600 space-y-2">
@@ -1427,20 +1427,20 @@
               </div>
             )}
 
-            {status === "error" && <p className="text-[13.5px] text-red-500 font-medium text-center">{errorMsg}</p>}
+            {status ==="error" && <p className="text-[13.5px] text-red-500 font-medium text-center">{errorMsg}</p>}
             <button
               type="submit"
-              disabled={status === "loading" || (mode === "register" && !agreed)}
+              disabled={status ==="loading" || (mode ==="register" && !agreed)}
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors disabled:opacity-40 mt-1"
             >
-              {status === "loading" ? "רק רגע..." : mode === "register" ? "יוצרים חשבון ומתחילים" : "כניסה"}
+              {status ==="loading" ?"רק רגע..." : mode ==="register" ?"יוצרים חשבון ומתחילים" :"כניסה"}
             </button>
           </form>
 
           <p className="text-center text-[13.5px] text-ink-500 mt-5">
-            {mode === "register" ? "כבר יש לך חשבון?" : "עדיין אין לך חשבון?"}{" "}
-            <button type="button" onClick={() => { setMode(mode === "register" ? "login" : "register"); setStatus("idle"); }} className="font-bold text-gold-700 underline">
-              {mode === "register" ? "להתחברות" : "להרשמה"}
+            {mode ==="register" ?"כבר יש לך חשבון?" :"עדיין אין לך חשבון?"}{""}
+            <button type="button" onClick={() => { setMode(mode ==="register" ?"login" :"register"); setStatus("idle"); }} className="font-bold text-gold-700 underline">
+              {mode ==="register" ?"להתחברות" :"להרשמה"}
             </button>
           </p>
 
@@ -1464,24 +1464,24 @@
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(AGE_GROUP_KEY));
-    // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
+    // access: null = still checking; { status:"trial"|"code"|"expired", daysLeft }
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
     const [showSummary, setShowSummary] = useState(false);
 
     useEffect(() => {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow ="hidden";
       return () => {
-        document.body.style.overflow = "";
+        document.body.style.overflow ="";
       };
     }, []);
 
     useEffect(() => {
       if (!loggedIn) return;
       fetch("/api/access", { headers: authHeaders() })
-        .then((res) => (res.ok ? res.json() : { status: "trial", daysLeft: 14 }))
+        .then((res) => (res.ok ? res.json() : { status:"trial", daysLeft: 14 }))
         .then(setAccess)
-        .catch(() => setAccess({ status: "trial", daysLeft: 14 }));
+        .catch(() => setAccess({ status:"trial", daysLeft: 14 }));
     }, [loggedIn]);
 
     useEffect(() => {
@@ -1493,7 +1493,7 @@
     }, [loggedIn]);
 
     function logout() {
-      fetch("/api/auth/logout", { method: "POST", headers: authHeaders() }).catch(() => {});
+      fetch("/api/auth/logout", { method:"POST", headers: authHeaders() }).catch(() => {});
       clearAuth();
       setLoggedIn(false);
       onExit();
@@ -1516,7 +1516,7 @@
 
     const stage = STAGES.find((s) => s.id === current);
 
-    const expired = access && access.status === "expired";
+    const expired = access && access.status ==="expired";
 
     // שער כניסה: בלי חשבון מחובר — אין גישה לאזור האישי.
     if (!loggedIn) {
@@ -1529,8 +1529,8 @@
 
     return (
       <PhoneFrame>
-        <Header subtitle={stage ? stage.subtitle : ""} onExit={logout} onNotifications={() => setShowNotifications(true)} />
-        {access && access.status === "trial" && (
+        <Header subtitle={stage ? stage.subtitle :""} onExit={logout} onNotifications={() => setShowNotifications(true)} />
+        {access && access.status ==="trial" && (
           <TrialBanner daysLeft={access.daysLeft} onEnterCode={() => setShowCodeEntry(true)} />
         )}
         <StageNav stages={STAGES} progress={progress} current={current} onSelect={setCurrent} />
