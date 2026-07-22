@@ -1192,14 +1192,22 @@ function Testimonials({ quotes }) {
    מחליף את דף "תוצאות" — שומר על id="results" כדי שהתפריט ימשיך לעבוד. */
 
 function OnAirButton({ href, bg, children, block }) {
+  const layout = block ? "block text-center px-8 py-4 mx-auto max-w-[340px] mt-6" : "inline-block px-6 py-3";
+  // If no real link is set yet, show a calm "coming soon" chip instead of sending
+  // the visitor to WhatsApp — cleaner and clearer.
+  if (!href) {
+    return (
+      <span className={`font-heading font-bold text-[16px] rounded-full ${layout}`} style={{ background: "#efe7d6", color: "#8a7a56" }}>
+        {children} · בקרוב
+      </span>
+    );
+  }
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`font-heading font-bold text-[16px] text-white rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 shadow-soft ${
-        block ? "block text-center px-8 py-4 mx-auto max-w-[340px] mt-6" : "inline-block px-6 py-3"
-      }`}
+      className={`font-heading font-bold text-[16px] text-white rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:opacity-90 shadow-soft ${layout}`}
       style={{ background: bg }}
     >
       {children}
@@ -1257,7 +1265,7 @@ function Results() {
             <p className="text-[18px] leading-[1.6] text-ink-600 flex-1">
               הצטרפו אליי לתוכניות עומק מרתקות שבהן אנו מפרקים חסמים פנימיים, לומדים לנהל מתחים ומחווטים מחדש את המיינדסט לחוסן רגשי.
             </p>
-            <OnAirButton href={mediaHref(MEDIA_LINKS.radio, "היי קטי! אשמח לקישור לתוכניות הרדיו שלך")} bg="#c5a880">
+            <OnAirButton href={MEDIA_LINKS.radio} bg="#c5a880">
               להאזנה לתוכניות המלאות בארכיון הרדיו
             </OnAirButton>
           </Reveal>
@@ -1282,7 +1290,7 @@ function Results() {
                 style={{ borderRadius: "12px" }}
               ></iframe>
             )}
-            <OnAirButton href={mediaHref(MEDIA_LINKS.spotify, "היי קטי! אשמח לקישור לפודקאסט שלך בספוטיפיי")} bg="#1DB954">
+            <OnAirButton href={MEDIA_LINKS.spotify} bg="#1DB954">
               לפתוח את CureMindset ב-Spotify
             </OnAirButton>
           </Reveal>
@@ -1323,7 +1331,7 @@ function Results() {
           ))}
         </div>
         <Reveal>
-          <OnAirButton href={mediaHref(MEDIA_LINKS.youtubeChannel, "היי קטי! אשמח לקישור לערוץ היוטיוב שלך")} bg="#ff0000" block>
+          <OnAirButton href={MEDIA_LINKS.youtubeChannel} bg="#ff0000" block>
             למעבר לערוץ ה-YouTube והרשמה
           </OnAirButton>
         </Reveal>
@@ -1359,7 +1367,7 @@ function ArticlesGrid() {
   const cards =
     items && items.length
       ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
-      : fallback.map((a) => ({ title: a.title, link: mediaHref(a.link, `היי קטי! אשמח לקישור למאמר: ${a.title}`), desc: "" }));
+      : fallback.map((a) => ({ title: a.title, link: a.link || "", desc: "" }));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1368,14 +1376,20 @@ function ArticlesGrid() {
           <span className="font-heading font-semibold text-[13px] tracking-[0.18em] text-gold-600">מהבלוג של קטי</span>
           <h4 className="font-heading font-bold text-[24px] leading-tight text-ink-800 flex-1">{a.title}</h4>
           {a.desc ? <p className="text-[15px] text-ink-500 leading-relaxed">{a.desc}</p> : null}
-          <a
-            href={a.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] transition-all duration-300 hover:bg-gold-600 hover:-translate-y-0.5"
-          >
-            לקריאת המאמר המלא
-          </a>
+          {a.link ? (
+            <a
+              href={a.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[15px] transition-all duration-300 hover:bg-gold-600 hover:-translate-y-0.5"
+            >
+              לקריאת המאמר המלא
+            </a>
+          ) : (
+            <span className="inline-block self-start px-5 py-2.5 rounded-full bg-gold-100 text-gold-600 font-heading font-semibold text-[15px]">
+              בקרוב
+            </span>
+          )}
         </Reveal>
       ))}
     </div>
