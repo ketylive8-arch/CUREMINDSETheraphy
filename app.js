@@ -38,14 +38,14 @@ const PAYMENT_LINKS = {
    ואם גם הוא ריק — לוואטסאפ. אין יותר קישורי חיפוש גנריים.
    ═══════════════════════════════════════════════════════════════════ */
 const MEDIA_LINKS = {
-  linktree: "",        // ← הכניסי כאן את קישור ה-Linktree שלך (KETY SEGEV ON LINKTREE)
-  radio: "",           // ← קישור ישיר לארכיון תוכניות הרדיו שלך
-  spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",  // ← קישור ישיר לפרופיל/פודקאסט שלך בספוטיפיי
-  youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך
-  video1: "",          // ← קישור לסרטון יוטיוב 1 (עומס רגשי אצל בני נוער)
-  video2: "",          // ← קישור לסרטון יוטיוב 2 (טכניקות NLP לחרדה חברתית)
-  article1: "",        // ← קישור למאמר 1 (מחיווט מחדש לפריצת דרך)
-  article2: "",        // ← קישור למאמר 2 (חוסן רגשי להורים ומתבגרים)
+  linktree: "https://linktr.ee/Ketysegev",   // ספריית הקישורים המלאה של קטי (תרגולים ומדיה)
+  radio: "https://youtu.be/8q_5IAAJohQ?si=eL3RHvjbHDqWsuqj",  // רדיו חיפה
+  spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",
+  youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך (ריק → ייפול ללינקטרי)
+  video1: "https://www.youtube.com/watch?v=u2yy8yY_SN8",  // סרטון היכרות — "רוצים שינוי? תתחילו כאן"
+  video2: "",          // ← סרטון יוטיוב 2
+  article1: "",        // ← מאמר 1
+  article2: "",        // ← מאמר 2
 };
 
 /* קטי — קישורי הפגישות האונליין שלך (מוצגים מתחת למסלולים):
@@ -1331,7 +1331,7 @@ function Results() {
           ))}
         </div>
         <Reveal>
-          <OnAirButton href={MEDIA_LINKS.youtubeChannel} bg="#ff0000" block>
+          <OnAirButton href={MEDIA_LINKS.youtubeChannel || MEDIA_LINKS.linktree} bg="#ff0000" block>
             למעבר לערוץ ה-YouTube והרשמה
           </OnAirButton>
         </Reveal>
@@ -1367,7 +1367,7 @@ function ArticlesGrid() {
   const cards =
     items && items.length
       ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
-      : fallback.map((a) => ({ title: a.title, link: a.link || "", desc: "" }));
+      : fallback.map((a) => ({ title: a.title, link: a.link || MEDIA_LINKS.linktree, desc: "" }));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
