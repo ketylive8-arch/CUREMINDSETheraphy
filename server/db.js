@@ -6,9 +6,15 @@
 //
 // A tiny adapter below re-exposes the exact prepare().run/get/all + exec() API that
 // node:sqlite used, so none of the existing SQL across the codebase had to change.
+const path = require("node:path");
 const { Database } = require("node-sqlite3-wasm");
 
-const rawDb = new Database(":memory:");
+// Persist to a real SQLite file. On a persistent disk (set DB_FILE, e.g.
+// /data/curemindset.db) the data survives restarts AND redeploys — that's what
+// makes returning clients "remembered". Without a disk it still survives while the
+// instance is awake (much better than :memory:, which reset on every sleep).
+const DB_PATH = process.env.DB_FILE || path.join(__dirname, "curemindset.db");
+const rawDb = new Database(DB_PATH);
 
 // node-sqlite3-wasm takes bind params as an array; the codebase calls .run(a, b, c)
 // with spread args (node:sqlite style). Normalize both forms to an array.
