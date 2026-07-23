@@ -153,7 +153,9 @@ function parseRssItems(xml) {
 }
 
 app.get("/api/articles", async (req, res) => {
-  const rssUrl = process.env.ARTICLES_RSS_URL || "";
+  // Default to Kety's Blogspot Atom/RSS feed so her posts appear automatically;
+  // override with ARTICLES_RSS_URL on Render if the blog ever moves.
+  const rssUrl = process.env.ARTICLES_RSS_URL || "https://ketysegev.blogspot.com/feeds/posts/default?alt=rss";
   if (!rssUrl) return res.json([]);
   if (Date.now() - articlesCache.at < 30 * 60 * 1000) return res.json(articlesCache.items);
   try {

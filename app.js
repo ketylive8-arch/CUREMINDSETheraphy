@@ -44,7 +44,7 @@ const MEDIA_LINKS = {
   youtubeChannel: "",  // ← קישור ישיר לערוץ היוטיוב שלך (ריק → ייפול ללינקטרי)
   video1: "https://www.youtube.com/watch?v=u2yy8yY_SN8",  // סרטון היכרות — "רוצים שינוי? תתחילו כאן"
   video2: "",          // ← סרטון יוטיוב 2
-  article1: "",        // ← מאמר 1
+  article1: "https://ketysegev.blogspot.com/2026/03/blog-post.html",  // מאמר חרדה
   article2: "",        // ← מאמר 2
 };
 
