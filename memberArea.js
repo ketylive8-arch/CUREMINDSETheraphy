@@ -1460,7 +1460,9 @@
   function MemberArea({ onExit }) {
     const [loggedIn, setLoggedIn] = useState(() => !!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
-    const [current, setCurrent] = useState(() => loadProgress().unlocked);
+    // Open on the AI check-in (stage 5, "צ'ק-אין") so a client who registers
+    // immediately meets the AI that asks questions — not the anchor exercise.
+    const [current, setCurrent] = useState(5);
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(AGE_GROUP_KEY));
