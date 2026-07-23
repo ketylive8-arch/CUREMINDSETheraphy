@@ -1404,10 +1404,10 @@
 
           <form onSubmit={submit} className="flex flex-col gap-3">
             {mode === "register" && (
-              <input type="text" required value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className={inputCls} />
+              <input type="text" name="name" autoComplete="name" required value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className={inputCls} />
             )}
-            <input type="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
-            <input type="password" required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
+            <input type="email" name="email" autoComplete="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
+            <input type="password" name="password" autoComplete={mode === "register" ? "new-password" : "current-password"} required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
 
             {/* הסכמה משפטית — הצהרת AI, אי-ייעוץ רפואי ותנאי שימוש (חובה בהרשמה) */}
             {mode === "register" && (
