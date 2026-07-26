@@ -909,6 +909,7 @@
     const [text, setText] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | done | error
     const [reply, setReply] = useState("");
+    const [errMsg, setErrMsg] = useState("");
     const [dashboardData, setDashboardData] = useState(null);
     const [showDashboard, setShowDashboard] = useState(false);
 
@@ -916,6 +917,7 @@
       const trimmed = text.trim();
       if (!trimmed || status === "loading") return;
       setStatus("loading");
+      setErrMsg("");
       setShowDashboard(false);
       try {
         const res = await fetch("/api/checkin", {
@@ -923,7 +925,17 @@
           headers: authHeaders({ "Content-Type": "application/json" }),
           body: JSON.stringify({ text: trimmed }),
         });
-        if (!res.ok) throw new Error("request failed");
+        if (!res.ok) {
+          // Surface WHY so it's clear when the AI engine isn't connected on the server.
+          setErrMsg(
+            res.status === 503
+              ? "מנוע ה-AI לא מחובר בשרת (חסר מפתח OPENAI_API_KEY ב-Render). ברגע שהמפתח יוגדר — התשובות המקצועיות יעבדו."
+              : res.status === 502
+              ? "מנוע ה-AI לא הצליח להשיב כרגע (ייתכן שהמפתח שגוי או שנגמר הקרדיט ב-OpenAI). נסי שוב עוד רגע."
+              : "השירות אינו זמין כרגע. נסי שוב עוד רגע."
+          );
+          throw new Error("request failed");
+        }
         const data = await res.json();
         setReply(data.reply || "תודה שחלקת את זה איתי. אני כאן.");
         setDashboardData(data.dashboard || null);
@@ -965,7 +977,7 @@
               <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
               {status === "error" ? (
                 <div className="cm-fade-in-soft mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center">
-                  <p className="text-[13px] leading-relaxed text-white/60">לא הצלחנו כרגע להתחבר אלייך — זה בסדר, את לא לבד. נסי שוב בעוד רגע.</p>
+                  <p className="text-[13px] leading-relaxed text-white/70">{errMsg || "לא הצלחנו כרגע להתחבר אלייך — נסי שוב בעוד רגע."}</p>
                 </div>
               ) : null}
             </>
