@@ -857,18 +857,18 @@ function Solution() {
 
 function Workshops() {
   return (
-    <section id="workshops" className="py-16 sm:py-24 bg-ink-800 relative overflow-hidden">
+    <section id="workshops" className="py-16 sm:py-24 relative overflow-hidden" style={{ background: "linear-gradient(180deg, #FFFFFF 0%, #FFF8F0 100%)" }}>
       <div
-        className="absolute inset-0 -z-10 pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(50% 50% at 50% 0%, rgba(194,151,74,.25), transparent 70%)" }}
+        className="absolute inset-0 -z-10 pointer-events-none opacity-60"
+        style={{ background: "radial-gradient(50% 50% at 50% 0%, rgba(194,151,74,.12), transparent 70%)" }}
         aria-hidden="true"
       />
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[680px] mx-auto mb-12">
-          <p className="font-heading text-[13px] font-semibold tracking-[0.18em] uppercase text-gold-400 mb-3">
+          <p className="font-heading text-[13px] font-semibold tracking-[0.18em] uppercase text-gold-600 mb-3">
             {CONTENT.workshops.eyebrow}
           </p>
-          <h2 className="font-heading font-bold text-white text-[26px] sm:text-[34px]">{CONTENT.workshops.title}</h2>
+          <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px]">{CONTENT.workshops.title}</h2>
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
@@ -876,17 +876,17 @@ function Workshops() {
             <Reveal
               key={it.title}
               style={{ transitionDelay: `${i * 90}ms` }}
-              className="bg-ink-700/60 border border-white/10 rounded-2xl p-7 flex flex-col gap-4 hover:-translate-y-1.5 hover:border-gold-500/40 transition-all"
+              className="bg-white border border-ink-100 rounded-2xl p-7 flex flex-col gap-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-1.5 hover:border-gold-300 hover:shadow-[0_28px_60px_-24px_rgba(194,151,74,0.45)] transition-all"
             >
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold-500/15 text-gold-400">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold-50 text-gold-600">
                 <Icon name={it.icon} size={22} />
               </span>
-              <h3 className="font-heading font-semibold text-white text-[18px]">{it.title}</h3>
-              <p className="flex items-center gap-1.5 text-[13px] text-gold-300/90 font-medium">
+              <h3 className="font-heading font-semibold text-ink-800 text-[18px]">{it.title}</h3>
+              <p className="flex items-center gap-1.5 text-[13px] text-gold-700 font-medium">
                 <Icon name="calendar" size={14} />
                 {it.meta}
               </p>
-              <p className="text-ink-200 text-[14.5px] leading-relaxed flex-1">{it.text}</p>
+              <p className="text-ink-600 text-[14.5px] leading-relaxed flex-1">{it.text}</p>
             </Reveal>
           ))}
         </div>
