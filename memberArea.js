@@ -989,6 +989,28 @@
               ) : null}
 
               {showDashboard ? (
+                <div className="cm-slide-up-in rounded-3xl border border-gold-400/30 bg-gold-400/[0.06] px-5 py-5 space-y-3.5">
+                  <p className="font-heading font-bold text-[15px] text-white">להעמיק את השינוי — הצעד הבא שלך</p>
+                  <p className="text-[13px] text-white/70 leading-relaxed">
+                    קבלי את התרגול וההמלצה האישית ישירות לוואטסאפ, והצטרפי לליווי המלא של CureMindset כדי להפוך את זה לשינוי שמחזיק.
+                  </p>
+                  <a
+                    href={`https://wa.me/972543032349?text=${encodeURIComponent("היי קטי! סיימתי שיחת ייעוץ דיגיטלית ואשמח לקבל את התרגול, הליווי וההמלצה האישית")}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-heading font-bold text-[14px] hover:opacity-90 transition-opacity"
+                  >
+                    <Icon name="whatsapp" size={18} /> קבלת התרגול והליווי בוואטסאפ
+                  </a>
+                  <a
+                    href="/#plans" target="_blank" rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[14px] hover:bg-gold-600 transition-colors"
+                  >
+                    להצטרפות לתוכניות הליווי המלאות
+                  </a>
+                </div>
+              ) : null}
+
+              {showDashboard ? (
                 <Button as="button" type="button" variant="secondary" className="w-full" icon="message-circle" onClick={startOver}>
                   שיחה נוספת
                 </Button>
