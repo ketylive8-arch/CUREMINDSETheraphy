@@ -417,6 +417,7 @@
     { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
     { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
+    { id: 8, icon: "graduation-cap", title: "התוכנית שלי", subtitle: "מסע CURE MINDSET · 14 יום במודולים", alwaysUnlocked: true },
   ];
 
   /* ---------------------------------------------------------------- */
@@ -1479,6 +1480,136 @@
     );
   }
 
+  /* ---------------------------------------------------------------- */
+  /* Stage 8 — Structured program: CURE MINDSET 14-day journey          */
+  /* ---------------------------------------------------------------- */
+
+  const PROGRAM_GATES = [
+    {
+      gate: "שער 1 · ימים 1–3",
+      title: "חוסן רגשי ועוגן",
+      days: [
+        { day: 1, title: "מד העומס הפנימי", focus: "לזהות איפה בגוף יושב הלחץ ומה עוצמתו.", practice: "שלוש נשימות עמוקות + יד על הלב — בוקר וערב." },
+        { day: 2, title: "העוגן האישי שלך", focus: "לבחור מילה או תחושה שמחזירה רוגע ברגע קשה.", practice: "להפעיל את העוגן פעם אחת ביום קושי." },
+        { day: 3, title: "עצירה לפני תגובה", focus: "לשים רווח קטן בין הטריגר לבין התגובה.", practice: "לפני שמגיבים — לעצור, לנשום, להפעיל עוגן." },
+      ],
+    },
+    {
+      gate: "שער 2 · ימים 4–7",
+      title: "דימוי עצמי",
+      days: [
+        { day: 4, title: "זיהוי האמונה המגבילה", focus: "לתפוס את המשפט הביקורתי שחוזר על עצמו.", practice: "לכתוב משפט אחד של ביקורת עצמית שעלה היום." },
+        { day: 5, title: "מאיפה זה הגיע?", focus: "לחקור בעדינות מתי נולדה האמונה הזו.", practice: "לשאול את עצמך: מתי למדתי לחשוב ככה?" },
+        { day: 6, title: "מסגור מחדש", focus: "להפוך \"אני לא מסוגל\" ל\"עדיין לא מצאתי איך\".", practice: "לנסח מחדש משפט מגביל אחד." },
+        { day: 7, title: "יומן ניצחונות", focus: "לאסוף ראיות שסותרות את האמונה הישנה.", practice: "לכתוב ניצחון קטן אחד מהיום." },
+      ],
+    },
+    {
+      gate: "שער 3 · ימים 8–11",
+      title: "שחרור חסמים וחמלה",
+      days: [
+        { day: 8, title: "הפרדה מהדפוס", focus: "לראות את הקושי מבחוץ, כמו צופה בסרט.", practice: "לתאר את הקושי בגוף שלישי, במשפט אחד." },
+        { day: 9, title: "חמלה עצמית", focus: "לדבר לעצמך כמו לחבר טוב, לא כמו שופט.", practice: "משפט חמלה אחד לעצמך היום." },
+        { day: 10, title: "שחרור מהצורך באישור", focus: "למקד ב\"איך אני מרגיש\" במקום \"מה חושבים עליי\".", practice: "לעשות פעולה קטנה אחת בלי לבקש אישור." },
+        { day: 11, title: "גבולות רכים", focus: "להגיד \"לא\" בלי אשמה מיותרת.", practice: "לתרגל \"לא\" קטן ומכבד אחד." },
+      ],
+    },
+    {
+      gate: "שער 4 · ימים 12–14",
+      title: "עוגני עוצמה לחיים",
+      days: [
+        { day: 12, title: "עוגן ניצחונות", focus: "לעגן בגוף זיכרון של הצלחה אמיתית.", practice: "להיזכר בהצלחה + מגע יד, ולהחזיק 30 שניות." },
+        { day: 13, title: "חזון קדימה", focus: "לדמיין את הגרסה החזקה והשלווה שלך.", practice: "לכתוב משפט חזון אחד בהווה: \"אני...\"." },
+        { day: 14, title: "ארגז הכלים שלי", focus: "לסכם את הכלים שעבדו לך הכי טוב.", practice: "לבחור 3 כלים לחיים ולקבוע שיחת המשך." },
+      ],
+    },
+  ];
+
+  const PROGRAM_KEY = "cm_program_done";
+  function loadProgramDone() {
+    try { return JSON.parse(localStorage.getItem(PROGRAM_KEY)) || []; } catch { return []; }
+  }
+
+  function ProgramStage({ onNavigateStage }) {
+    const [done, setDone] = useState(loadProgramDone);
+    const total = 14;
+    const completed = done.length;
+    function toggle(day) {
+      setDone((prev) => {
+        const next = prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day];
+        try { localStorage.setItem(PROGRAM_KEY, JSON.stringify(next)); } catch (e) {}
+        return next;
+      });
+    }
+    return (
+      <div className="space-y-7">
+        <div>
+          <p className="font-heading font-semibold text-[12px] tracking-[0.18em] text-gold-600 mb-1">CURE MINDSET</p>
+          <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · מסע 14 יום</h2>
+          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">תוכנית מובנית, יום אחרי יום — עם תרגול קצר ושיחת AI ממוקדת בכל שלב. בקצב שלך.</p>
+          <div className="mt-4">
+            <div className="flex items-center justify-between text-[12px] text-ink-500 mb-1.5">
+              <span>{completed} מתוך {total} ימים הושלמו</span>
+              <span>{Math.round((completed / total) * 100)}%</span>
+            </div>
+            <div className="h-2 rounded-full bg-ink-100 overflow-hidden">
+              <div className="h-full bg-gold-500 rounded-full transition-all duration-500" style={{ width: `${(completed / total) * 100}%` }} />
+            </div>
+          </div>
+        </div>
+
+        {PROGRAM_GATES.map((g) => (
+          <div key={g.gate}>
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="font-heading font-semibold text-[12px] text-gold-600">{g.gate}</span>
+              <span className="font-heading font-bold text-[15px] text-ink-800">· {g.title}</span>
+            </div>
+            <div className="space-y-3">
+              {g.days.map((d) => {
+                const isDone = done.includes(d.day);
+                return (
+                  <div key={d.day} className={`rounded-2xl border px-4 py-4 transition-colors ${isDone ? "border-gold-300 bg-gold-50" : "border-ink-100 bg-white"}`}>
+                    <div className="flex items-start gap-3">
+                      <button
+                        type="button"
+                        onClick={() => toggle(d.day)}
+                        aria-label={isDone ? "בטל סימון" : "סמן כהושלם"}
+                        className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center font-heading font-bold text-[14px] transition-colors ${isDone ? "bg-gold-500 text-white" : "bg-gold-50 text-gold-600 border border-gold-200"}`}
+                      >
+                        {isDone ? <Icon name="check-circle" size={18} /> : d.day}
+                      </button>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-heading font-bold text-[15px] text-ink-800">יום {d.day} · {d.title}</p>
+                        <p className="text-[13px] text-ink-600 mt-1 leading-relaxed">{d.focus}</p>
+                        <p className="text-[12.5px] text-gold-700 mt-1.5"><span className="font-semibold">תרגול:</span> {d.practice}</p>
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          <button
+                            type="button"
+                            onClick={() => onNavigateStage(5)}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12.5px] hover:bg-gold-600 transition-colors"
+                          >
+                            <Icon name="message-circle" size={14} /> שיחת AI ליום זה
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggle(d.day)}
+                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-ink-200 text-ink-600 font-heading font-semibold text-[12.5px] hover:border-gold-300 transition-colors"
+                          >
+                            {isDone ? "בטל סימון" : "סמן כהושלם"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   function MemberArea({ onExit }) {
     const [loggedIn, setLoggedIn] = useState(() => !!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
@@ -1570,7 +1701,11 @@
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
         {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
-        {current === 4 ? (
+        {current === 8 ? (
+          <div className="flex-1 overflow-y-auto px-5 py-6">
+            <ProgramStage onNavigateStage={navigateToStage} />
+          </div>
+        ) : current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
           </div>
