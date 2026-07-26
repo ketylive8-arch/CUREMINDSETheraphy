@@ -292,7 +292,7 @@ function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
 function Logo({ size = 48 }) {
   const [err, setErr] = useState(false);
   if (err) {
-    // סימן מותג טיפוגרפי נקי — עד שקטי מעלה קובץ לוגו ל-images/logo.png
+    // סימן מותג טיפוגרפי נקי — עד שקטי מעלה קובץ לוגו ל-images/logo.svg
     return (
       <div className="flex flex-col items-start leading-none select-none">
         <span className="font-heading font-extrabold text-[22px] tracking-tight">
@@ -305,7 +305,7 @@ function Logo({ size = 48 }) {
   }
   return (
     <img
-      src="images/logo.png"
+      src="images/logo.svg"
       alt="CureMindset — By Kety Segev"
       style={{ height: size, width: "auto", objectFit: "contain" }}
       onError={() => setErr(true)}
@@ -1433,7 +1433,7 @@ function Footer() {
           <div>
             <div className="inline-flex bg-white rounded-2xl p-4 shadow-soft">
               <img
-                src="images/logo.png"
+                src="images/logo.svg"
                 alt="CureMindset — By Kety Segev"
                 style={{ height: 72, width: "auto", objectFit: "contain" }}
                 onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
