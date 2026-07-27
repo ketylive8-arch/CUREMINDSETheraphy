@@ -11,7 +11,7 @@ const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
-const { registerAccount, loginAccount, destroySession, createSessionForAccount } = require("./auth");
+const { registerAccount, loginAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead } = require("./notify");
 
@@ -37,6 +37,32 @@ app.use((req, res, next) => {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "no-referrer");
   next();
+});
+
+// ── SEO: robots.txt + sitemap.xml (public, dynamic) ──
+// SITE_URL should be the canonical public address once the domain is live.
+const SITE_URL = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+app.get("/robots.txt", (req, res) => {
+  res
+    .type("text/plain")
+    .send(`User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+});
+app.get("/sitemap.xml", (req, res) => {
+  const today = new Date().toISOString().slice(0, 10);
+  // Single-page app: the canonical entry is "/". The blog lives on a separate host.
+  const urls = [{ loc: "/", pri: "1.0" }];
+  const body =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls
+      .map(
+        (u) =>
+          `  <url><loc>${SITE_URL}${u.loc}</loc><lastmod>${today}</lastmod>` +
+          `<changefreq>weekly</changefreq><priority>${u.pri}</priority></url>`
+      )
+      .join("\n") +
+    `\n</urlset>\n`;
+  res.type("application/xml").send(body);
 });
 
 app.use(express.json({ limit: "100kb" }));
@@ -67,8 +93,8 @@ function rateLimit(name, maxPerHour) {
 
 // ── אימות: הרשמה / התחברות / התנתקות (ציבורי, בלי מזהה מכשיר) ──
 app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
-  const { email, password, fullName, phone } = req.body || {};
-  const result = registerAccount({ email, password, fullName, phone });
+  const { email, password, fullName, phone, ref } = req.body || {};
+  const result = registerAccount({ email, password, fullName, phone, ref });
   if (result.error) return res.status(result.status).json({ error: result.error });
 
   // התראת מייל מיידית לקטי על לקוח/ה חדש/ה שנרשם/ה למערכת.
@@ -140,6 +166,15 @@ app.post("/api/auth/login", rateLimit("login", 20), async (req, res) => {
 app.post("/api/auth/logout", (req, res) => {
   destroySession(req.header("X-Auth-Token"));
   res.json({ ok: true });
+});
+
+// פרטי החשבון המחובר — שם, קוד הפניה אישי (חבר מביא חבר) ומספר המוזמנים.
+app.get("/api/auth/me", (req, res) => {
+  const accountId = accountIdFromToken(req.header("X-Auth-Token"));
+  if (!accountId) return res.status(401).json({ error: "לא מחובר" });
+  const summary = accountSummary(accountId);
+  if (!summary) return res.status(404).json({ error: "לא נמצא" });
+  res.json(summary);
 });
 
 app.post("/api/workshop-signup", (req, res) => {

@@ -150,6 +150,9 @@ const crmColumns = [
   "ALTER TABLE accounts ADD COLUMN otp_hash TEXT",
   "ALTER TABLE accounts ADD COLUMN otp_expires TEXT",
   "ALTER TABLE accounts ADD COLUMN otp_attempts INTEGER NOT NULL DEFAULT 0",
+  // חבר מביא חבר — קוד הפניה אישי + מי הזמין את החשבון.
+  "ALTER TABLE accounts ADD COLUMN ref_code TEXT",
+  "ALTER TABLE accounts ADD COLUMN referred_by TEXT",
 ];
 for (const stmt of crmColumns) {
   try {

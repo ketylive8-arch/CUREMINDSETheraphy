@@ -38,8 +38,33 @@ function destroySession(token) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// חבר מביא חבר — קוד הפניה קצר, קריא (בלי תווים מבלבלים).
+const REF_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function generateRefCode() {
+  let s = "";
+  for (let i = 0; i < 6; i++) s += REF_ALPHABET[crypto.randomInt(0, REF_ALPHABET.length)];
+  return s;
+}
+// מחזיר קוד הפניה קיים, או יוצר אחד ייחודי אם עדיין אין (גם לחשבונות ותיקים).
+function ensureRefCode(accountId) {
+  const row = db.prepare("SELECT ref_code FROM accounts WHERE id = ?").get(accountId);
+  if (row && row.ref_code) return row.ref_code;
+  let code;
+  do {
+    code = generateRefCode();
+  } while (db.prepare("SELECT 1 FROM accounts WHERE ref_code = ?").get(code));
+  db.prepare("UPDATE accounts SET ref_code = ? WHERE id = ?").run(code, accountId);
+  return code;
+}
+function accountSummary(accountId) {
+  const row = db.prepare("SELECT full_name FROM accounts WHERE id = ?").get(accountId);
+  if (!row) return null;
+  const referrals = db.prepare("SELECT COUNT(*) AS c FROM accounts WHERE referred_by = ?").get(accountId).c;
+  return { fullName: row.full_name, refCode: ensureRefCode(accountId), referrals };
+}
+
 // יוצר חשבון חדש + פרופיל מטופל + מתחיל את שעון 14 ימי הניסיון.
-function registerAccount({ email, password, fullName, phone }) {
+function registerAccount({ email, password, fullName, phone, ref }) {
   const normEmail = String(email || "").trim().toLowerCase();
   const name = String(fullName || "").trim();
   if (!EMAIL_RE.test(normEmail)) return { error: "כתובת מייל לא תקינה", status: 400 };
@@ -60,6 +85,16 @@ function registerAccount({ email, password, fullName, phone }) {
   ensurePatient(id);
   // מקשר את השם לכרטיס המטופל כדי שיופיע ב-CRM של קטי
   db.prepare("UPDATE patients SET display_name = ? WHERE device_token = ?").run(name.slice(0, 120), id);
+
+  // חבר מביא חבר: קוד הפניה אישי + שיוך המזמין (אם הגיעו דרך קישור הפניה).
+  ensureRefCode(id);
+  const refClean = String(ref || "").trim().toUpperCase().slice(0, 12);
+  if (refClean) {
+    const inviter = db.prepare("SELECT id FROM accounts WHERE ref_code = ?").get(refClean);
+    if (inviter && inviter.id !== id) {
+      db.prepare("UPDATE accounts SET referred_by = ? WHERE id = ?").run(inviter.id, id);
+    }
+  }
 
   // לא מנפיקים כאן טוקן: אם נדרש אימות טלפון (OTP) — הטוקן יונפק רק אחרי האימות
   // (ראה index.js). בזרימה ללא אימות, ה-endpoint מנפיק טוקן מיד.
@@ -93,4 +128,6 @@ module.exports = {
   accountIdFromToken,
   hashPassword,
   createSessionForAccount: createSession,
+  ensureRefCode,
+  accountSummary,
 };

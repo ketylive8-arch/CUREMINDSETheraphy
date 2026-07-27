@@ -87,6 +87,70 @@
   function clearAuth() {
     try { localStorage.removeItem(AUTH_TOKEN_KEY); localStorage.removeItem(AUTH_NAME_KEY); } catch (e) {}
   }
+
+  // חבר מביא חבר — קולטים ?ref= מהקישור בכניסה ושומרים אותו עד ההרשמה.
+  const REF_KEY = "cm_ref";
+  (function captureRef() {
+    try {
+      const r = (new URLSearchParams(location.search).get("ref") || "").trim();
+      if (r) localStorage.setItem(REF_KEY, r.toUpperCase().slice(0, 12));
+    } catch (e) {}
+  })();
+  function getRef() {
+    try { return localStorage.getItem(REF_KEY) || ""; } catch (e) { return ""; }
+  }
+
+  // חבר מביא חבר — כרטיס שיתוף ויראלי: שיתוף בוואטסאפ + קישור הפניה אישי.
+  function ShareInvite() {
+    const [me, setMe] = useState(null);
+    const [copied, setCopied] = useState(false);
+    useEffect(() => {
+      let alive = true;
+      fetch("/api/auth/me", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (alive) setMe(d); })
+        .catch(() => {});
+      return () => { alive = false; };
+    }, []);
+    const origin = (typeof location !== "undefined" && location.origin) || "https://ketysegev.com";
+    const link = me && me.refCode ? `${origin}/?ref=${me.refCode}` : origin;
+    const waText = `גיליתי משהו ששווה — CURE MINDSET של קטי שגב, שיטה לחוסן רגשי וביטחון עצמי 🌿 מוזמנ/ת להתחיל כאן: ${link}`;
+    const waHref = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+    function copyLink() {
+      try {
+        navigator.clipboard.writeText(link).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
+      } catch (e) {}
+    }
+    return (
+      <div className="cm-slide-up-in rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-3">
+        <p className="font-heading font-bold text-[15px] text-ink-800">אהבת? שתפי את זה הלאה 🌿</p>
+        <p className="text-[13px] text-ink-600 leading-relaxed">
+          כל מי שיצטרפ/ה דרך הקישור האישי שלך יתחיל/תתחיל את המסע — ואת עוזרת להם לצמוח.
+        </p>
+        <a
+          href={waHref} target="_blank" rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-heading font-bold text-[14px] hover:opacity-90 transition-opacity"
+        >
+          <Icon name="whatsapp" size={18} /> שיתוף בוואטסאפ
+        </a>
+        <div className="flex items-center gap-2">
+          <input
+            readOnly value={link} dir="ltr" onFocus={(e) => e.target.select()}
+            className="flex-1 min-w-0 rounded-xl border border-ink-200 bg-ink-50 px-3 py-2.5 text-[12.5px] text-ink-600 outline-none"
+          />
+          <button
+            type="button" onClick={copyLink}
+            className="shrink-0 px-4 py-2.5 rounded-xl bg-gold-500 text-white font-heading font-bold text-[13px] hover:bg-gold-600 transition-colors"
+          >
+            {copied ? "הועתק ✓" : "העתקה"}
+          </button>
+        </div>
+        {me && me.referrals > 0 ? (
+          <p className="text-[12.5px] text-gold-700 font-semibold text-center">כבר הזמנת {me.referrals} אנשים — כל הכבוד! 💛</p>
+        ) : null}
+      </div>
+    );
+  }
   // כותרות לכל קריאה לשרת: מזהה מכשיר + אסימון התחברות (אם מחוברים).
   function authHeaders(extra) {
     const h = Object.assign({ "X-Device-Token": getDeviceToken() }, extra || {});
@@ -1023,6 +1087,8 @@
                 </div>
               ) : null}
 
+              {showDashboard ? <ShareInvite /> : null}
+
               {showDashboard ? (
                 <Button as="button" type="button" variant="secondary" className="w-full" icon="message-circle" onClick={startOver}>
                   שיחה נוספת
@@ -1415,7 +1481,7 @@
       if (status === "loading") return;
       setStatus("loading");
       const url = mode === "register" ? "/api/auth/register" : "/api/auth/login";
-      const body = mode === "register" ? form : { email: form.email, password: form.password };
+      const body = mode === "register" ? { ...form, ref: getRef() } : { email: form.email, password: form.password };
       fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
