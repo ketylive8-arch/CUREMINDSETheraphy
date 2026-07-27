@@ -61,17 +61,36 @@ function registerAccount({ email, password, fullName, phone }) {
   // מקשר את השם לכרטיס המטופל כדי שיופיע ב-CRM של קטי
   db.prepare("UPDATE patients SET display_name = ? WHERE device_token = ?").run(name.slice(0, 120), id);
 
-  return { accountId: id, token: createSession(id), fullName: name, email: normEmail };
+  // לא מנפיקים כאן טוקן: אם נדרש אימות טלפון (OTP) — הטוקן יונפק רק אחרי האימות
+  // (ראה index.js). בזרימה ללא אימות, ה-endpoint מנפיק טוקן מיד.
+  return { accountId: id, fullName: name, email: normEmail, phone: phone ? String(phone) : "" };
 }
 
 function loginAccount({ email, password }) {
   const normEmail = String(email || "").trim().toLowerCase();
-  const row = db.prepare("SELECT id, password_hash, full_name FROM accounts WHERE email = ?").get(normEmail);
+  const row = db
+    .prepare("SELECT id, password_hash, full_name, phone, phone_verified FROM accounts WHERE email = ?")
+    .get(normEmail);
   if (!row || !verifyPassword(password, row.password_hash)) {
     return { error: "מייל או סיסמה שגויים", status: 401 };
   }
   ensurePatient(row.id);
-  return { accountId: row.id, token: createSession(row.id), fullName: row.full_name, email: normEmail };
+  // ה-endpoint מחליט אם להנפיק טוקן מיד או לדרוש אימות טלפון (כשמוגדר ספק SMS
+  // והטלפון עדיין לא אומת). לכן מחזירים גם את סטטוס האימות והטלפון.
+  return {
+    accountId: row.id,
+    fullName: row.full_name,
+    email: normEmail,
+    phone: row.phone || "",
+    phoneVerified: row.phone_verified === 1,
+  };
 }
 
-module.exports = { registerAccount, loginAccount, destroySession, accountIdFromToken, hashPassword };
+module.exports = {
+  registerAccount,
+  loginAccount,
+  destroySession,
+  accountIdFromToken,
+  hashPassword,
+  createSessionForAccount: createSession,
+};

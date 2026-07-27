@@ -11,7 +11,8 @@ const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
-const { registerAccount, loginAccount, destroySession } = require("./auth");
+const { registerAccount, loginAccount, destroySession, createSessionForAccount } = require("./auth");
+const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead } = require("./notify");
 
 const app = express();
@@ -65,7 +66,7 @@ function rateLimit(name, maxPerHour) {
 // רשומים לפני ה-router של /api כדי שלא יידרשו ל-X-Device-Token.
 
 // ── אימות: הרשמה / התחברות / התנתקות (ציבורי, בלי מזהה מכשיר) ──
-app.post("/api/auth/register", rateLimit("register", 15), (req, res) => {
+app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
   const { email, password, fullName, phone } = req.body || {};
   const result = registerAccount({ email, password, fullName, phone });
   if (result.error) return res.status(result.status).json({ error: result.error });
@@ -79,14 +80,61 @@ app.post("/api/auth/register", rateLimit("register", 15), (req, res) => {
     if (r.error) console.warn("[notify] new-account email failed:", r.error);
   });
 
-  res.status(201).json({ token: result.token, fullName: result.fullName, email: result.email });
+  // אם מוגדר ספק SMS ויש טלפון — דורשים אימות OTP לפני הנפקת טוקן.
+  if (smsConfigured() && result.phone) {
+    const sms = await issueOtp(result.accountId, result.phone);
+    if (sms.sent) {
+      const hint = String(result.phone).replace(/\D/g, "").slice(-4);
+      return res.status(201).json({ needsOtp: true, email: result.email, phoneHint: hint });
+    }
+    // שליחת ה-SMS נכשלה — לא חוסמים את הלקוח: מנפיקים טוקן וממשיכים.
+    console.warn("[otp] send failed, proceeding without verification:", sms.reason);
+  }
+
+  const token = createSessionForAccount(result.accountId);
+  res.status(201).json({ token, fullName: result.fullName, email: result.email });
 });
 
-app.post("/api/auth/login", rateLimit("login", 20), (req, res) => {
+// אימות קוד ה-OTP שנשלח ב-SMS — מנפיק טוקן רק לאחר אימות מוצלח.
+app.post("/api/auth/verify-otp", rateLimit("verify-otp", 20), (req, res) => {
+  const { email, code } = req.body || {};
+  if (typeof code !== "string" || !/^\d{4,8}$/.test(code.trim())) {
+    return res.status(400).json({ error: "נא להזין את הקוד שקיבלת ב-SMS" });
+  }
+  const result = checkOtp(email, code);
+  if (result.error) return res.status(result.status).json({ error: result.error });
+  const token = createSessionForAccount(result.accountId);
+  res.json({ token, fullName: result.fullName, email: result.email });
+});
+
+// שליחה חוזרת של קוד אימות.
+app.post("/api/auth/resend-otp", rateLimit("resend-otp", 8), async (req, res) => {
+  const { email } = req.body || {};
+  const acc = accountForOtp(email);
+  if (!acc || !acc.phone) return res.status(400).json({ error: "לא נמצאה בקשת אימות" });
+  if (!smsConfigured()) return res.status(503).json({ error: "שירות ה-SMS אינו זמין כרגע" });
+  const sms = await issueOtp(acc.id, acc.phone);
+  if (!sms.sent) return res.status(502).json({ error: "שליחת הקוד נכשלה, נסי שוב" });
+  res.json({ ok: true });
+});
+
+app.post("/api/auth/login", rateLimit("login", 20), async (req, res) => {
   const { email, password } = req.body || {};
   const result = loginAccount({ email, password });
   if (result.error) return res.status(result.status).json({ error: result.error });
-  res.json({ token: result.token, fullName: result.fullName, email: result.email });
+
+  // אם מוגדר ספק SMS והטלפון עדיין לא אומת — דורשים אימות לפני כניסה.
+  if (smsConfigured() && result.phone && !result.phoneVerified) {
+    const sms = await issueOtp(result.accountId, result.phone);
+    if (sms.sent) {
+      const hint = String(result.phone).replace(/\D/g, "").slice(-4);
+      return res.json({ needsOtp: true, email: result.email, phoneHint: hint });
+    }
+    console.warn("[otp] login send failed, proceeding:", sms.reason);
+  }
+
+  const token = createSessionForAccount(result.accountId);
+  res.json({ token, fullName: result.fullName, email: result.email });
 });
 
 app.post("/api/auth/logout", (req, res) => {

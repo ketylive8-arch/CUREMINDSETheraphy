@@ -145,6 +145,11 @@ const crmColumns = [
   "ALTER TABLE patients ADD COLUMN last_summary TEXT",
   "ALTER TABLE patient_profile ADD COLUMN access_code TEXT",
   "ALTER TABLE patient_profile ADD COLUMN access_expires_at TEXT",
+  // אימות טלפון ב-SMS (OTP) — נוסף לחשבונות קיימים בלי לשבור אותם.
+  "ALTER TABLE accounts ADD COLUMN phone_verified INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE accounts ADD COLUMN otp_hash TEXT",
+  "ALTER TABLE accounts ADD COLUMN otp_expires TEXT",
+  "ALTER TABLE accounts ADD COLUMN otp_attempts INTEGER NOT NULL DEFAULT 0",
 ];
 for (const stmt of crmColumns) {
   try {

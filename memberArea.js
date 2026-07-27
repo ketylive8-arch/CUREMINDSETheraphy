@@ -1391,15 +1391,23 @@
 
   function AuthGate({ onAuthed, onExit }) {
     const [mode, setMode] = useState("register"); // register | login
-    const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+    const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "" });
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
     const [agreed, setAgreed] = useState(false); // הסכמה לתנאים (חובה בהרשמה)
     const [showTerms, setShowTerms] = useState(false); // מודל תנאים מלאים
+    const [step, setStep] = useState("form"); // form | otp
+    const [otp, setOtp] = useState({ email: "", phoneHint: "", code: "" });
+    const [resent, setResent] = useState(false);
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
       if (status === "error") setStatus("idle");
+    }
+
+    function finishAuth(data) {
+      setAuth(data.token, data.fullName);
+      onAuthed();
     }
 
     function submit(e) {
@@ -1412,13 +1420,87 @@
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
           if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
-          setAuth(data.token, data.fullName);
-          onAuthed();
+          if (data.needsOtp) {
+            // נדרש אימות טלפון — עוברים למסך הזנת הקוד.
+            setOtp({ email: data.email, phoneHint: data.phoneHint || "", code: "" });
+            setStep("otp");
+            setStatus("idle");
+            return;
+          }
+          finishAuth(data);
         })
         .catch((err) => { setStatus("error"); setErrorMsg(err.message); });
     }
 
+    function submitOtp(e) {
+      e.preventDefault();
+      if (status === "loading") return;
+      setStatus("loading");
+      fetch("/api/auth/verify-otp", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: otp.email, code: otp.code }),
+      })
+        .then(async (r) => {
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok) throw new Error(data.error || "קוד שגוי, נסי שוב");
+          finishAuth(data);
+        })
+        .catch((err) => { setStatus("error"); setErrorMsg(err.message); });
+    }
+
+    function resendOtp() {
+      setResent(false);
+      fetch("/api/auth/resend-otp", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: otp.email }),
+      })
+        .then(async (r) => { if (!r.ok) { const d = await r.json().catch(() => ({})); throw new Error(d.error || "שליחה נכשלה"); } setResent(true); })
+        .catch((err) => { setStatus("error"); setErrorMsg(err.message); });
+    }
+
     const isReg = mode === "register";
+
+    // ── מסך אימות טלפון (OTP) ──
+    if (step === "otp") {
+      return (
+        <div className="au-overlay">
+          <div className="au-card" style={{ gridTemplateColumns: "1fr" }}>
+            <div className="au-form-col">
+              <div className="au-form-col__head" style={{ textAlign: "center" }}>
+                <div className="au-brand__logo" style={{ margin: "0 auto 14px" }}><Icon name="message-circle" size={26} /></div>
+                <h3>אימות מספר הטלפון</h3>
+                <p>
+                  שלחנו קוד בן 6 ספרות ב-SMS
+                  {otp.phoneHint ? <> למספר שמסתיים ב-<b dir="ltr">{otp.phoneHint}</b></> : null}. הזיני אותו כאן להשלמת ההרשמה.
+                </p>
+              </div>
+              <form onSubmit={submitOtp} className="au-form">
+                <input
+                  type="text" inputMode="numeric" autoComplete="one-time-code" required
+                  value={otp.code}
+                  onChange={(e) => { setOtp((o) => ({ ...o, code: e.target.value.replace(/\D/g, "").slice(0, 6) })); if (status === "error") setStatus("idle"); }}
+                  placeholder="●  ●  ●  ●  ●  ●"
+                  className="au-input"
+                  style={{ textAlign: "center", letterSpacing: "0.5em", fontSize: "22px", fontWeight: 700, direction: "ltr" }}
+                />
+                {status === "error" && <p className="au-err">{errorMsg}</p>}
+                {resent && <p style={{ color: "#6f9268", fontSize: "13.5px", fontWeight: 600, textAlign: "center", margin: 0 }}>נשלח קוד חדש ✓</p>}
+                <button type="submit" className="au-submit" disabled={status === "loading" || otp.code.length < 4}>
+                  {status === "loading" ? "מאמת…" : "אימות והמשך"}
+                </button>
+              </form>
+              <p className="au-switch">
+                לא קיבלת קוד?{" "}
+                <button type="button" onClick={resendOtp}>שליחה חוזרת</button>
+              </p>
+              <button type="button" onClick={() => { setStep("form"); setStatus("idle"); }} className="au-back">
+                טעות במספר? חזרה
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="au-overlay">
@@ -1442,6 +1524,11 @@
               <input type="email" name="email" autoComplete="email" required value={form.email}
                 onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr"
                 className="au-input" style={{ textAlign: "right" }} />
+              {isReg && (
+                <input type="tel" name="tel" autoComplete="tel" required value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)} placeholder="טלפון נייד" dir="ltr"
+                  className="au-input" style={{ textAlign: "right" }} />
+              )}
               <input type="password" name="password" autoComplete={isReg ? "new-password" : "current-password"} required
                 value={form.password} onChange={(e) => update("password", e.target.value)}
                 placeholder="סיסמה (לפחות 6 תווים)" className="au-input" />
