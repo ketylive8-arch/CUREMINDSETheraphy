@@ -749,7 +749,7 @@ function Vision() {
         </Reveal>
         <Reveal className="overflow-x-auto mb-20 max-w-full">
           <div className="min-w-[640px] rounded-2xl overflow-hidden border border-gold-200 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
-            <div className="grid grid-cols-[auto_1.3fr_1.3fr] bg-ink-800 text-white text-[14px] font-heading font-bold">
+            <div className="grid grid-cols-[auto_1.3fr_1.3fr] bg-gold-500 text-white text-[14px] font-heading font-bold">
               <div className="px-5 py-4">שלב</div>
               <div className="px-5 py-4">מיקוד מעצים</div>
               <div className="px-5 py-4">התוצאה בשטח</div>
@@ -771,13 +771,13 @@ function Vision() {
 
         {/* כרטיס ציטוט מרכזי */}
         <Reveal className="max-w-[860px] mx-auto">
-          <div className="relative rounded-3xl bg-ink-800 px-8 py-12 sm:px-14 text-center overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(194,151,74,.18), transparent 70%)" }} aria-hidden="true" />
+          <div className="relative rounded-3xl bg-gold-50 border border-gold-200 px-8 py-12 sm:px-14 text-center overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(60% 60% at 50% 0%, rgba(194,151,74,.14), transparent 70%)" }} aria-hidden="true" />
             <span className="relative font-heading text-gold-400 text-[64px] leading-none block mb-2" aria-hidden="true">”</span>
-            <p className="relative font-heading font-bold text-white text-[20px] sm:text-[26px] leading-[1.6] mb-5">
+            <p className="relative font-heading font-bold text-ink-800 text-[20px] sm:text-[26px] leading-[1.6] mb-5">
               המפתח לעוצמה אמיתית אינו טמון במאמץ חיצוני, אלא ביכולת להתחבר למשאבים העמוקים של תת-המודע ולהוביל את חייך מתוך סמכות, שקט והגשמה מלאה.
             </p>
-            <p className="relative text-gold-300 text-[15px] font-heading font-semibold tracking-wide">— קטי שגב, מפתחת שיטת CURE MINDSET</p>
+            <p className="relative text-gold-600 text-[15px] font-heading font-semibold tracking-wide">— קטי שגב, מפתחת שיטת CURE MINDSET</p>
           </div>
         </Reveal>
       </div>
@@ -1021,7 +1021,7 @@ function PlanCard({ plan, idx }) {
       style={{ transitionDelay: `${idx * 80}ms` }}
       className={`relative flex flex-col rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1 ${
         plan.highlight
-          ? "bg-ink-800 shadow-[0_24px_56px_-16px_rgba(194,151,74,0.45)] ring-2 ring-gold-400"
+          ? "bg-gold-50 border-2 border-gold-400 shadow-[0_24px_56px_-16px_rgba(194,151,74,0.35)]"
           : "bg-white border border-ink-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]"
       }`}
     >
@@ -1037,21 +1037,21 @@ function PlanCard({ plan, idx }) {
       <div className="flex items-center gap-3 mb-5">
         <span
           className={`inline-flex items-center justify-center w-12 h-12 rounded-xl shrink-0 ${
-            plan.highlight ? "bg-gold-500/20 text-gold-400" : "bg-gold-50 text-gold-600"
+            plan.highlight ? "bg-gold-500 text-white" : "bg-gold-50 text-gold-600"
           }`}
         >
           <Icon name={plan.icon} size={24} />
         </span>
-        <h3 className={`font-heading font-bold text-[22px] leading-tight ${plan.highlight ? "text-white" : "text-ink-800"}`}>
+        <h3 className={`font-heading font-bold text-[22px] leading-tight ${plan.highlight ? "text-ink-800" : "text-ink-800"}`}>
           {plan.title}
         </h3>
       </div>
 
       <div className="mb-1">
-        <span className={`font-heading font-extrabold text-[42px] leading-none ${plan.highlight ? "text-gold-400" : "text-gold-600"}`}>
+        <span className={`font-heading font-extrabold text-[42px] leading-none ${plan.highlight ? "text-gold-600" : "text-gold-600"}`}>
           {plan.price}
         </span>
-        <span className={`text-[17px] mr-2 ${plan.highlight ? "text-ink-300" : "text-ink-400"}`}>{plan.priceNote}</span>
+        <span className={`text-[17px] mr-2 ${plan.highlight ? "text-ink-400" : "text-ink-400"}`}>{plan.priceNote}</span>
       </div>
       {plan.trial && (
         <p className="text-[15px] font-semibold mb-4" style={{ color: plan.badgeColor }}>
@@ -1059,7 +1059,7 @@ function PlanCard({ plan, idx }) {
         </p>
       )}
 
-      <ul className={`flex flex-col gap-3 flex-1 mt-4 mb-7 ${plan.highlight ? "text-ink-200" : "text-ink-600"}`}>
+      <ul className={`flex flex-col gap-3 flex-1 mt-4 mb-7 ${plan.highlight ? "text-ink-700" : "text-ink-600"}`}>
         {plan.features.map((f) => (
           <li key={f} className="flex items-start gap-3 text-[18px] leading-[1.6]">
             <Icon name="check" size={19} className={`mt-1.5 shrink-0 ${plan.highlight ? "text-gold-400" : "text-gold-500"}`} />
@@ -1430,9 +1430,9 @@ function FinalCta() {
 
 function Footer() {
   return (
-    <footer className="bg-ink-800 text-ink-200 pt-14 pb-8">
+    <footer className="bg-ink-100 text-ink-600 pt-14 pb-8 border-t border-ink-200">
       <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 border-b border-ink-200">
           <div>
             <div className="inline-flex bg-white rounded-2xl p-4 shadow-soft">
               <img
@@ -1442,14 +1442,14 @@ function Footer() {
                 onError={(e) => { e.currentTarget.parentElement.style.display = "none"; }}
               />
             </div>
-            <p className="text-ink-300 text-[14px] leading-relaxed mt-4 max-w-[280px]">{CONTENT.footer.tagline}</p>
+            <p className="text-ink-500 text-[14px] leading-relaxed mt-4 max-w-[280px]">{CONTENT.footer.tagline}</p>
           </div>
           <div>
-            <p className="font-heading font-semibold text-white mb-3 text-[15px]">ניווט</p>
+            <p className="font-heading font-semibold text-ink-800 mb-3 text-[15px]">ניווט</p>
             <ul className="flex flex-col gap-2">
               {CONTENT.nav.links.map((l) => (
                 <li key={l.href}>
-                  <a href={l.href} className="text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
+                  <a href={l.href} className="text-ink-500 text-[14.5px] hover:text-gold-600 transition-colors">
                     {l.label}
                   </a>
                 </li>
@@ -1457,22 +1457,22 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <p className="font-heading font-semibold text-white mb-3 text-[15px]">יצירת קשר</p>
+            <p className="font-heading font-semibold text-ink-800 mb-3 text-[15px]">יצירת קשר</p>
             <ul className="flex flex-col gap-2.5">
               <li>
-                <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
+                <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 text-ink-500 text-[14.5px] hover:text-gold-600 transition-colors">
                   <Icon name="mail" size={16} />
                   {CONTACT.email}
                 </a>
               </li>
               <li>
-                <a href={`tel:${CONTACT.phoneDisplay.replace(/-/g, "")}`} className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
+                <a href={`tel:${CONTACT.phoneDisplay.replace(/-/g, "")}`} className="flex items-center gap-2 text-ink-500 text-[14.5px] hover:text-gold-600 transition-colors">
                   <Icon name="phone" size={16} />
                   {CONTACT.phoneDisplay}
                 </a>
               </li>
               <li>
-                <a href={waLink("היי קטי!")} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ink-300 text-[14.5px] hover:text-gold-400 transition-colors">
+                <a href={waLink("היי קטי!")} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-ink-500 text-[14.5px] hover:text-gold-600 transition-colors">
                   <Icon name="whatsapp" size={16} />
                   וואטסאפ
                 </a>

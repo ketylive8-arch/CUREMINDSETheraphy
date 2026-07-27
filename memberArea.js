@@ -244,7 +244,7 @@
             <button
               type="button"
               onClick={onExit}
-              className="w-full py-3 rounded-2xl bg-ink-800 text-white font-heading font-semibold text-[14px] hover:bg-ink-700 transition-colors"
+              className="w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-semibold text-[14px] hover:bg-gold-600 transition-colors"
             >
               לצפייה במסלולים ולתשלום
             </button>
@@ -329,9 +329,9 @@
           </div>
 
           {s.avgRelief != null && (
-            <div className="rounded-2xl bg-ink-800 py-4 px-5 text-center">
-              <p className="font-heading font-extrabold text-[26px] text-gold-400 leading-none">{s.avgRelief}%</p>
-              <p className="text-[12.5px] text-ink-200 mt-1.5">ירידה ממוצעת בעומס הרגשי אחרי תרגול</p>
+            <div className="rounded-2xl bg-gold-500 py-4 px-5 text-center">
+              <p className="font-heading font-extrabold text-[26px] text-white leading-none">{s.avgRelief}%</p>
+              <p className="text-[12.5px] text-white mt-1.5">ירידה ממוצעת בעומס הרגשי אחרי תרגול</p>
             </div>
           )}
 
@@ -804,7 +804,7 @@
             />
           ))}
         </div>
-        <p className="mt-6 text-[13px] text-white/45">מקשיבה לך ברגישות...</p>
+        <p className="mt-6 text-[13px] text-ink-400">מקשיבה לך ברגישות...</p>
       </div>
     );
   }
@@ -827,10 +827,10 @@
             placeholder="כתבי כאן בחופשיות, בלי לסנן את עצמך..."
             rows={5}
             disabled={disabled}
-            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-[15px] leading-relaxed text-white placeholder:text-white/30 focus:outline-none"
+            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-[15px] leading-relaxed text-ink-800 placeholder:text-ink-400 focus:outline-none"
           />
           <div className="flex items-center justify-between px-4 pb-3.5">
-            <span className="text-[11px] text-white/25">{text.length}/4000</span>
+            <span className="text-[11px] text-ink-300">{text.length}/4000</span>
             <button
               type="button"
               onClick={onSend}
@@ -863,7 +863,7 @@
     }, [reply]);
 
     return (
-      <p className="text-[15px] leading-relaxed text-white/90">
+      <p className="text-[15px] leading-relaxed text-ink-700">
         {typed}
         {typed.length < reply.length ? <span className="cm-cursor-blink text-gold-400">▍</span> : null}
       </p>
@@ -874,29 +874,29 @@
   function NeuroplasticityIntro() {
     const [open, setOpen] = useState(false);
     return (
-      <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-400/25 bg-white/[0.04] backdrop-blur-xl overflow-hidden">
+      <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-200 bg-white backdrop-blur-xl overflow-hidden">
         <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-right">
           <span className="flex items-center gap-2">
             <Icon name="sparkles" size={14} className="text-gold-400 shrink-0" />
-            <span className="font-heading font-semibold text-[14px] text-white">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
+            <span className="font-heading font-semibold text-[14px] text-ink-800">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
           </span>
-          <Icon name={open ? "chevron-up" : "chevron-down"} size={16} className="text-white/50 shrink-0" />
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={16} className="text-ink-400 shrink-0" />
         </button>
         {open && (
-          <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-white/70 space-y-3" dir="rtl">
+          <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-ink-600 space-y-3" dir="rtl">
             <p>
               המוח שלנו הוא איבר דינמי שמשתנה כל הזמן בתגובה לחוויות וללמידה. גמישות מוחית (Neuroplasticity) היא
               היכולת של המוח ליצור קשרים חדשים בין תאי עצב, לחזק קשרים קיימים ולשנות את מבנהו ותפקודו לאורך החיים.
             </p>
             <div>
-              <p className="font-semibold text-white/90 mb-1">איך זה קורה?</p>
+              <p className="font-semibold text-ink-700 mb-1">איך זה קורה?</p>
               <p>כשאנחנו לומדים או חווים דברים חדשים, נוצרים קשרים חדשים בין תאי עצב. ככל שחוזרים על פעולה או מחשבה מסוימת, הקשרים מתחזקים — וכך המוח לומד, זוכר ומסתגל.</p>
             </div>
             <div>
-              <p className="font-semibold text-white/90 mb-1">מה משפיע על הגמישות המוחית?</p>
+              <p className="font-semibold text-ink-700 mb-1">מה משפיע על הגמישות המוחית?</p>
               <p>גיל (גבוהה יותר בגיל צעיר אך נמשכת גם בבגרות), סביבה עשירה בגירויים ותמיכה חברתית, פעילות גופנית סדירה, ותזונה מאוזנת.</p>
             </div>
-            <p className="text-white/60">
+            <p className="text-ink-500">
               בדיוק על העיקרון הזה בנויה שיטת CureMindset: כשמלמדים את המוח דפוסים חדשים, בעדינות ובעקביות — השינוי מחזיק. עכשיו, ספרי לי מה עובר עלייך.
             </p>
           </div>
@@ -967,7 +967,7 @@
                   <Icon name="message-circle" size={15} className="text-gold-400" />
                   <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset · צ'ק-אין</span>
                 </div>
-                <p className="font-heading text-[18px] font-bold text-white leading-snug">
+                <p className="font-heading text-[18px] font-bold text-ink-800 leading-snug">
                   היי, אני כאן איתך.
                   <br />
                   ספרי לי איך עבר עלייך היום ומה שלומך עכשיו?
@@ -976,8 +976,8 @@
               <NeuroplasticityIntro />
               <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
               {status === "error" ? (
-                <div className="cm-fade-in-soft mt-5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 text-center">
-                  <p className="text-[13px] leading-relaxed text-white/70">{errMsg || "לא הצלחנו כרגע להתחבר אלייך — נסי שוב בעוד רגע."}</p>
+                <div className="cm-fade-in-soft mt-5 rounded-2xl border border-ink-200 bg-white px-4 py-4 text-center">
+                  <p className="text-[13px] leading-relaxed text-ink-600">{errMsg || "לא הצלחנו כרגע להתחבר אלייך — נסי שוב בעוד רגע."}</p>
                 </div>
               ) : null}
             </>
@@ -987,7 +987,7 @@
 
           {status === "done" ? (
             <div className="space-y-6">
-              <div className="cm-fade-in-soft rounded-3xl border border-gold-400/25 bg-white/[0.04] px-5 py-5 backdrop-blur-xl">
+              <div className="cm-fade-in-soft rounded-3xl border border-gold-200 bg-white px-5 py-5 backdrop-blur-xl">
                 <div className="flex items-center gap-2 mb-2.5">
                   <Icon name="sparkles" size={13} className="text-gold-400" />
                   <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset</span>
@@ -1003,8 +1003,8 @@
 
               {showDashboard ? (
                 <div className="cm-slide-up-in rounded-3xl border border-gold-400/30 bg-gold-400/[0.06] px-5 py-5 space-y-3.5">
-                  <p className="font-heading font-bold text-[15px] text-white">להעמיק את השינוי — הצעד הבא שלך</p>
-                  <p className="text-[13px] text-white/70 leading-relaxed">
+                  <p className="font-heading font-bold text-[15px] text-ink-800">להעמיק את השינוי — הצעד הבא שלך</p>
+                  <p className="text-[13px] text-ink-600 leading-relaxed">
                     קבלי את התרגול וההמלצה האישית ישירות לוואטסאפ, והצטרפי לליווי המלא של CureMindset כדי להפוך את זה לשינוי שמחזיק.
                   </p>
                   <a
@@ -1225,7 +1225,7 @@
 
   function PhoneFrame({ children }) {
     return (
-      <div className="fixed inset-0 z-50 bg-ink-800 flex items-center justify-center sm:p-8" dir="rtl">
+      <div className="fixed inset-0 z-50 bg-ink-100 flex items-center justify-center sm:p-8" dir="rtl">
         <div className="relative w-full h-full sm:w-[390px] sm:h-[800px] sm:rounded-[40px] bg-ink-50 overflow-hidden sm:border-[10px] sm:border-ink-700 sm:shadow-2xl flex flex-col">
           <div className="hidden sm:flex absolute top-0 inset-x-0 h-6 items-center justify-center z-20 pointer-events-none">
             <div className="w-28 h-5 bg-ink-700 rounded-b-2xl" />
@@ -1718,11 +1718,11 @@
             <ProgramStage onNavigateStage={navigateToStage} />
           </div>
         ) : current === 4 ? (
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50">
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
           </div>
         ) : current === 5 ? (
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-800">
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50">
             <CheckInStage onDashboardUpdate={setServerDashboard} onNavigateStage={navigateToStage} />
           </div>
         ) : current === 6 ? (

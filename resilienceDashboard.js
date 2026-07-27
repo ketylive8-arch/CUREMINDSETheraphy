@@ -24,8 +24,8 @@
           <Icon name={icon} size={18} className="text-ink-800" strokeWidth={2.25} />
         </div>
         <div>
-          <h2 className="font-heading text-[15px] font-bold text-white tracking-tight">{title}</h2>
-          {subtitle ? <p className="text-[11.5px] text-white/50">{subtitle}</p> : null}
+          <h2 className="font-heading text-[15px] font-bold text-ink-800 tracking-tight">{title}</h2>
+          {subtitle ? <p className="text-[11.5px] text-ink-400">{subtitle}</p> : null}
         </div>
       </div>
     );
@@ -34,7 +34,7 @@
   function EmptyState({ text, actionLabel, onAction }) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-        <p className="text-[12.5px] leading-relaxed text-white/55">{text}</p>
+        <p className="text-[12.5px] leading-relaxed text-ink-500">{text}</p>
         {actionLabel ? (
           <Button as="button" type="button" variant="primary" size="md" className="w-full mt-3 !py-2.5 !text-[13px]" icon="arrow-left" iconPos="end" onClick={onAction}>
             {actionLabel}
@@ -50,7 +50,7 @@
 
   function FullBalanceCelebration() {
     return (
-      <div className="relative overflow-hidden rounded-3xl border border-gold-400/40 bg-gradient-to-b from-ink-700 via-ink-800 to-ink-800 px-6 py-9 text-center shadow-soft">
+      <div className="relative overflow-hidden rounded-3xl border border-gold-200 bg-white px-6 py-9 text-center shadow-soft">
         <div className="absolute -top-10 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-gold-400/20 blur-3xl" />
         <div className="relative mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-gold-200 via-gold-400 to-gold-600 shadow-soft">
           <Icon name="star" size={34} className="text-ink-800" strokeWidth={1.5} />
@@ -60,9 +60,9 @@
             <Icon key={i} name="star" size={15} className="text-gold-400" />
           ))}
         </div>
-        <h3 className="relative font-heading text-xl font-extrabold text-white">המערכת הרגשית שלך באיזון ובוויסות</h3>
+        <h3 className="relative font-heading text-xl font-extrabold text-ink-800">המערכת הרגשית שלך באיזון ובוויסות</h3>
         <p className="relative mt-2 text-[14px] font-heading font-semibold text-gold-300">את/ה במסלול הצמיחה!</p>
-        <p className="relative mt-3 text-[12.5px] leading-relaxed text-white/60">
+        <p className="relative mt-3 text-[12.5px] leading-relaxed text-ink-500">
           המשיכו לשמור על הקצב הזה — כל תרגול, כל רגע של מודעות, הוא עוד אבן דרך בתהליך שלכם.
         </p>
       </div>
@@ -80,7 +80,7 @@
         {wins.length ? (
           <div className="flex flex-col gap-3">
             {wins.map((win) => (
-              <div key={win.id} className="relative overflow-hidden rounded-2xl border border-gold-400/40 bg-gradient-to-br from-ink-700 via-ink-800 to-ink-800 p-4 shadow-soft">
+              <div key={win.id} className="relative overflow-hidden rounded-2xl border border-gold-200 bg-white p-4 shadow-soft">
                 <div className="absolute -left-6 -top-6 h-24 w-24 rounded-full bg-gold-400/15 blur-2xl" />
                 <div className="cm-shimmer-sweep pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
                 <div className="relative flex items-start gap-3">
@@ -88,8 +88,8 @@
                     <Icon name="star" size={16} className="text-ink-800" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-[14px] font-bold text-white leading-snug">{win.title}</p>
-                    {win.description ? <p className="mt-1 text-[12.5px] text-white/60 leading-relaxed">{win.description}</p> : null}
+                    <p className="text-[14px] font-bold text-ink-800 leading-snug">{win.title}</p>
+                    {win.description ? <p className="mt-1 text-[12.5px] text-ink-500 leading-relaxed">{win.description}</p> : null}
                     {win.metric ? (
                       <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-gold-400/15 px-2.5 py-1 text-[11px] font-semibold text-gold-300">
                         <Icon name="trending-down" size={12} />
@@ -127,12 +127,12 @@
               return (
                 <div key={trigger.id} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-[13.5px] font-semibold text-white">{trigger.area}</p>
-                    <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-medium text-white/70">{trigger.status}</span>
+                    <p className="text-[13.5px] font-semibold text-ink-800">{trigger.area}</p>
+                    <span className="rounded-full bg-gold-100 px-2.5 py-0.5 text-[11px] font-medium text-ink-600">{trigger.status}</span>
                   </div>
-                  {trigger.note ? <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">{trigger.note}</p> : null}
+                  {trigger.note ? <p className="mt-1.5 text-[12px] leading-relaxed text-ink-500">{trigger.note}</p> : null}
                   <div className="mt-3">
-                    <p className="text-[10px] text-white/40 mb-1">{intensity.label}</p>
+                    <p className="text-[10px] text-ink-400 mb-1">{intensity.label}</p>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                       <div className="h-full rounded-full bg-gradient-to-r from-gold-300 to-gold-500" style={{ width: intensity.width }} />
                     </div>
@@ -165,8 +165,8 @@
           <div className="flex flex-col gap-3">
             {patterns.map((pattern) => (
               <div key={pattern.id} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-[13.5px] font-semibold text-white">{pattern.title}</p>
-                {pattern.description ? <p className="mt-1.5 text-[12px] leading-relaxed text-white/55">{pattern.description}</p> : null}
+                <p className="text-[13.5px] font-semibold text-ink-800">{pattern.title}</p>
+                {pattern.description ? <p className="mt-1.5 text-[12px] leading-relaxed text-ink-500">{pattern.description}</p> : null}
                 {pattern.actionLabel ? (
                   <Button as="button" type="button" variant="primary" size="md" className="w-full mt-3 !py-2.5 !text-[13px]" icon="arrow-left" iconPos="end" onClick={() => onNavigateStage(pattern.stageId)}>
                     {pattern.actionLabel}
@@ -200,7 +200,7 @@
             <div key={alert.id} className="flex items-start gap-3 rounded-2xl border border-gold-400/25 bg-gold-400/[0.06] p-4">
               <Icon name="alert-circle" size={17} className="mt-0.5 flex-shrink-0 text-gold-400" />
               <div className="flex-1">
-                <p className="text-[12.5px] leading-relaxed text-white/75">{alert.message}</p>
+                <p className="text-[12.5px] leading-relaxed text-ink-600">{alert.message}</p>
                 {alert.actionLabel ? (
                   <Button as="button" type="button" variant="primary" size="md" className="w-full mt-3 !py-2.5 !text-[13px]" icon="arrow-left" iconPos="end" onClick={() => onNavigateStage(alert.stageId)}>
                     {alert.actionLabel}
@@ -304,8 +304,8 @@
             <Icon name="sparkles" size={16} className="text-gold-400" />
             <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset</span>
           </div>
-          <h1 className="mt-1 font-heading text-xl font-extrabold text-white">מדד חוסן והתקדמות אישי</h1>
-          <p className="mt-1 text-[13px] text-white/50">שיקוף אישי ומעודד של התהליך שלך — בקצב שלך</p>
+          <h1 className="mt-1 font-heading text-xl font-extrabold text-ink-800">מדד חוסן והתקדמות אישי</h1>
+          <p className="mt-1 text-[13px] text-ink-400">שיקוף אישי ומעודד של התהליך שלך — בקצב שלך</p>
         </header>
 
         {data.isFullyBalanced ? (
@@ -319,7 +319,7 @@
         <PatternsSection patterns={data.patterns} onNavigateStage={onNavigateStage} />
         <BalanceCheckSection alerts={data.balanceAlerts} onNavigateStage={onNavigateStage} />
 
-        <p className="mt-2 px-1 text-center text-[11px] leading-relaxed text-white/30">
+        <p className="mt-2 px-1 text-center text-[11px] leading-relaxed text-ink-400">
           הדו"ח הזה נבנה כדי לתמוך בך, לא לשפוט אותך. כל צעד — קטן כגדול — נספר.
         </p>
       </div>
