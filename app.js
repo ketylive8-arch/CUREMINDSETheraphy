@@ -53,7 +53,7 @@ const MEDIA_LINKS = {
    zoom     ← קישור קבוע לחדר הזום האישי שלך
    שדה ריק יוביל לוואטסאפ לתיאום ידני. */
 const BOOKING_LINKS = {
-  calendar: "",
+  calendar: "https://calendly.com/ketysegev/meet-with-me",
   zoom: "",
 };
 
@@ -1515,7 +1515,7 @@ function Home({ onEnterApp }) {
         <Problem />
         <Solution />
         <Journey />
-        <Workshops />
+        {window.WorkshopsSection ? <window.WorkshopsSection /> : <Workshops />}
         <Plans />
         <Results />
         <FinalCta />

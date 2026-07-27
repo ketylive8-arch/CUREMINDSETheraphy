@@ -1395,6 +1395,7 @@
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
     const [agreed, setAgreed] = useState(false); // הסכמה לתנאים (חובה בהרשמה)
+    const [showTerms, setShowTerms] = useState(false); // מודל תנאים מלאים
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
@@ -1417,77 +1418,95 @@
         .catch((err) => { setStatus("error"); setErrorMsg(err.message); });
     }
 
-    const inputCls =
-      "w-full rounded-2xl border-2 border-ink-200 bg-white px-4 py-3.5 text-[16px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500 transition-colors";
+    const isReg = mode === "register";
 
     return (
-      <div className="absolute inset-0 z-50 bg-white flex flex-col justify-center px-7 overflow-y-auto py-8" dir="rtl">
-        <div className="w-full max-w-[380px] mx-auto">
-          <div className="text-center mb-6">
-            <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-3">
-              <Icon name="heart-handshake" size={26} className="text-gold-600" />
+      <div className="au-overlay">
+        <div className="au-card">
+          {/* Form column (appears on the right in RTL) */}
+          <div className="au-form-col">
+            <div className="au-form-col__head">
+              <h3>{isReg ? "יוצרים חשבון ומתחילים" : "כניסה לאזור האישי"}</h3>
+              <p>
+                {isReg
+                  ? "חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
+                  : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
+              </p>
             </div>
-            <p className="font-heading font-extrabold text-[20px] text-ink-800">
-              {mode === "register" ? "הרשמה לאזור האישי" : "כניסה לאזור האישי"}
-            </p>
-            <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
-              {mode === "register"
-                ? "פותחים חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
-                : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
-            </p>
-          </div>
 
-          <form onSubmit={submit} className="flex flex-col gap-3">
-            {mode === "register" && (
-              <input type="text" name="name" autoComplete="name" required value={form.fullName} onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className={inputCls} />
-            )}
-            <input type="email" name="email" autoComplete="email" required value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr" className={`${inputCls} text-right`} />
-            <input type="password" name="password" autoComplete={mode === "register" ? "new-password" : "current-password"} required value={form.password} onChange={(e) => update("password", e.target.value)} placeholder="סיסמה (לפחות 6 תווים)" className={inputCls} />
+            <form onSubmit={submit} className="au-form">
+              {isReg && (
+                <input type="text" name="name" autoComplete="name" required value={form.fullName}
+                  onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className="au-input" />
+              )}
+              <input type="email" name="email" autoComplete="email" required value={form.email}
+                onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr"
+                className="au-input" style={{ textAlign: "right" }} />
+              <input type="password" name="password" autoComplete={isReg ? "new-password" : "current-password"} required
+                value={form.password} onChange={(e) => update("password", e.target.value)}
+                placeholder="סיסמה (לפחות 6 תווים)" className="au-input" />
 
-            {/* הסכמה משפטית — הצהרת AI, אי-ייעוץ רפואי ותנאי שימוש (חובה בהרשמה) */}
-            {mode === "register" && (
-              <div className="mt-1">
-                <p className="text-[12px] font-semibold text-ink-700 mb-1.5">תנאי שימוש, הצהרת AI ואי-ייעוץ רפואי:</p>
-                <div className="h-28 overflow-y-auto rounded-xl border border-ink-200 bg-ink-50 p-3 text-[11.5px] leading-relaxed text-ink-600 space-y-2">
-                  <p><span className="font-bold text-ink-700">1. מהות השירות ואינטראקציית AI:</span> מערכת זו מופעלת באמצעות בינה מלאכותית (AI) על בסיס מודל התוכן המקצועי של קטי שגב. המערכת פועלת אוטומטית ועלולה להציג מידע לא מדויק.</p>
-                  <p><span className="font-bold text-ink-700">2. אי-חלופה לייעוץ רפואי:</span> התכנים והתרגילים אינם מהווים ייעוץ רפואי, אבחנה או טיפול נפשי/פסיכיאטרי, ואינם מחליפים התייעצות עם רופא או מטפל מוסמך. השימוש באחריות המשתמש/ת בלבד. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.</p>
-                  <p><span className="font-bold text-ink-700">3. פרטיות:</span> נתוני הרישום נשמרים בבסיס נתונים מאובטח, ותוכן השיחה מעובד באופן מאובטח לצורך מתן המענה בלבד.</p>
-                </div>
-                <label className="flex items-start gap-2 mt-2.5 cursor-pointer">
-                  <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 shrink-0 accent-gold-600" />
-                  <span className="text-[12px] font-semibold text-ink-700 leading-snug">
-                    קראתי, הבנתי ואני מסכימ/ה לתנאי השימוש ולהצהרת ה-AI (השירות אינו מחליף ייעוץ רפואי).
+              {/* consent — one clean line + modal link (no grey scroll box) */}
+              {isReg && (
+                <label className="au-consent">
+                  <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+                  <span className="au-consent__txt">
+                    נרשמ/ת ומאשר/ת את תנאי השימוש והצהרת ה-AI (השירות אינו מהווה ייעוץ רפואי).{" "}
+                    <button type="button" className="au-terms-link" onClick={() => setShowTerms(true)}>
+                      לצפייה בתנאים המלאים
+                    </button>
                   </span>
                 </label>
-              </div>
-            )}
+              )}
 
-            {status === "error" && <p className="text-[13.5px] text-red-500 font-medium text-center">{errorMsg}</p>}
-            <button
-              type="submit"
-              disabled={status === "loading" || (mode === "register" && !agreed)}
-              className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors disabled:opacity-40 mt-1"
-            >
-              {status === "loading" ? "רק רגע..." : mode === "register" ? "יוצרים חשבון ומתחילים" : "כניסה"}
-            </button>
-          </form>
+              {status === "error" && <p className="au-err">{errorMsg}</p>}
+              <button type="submit" className="au-submit" disabled={status === "loading" || (isReg && !agreed)}>
+                {status === "loading" ? "רק רגע..." : isReg ? "יוצרים חשבון ומתחילים" : "כניסה"}
+              </button>
+            </form>
 
-          <p className="text-center text-[13.5px] text-ink-500 mt-5">
-            {mode === "register" ? "כבר יש לך חשבון?" : "עדיין אין לך חשבון?"}{" "}
-            <button type="button" onClick={() => { setMode(mode === "register" ? "login" : "register"); setStatus("idle"); }} className="font-bold text-gold-700 underline">
-              {mode === "register" ? "להתחברות" : "להרשמה"}
-            </button>
-          </p>
+            <p className="au-switch">
+              {isReg ? "כבר יש לך חשבון? " : "עדיין אין לך חשבון? "}
+              <button type="button" onClick={() => { setMode(isReg ? "login" : "register"); setStatus("idle"); }}>
+                {isReg ? "להתחברות" : "להרשמה"}
+              </button>
+            </p>
+            <button type="button" onClick={onExit} className="au-back">חזרה לאתר</button>
+          </div>
 
-          <p className="text-center text-[11.5px] text-ink-400 mt-6 leading-relaxed flex items-center justify-center gap-1.5">
-            <Icon name="shield-check" size={13} className="text-gold-500" />
-            הפרטים שלך מאובטחים ומוצפנים. רק את רואה את השיחות שלך.
-          </p>
-
-          <button type="button" onClick={onExit} className="block mx-auto mt-5 text-[13px] text-ink-400 underline">
-            חזרה לאתר
-          </button>
+          {/* Brand / welcome panel (appears on the left in RTL) */}
+          <div className="au-brand">
+            <svg className="au-brand__rose" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+              <circle cx="100" cy="100" r="92" /><circle cx="100" cy="100" r="60" />
+              <path d="M100 8 L112 100 L100 192 L88 100 Z" fill="currentColor" stroke="none" opacity="0.6" />
+              <path d="M8 100 L100 112 L192 100 L100 88 Z" fill="currentColor" stroke="none" opacity="0.35" />
+            </svg>
+            <div className="au-brand__logo"><Icon name="heart-handshake" size={26} /></div>
+            <h2>{isReg ? "ברוכה הבאה ל־CureMindset" : "המרחב האישי שלך מחכה לך"}</h2>
+            <p className="au-brand__sub">
+              האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולמסע הפנימי, בליווי מבוסס השיטה של קטי שגב.
+            </p>
+            <ul className="au-benefits">
+              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>14 ימי ניסיון חינם — בלי התחייבות</li>
+              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>שיחות פרטיות ומוצפנות — רק את רואה אותן</li>
+              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>ליווי AI מבוסס השיטה והתכנים של קטי</li>
+            </ul>
+            <p className="au-brand__trust"><Icon name="shield-check" size={14} /> הפרטים שלך מאובטחים ומוצפנים</p>
+          </div>
         </div>
+
+        {/* full terms modal */}
+        {showTerms && (
+          <div className="au-modal-bg" onClick={() => setShowTerms(false)}>
+            <div className="au-modal" onClick={(e) => e.stopPropagation()}>
+              <h4>תנאי שימוש, הצהרת AI ואי־ייעוץ רפואי</h4>
+              <section><p><b>1. מהות השירות ואינטראקציית AI:</b> מערכת זו מופעלת באמצעות בינה מלאכותית (AI) על בסיס מודל התוכן המקצועי של קטי שגב. המערכת פועלת אוטומטית ועלולה להציג מידע לא מדויק.</p></section>
+              <section><p><b>2. אי־חלופה לייעוץ רפואי:</b> התכנים והתרגילים אינם מהווים ייעוץ רפואי, אבחנה או טיפול נפשי/פסיכיאטרי, ואינם מחליפים התייעצות עם רופא או מטפל מוסמך. השימוש באחריות המשתמש/ת בלבד. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.</p></section>
+              <section><p><b>3. פרטיות:</b> נתוני הרישום נשמרים בבסיס נתונים מאובטח, ותוכן השיחה מעובד באופן מאובטח לצורך מתן המענה בלבד.</p></section>
+              <button type="button" className="au-modal__close" onClick={() => setShowTerms(false)}>הבנתי, סגירה</button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

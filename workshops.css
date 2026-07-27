@@ -1,0 +1,457 @@
+/* ==========================================================================
+   CureMindset · Workshops page ("מפת הדרכים הפנימית")
+   A deliberately distinct visual world from the rest of the site:
+   an airy, boutique "roadmap" of stations along a winding gold path.
+   Palette: warm sand + gold, with sage / dusty-blue / terracotta station
+   accents echoing Kety's "המצפן הפנימי" infographic. All light. RTL.
+   ========================================================================== */
+
+.wk {
+  position: relative;
+  direction: rtl;
+  overflow: hidden;
+  padding: 88px 20px 96px;
+  font-family: "Assistant", system-ui, sans-serif;
+  color: #3f3a33;
+  /* atmospheric, bright boutique light — layered warm washes */
+  background:
+    radial-gradient(60% 40% at 12% 6%, rgba(125, 155, 118, 0.10), transparent 60%),
+    radial-gradient(55% 45% at 92% 10%, rgba(91, 123, 147, 0.10), transparent 60%),
+    radial-gradient(70% 50% at 50% 100%, rgba(194, 151, 74, 0.12), transparent 65%),
+    linear-gradient(180deg, #fdfbf7 0%, #faf4ea 45%, #f6efe2 100%);
+}
+
+/* soft floating light orbs for depth */
+.wk__orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(48px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+.wk__orb--1 { width: 340px; height: 340px; top: -60px; right: -80px; background: rgba(194, 151, 74, 0.28); }
+.wk__orb--2 { width: 300px; height: 300px; top: 40%; left: -120px; background: rgba(125, 155, 118, 0.22); }
+.wk__orb--3 { width: 260px; height: 260px; bottom: 6%; right: 8%; background: rgba(91, 123, 147, 0.18); }
+
+/* giant faint compass rose watermark behind the hero */
+.wk__rose {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  max-width: 92vw;
+  opacity: 0.06;
+  z-index: 0;
+  pointer-events: none;
+  color: #b78a33;
+}
+
+.wk__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* ---------- Hero ---------- */
+.wk__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.22em;
+  color: #b0812c;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border: 1px solid rgba(194, 151, 74, 0.4);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+}
+.wk__title {
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  color: #2c2820;
+  font-size: clamp(30px, 6vw, 50px);
+  line-height: 1.1;
+  margin: 20px 0 0;
+  text-wrap: balance;
+}
+.wk__title em {
+  font-style: normal;
+  color: #b0812c;
+}
+.wk__lead {
+  max-width: 660px;
+  margin: 18px auto 0;
+  font-size: clamp(15px, 2.4vw, 18px);
+  line-height: 1.75;
+  color: #5f584d;
+}
+.wk__methods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.wk__method {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #7a6f5c;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(180, 160, 120, 0.35);
+  border-radius: 999px;
+  padding: 6px 13px;
+}
+
+/* differentiator band */
+.wk__diff {
+  margin: 40px auto 0;
+  max-width: 760px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(250,244,233,0.9));
+  border: 1px solid rgba(194, 151, 74, 0.28);
+  border-radius: 22px;
+  padding: 26px 28px;
+  box-shadow: 0 20px 50px -30px rgba(120, 90, 30, 0.4);
+}
+.wk__diff h3 {
+  font-family: "Rubik", sans-serif;
+  font-weight: 700;
+  color: #b0812c;
+  font-size: 16px;
+  margin: 0 0 10px;
+}
+.wk__diff p { margin: 0; font-size: 15.5px; line-height: 1.7; color: #554f45; }
+.wk__diff p + p { margin-top: 12px; }
+.wk__diff strong { color: #2c2820; }
+
+/* ---------- Roadmap / stations ---------- */
+.wk__road {
+  position: relative;
+  margin-top: 64px;
+}
+/* the winding dotted path rail (desktop, right side in RTL) */
+.wk__road::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 40px;
+  right: 33px;
+  width: 3px;
+  background-image: linear-gradient(#c2974a 40%, transparent 0);
+  background-size: 3px 14px;
+  background-repeat: repeat-y;
+  opacity: 0.45;
+}
+
+.wk-station {
+  position: relative;
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 22px;
+  margin-bottom: 30px;
+}
+
+/* number node / compass badge */
+.wk-station__node {
+  position: relative;
+  z-index: 2;
+}
+.wk-badge {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fffdf9;
+  border: 2px solid var(--wk-accent, #c2974a);
+  box-shadow: 0 10px 26px -12px var(--wk-accent, #c2974a);
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  font-size: 21px;
+  color: var(--wk-accent, #c2974a);
+  position: relative;
+}
+.wk-badge span.wk-badge__n { line-height: 1; }
+.wk-badge__ring {
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px dashed var(--wk-accent, #c2974a);
+  opacity: 0.4;
+}
+
+/* the card */
+.wk-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(180, 160, 120, 0.28);
+  border-radius: 24px;
+  padding: 28px 26px 24px;
+  box-shadow: 0 26px 60px -34px rgba(120, 90, 30, 0.5);
+  border-top: 4px solid var(--wk-accent, #c2974a);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.wk-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 34px 70px -30px rgba(120, 90, 30, 0.5);
+}
+
+.wk-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.wk-chip {
+  font-family: "Rubik", sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 5px 11px;
+  border-radius: 999px;
+  color: var(--wk-accent, #c2974a);
+  background: var(--wk-accent-soft, rgba(194, 151, 74, 0.12));
+  border: 1px solid var(--wk-accent-line, rgba(194, 151, 74, 0.3));
+}
+.wk-card__title {
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  font-size: clamp(21px, 3.6vw, 27px);
+  color: #2c2820;
+  margin: 0;
+  line-height: 1.2;
+}
+.wk-card__sub {
+  font-size: 13.5px;
+  color: #9a8f7c;
+  font-weight: 600;
+  margin: 4px 0 0;
+}
+.wk-card__tagline {
+  font-family: "Rubik", sans-serif;
+  font-weight: 600;
+  font-size: 16.5px;
+  line-height: 1.5;
+  color: var(--wk-accent, #b0812c);
+  margin: 16px 0 0;
+  padding-right: 14px;
+  border-right: 3px solid var(--wk-accent, #c2974a);
+}
+.wk-card__invite {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #554f45;
+  margin: 14px 0 0;
+}
+
+/* sub-heading label inside card */
+.wk-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #8a7a58;
+  text-transform: uppercase;
+  margin: 22px 0 12px;
+}
+.wk-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(180, 160, 120, 0.35);
+}
+
+/* steps list */
+.wk-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.wk-steps li {
+  position: relative;
+  padding-right: 26px;
+  font-size: 14.8px;
+  line-height: 1.65;
+  color: #4a453c;
+}
+.wk-steps li::before {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 8px;
+  width: 9px;
+  height: 9px;
+  transform: rotate(45deg);
+  background: var(--wk-accent, #c2974a);
+  border-radius: 2px;
+}
+.wk-steps li b { color: #2c2820; font-weight: 700; }
+
+/* results / gives — pill chips */
+.wk-results { display: flex; flex-wrap: wrap; gap: 8px; }
+.wk-result {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4a453c;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(180, 160, 120, 0.32);
+  border-radius: 999px;
+  padding: 7px 13px;
+}
+.wk-result svg { color: var(--wk-accent, #c2974a); flex: none; }
+
+/* funding note */
+.wk-note {
+  margin-top: 18px;
+  font-size: 13.8px;
+  line-height: 1.65;
+  color: #6b6456;
+  background: var(--wk-accent-soft, rgba(194, 151, 74, 0.1));
+  border: 1px dashed var(--wk-accent-line, rgba(194, 151, 74, 0.35));
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+/* meta + CTA row */
+.wk-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(180, 160, 120, 0.25);
+}
+.wk-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 13px;
+  color: #8a8272;
+  margin-left: auto;
+}
+.wk-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.wk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 11px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+}
+.wk-btn--primary {
+  background: var(--wk-accent, #c2974a);
+  color: #fff;
+  box-shadow: 0 12px 26px -12px var(--wk-accent, #c2974a);
+}
+.wk-btn--primary:hover { transform: translateY(-2px); filter: brightness(1.04); }
+.wk-btn--ghost {
+  background: transparent;
+  color: var(--wk-accent, #b0812c);
+  border: 1px solid var(--wk-accent-line, rgba(194, 151, 74, 0.4));
+}
+.wk-btn--ghost:hover { background: var(--wk-accent-soft, rgba(194, 151, 74, 0.1)); }
+
+/* ---------- Booking + signup band ---------- */
+.wk-cta {
+  margin: 70px auto 0;
+  max-width: 720px;
+  background: linear-gradient(160deg, #ffffff 0%, #fbf5ea 100%);
+  border: 1px solid rgba(194, 151, 74, 0.3);
+  border-radius: 28px;
+  padding: 40px 30px;
+  box-shadow: 0 40px 90px -50px rgba(120, 90, 30, 0.6);
+  text-align: center;
+}
+.wk-cta__title { font-family: "Rubik", sans-serif; font-weight: 800; font-size: clamp(22px, 4vw, 30px); color: #2c2820; margin: 0; }
+.wk-cta__lead { font-size: 15.5px; line-height: 1.7; color: #5f584d; margin: 12px auto 0; max-width: 520px; }
+
+.wk-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 22px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  background: #c2974a;
+  border-radius: 999px;
+  padding: 15px 30px;
+  text-decoration: none;
+  box-shadow: 0 16px 34px -14px rgba(194, 151, 74, 0.9);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.wk-book:hover { transform: translateY(-2px); filter: brightness(1.05); }
+.wk-cta__or { margin: 26px 0 4px; font-size: 13px; color: #a79c86; letter-spacing: 0.08em; }
+
+.wk-form { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; text-align: right; }
+.wk-form input,
+.wk-form select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(180, 160, 120, 0.4);
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-family: "Assistant", sans-serif;
+  color: #2c2820;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.wk-form input:focus,
+.wk-form select:focus { border-color: #c2974a; }
+.wk-form input::placeholder { color: #b3a894; }
+.wk-form button {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  color: #fff;
+  background: #c2974a;
+  border-radius: 999px;
+  padding: 15px;
+  margin-top: 4px;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.wk-form button:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.wk-form button:disabled { opacity: 0.5; cursor: default; }
+.wk-form__err { color: #c0392b; font-size: 14px; font-weight: 600; text-align: center; margin: 0; }
+.wk-done { text-align: center; padding: 10px 0; }
+.wk-done h4 { font-family: "Rubik", sans-serif; font-weight: 800; font-size: 22px; color: #2c2820; margin: 12px 0 6px; }
+.wk-done p { font-size: 15.5px; color: #5f584d; margin: 0; }
+.wk-done__mark {
+  width: 56px; height: 56px; border-radius: 50%; display: inline-grid; place-items: center;
+  background: rgba(194, 151, 74, 0.15); color: #b0812c;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 640px) {
+  .wk { padding: 64px 16px 80px; }
+  .wk__road::before { right: 22px; }
+  .wk-station { grid-template-columns: 46px 1fr; gap: 14px; }
+  .wk-badge { width: 46px; height: 46px; font-size: 16px; }
+  .wk-card { padding: 22px 18px 20px; border-radius: 20px; }
+  .wk-meta { margin-left: 0; width: 100%; }
+}
+
+/* honor reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wk-card, .wk-btn, .wk-book, .wk-form button { transition: none; }
+}
