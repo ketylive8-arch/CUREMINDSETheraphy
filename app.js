@@ -659,6 +659,16 @@ function About() {
               גיל.</span> כשמלמדים אותו דפוסים חדשים, בעדינות ובעקביות — השינוי מחזיק. זו השליחות שלי: לתת לכל
               אחד ואחת את הכלים לחוסן רגשי שנשאר לכל החיים.
             </p>
+            <a
+              href="https://www.nlp-institutes.net/kety-segev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-full bg-gold-50 border border-gold-300 text-gold-700 font-heading font-semibold text-[15px] hover:bg-gold-100 hover:border-gold-400 transition-colors"
+            >
+              <Icon name="graduation-cap" size={18} />
+              הפרופיל הבינלאומי שלי — NLP Institutes
+              <Icon name="arrow-up-right" size={16} />
+            </a>
           </Reveal>
         </div>
 
