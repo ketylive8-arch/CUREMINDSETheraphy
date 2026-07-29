@@ -23,7 +23,7 @@ const STATIC_DIR = path.join(__dirname, "..");
 const UPLOADS_DIR = path.join(__dirname, "uploads");
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
-const MATERIAL_TYPES = new Set(["audio", "worksheet", "summary", "other"]);
+const MATERIAL_TYPES = new Set(["lesson", "audio", "worksheet", "summary", "other"]);
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -697,13 +697,19 @@ admin.post("/patients/:token/materials", upload.single("file"), (req, res) => {
     return res.status(404).json({ error: "Patient not found" });
   }
 
-  const { title, type, notes } = req.body || {};
-  if (typeof title !== "string" || !title.trim() || !MATERIAL_TYPES.has(type) || !req.file) {
+  const { title, type, notes, link } = req.body || {};
+  // A "lesson" is text/link micro-content — no file required (body goes in notes).
+  const isLesson = type === "lesson";
+  if (typeof title !== "string" || !title.trim() || !MATERIAL_TYPES.has(type) || (!req.file && !isLesson)) {
     if (req.file) fs.unlink(req.file.path, () => {});
-    return res.status(400).json({ error: "title, a valid type, and file are required" });
+    return res.status(400).json({ error: "נדרש שם, סוג תקין, וקובץ (או תוכן לשיעור)" });
   }
 
-  const url = `/uploads/${req.file.filename}`;
+  const url = req.file
+    ? `/uploads/${req.file.filename}`
+    : typeof link === "string"
+    ? link.trim().slice(0, 500)
+    : "";
   db.prepare("INSERT INTO client_materials (device_token, title, type, url, notes) VALUES (?, ?, ?, ?, ?)").run(
     token,
     title.trim().slice(0, 200),

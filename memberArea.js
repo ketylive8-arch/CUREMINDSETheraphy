@@ -1194,6 +1194,7 @@
   /* ---------------------------------------------------------------- */
 
   const MATERIAL_TYPE_META = {
+    lesson: { icon: "book-open", label: "שיעור קצר" },
     audio: { icon: "headphones", label: "קובץ שמע" },
     worksheet: { icon: "file-text", label: "דף עבודה" },
     summary: { icon: "book-open", label: "סיכום פגישה" },
@@ -1202,6 +1203,8 @@
 
   function MaterialCard({ material }) {
     const meta = MATERIAL_TYPE_META[material.type] || MATERIAL_TYPE_META.other;
+    const isLesson = material.type === "lesson";
+    const hasUrl = material.url && /^(https?:|\/uploads)/.test(material.url);
     return (
       <div className="cm-fade-in-soft rounded-2xl border border-ink-100 bg-white px-4 py-4 shadow-soft">
         <div className="flex items-start gap-3">
@@ -1211,24 +1214,28 @@
           <div className="flex-1 min-w-0">
             <p className="text-[10.5px] font-heading font-semibold uppercase tracking-wider text-gold-600 mb-0.5">{meta.label}</p>
             <p className="font-heading font-bold text-[14.5px] text-ink-800 leading-snug">{material.title}</p>
-            {material.notes ? <p className="text-[12.5px] text-ink-500 mt-1 leading-relaxed">{material.notes}</p> : null}
+            {material.notes ? (
+              <p className={`mt-1 leading-relaxed ${isLesson ? "text-[13.5px] text-ink-700 whitespace-pre-line" : "text-[12.5px] text-ink-500"}`}>
+                {material.notes}
+              </p>
+            ) : null}
           </div>
         </div>
-        <div className="mt-3">
-          {material.type === "audio" ? (
-            <audio controls src={material.url} className="w-full" />
-          ) : (
+        {material.type === "audio" && hasUrl ? (
+          <div className="mt-3"><audio controls src={material.url} className="w-full" /></div>
+        ) : hasUrl ? (
+          <div className="mt-3">
             <a
               href={material.url}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-gold-600 hover:text-gold-700"
             >
-              לפתיחת הקובץ
+              {isLesson ? "לצפייה בתוכן" : "לפתיחת הקובץ"}
               <Icon name="arrow-up-right" size={13} />
             </a>
-          )}
-        </div>
+          </div>
+        ) : null}
       </div>
     );
   }

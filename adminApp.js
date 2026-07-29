@@ -11,6 +11,7 @@
 
   const STATUS_DOT = { green: "bg-emerald-500", yellow: "bg-amber-500", red: "bg-rose-500" };
   const MATERIAL_TYPES = [
+    { value: "lesson", label: "שיעור קצר / מיקרו-לרנינג (טקסט)", icon: "book-open" },
     { value: "audio", label: "קובץ שמע (דמיון מודרך)", icon: "headphones" },
     { value: "worksheet", label: "דף עבודה (NLP)", icon: "file-text" },
     { value: "summary", label: "סיכום פגישה", icon: "book-open" },
@@ -470,6 +471,7 @@
 
   const FEED_NODE = {
     checkin: { icon: "message-circle", className: "bg-gold-500 text-white" },
+    lesson: { icon: "book-open", className: "bg-gold-100 text-gold-600" },
     audio: { icon: "headphones", className: "bg-ink-800 text-gold-400" },
     worksheet: { icon: "file-text", className: "bg-ink-800 text-gold-400" },
     summary: { icon: "book-open", className: "bg-ink-800 text-gold-400" },
@@ -517,20 +519,25 @@
 
   function UploadMaterialForm({ token, authHeader, onUploaded }) {
     const [title, setTitle] = useState("");
-    const [type, setType] = useState("audio");
+    const [type, setType] = useState("lesson");
     const [notes, setNotes] = useState("");
+    const [link, setLink] = useState("");
     const [file, setFile] = useState(null);
     const [status, setStatus] = useState("idle"); // idle | loading | error
 
+    const isLesson = type === "lesson";
+    const ready = title.trim() && (isLesson ? notes.trim() || link.trim() : file);
+
     async function handleSubmit(e) {
       e.preventDefault();
-      if (!title.trim() || !file) return;
+      if (!ready) return;
       setStatus("loading");
       const formData = new FormData();
       formData.append("title", title.trim());
       formData.append("type", type);
       formData.append("notes", notes.trim());
-      formData.append("file", file);
+      if (link.trim()) formData.append("link", link.trim());
+      if (file) formData.append("file", file);
       try {
         const res = await fetch(`/api/admin/patients/${token}/materials`, {
           method: "POST",
@@ -540,6 +547,7 @@
         if (!res.ok) throw new Error("upload failed");
         setTitle("");
         setNotes("");
+        setLink("");
         setFile(null);
         setStatus("idle");
         e.target.reset();
@@ -553,15 +561,8 @@
       <form onSubmit={handleSubmit} className="rounded-2xl border border-dashed border-gold-300 bg-gold-50/40 px-5 py-5 space-y-3">
         <p className="font-heading font-semibold text-[13.5px] text-ink-700 flex items-center gap-1.5">
           <Icon name="upload" size={14} className="text-gold-600" />
-          הוספת חומר חדש
+          הוספת תוכן חדש למטופל/ת
         </p>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="כותרת (לדוגמה: דמיון מודרך - רוגע)"
-          className="w-full rounded-xl border border-ink-100 bg-white px-3.5 py-2.5 text-[13.5px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400"
-        />
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
@@ -573,25 +574,43 @@
             </option>
           ))}
         </select>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder={isLesson ? "כותרת השיעור (לדוגמה: תרגיל נשימה 4-6)" : "כותרת (לדוגמה: דמיון מודרך - רוגע)"}
+          className="w-full rounded-xl border border-ink-100 bg-white px-3.5 py-2.5 text-[13.5px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400"
+        />
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="הערה קצרה (אופציונלי)"
-          rows={2}
+          placeholder={isLesson ? "תוכן השיעור — טקסט קצר שהמטופל/ת יקרא/תקרא (מיקרו-לרנינג)" : "הערה קצרה (אופציונלי)"}
+          rows={isLesson ? 4 : 2}
           className="w-full rounded-xl border border-ink-100 bg-white px-3.5 py-2.5 text-[13.5px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400 resize-none"
         />
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files[0] || null)}
-          className="w-full text-[13px] text-ink-600"
-        />
-        {status === "error" ? <p className="text-[12.5px] text-rose-600">ההעלאה נכשלה. נסי שוב.</p> : null}
+        {isLesson ? (
+          <input
+            type="url"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="קישור (אופציונלי) — וידאו/אודיו חיצוני"
+            dir="ltr"
+            className="w-full rounded-xl border border-ink-100 bg-white px-3.5 py-2.5 text-[13px] text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400 text-right"
+          />
+        ) : (
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files[0] || null)}
+            className="w-full text-[13px] text-ink-600"
+          />
+        )}
+        {status === "error" ? <p className="text-[12.5px] text-rose-600">ההוספה נכשלה. נסי שוב.</p> : null}
         <button
           type="submit"
-          disabled={status === "loading" || !title.trim() || !file}
+          disabled={status === "loading" || !ready}
           className="inline-flex items-center gap-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13.5px] px-5 py-2.5 hover:bg-gold-600 disabled:opacity-50"
         >
-          {status === "loading" ? "מעלה..." : "שיוך החומר למטופל/ת"}
+          {status === "loading" ? "שומרת..." : isLesson ? "שליחת השיעור למטופל/ת" : "שיוך החומר למטופל/ת"}
         </button>
       </form>
     );
