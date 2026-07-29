@@ -250,10 +250,10 @@
     );
   }
 
-  // נרשמות חדשות לסדנאות — מהטופס בדף הבית
+  // נרשמות חדשות לסדנאות — מהטופס בדף הבית (פתוח כברירת מחדל = תיבת הלידים)
   function WorkshopSignupsPanel({ authHeader }) {
     const [rows, setRows] = useState([]);
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
     useEffect(() => {
       fetch("/api/admin/signups", { headers: { Authorization: authHeader } })
