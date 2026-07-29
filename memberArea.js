@@ -990,13 +990,15 @@
           body: JSON.stringify({ text: trimmed }),
         });
         if (!res.ok) {
-          // Surface WHY so it's clear when the AI engine isn't connected on the server.
+          // Surface WHY so it's clear what's blocking the AI (server sends a Hebrew reason).
+          const errData = await res.json().catch(() => ({}));
           setErrMsg(
-            res.status === 503
-              ? "מנוע ה-AI לא מחובר בשרת (חסר מפתח OPENAI_API_KEY ב-Render). ברגע שהמפתח יוגדר — התשובות המקצועיות יעבדו."
-              : res.status === 502
-              ? "מנוע ה-AI לא הצליח להשיב כרגע (ייתכן שהמפתח שגוי או שנגמר הקרדיט ב-OpenAI). נסי שוב עוד רגע."
-              : "השירות אינו זמין כרגע. נסי שוב עוד רגע."
+            res.status === 402
+              ? (errData.error || "תקופת הניסיון הסתיימה — נדרש קוד גישה כדי להמשיך בליווי.") + " אפשר להזין קוד גישה במסך המסלולים."
+              : errData.error ||
+                  (res.status === 503
+                    ? "מנוע ה-AI לא מחובר בשרת (חסר מפתח OPENAI_API_KEY ב-Render)."
+                    : "מנוע ה-AI לא הצליח להשיב כרגע. נסי שוב עוד רגע.")
           );
           throw new Error("request failed");
         }
