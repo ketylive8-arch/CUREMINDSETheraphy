@@ -681,6 +681,31 @@
             <UploadMaterialForm token={token} authHeader={authHeader} onUploaded={load} />
           </div>
 
+          {profile.goals && profile.goals.length > 0 ? (
+            <div className="mb-7">
+              <h2 className="font-heading text-[13px] font-semibold uppercase tracking-wider text-ink-400 mb-3 flex items-center gap-1.5">
+                <Icon name="check-circle-2" size={13} className="text-gold-600" />
+                היעדים של המטופל/ת
+              </h2>
+              <div className="space-y-2.5">
+                {profile.goals.map((g) => (
+                  <div key={g.id} className="rounded-xl bg-white border border-ink-100 p-3.5">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="min-w-0">
+                        <p className="font-heading font-semibold text-[13.5px] text-ink-800 truncate">{g.title}</p>
+                        <span className="text-[11px] text-gold-700">{g.area}</span>
+                      </div>
+                      <span className="text-[12px] font-heading font-bold text-gold-700 shrink-0">{g.progress}%{g.status === "done" ? " ✓" : ""}</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-ink-100 overflow-hidden">
+                      <div className="h-full rounded-full bg-gold-500" style={{ width: `${g.progress}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <h2 className="font-heading text-[16px] font-bold text-ink-800 mb-5 flex items-center gap-2">
             <Icon name="clock" size={15} className="text-gold-600" />
             תיק מטופל/ת · סרט הפעילות המלא

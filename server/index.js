@@ -509,6 +509,54 @@ api.get("/materials", (req, res) => {
   res.json(rows);
 });
 
+// ── Personal goals ("היעדים שלי") — the client's whole-person targets + progress ──
+const GOAL_AREAS = ["רגשי", "ביטחון עצמי", "חרדה / לחץ", "דחיינות", "מערכות יחסים", "קריירה / לימודים", "בריאות ורווחה"];
+
+api.get("/goals", (req, res) => {
+  const rows = db
+    .prepare("SELECT id, title, area, progress, status, created_at, updated_at FROM client_goals WHERE device_token = ? ORDER BY created_at ASC")
+    .all(req.deviceToken);
+  res.json({ goals: rows, areas: GOAL_AREAS });
+});
+
+api.post("/goals", (req, res) => {
+  const title = String(req.body?.title || "").trim().slice(0, 140);
+  const area = GOAL_AREAS.includes(req.body?.area) ? req.body.area : GOAL_AREAS[0];
+  if (title.length < 2) return res.status(400).json({ error: "נא לנסח יעד קצר וברור" });
+  const count = db.prepare("SELECT COUNT(*) AS c FROM client_goals WHERE device_token = ? AND status = 'active'").get(req.deviceToken).c;
+  if (count >= 5) return res.status(409).json({ error: "אפשר עד 5 יעדים פעילים — סיימי או מחקי יעד קיים" });
+  const info = db.prepare("INSERT INTO client_goals (device_token, title, area) VALUES (?, ?, ?)").run(req.deviceToken, title, area);
+  touchPatientActivity(req.deviceToken);
+  res.status(201).json({ id: info.lastInsertRowid, title, area, progress: 0, status: "active" });
+});
+
+api.put("/goals/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const row = db.prepare("SELECT id FROM client_goals WHERE id = ? AND device_token = ?").get(id, req.deviceToken);
+  if (!row) return res.status(404).json({ error: "יעד לא נמצא" });
+  const fields = [];
+  const vals = [];
+  if (req.body?.progress != null) {
+    const p = Math.max(0, Math.min(100, Math.round(Number(req.body.progress) || 0)));
+    fields.push("progress = ?"); vals.push(p);
+    fields.push("status = ?"); vals.push(p >= 100 ? "done" : "active");
+  }
+  if (typeof req.body?.status === "string" && ["active", "done", "archived"].includes(req.body.status)) {
+    fields.push("status = ?"); vals.push(req.body.status);
+  }
+  if (!fields.length) return res.status(400).json({ error: "אין מה לעדכן" });
+  fields.push("updated_at = datetime('now')");
+  db.prepare(`UPDATE client_goals SET ${fields.join(", ")} WHERE id = ?`).run(...vals, id);
+  touchPatientActivity(req.deviceToken);
+  const updated = db.prepare("SELECT id, title, area, progress, status FROM client_goals WHERE id = ?").get(id);
+  res.json(updated);
+});
+
+api.delete("/goals/:id", (req, res) => {
+  db.prepare("DELETE FROM client_goals WHERE id = ? AND device_token = ?").run(Number(req.params.id), req.deviceToken);
+  res.json({ ok: true });
+});
+
 // --- Therapist CRM (admin) routes — Basic Auth gated, never mixed with the
 // patient-facing device-token API below. Mounted before "/api" so its requests
 // never reach the device-token middleware (Express matches prefixes in order).
@@ -609,6 +657,9 @@ admin.get("/patients/:token", (req, res) => {
   const materials = db
     .prepare("SELECT id, title, type, url, notes, created_at FROM client_materials WHERE device_token = ? ORDER BY created_at DESC")
     .all(token);
+  const goals = db
+    .prepare("SELECT id, title, area, progress, status, created_at FROM client_goals WHERE device_token = ? ORDER BY created_at ASC")
+    .all(token);
 
   res.json({
     deviceToken: patient.device_token,
@@ -619,6 +670,7 @@ admin.get("/patients/:token", (req, res) => {
     checkins,
     sessions,
     materials,
+    goals,
   });
 });
 

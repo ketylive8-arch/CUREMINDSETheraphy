@@ -101,6 +101,17 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS client_goals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_token TEXT NOT NULL REFERENCES patients(device_token),
+    title TEXT NOT NULL,
+    area TEXT NOT NULL DEFAULT 'רגשי',
+    progress INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'active',
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE TABLE IF NOT EXISTS accounts (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,

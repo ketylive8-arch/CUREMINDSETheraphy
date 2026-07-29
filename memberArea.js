@@ -151,6 +151,91 @@
       </div>
     );
   }
+
+  // "היעדים שלי" — יעדים אישיים (מודל האדם השלם) + מעקב התקדמות. נשמר בכרטיס הלקוח.
+  function GoalsCard() {
+    const [goals, setGoals] = useState([]);
+    const [areas, setAreas] = useState([]);
+    const [title, setTitle] = useState("");
+    const [area, setArea] = useState("");
+    const [busy, setBusy] = useState(false);
+
+    function load() {
+      fetch("/api/goals", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : { goals: [], areas: [] }))
+        .then((d) => { setGoals(d.goals || []); setAreas(d.areas || []); setArea((a) => a || (d.areas && d.areas[0]) || ""); })
+        .catch(() => {});
+    }
+    useEffect(load, []);
+
+    function addGoal(e) {
+      e.preventDefault();
+      if (title.trim().length < 2 || busy) return;
+      setBusy(true);
+      fetch("/api/goals", { method: "POST", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ title, area }) })
+        .then((r) => r.json()).then(() => { setTitle(""); load(); }).finally(() => setBusy(false));
+    }
+    function bump(g, delta) {
+      const p = Math.max(0, Math.min(100, g.progress + delta));
+      fetch(`/api/goals/${g.id}`, { method: "PUT", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ progress: p }) })
+        .then((r) => r.json()).then(load);
+    }
+    function remove(g) {
+      fetch(`/api/goals/${g.id}`, { method: "DELETE", headers: authHeaders() }).then(load);
+    }
+
+    const active = goals.filter((g) => g.status !== "archived");
+    return (
+      <div className="cm-slide-up-in rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-3.5">
+        <div>
+          <p className="font-heading font-bold text-[15px] text-ink-800">🎯 היעדים שלי</p>
+          <p className="text-[12.5px] text-ink-500 mt-1">2–5 יעדים אישיים שאנחנו עוקבים אחריהם יחד — הצמיחה שלך, מדידה.</p>
+        </div>
+
+        {active.map((g) => (
+          <div key={g.id} className="rounded-2xl bg-gold-50 border border-gold-100 p-3.5">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="font-heading font-semibold text-[14px] text-ink-800 leading-snug">{g.title}</p>
+                <span className="text-[11.5px] text-gold-700 font-medium">{g.area}</span>
+              </div>
+              <button type="button" onClick={() => remove(g)} aria-label="מחיקת יעד" className="shrink-0 text-ink-300 hover:text-red-500 transition-colors">
+                <Icon name="trash-2" size={15} />
+              </button>
+            </div>
+            <div className="mt-2.5 h-2 rounded-full bg-ink-100 overflow-hidden">
+              <div className="h-full rounded-full bg-gold-500 transition-all duration-500" style={{ width: `${g.progress}%` }} />
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex gap-1.5">
+                <button type="button" onClick={() => bump(g, -10)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 text-ink-600 font-bold hover:border-gold-400">−</button>
+                <button type="button" onClick={() => bump(g, 10)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 text-ink-600 font-bold hover:border-gold-400">+</button>
+              </div>
+              <span className="text-[12.5px] font-heading font-bold text-gold-700">{g.progress}%{g.status === "done" ? " ✓ הושלם" : ""}</span>
+            </div>
+          </div>
+        ))}
+
+        {active.length < 5 && (
+          <form onSubmit={addGoal} className="space-y-2 pt-1">
+            <input
+              value={title} onChange={(e) => setTitle(e.target.value)}
+              placeholder="יעד חדש (למשל: לומר את דעתי בלי לחשוש)"
+              className="w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-[14px] text-ink-800 placeholder:text-ink-300 outline-none focus:border-gold-500"
+            />
+            <div className="flex gap-2">
+              <select value={area} onChange={(e) => setArea(e.target.value)} className="flex-1 min-w-0 rounded-xl border border-ink-200 bg-white px-3 py-2.5 text-[13px] text-ink-700 outline-none focus:border-gold-500">
+                {areas.map((a) => <option key={a} value={a}>{a}</option>)}
+              </select>
+              <button type="submit" disabled={busy || title.trim().length < 2} className="shrink-0 px-4 py-2.5 rounded-xl bg-gold-500 text-white font-heading font-bold text-[13px] hover:bg-gold-600 transition-colors disabled:opacity-40">
+                הוספה
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    );
+  }
   // כותרות לכל קריאה לשרת: מזהה מכשיר + אסימון התחברות (אם מחוברים).
   function authHeaders(extra) {
     const h = Object.assign({ "X-Device-Token": getDeviceToken() }, extra || {});
@@ -1089,6 +1174,7 @@
                 </div>
               ) : null}
 
+              {showDashboard ? <GoalsCard /> : null}
               {showDashboard ? <ShareInvite /> : null}
 
               {showDashboard ? (
