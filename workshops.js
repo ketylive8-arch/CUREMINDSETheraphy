@@ -4,7 +4,7 @@
    window.WorkshopsSection. Signup posts to /api/workshop-signup (same CRM). */
 (function () {
   "use strict";
-  const { useState } = React;
+  const { useState, useEffect } = React;
 
   const WA = "972543032349";
   const BOOKING = "https://calendly.com/ketysegev/meet-with-me";
@@ -271,7 +271,78 @@
     );
   }
 
+  /* ---- 3 flagship programs (featured at the top of the page) ---- */
+  const FEATURED = [
+    {
+      cat: "youth", badge: "נוער · גילאי 12–18", title: "מייצרים חוסן",
+      meta: ["3 מפגשים", "שעתיים כל מפגש", "קבוצות בוטיק אינטימיות"],
+      tagline: "שלושה מפגשים שמשנים את הדרך שבה הם רואים את עצמם.",
+      intro: "תוכנית עומק בשיטת CureMindset שנותנת לבני נוער כלים אמיתיים לביטחון, לוויסות רגשי ולחוסן — בקבוצה קטנה ובטוחה, בשפה שלהם.",
+      sessions: [
+        ["מפגש 1 · פיצוח 'קוד' תת־המודע", "כרטיס הביקור של העוצמה והתקנת עוגן ביטחון."],
+        ["מפגש 2 · ניהול רגשות", "שינוי הדיאלוג הפנימי והתמודדות עם חרדה חברתית."],
+        ["מפגש 3 · קבלת החלטות", "מנהיגות פנימית ופיתוח חוסן אישי."],
+      ],
+    },
+    {
+      cat: "youth", badge: "פיילוט · מעבר ו' → ז'", title: "נחיתה רכה",
+      meta: ["תוכנית פיילוט", "מעבר לחטיבת הביניים"],
+      tagline: "המעבר לחטיבה לא חייב להיות נפילה.",
+      intro: "תוכנית ממוקדת למעבר מכיתה ו' ל־ז', שמונעת נשירה סמויה וחברתית ומחזקת את החוסן הרגשי בדיוק ברגע הרגיש הזה.",
+      sessions: [
+        ["הכנה רגשית למעבר", "רכות בכניסה למסגרת החדשה."],
+        ["חיזוק ביטחון חברתי", "כלים להשתלבות בקבוצה חדשה."],
+        ["מניעת נשירה שקטה", "זיהוי מוקדם וחיזוק החוסן."],
+      ],
+    },
+    {
+      cat: "org", badge: "ארגונים · עובדים", title: "חוסן ו־Wellness לארגונים",
+      meta: ["תוכניות מותאמות", "לחברות ולצוותים"],
+      tagline: "צוות חסין הוא צוות שנשאר.",
+      intro: "תוכניות מותאמות לחברות ולארגונים לניהול עומסים, מניעת שחיקה ושיפור הביצועים — עבודה בשורש הרגשי, לא רק ברווחה החיצונית.",
+      sessions: [
+        ["ניהול עומסים ולחץ", "כלים מעשיים לרגעי לחץ בעבודה."],
+        ["מניעת שחיקה", "שמירה על אנרגיה ומוטיבציה לאורך זמן."],
+        ["שיפור ביצועים ונוכחות", "עובדים נוכחים, יציבים ואפקטיביים יותר."],
+      ],
+    },
+  ];
+
+  function FeaturedProgram({ p }) {
+    const c = CATS[p.cat];
+    const vars = { "--wk-accent": c.accent, "--wk-accent-soft": c.soft, "--wk-accent-line": c.line };
+    return (
+      <article className="wk-flag" style={vars}>
+        <span className="wk-flag__badge">{p.badge}</span>
+        <h3 className="wk-flag__title">{p.title}</h3>
+        <p className="wk-flag__tagline">{p.tagline}</p>
+        <div className="wk-flag__meta">
+          {p.meta.map((m) => <span key={m}>{m}</span>)}
+        </div>
+        <p className="wk-flag__intro">{p.intro}</p>
+        <ul className="wk-flag__sessions">
+          {p.sessions.map((s, i) => (
+            <li key={i}><b>{s[0]}</b><span>{s[1]}</span></li>
+          ))}
+        </ul>
+        <div className="wk-flag__cta">
+          <a className="wk-btn wk-btn--primary" href={waLink(p.title)} target="_blank" rel="noopener noreferrer">
+            <Svg d={["M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2Z"]} size={15} /> להזמנת התוכנית
+          </a>
+          <a className="wk-btn wk-btn--ghost" href="#wk-signup">פרטים והרשמה</a>
+        </div>
+      </article>
+    );
+  }
+
   function WorkshopsSection() {
+    // Deep-link: /workshops scrolls straight to this section.
+    useEffect(() => {
+      if (location.pathname.replace(/\/+$/, "") === "/workshops") {
+        const el = document.getElementById("workshops");
+        if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 250);
+      }
+    }, []);
     return (
       <section id="workshops" className="wk">
         <span className="wk__orb wk__orb--1" /><span className="wk__orb wk__orb--2" /><span className="wk__orb wk__orb--3" />
@@ -290,6 +361,14 @@
               ))}
             </div>
           </header>
+
+          <div className="wk__featured-head">
+            <h2 className="wk__featured-title">התוכניות המובילות</h2>
+            <p className="wk__featured-sub">שלוש תוכניות דגל בשיטת CureMindset — לנוער, למעברי גיל ולארגונים.</p>
+          </div>
+          <div className="wk__featured">
+            {FEATURED.map((p) => <FeaturedProgram key={p.title} p={p} />)}
+          </div>
 
           <div className="wk__diff">
             <h3>למה CureMindset שונה?</h3>

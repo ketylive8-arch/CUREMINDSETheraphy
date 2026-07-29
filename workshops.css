@@ -455,3 +455,60 @@
 @media (prefers-reduced-motion: reduce) {
   .wk-card, .wk-btn, .wk-book, .wk-form button { transition: none; }
 }
+
+/* ---------- Flagship featured programs (top of workshops page) ---------- */
+.wk__featured-head { text-align: center; margin: 52px 0 22px; }
+.wk__featured-title {
+  font-family: "Rubik", sans-serif; font-weight: 800; color: #2c2820;
+  font-size: clamp(22px, 4vw, 30px); margin: 0;
+}
+.wk__featured-sub { color: #6b6456; font-size: 15.5px; margin: 8px 0 0; }
+
+.wk__featured {
+  display: grid; gap: 18px; grid-template-columns: 1fr;
+}
+@media (min-width: 860px) { .wk__featured { grid-template-columns: repeat(3, 1fr); } }
+
+.wk-flag {
+  position: relative; display: flex; flex-direction: column;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--wk-accent-line, rgba(194,151,74,.3));
+  border-radius: 22px; padding: 26px 22px 22px;
+  box-shadow: 0 26px 60px -34px rgba(120, 90, 30, 0.5);
+  overflow: hidden;
+}
+.wk-flag::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: var(--wk-accent, #c2974a);
+}
+.wk-flag__badge {
+  align-self: flex-start; font-family: "Rubik", sans-serif; font-size: 11.5px; font-weight: 700;
+  color: var(--wk-accent, #c2974a); background: var(--wk-accent-soft, rgba(194,151,74,.12));
+  border: 1px solid var(--wk-accent-line, rgba(194,151,74,.3));
+  border-radius: 999px; padding: 5px 12px; margin-bottom: 12px;
+}
+.wk-flag__title {
+  font-family: "Rubik", sans-serif; font-weight: 800; font-size: 23px; color: #2c2820; margin: 0; line-height: 1.15;
+}
+.wk-flag__tagline {
+  font-family: "Rubik", sans-serif; font-weight: 600; font-size: 15px; line-height: 1.45;
+  color: var(--wk-accent, #b0812c); margin: 10px 0 0;
+}
+.wk-flag__meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; }
+.wk-flag__meta span {
+  font-size: 12px; font-weight: 600; color: #6b6456;
+  background: #faf4ea; border: 1px solid rgba(180,160,120,.3); border-radius: 999px; padding: 5px 10px;
+}
+.wk-flag__intro { font-size: 14.5px; line-height: 1.7; color: #554f45; margin: 14px 0 0; }
+.wk-flag__sessions { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.wk-flag__sessions li {
+  position: relative; padding-right: 22px; font-size: 13.8px; line-height: 1.5; color: #4a453c;
+}
+.wk-flag__sessions li::before {
+  content: ""; position: absolute; right: 3px; top: 7px; width: 8px; height: 8px;
+  transform: rotate(45deg); background: var(--wk-accent, #c2974a); border-radius: 2px;
+}
+.wk-flag__sessions li b { display: block; color: #2c2820; font-weight: 700; font-size: 14px; }
+.wk-flag__sessions li span { color: #6b6456; }
+.wk-flag__cta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(180,160,120,.25); }
+.wk-flag__cta .wk-btn { flex: 1; justify-content: center; min-width: 130px; }

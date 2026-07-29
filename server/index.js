@@ -661,6 +661,12 @@ try {
   console.error("demo seed failed:", e.message);
 }
 
+// Clean deep-link routes. The public site is one clean marketing app served
+// from index.html; /workshops and /dashboard are entry points into it, and
+// /admin opens the password-gated Back-Office (its data APIs require Basic Auth).
+app.get(["/workshops", "/dashboard"], (req, res) => res.sendFile(path.join(STATIC_DIR, "index.html")));
+app.get("/admin", (req, res) => res.sendFile(path.join(STATIC_DIR, "admin.html")));
+
 app.listen(PORT, () => {
   console.log(`CureMindset server listening on http://localhost:${PORT}`);
 });
