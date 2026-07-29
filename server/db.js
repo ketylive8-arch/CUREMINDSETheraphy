@@ -112,6 +112,16 @@ db.exec(`
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS consent_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_id TEXT,
+    email TEXT,
+    consent_type TEXT NOT NULL DEFAULT 'terms_ai_medical',
+    ip TEXT,
+    user_agent TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE TABLE IF NOT EXISTS accounts (
     id TEXT PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,

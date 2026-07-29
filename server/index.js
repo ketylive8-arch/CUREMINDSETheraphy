@@ -16,6 +16,8 @@ const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead } = require("./notify");
 
 const app = express();
+// Behind Render's proxy — needed so req.ip is the real client IP (consent log).
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 8731;
 const STATIC_DIR = path.join(__dirname, "..");
 const UPLOADS_DIR = path.join(__dirname, "uploads");
@@ -96,6 +98,19 @@ app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
   const { email, password, fullName, phone, ref } = req.body || {};
   const result = registerAccount({ email, password, fullName, phone, ref });
   if (result.error) return res.status(result.status).json({ error: result.error });
+
+  // תיעוד הסכמה מדעת (תנאי שימוש + הצהרת AI + אי-ייעוץ רפואי) עם חותמת זמן ו-IP.
+  try {
+    db.prepare("INSERT INTO consent_log (account_id, email, consent_type, ip, user_agent) VALUES (?, ?, ?, ?, ?)").run(
+      result.accountId,
+      result.email,
+      "terms_ai_medical",
+      String(req.ip || "").slice(0, 60),
+      String(req.get("user-agent") || "").slice(0, 300)
+    );
+  } catch (e) {
+    console.warn("[consent] log failed:", e.message);
+  }
 
   // התראת מייל מיידית לקטי על לקוח/ה חדש/ה שנרשם/ה למערכת.
   notifyLead("לקוח/ה חדש/ה נרשם/ה למערכת", {
