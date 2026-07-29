@@ -1054,6 +1054,50 @@
     );
   }
 
+  // שלב 2 — פופאפ הסבר התהליך: מה קורה, ואיפה נכנס התשלום. מוצג בכניסה הראשונה.
+  function ProcessIntro({ onStart }) {
+    const steps = [
+      ["1", "אשאל אותך כמה שאלות", "על מה שאת מרגישה עכשיו — בגוף, ברגש ובמחשבות."],
+      ["2", "תקבלי שיקוף אישי + צעד מעשי", "תובנה והכוונה מיד, מבוססות על השיטה של קטי."],
+      ["3", "התוכנית המלאה נפתחת בהצטרפות", "התרגולים, החומרים האישיים והליווי המלא — עם ההצטרפות לתוכנית בתשלום."],
+    ];
+    return (
+      <div
+        className="absolute inset-0 z-40 flex items-center justify-center px-5 overflow-y-auto py-6"
+        style={{ background: "rgba(253,251,247,0.97)", backdropFilter: "blur(3px)" }}
+        dir="rtl"
+      >
+        <div className="w-full max-w-[340px] rounded-3xl bg-white border border-gold-200 shadow-[0_30px_70px_-30px_rgba(120,90,30,0.5)] p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-3">
+            <Icon name="heart-handshake" size={26} />
+          </div>
+          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">איך זה עובד?</h3>
+          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">שלושה צעדים פשוטים למסע שלך עם CureMindset.</p>
+          <div className="space-y-3 text-right">
+            {steps.map(([n, t, d]) => (
+              <div key={n} className="flex gap-3 items-start">
+                <span className="shrink-0 w-7 h-7 rounded-full bg-gold-500 text-white font-heading font-bold text-[13px] flex items-center justify-center">{n}</span>
+                <div>
+                  <p className="font-heading font-bold text-[13.5px] text-ink-800 leading-snug">{t}</p>
+                  <p className="text-[12px] text-ink-500 leading-relaxed">{d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button
+            type="button" onClick={onStart}
+            className="w-full mt-5 py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors"
+          >
+            בואו נתחיל 🌿
+          </button>
+          <p className="text-[10.5px] text-ink-400 mt-3 leading-relaxed">
+            השירות אינו מהווה ייעוץ רפואי. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   function CheckInStage({ onDashboardUpdate, onNavigateStage }) {
     const [text, setText] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | done | error
@@ -1061,6 +1105,13 @@
     const [errMsg, setErrMsg] = useState("");
     const [dashboardData, setDashboardData] = useState(null);
     const [showDashboard, setShowDashboard] = useState(false);
+    const [showIntro, setShowIntro] = useState(() => {
+      try { return !localStorage.getItem("cm_intro_seen"); } catch (e) { return true; }
+    });
+    function dismissIntro() {
+      try { localStorage.setItem("cm_intro_seen", "1"); } catch (e) {}
+      setShowIntro(false);
+    }
 
     async function handleSend() {
       const trimmed = text.trim();
@@ -1107,6 +1158,7 @@
 
     return (
       <div className="relative min-h-full overflow-hidden">
+        {showIntro ? <ProcessIntro onStart={dismissIntro} /> : null}
         <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-gold-400/25 blur-3xl cm-glow-drift" />
         <div className="pointer-events-none absolute bottom-[-90px] -left-12 h-64 w-64 rounded-full bg-gold-300/15 blur-3xl cm-glow-drift-slow" />
 
