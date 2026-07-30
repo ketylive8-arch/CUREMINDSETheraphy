@@ -12,7 +12,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "multer": "^2.2.0",
-    "node-sqlite3-wasm": "^0.8.59"
+    "node-sqlite3-wasm": "^0.8.59",
+    "nodemailer": "^6.9.16"
   },
   "engines": {
     "node": "22.x"
