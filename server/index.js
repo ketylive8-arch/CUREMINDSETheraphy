@@ -41,6 +41,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// ── Canonical host redirect ──
+// Any *.onrender.com PAGE request is bounced (301) to the canonical domain so
+// Google consolidates on ketysegev.com and old Render URLs stop serving a
+// duplicate site. /api and /uploads are left untouched — Vercel proxies those
+// to the Render backend and must reach it directly (no redirect loop).
+app.use((req, res, next) => {
+  const host = String(req.headers.host || "").toLowerCase();
+  const isRenderHost = host.endsWith(".onrender.com");
+  const isApiPath = req.path.startsWith("/api") || req.path.startsWith("/uploads");
+  if (isRenderHost && !isApiPath && (req.method === "GET" || req.method === "HEAD")) {
+    return res.redirect(301, `${SITE_URL}${req.originalUrl === "/" ? "" : req.originalUrl}`);
+  }
+  next();
+});
+
 // ── SEO: robots.txt + sitemap.xml (public, dynamic) ──
 // SITE_URL should be the canonical public address once the domain is live.
 const SITE_URL = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
