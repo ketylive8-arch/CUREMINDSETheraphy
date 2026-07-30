@@ -1602,6 +1602,107 @@
   /* Auth gate — הרשמה והתחברות עם מייל וסיסמה                          */
   /* ---------------------------------------------------------------- */
 
+  // שאלון אבחון אינטראקטיבי (בהשראת Curable): מטרה → משך → תובנה → הרשמה.
+  function OnboardingQuiz({ onComplete, onExit }) {
+    const [qStep, setQStep] = useState(0); // 0 מטרה · 1 משך · 2 תובנה
+    const [goals, setGoals] = useState([]);
+    const [duration, setDuration] = useState("");
+
+    const GOALS = [
+      ["🧠", "שחרור חסמים תת־מודעים"],
+      ["🌊", "ויסות רגשי"],
+      ["🛡️", "חיזוק החוסן"],
+      ["😌", "הפחתת מתח וחרדה"],
+    ];
+    const DURATIONS = ["פחות משנה", "1–3 שנים", "מעל 3 שנים"];
+
+    function toggleGoal(g) {
+      setGoals((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : [...cur, g]));
+    }
+    const pct = Math.round(((qStep + 1) / 3) * 100);
+    const canNext = qStep === 0 ? goals.length > 0 : qStep === 1 ? !!duration : true;
+
+    function insightText() {
+      const p = goals[0] || "";
+      if (p.includes("חרדה") || p.includes("מתח"))
+        return "זיהינו שהמערכת שלך במצב של עוררות־יתר. שיטת CureMindset עובדת בדיוק על שחרור הדפוס הזה — קרקוע הגוף וכיבוי מנגנון האזעקה.";
+      if (p.includes("חסמים"))
+        return "יש פוטנציאל גבוה לשינוי דרך התת־מודע. נזהה ונשחרר יחד את האמונות המגבילות שפועלות מתחת לפני השטח.";
+      if (p.includes("ויסות"))
+        return "נבנה יחד כלי ויסות מעשיים שזמינים לך בכל רגע — כדי שאת תובילי את הרגש, לא הוא אותך.";
+      return "יש בסיס מצוין לצמיחה. שיטת CureMindset תלווה אותך שלב אחר שלב אל חוסן פנימי אמיתי.";
+    }
+
+    function next() {
+      if (qStep < 2) return setQStep(qStep + 1);
+      onComplete(`מטרות: ${goals.join(", ") || "—"} · משך האתגר: ${duration || "—"}`);
+    }
+
+    return (
+      <div className="onb">
+        <div className="onb__bar"><span style={{ width: pct + "%" }} /></div>
+
+        {qStep === 0 && (
+          <React.Fragment>
+            <p className="onb__step">שלב 1 מתוך 3</p>
+            <h3 className="onb__q">מה היית רוצה להשיג בתהליך?</h3>
+            <p className="onb__hint">אפשר לבחור יותר מאחד</p>
+            <div className="onb__opts">
+              {GOALS.map(([ic, label]) => {
+                const sel = goals.includes(label);
+                return (
+                  <button type="button" key={label} onClick={() => toggleGoal(label)} className={`onb-card${sel ? " sel" : ""}`}>
+                    <span className="onb-card__ic">{ic}</span>
+                    {label}
+                    <span className="onb-card__chk">{sel ? <Icon name="check-circle-2" size={14} /> : null}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        )}
+
+        {qStep === 1 && (
+          <React.Fragment>
+            <p className="onb__step">שלב 2 מתוך 3</p>
+            <h3 className="onb__q">כמה זמן הדפוס הזה מלווה אותך?</h3>
+            <p className="onb__hint">זה עוזר לי להתאים את הקצב</p>
+            <div className="onb__opts">
+              {DURATIONS.map((d) => {
+                const sel = duration === d;
+                return (
+                  <button type="button" key={d} onClick={() => setDuration(d)} className={`onb-card${sel ? " sel" : ""}`}>
+                    <span className="onb-card__ic">🕊️</span>
+                    {d}
+                    <span className="onb-card__chk">{sel ? <Icon name="check-circle-2" size={14} /> : null}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        )}
+
+        {qStep === 2 && (
+          <div className="onb-insight">
+            <span className="onb-insight__ic"><Icon name="shield-check" size={28} /></span>
+            <h3>יש לנו כיוון בשבילך 🌿</h3>
+            <p>{insightText()}</p>
+            <span className="onb-tag">מותאם אישית לפי מה שסימנת</span>
+          </div>
+        )}
+
+        <div className="onb__nav">
+          {qStep > 0
+            ? <button type="button" className="onb__back" onClick={() => setQStep(qStep - 1)}>חזרה</button>
+            : <button type="button" className="onb__back" onClick={onExit}>לאתר</button>}
+          <button type="button" className="onb__next" disabled={!canNext} onClick={next}>
+            {qStep < 2 ? "המשך" : "יצירת החשבון שלי"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   function AuthGate({ onAuthed, onExit }) {
     const [mode, setMode] = useState("register"); // register | login
     const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "" });
@@ -1612,6 +1713,8 @@
     const [step, setStep] = useState("form"); // form | otp
     const [otp, setOtp] = useState({ email: "", phoneHint: "", code: "" });
     const [resent, setResent] = useState(false);
+    const [onbDone, setOnbDone] = useState(false); // האם סיימו את שאלון האבחון (הרשמה)
+    const [onbSummary, setOnbSummary] = useState(""); // תשובות האבחון לשמירה בכרטיס
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
@@ -1628,7 +1731,7 @@
       if (status === "loading") return;
       setStatus("loading");
       const url = mode === "register" ? "/api/auth/register" : "/api/auth/login";
-      const body = mode === "register" ? { ...form, ref: getRef() } : { email: form.email, password: form.password };
+      const body = mode === "register" ? { ...form, ref: getRef(), onboarding: onbSummary } : { email: form.email, password: form.password };
       fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
@@ -1672,6 +1775,18 @@
     }
 
     const isReg = mode === "register";
+
+    // ── שאלון אבחון (Onboarding) — לפני יצירת החשבון, רק בהרשמה ──
+    if (isReg && !onbDone && step !== "otp") {
+      return (
+        <div className="au-overlay">
+          <OnboardingQuiz
+            onExit={onExit}
+            onComplete={(summary) => { setOnbSummary(summary); setOnbDone(true); }}
+          />
+        </div>
+      );
+    }
 
     // ── מסך אימות טלפון (OTP) ──
     if (step === "otp") {

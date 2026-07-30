@@ -112,11 +112,22 @@ app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
     console.warn("[consent] log failed:", e.message);
   }
 
+  // תשובות שאלון האבחון (Onboarding) — נשמרות בכרטיס הלקוח ומופיעות ב-CRM של קטי.
+  const onboarding = typeof req.body.onboarding === "string" ? req.body.onboarding.slice(0, 300) : "";
+  if (onboarding) {
+    try {
+      db.prepare("UPDATE patients SET last_summary = ? WHERE device_token = ?").run(onboarding, result.accountId);
+    } catch (e) {
+      console.warn("[onboarding] save failed:", e.message);
+    }
+  }
+
   // התראת מייל מיידית לקטי על לקוח/ה חדש/ה שנרשם/ה למערכת.
   notifyLead("לקוח/ה חדש/ה נרשם/ה למערכת", {
     "שם מלא": result.fullName,
     "אימייל": result.email,
     "טלפון": typeof phone === "string" ? phone : "",
+    "מאבחון ראשוני": onboarding,
   }).then((r) => {
     if (r.error) console.warn("[notify] new-account email failed:", r.error);
   });
