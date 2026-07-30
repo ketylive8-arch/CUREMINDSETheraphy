@@ -9,11 +9,12 @@
   inset: 0;
   z-index: 9999;
   direction: rtl;
+  /* גלילה אנכית מלאה + מרכוז שלא חותך: flex עם margin:auto על הכרטיס (בלי
+     align-items:center שחותך תוכן גבוה מהמסך) — מרכז כשנכנס, נגלל במלואו כשגבוה. */
   display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 24px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   font-family: "Assistant", system-ui, sans-serif;
   background:
     radial-gradient(50% 40% at 15% 8%, rgba(194,151,74,0.12), transparent 60%),
@@ -140,12 +141,23 @@
 }
 
 /* ---- responsive: stack to single column ---- */
-@media (max-width: 760px) {
-  .au-card { grid-template-columns: 1fr; width: min(480px, 100%); }
-  .au-brand { padding: 32px 28px; order: -1; }
-  .au-brand h2 { font-size: 22px; margin-top: 16px; }
-  .au-benefits { gap: 10px; margin-top: 18px; }
-  .au-form-col { padding: 30px 26px; }
+@media (max-width: 860px) {
+  /* טאבלט/מובייל: עמודה אחת. הטופס ראשון (order:1), פאנל המיתוג מתחתיו — קומפקטי,
+     לא מוסתר. margin:auto נשמר כדי שכל גובה יתמרכז-או-יגלל בלי חיתוך. */
+  .au-card { grid-template-columns: 1fr; width: min(460px, 100%); }
+  .au-form-col { order: 1; padding: 34px 26px; }
+  .au-brand { order: 2; padding: 26px 26px 30px; }
+  .au-brand h2 { font-size: 21px; margin-top: 16px; }
+  .au-brand__logo { width: 48px; height: 48px; }
+  .au-benefits { margin-top: 18px; gap: 10px; }
+  .au-brand__trust { margin-top: 20px; }
+}
+@media (max-width: 480px) {
+  .au-overlay { padding: 14px; }
+  .au-form-col { padding: 28px 20px; }
+  .au-form-col__head h3 { font-size: 22px; }
+  .au-brand { padding: 22px 20px 26px; }
+  .au-brand__rose { width: 190px; bottom: -40px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .au-submit { transition: none; }
