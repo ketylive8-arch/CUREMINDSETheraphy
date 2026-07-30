@@ -9,6 +9,7 @@
     { "source": "/sitemap.xml", "destination": "https://curemindsetheraphy.onrender.com/sitemap.xml" },
     { "source": "/workshops", "destination": "/index.html" },
     { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/admin.html" }
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
