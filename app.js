@@ -603,6 +603,23 @@ function Journey() {
           <h2 className="font-heading font-bold text-ink-800 text-[28px] sm:text-[38px] mb-4">שלושה שלבים לחוסן רגשי שמחזיק לכל החיים</h2>
           <p className="text-ink-500 text-[18px] leading-[1.6]">זה התהליך המדויק שכל מטופל ומטופלת עוברים איתי — שלב אחרי שלב, בקצב אישי.</p>
         </Reveal>
+        {/* באנר מותג "לפני/אחרי" — מחרדה אל בהירות ושחזור עצבי. תמונת מותג. */}
+        <Reveal className="mb-14">
+          <figure className="relative rounded-[1.5rem] overflow-hidden shadow-soft ring-1 ring-gold-200/60 max-w-[980px] mx-auto">
+            <img
+              src="images/brand-transformation.jpg"
+              alt="מהעומס הרגשי אל בהירות, שקט ושחזור עצבי — שיטת CureMindset"
+              loading="lazy"
+              decoding="async"
+              className="w-full h-auto block"
+              onError={(e) => { e.currentTarget.closest("figure").style.display = "none"; }}
+            />
+            <figcaption className="absolute bottom-0 inset-x-0 p-5 sm:p-7 text-white bg-gradient-to-t from-black/55 via-black/20 to-transparent">
+              <span className="font-heading font-semibold text-[13px] tracking-[0.16em] text-gold-200">המסע ב-CureMindset</span>
+              <p className="font-heading font-bold text-[18px] sm:text-[22px] leading-snug mt-1">מהעומס הרגשי — אל בהירות, שקט ושחזור עצבי</p>
+            </figcaption>
+          </figure>
+        </Reveal>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
           {JOURNEY_STAGES.map((stage, i) => (
             <JourneyCard key={stage.num} stage={stage} idx={i} />
