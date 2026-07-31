@@ -268,12 +268,12 @@
     }
 
     const options = [
-      { value: "adult", label: "מבוגר/ת", desc: "18+", icon: "user" },
+      { value: "adult", label: "מבוגר/ת", desc: "18+", icon: "user-round" },
       { value: "youth", label: "נוער", desc: "עד גיל 18", icon: "users" },
     ];
 
     return (
-      <div className="absolute inset-0 z-40 bg-white flex flex-col items-center justify-center gap-6 px-8 text-center" dir="rtl">
+      <div className="absolute inset-0 z-[70] bg-white flex flex-col items-center gap-6 px-8 py-10 text-center overflow-y-auto" dir="rtl">
         <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto">
           <Icon name="sparkles" size={26} className="text-gold-600" />
         </div>
@@ -1063,11 +1063,11 @@
     ];
     return (
       <div
-        className="absolute inset-0 z-40 flex items-center justify-center px-5 overflow-y-auto py-6"
-        style={{ background: "rgba(253,251,247,0.97)", backdropFilter: "blur(3px)" }}
+        className="absolute inset-0 z-40 flex flex-col items-center px-5 overflow-y-auto py-6"
+        style={{ background: "rgba(253,251,247,0.98)", backdropFilter: "blur(3px)" }}
         dir="rtl"
       >
-        <div className="w-full max-w-[340px] rounded-3xl bg-white border border-gold-200 shadow-[0_30px_70px_-30px_rgba(120,90,30,0.5)] p-6 text-center">
+        <div className="w-full max-w-[340px] my-auto rounded-3xl bg-white border border-gold-200 shadow-[0_30px_70px_-30px_rgba(120,90,30,0.5)] p-6 text-center">
           <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-3">
             <Icon name="heart-handshake" size={26} />
           </div>
@@ -2333,7 +2333,9 @@
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
         {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
-        {current === 8 ? (
+        {showOnboarding && !expired ? (
+          <div className="flex-1" />
+        ) : current === 8 ? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <ProgramStage onNavigateStage={navigateToStage} />
           </div>
