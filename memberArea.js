@@ -1604,6 +1604,7 @@
 
   // שאלון אבחון אינטראקטיבי (בהשראת Curable): מטרה → משך → תובנה → הרשמה.
   function OnboardingQuiz({ onComplete, onExit }) {
+    const [started, setStarted] = useState(false); // מסך פתיחה (Welcome) לפני השאלון
     const [qStep, setQStep] = useState(0); // 0 מטרה · 1 משך · 2 תובנה
     const [goals, setGoals] = useState([]);
     const [duration, setDuration] = useState("");
@@ -1636,6 +1637,31 @@
     function next() {
       if (qStep < 2) return setQStep(qStep + 1);
       onComplete(`מטרות: ${goals.join(", ") || "—"} · משך האתגר: ${duration || "—"}`);
+    }
+
+    // ── מסך פתיחה (Welcome) ──
+    if (!started) {
+      return (
+        <div className="onb">
+          <div className="onb-welcome">
+            <span className="onb-welcome__ic"><Icon name="sparkles" size={30} /></span>
+            <h3 className="onb-welcome__title">רגע לפני שמתחילים 🌿</h3>
+            <p className="onb-welcome__lead">
+              נכיר קצת — 3 שאלות קצרות (פחות מדקה) שיעזרו לי להבין איפה את נמצאת,
+              ולהתאים לך את נקודת הפתיחה בשיטת CureMindset.
+            </p>
+            <ul className="onb-welcome__steps">
+              <li><span>1</span> מה חשוב לך להשיג</li>
+              <li><span>2</span> כמה זמן זה מלווה אותך</li>
+              <li><span>3</span> תובנה ראשונית מותאמת אישית</li>
+            </ul>
+            <div className="onb__nav">
+              <button type="button" className="onb__back" onClick={onExit}>לאתר</button>
+              <button type="button" className="onb__next" onClick={() => setStarted(true)}>בואו נתחיל</button>
+            </div>
+          </div>
+        </div>
+      );
     }
 
     return (
@@ -1692,9 +1718,7 @@
         )}
 
         <div className="onb__nav">
-          {qStep > 0
-            ? <button type="button" className="onb__back" onClick={() => setQStep(qStep - 1)}>חזרה</button>
-            : <button type="button" className="onb__back" onClick={onExit}>לאתר</button>}
+          <button type="button" className="onb__back" onClick={() => (qStep > 0 ? setQStep(qStep - 1) : setStarted(false))}>חזרה</button>
           <button type="button" className="onb__next" disabled={!canNext} onClick={next}>
             {qStep < 2 ? "המשך" : "יצירת החשבון שלי"}
           </button>

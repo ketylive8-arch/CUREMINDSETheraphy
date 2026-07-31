@@ -203,6 +203,28 @@
 .onb__next:disabled { opacity: .4; cursor: default; box-shadow: none; }
 .onb__back { background: none; border: none; cursor: pointer; font-size: 14px; color: #8a9691; font-weight: 600; padding: 8px 12px; }
 
+/* welcome screen */
+.onb-welcome { text-align: center; padding: 4px 0 2px; }
+.onb-welcome__ic {
+  width: 66px; height: 66px; border-radius: 50%;
+  background: linear-gradient(135deg, #eef3ee, #f6ecd6); color: #5E7A68;
+  display: inline-grid; place-items: center; margin-bottom: 14px;
+  box-shadow: 0 12px 28px -16px rgba(94,122,104,.6);
+}
+.onb-welcome__title { font-family: "Rubik", sans-serif; font-weight: 800; font-size: 22px; color: #2C3E50; margin: 0 0 10px; }
+.onb-welcome__lead { font-size: 14.5px; line-height: 1.7; color: #4a5a52; margin: 0 auto 18px; max-width: 340px; }
+.onb-welcome__steps { list-style: none; margin: 0 0 4px; padding: 0; display: flex; flex-direction: column; gap: 10px; text-align: right; }
+.onb-welcome__steps li {
+  display: flex; align-items: center; gap: 12px; background: #fff;
+  border: 1.5px solid #e6ddcb; border-radius: 14px; padding: 12px 14px;
+  font-size: 14.5px; font-weight: 600; color: #2C3E50;
+}
+.onb-welcome__steps li span {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: #eef3ee; color: #5E7A68; font-weight: 800; font-family: "Rubik", sans-serif;
+  display: grid; place-items: center; font-size: 14px;
+}
+
 /* insight screen */
 .onb-insight { text-align: center; padding: 6px 0; }
 .onb-insight__ic { width: 60px; height: 60px; border-radius: 50%; background: #eef3ee; color: #5E7A68; display: inline-grid; place-items: center; margin-bottom: 14px; }

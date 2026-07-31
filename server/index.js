@@ -255,6 +255,32 @@ app.post("/api/workshop-signup", (req, res) => {
   res.status(201).json({ ok: true });
 });
 
+// ── /api/send-lead ──
+// נקודת קצה ייעודית לשליחת פרטי ליד/נרשם ישירות למייל של קטי (ketyse@gmail.com).
+// עוברת דרך notifyLead → Gmail(Nodemailer) / Resend / FormSubmit לפי מה שמוגדר.
+// שימושי גם ל-Onboarding: שולח את שם, מייל, טלפון ותוצאות השאלון.
+app.post("/api/send-lead", rateLimit("send-lead", 20), async (req, res) => {
+  const b = req.body || {};
+  const name = typeof b.fullName === "string" ? b.fullName.trim().slice(0, 120) : "";
+  const email = typeof b.email === "string" ? b.email.trim().slice(0, 160) : "";
+  const phone = typeof b.phone === "string" ? b.phone.trim().slice(0, 30) : "";
+  const onboarding = typeof b.onboarding === "string" ? b.onboarding.trim().slice(0, 400) : "";
+  const source = typeof b.source === "string" ? b.source.trim().slice(0, 60) : "Onboarding";
+  if (!email && !phone) {
+    return res.status(400).json({ error: "נא למלא מייל או טלפון" });
+  }
+  const r = await notifyLead("ליד חדש מהאתר — Onboarding", {
+    "שם מלא": name || "—",
+    "אימייל": email || "—",
+    "טלפון": phone || "—",
+    "תוצאות השאלון": onboarding || "—",
+    "מקור": source,
+  });
+  // תמיד מחזיר ok ללקוח — כדי לא לחסום את חוויית ההרשמה גם אם ערוץ המייל לא מוגדר.
+  if (r && r.error) console.warn("[notify] send-lead email failed:", r.error);
+  res.status(202).json({ ok: true, delivered: !!(r && r.sent) });
+});
+
 // מאמרים: משיכה מערוץ ה-RSS של קטי (ARTICLES_RSS_URL ב-Environment ברנדר).
 // פירסור מינימלי ללא תלויות + מטמון 30 דקות; אם אין כתובת או שיש תקלה — [].
 let articlesCache = { at: 0, items: [] };
