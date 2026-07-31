@@ -1437,19 +1437,22 @@
   /* ---------------------------------------------------------------- */
 
   function PhoneFrame({ children }) {
+    // מעטפת אפליקציה נקייה: מסך מלא במובייל; בדסקטופ עמודת אפליקציה ממורכזת על רקע
+    // קרם רך עם צל — בלי מסגרת טלפון שחורה ובלי פסים אפורים.
     return (
-      <div className="fixed inset-0 z-50 bg-ink-100 flex items-center justify-center sm:p-8" dir="rtl">
-        <div className="relative w-full h-full sm:w-[390px] sm:h-[800px] sm:rounded-[40px] bg-ink-50 overflow-hidden sm:border-[10px] sm:border-ink-700 sm:shadow-2xl flex flex-col">
-          <div className="hidden sm:flex absolute top-0 inset-x-0 h-6 items-center justify-center z-20 pointer-events-none">
-            <div className="w-28 h-5 bg-ink-700 rounded-b-2xl" />
-          </div>
+      <div
+        className="fixed inset-0 z-50 flex justify-center overflow-hidden"
+        dir="rtl"
+        style={{ background: "linear-gradient(160deg,#fdfbf7 0%,#f4ecdd 100%)" }}
+      >
+        <div className="relative w-full h-full sm:max-w-[480px] bg-ink-50 overflow-hidden flex flex-col sm:shadow-[0_40px_100px_-45px_rgba(120,90,30,0.55)] sm:border-x sm:border-gold-100">
           {children}
         </div>
       </div>
     );
   }
 
-  function Header({ subtitle, onExit, onNotifications }) {
+  function Header({ subtitle, onExit, onNotifications, onMenu }) {
     const [unread, setUnread] = useState(0);
 
     useEffect(() => {
@@ -1465,10 +1468,20 @@
     }, []);
 
     return (
-      <div className="flex items-center justify-between gap-3 px-5 pt-7 sm:pt-5 pb-3 bg-white border-b border-ink-100 shrink-0">
-        <div>
-          <p className="font-heading font-bold text-[15px] text-ink-800">CureMindset · אזור אישי</p>
-          <p className="text-[12px] text-ink-500">{subtitle}</p>
+      <div className="flex items-center justify-between gap-3 px-4 pt-7 sm:pt-5 pb-3 bg-white border-b border-ink-100 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onMenu}
+            aria-label="תפריט"
+            className="w-9 h-9 rounded-full flex items-center justify-center bg-ink-50 text-ink-700 hover:bg-ink-100 transition-colors shrink-0"
+          >
+            <Icon name="menu" size={20} />
+          </button>
+          <div>
+            <p className="font-heading font-bold text-[15px] text-ink-800">CureMindset · אזור אישי</p>
+            <p className="text-[12px] text-ink-500">{subtitle}</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -1493,6 +1506,100 @@
             <Icon name="x" size={18} />
           </button>
         </div>
+      </div>
+    );
+  }
+
+  // מסך הגדרות (בהשראת Curable App Settings) — חשבון, פרטיות ואבטחה, התנתקות.
+  function SettingsSheet({ userName, onClose, onLogout, onManage }) {
+    const [tab, setTab] = useState("main"); // main | privacy
+    return (
+      <div className="cm-sheet" role="dialog" aria-label="הגדרות">
+        <div className="cm-sheet__scrim" onClick={onClose} />
+        <div className="cm-sheet__panel">
+          <div className="cm-sheet__head">
+            <span className="cm-sheet__hic"><Icon name="sliders-horizontal" size={19} /></span>
+            <b>{tab === "privacy" ? "פרטיות ותנאים" : "הגדרות"}</b>
+            <button type="button" className="cm-sheet__x" onClick={onClose} aria-label="סגירה"><Icon name="x" size={18} /></button>
+          </div>
+          <div className="cm-sheet__scroll">
+            {tab === "main" ? (
+              <React.Fragment>
+                <p className="cm-sheet__sec">חשבון</p>
+                <div className="cm-sheet__row">
+                  <span className="cm-sheet__ic"><Icon name="user-round" size={18} /></span>
+                  <div className="cm-sheet__txt"><b>{userName || "המשתמש/ת שלי"}</b><small>הפרופיל שלך ב-CureMindset</small></div>
+                </div>
+                <button type="button" className="cm-sheet__row cm-sheet__row--btn" onClick={onManage}>
+                  <span className="cm-sheet__ic"><Icon name="book-open" size={18} /></span>
+                  <div className="cm-sheet__txt"><b>מנוי וגישה לתוכניות</b><small>ניהול הניסיון והמעבר לתוכנית בתשלום</small></div>
+                  <Icon name="arrow-left" size={18} />
+                </button>
+
+                <p className="cm-sheet__sec">פרטיות ואבטחה</p>
+                <button type="button" className="cm-sheet__row cm-sheet__row--btn" onClick={() => setTab("privacy")}>
+                  <span className="cm-sheet__ic"><Icon name="shield-check" size={18} /></span>
+                  <div className="cm-sheet__txt"><b>מדיניות פרטיות ותנאי שימוש</b><small>איך אנחנו שומרים על המידע שלך</small></div>
+                  <Icon name="arrow-left" size={18} />
+                </button>
+
+                <p className="cm-sheet__sec">כללי</p>
+                <button type="button" className="cm-sheet__row cm-sheet__row--btn cm-sheet__row--danger" onClick={onLogout}>
+                  <span className="cm-sheet__ic"><Icon name="log-out" size={18} /></span>
+                  <div className="cm-sheet__txt"><b>התנתקות</b></div>
+                  <Icon name="arrow-left" size={18} />
+                </button>
+                <p className="cm-sheet__ver">CureMindset · השיטה של קטי שגב 🌿</p>
+              </React.Fragment>
+            ) : (
+              <div className="cm-privacy">
+                <button type="button" className="cm-privacy__back" onClick={() => setTab("main")}><Icon name="arrow-right" size={16} /> חזרה להגדרות</button>
+                <p>המידע שאת/ה משתף/ת ב-CureMindset נשמר באופן מאובטח ומשמש אך ורק להתאמה אישית של התהליך שלך.</p>
+                <p><b>איסוף מידע:</b> אנו שומרים שם, פרטי קשר, תשובות האבחון והשיחות עם המלווה הדיגיטלי — כדי לבנות את מפת הדרכים האישית שלך.</p>
+                <p><b>שימוש:</b> המידע משמש להתאמת התכנים, התרגילים והליווי בלבד. איננו מוכרים או משתפים אותו עם צד שלישי.</p>
+                <p><b>בינה מלאכותית:</b> המלווה הדיגיטלי מבוסס על שיטת CureMindset ואינו מהווה ייעוץ רפואי או תחליף לטיפול מקצועי במצבי מצוקה.</p>
+                <p><b>אבטחה:</b> הגישה מוגנת בסיסמה ובאימות טלפון (קוד חד-פעמי ב-SMS). ניתן לבקש מחיקת נתונים בכל עת.</p>
+                <p><b>יצירת קשר:</b> לכל שאלה בנושא פרטיות — ketyse@gmail.com.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // תפריט צד (Drawer) בסגנון Curable — נפתח מהכותרת, מעל כל המסכים.
+  function Drawer({ open, onClose, userName, onLogout, onSettings, onStories }) {
+    const items = [
+      { icon: "sliders-horizontal", label: "הגדרות ופרופיל", run: onSettings },
+      { icon: "star", label: "סיפורי הצלחה", run: onStories },
+      { icon: "message-circle", label: "עזרה ותמיכה",
+        run: () => window.open("https://wa.me/972543032349?text=" + encodeURIComponent("היי קטי, אשמח לעזרה 🙏"), "_blank", "noopener") },
+      { icon: "log-out", label: "התנתקות", run: onLogout },
+    ];
+    return (
+      <div className={`cm-drawer${open ? " cm-drawer--open" : ""}`} aria-hidden={!open}>
+        <div className="cm-drawer__scrim" onClick={onClose} />
+        <aside className="cm-drawer__panel" role="dialog" aria-label="תפריט">
+          <div className="cm-drawer__head">
+            <div className="cm-drawer__avatar"><Icon name="user-round" size={22} /></div>
+            <div>
+              <b>{userName || "המרחב שלך"}</b>
+              <span>CureMindset · אזור אישי</span>
+            </div>
+            <button type="button" className="cm-drawer__x" onClick={onClose} aria-label="סגירה"><Icon name="x" size={18} /></button>
+          </div>
+          <nav className="cm-drawer__nav">
+            {items.map((it) => (
+              <button type="button" key={it.label} className="cm-drawer__item"
+                onClick={() => { onClose(); if (it.run) it.run(); }}>
+                <span className="cm-drawer__ic"><Icon name={it.icon} size={19} /></span>
+                {it.label}
+              </button>
+            ))}
+          </nav>
+          <p className="cm-drawer__foot">CureMindset · השיטה של קטי שגב 🌿</p>
+        </aside>
       </div>
     );
   }
@@ -1603,24 +1710,21 @@
   /* ---------------------------------------------------------------- */
 
   // שאלון אבחון אינטראקטיבי (בהשראת Curable): מטרה → משך → תובנה → הרשמה.
-  // אבחון שיחתי בהשראת "Clara" של Curable — מותאם לתוכן הרגשי של CureMindset.
-  // מאמנת וירטואלית מלווה את המשתמש/ת צעד־צעד, ובסיום מעבירה את הסיכום להרשמה.
+  // CureMindset Companion — אבחון שיחתי בהשראת Clara של Curable, בתוכן ובעיצוב של CureMindset.
+  // 3 שאלות + שם, תובנה דינמית, ובסיום מעבר להרשמה (מחובר ל-notifyLead/send-lead במייל).
   function OnboardingQuiz({ onComplete, onExit }) {
     const SCRIPT = [
       { key: "name", type: "text", ph: "השם שלך",
-        q: "היי, נעים מאוד 🌿 אני כאן ללוות אותך בצעדים הראשונים — לגמרי בקצב שלך. איך לקרוא לך?" },
+        q: "היי, אני המלווה הוירטואלי של CureMindset. אני כאן כדי לעזור לך לזהות את הדפוס התודעתי שמעכב אותך ולבנות חוסן רגשי. איך אפשר לקרוא לך?" },
       { key: "challenge",
-        q: (a) => `${a.name ? a.name + ", " : ""}מה האתגר המרכזי שמביא אותך לכאן?`,
-        opts: ["חרדה ולחץ", "דימוי עצמי נמוך", "קושי בוויסות רגשי", "חסמים ופחדים", "מערכות יחסים"] },
-      { key: "feeling",
-        q: "תודה שאת/ה משתף/ת אותי. ואיך זה גורם לך להרגיש ברוב הזמן?",
-        opts: ["מוצף/ת", "חסר/ת אונים", "עייף/ה", "מתוסכל/ת", "מקווה לשינוי"] },
+        q: "נעים להכיר! מה האתגר המרכזי שתרצי/ה לשחרר כרגע?",
+        opts: ["עומס, הצפה רגשית ותקיעות", "חרדת ביצוע, פחד מכישלון או דחיינות", "ביקורת עצמית גבוהה ופרפקציוניזם", "ספק עצמי וחוסר שקט פנימי"] },
+      { key: "impact",
+        q: "הבנתי אותך. ואיך האתגר הזה משפיע על הניסיון שלך לפעול ולהתקדם ביום-יום?",
+        opts: ["משתק אותי לחלוטין", "גורם לי להימנעות ודחיינות", "מייצר עייפות ושחיקה", "גורם לי להטיל ספק בשינוי"] },
       { key: "goal",
-        q: "הבנתי. מה הכי חשוב לך להשיג בתהליך?",
-        opts: ["להפחית חרדה", "לחזק ביטחון עצמי", "כלים לוויסות רגשי", "להבין את שורש הדפוס"] },
-      { key: "mood",
-        q: "ולשאלה אחרונה לפני שנתחיל — איך את/ה מרגיש/ה ממש עכשיו?",
-        opts: ["😟 קשה לי", "😕 ככה־ככה", "🙂 בסדר", "😌 רגוע/ה", "✨ מלא/ת תקווה"] },
+        q: "תודה על השיתוף. ב-CureMindset אנחנו מבינים שזה אינו חוסר מוטיבציה, אלא מנגנון הגנה של תת-המודע. מה המטרה העיקרית שלך בתהליך?",
+        opts: ["וויסות ושקט פנימי", "שחרור חסמים תת-מודעים", "חיזוק החוסן והביטחון", "בניית שגרת פריצת דרך"] },
     ];
 
     const [answers, setAnswers] = useState({});
@@ -1631,21 +1735,10 @@
 
     const done = stage >= SCRIPT.length;
 
-    function insightFor(a) {
-      const name = a.name || "יקרה";
-      const c = a.challenge || "";
-      if (c.includes("חרדה"))
-        return `${name}, מה שתיארת מוכר וניתן מאוד לשינוי. שיטת CureMindset עובדת בדיוק על כיבוי מנגנון האזעקה שמייצר את החרדה — ונבנה לך תוכנית אישית מהצעד הראשון.`;
-      if (c.includes("דימוי"))
-        return `${name}, דימוי עצמי נבנה מחדש — לא נולדים איתו. נזהה יחד את האמונות המגבילות ונחליף אותן בעוגנים פנימיים יציבים.`;
-      if (c.includes("ויסות"))
-        return `${name}, נבנה יחד ארגז כלי ויסות שזמין לך בכל רגע — כדי שאת/ה תוביל/י את הרגש, לא הוא אותך.`;
-      if (c.includes("חסמים"))
-        return `${name}, יש פוטנציאל אמיתי לשחרור דרך התת־מודע. נזהה את שורש החסם ונפרק אותו שלב אחר שלב.`;
-      if (c.includes("יחסים"))
-        return `${name}, דפוסים בקשרים מתחילים בפנים. נחזק את הבסיס הרגשי שלך, וממנו הקשרים משתנים.`;
-      return `${name}, יש בסיס מצוין לצמיחה. שיטת CureMindset תלווה אותך אל חוסן פנימי שמחזיק לאורך זמן.`;
-    }
+    const INSIGHT =
+      "הפרופיל שלך מראה עוררות גבוהה של המערכת העצבית. מנגנון ההגנה של תת-המודע מנסה לשמור עלייך, אך מייצר תקיעות. בשיטת CureMindset אנחנו מחליפים את המאמץ בחיווט מחדש.";
+    const FINAL =
+      "אבחון מדהים. פרופיל הליבה שלך מוכן! הנה מפת הדרכים הראשונית שלך לשחרור החסם. להרשמה וקבלת התוכנית האישית:";
 
     // גלילה אוטומטית לתחתית עם כל הודעה חדשה
     useEffect(() => {
@@ -1660,14 +1753,13 @@
       setAnswers((a) => ({ ...a, [key]: v }));
       setText("");
       setTyping(true);
-      setTimeout(() => { setTyping(false); setStage((s) => s + 1); }, 650);
+      setTimeout(() => { setTyping(false); setStage((s) => s + 1); }, 800);
     }
 
     function finish() {
       const a = answers;
       const summary =
-        `שם: ${a.name || "—"} · אתגר: ${a.challenge || "—"} · תחושה: ${a.feeling || "—"} · ` +
-        `מטרה: ${a.goal || "—"} · מצב עכשיו: ${a.mood || "—"}`;
+        `שם: ${a.name || "—"} · אתגר: ${a.challenge || "—"} · השפעה: ${a.impact || "—"} · מטרה: ${a.goal || "—"}`;
       onComplete(summary, a.name || "");
     }
 
@@ -1679,7 +1771,10 @@
       if (answers[SCRIPT[i].key] !== undefined)
         bubbles.push({ id: "u" + i, sender: "user", text: answers[SCRIPT[i].key] });
     }
-    if (done) bubbles.push({ id: "insight", sender: "bot", text: insightFor(answers) });
+    if (done) {
+      bubbles.push({ id: "insight", sender: "bot", text: INSIGHT });
+      bubbles.push({ id: "final", sender: "bot", text: FINAL });
+    }
 
     const cur = done ? null : SCRIPT[stage];
     const pct = Math.round((Math.min(stage, SCRIPT.length) / SCRIPT.length) * 100);
@@ -1689,8 +1784,8 @@
         <div className="chat-onb__head">
           <div className="chat-onb__avatar"><Icon name="sparkles" size={20} /></div>
           <div className="chat-onb__id">
-            <b>המאמנת האישית שלך</b>
-            <span>{typing ? "כותבת…" : "מחוברת עכשיו"}</span>
+            <b>CureMindset Companion</b>
+            <span>{typing ? "מקליד…" : "אבחון תודעתי ואישי"}</span>
           </div>
           <button type="button" className="chat-onb__exit" onClick={onExit} aria-label="חזרה לאתר">
             <Icon name="x" size={18} />
@@ -1710,7 +1805,7 @@
         <div className="chat-onb__foot">
           {done ? (
             <button type="button" className="chat-onb__cta" onClick={finish}>
-              להמשך יצירת החשבון והתוכנית שלי
+              להרשמה וקבלת התוכנית האישית
             </button>
           ) : cur.type === "text" ? (
             <form className="chat-onb__inrow" onSubmit={(e) => { e.preventDefault(); answer(text); }}>
@@ -2102,6 +2197,9 @@
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
     const [showSummary, setShowSummary] = useState(false);
+    const [showDrawer, setShowDrawer] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const userName = (() => { try { return localStorage.getItem(AUTH_NAME_KEY) || ""; } catch (e) { return ""; } })();
 
     useEffect(() => {
       document.body.style.overflow = "hidden";
@@ -2163,7 +2261,16 @@
 
     return (
       <PhoneFrame>
-        <Header subtitle={stage ? stage.subtitle : ""} onExit={logout} onNotifications={() => setShowNotifications(true)} />
+        <Header subtitle={stage ? stage.subtitle : ""} onExit={logout} onNotifications={() => setShowNotifications(true)} onMenu={() => setShowDrawer(true)} />
+        <Drawer
+          open={showDrawer}
+          onClose={() => setShowDrawer(false)}
+          userName={userName}
+          onLogout={logout}
+          onSettings={() => setShowSettings(true)}
+          onStories={() => { onExit(); setTimeout(() => { const el = document.getElementById("testimonials"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 400); }}
+        />
+        {showSettings && <SettingsSheet userName={userName} onClose={() => setShowSettings(false)} onLogout={logout} onManage={() => { setShowSettings(false); setShowCodeEntry(true); }} />}
         {access && access.status === "trial" && (
           <TrialBanner daysLeft={access.daysLeft} onEnterCode={() => setShowCodeEntry(true)} />
         )}
