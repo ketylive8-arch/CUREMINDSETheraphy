@@ -375,3 +375,27 @@
 .cm-privacy__back { background: none; border: none; color: #5E7A68; font: inherit; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; }
 .cm-privacy p { font-size: 14px; line-height: 1.7; color: #4a4a42; margin: 0 0 12px; }
 .cm-privacy b { color: #2C3E50; }
+
+/* ---- social login buttons ---- */
+.au-social { margin-top: 16px; }
+.au-social__div { display: flex; align-items: center; gap: 12px; margin: 4px 0 14px; color: #b3a894; font-size: 13px; }
+.au-social__div::before, .au-social__div::after { content: ""; flex: 1; height: 1px; background: #eaddc8; }
+.au-social__btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  border: 1.5px solid #e6ddcb; background: #fff; color: #2c2820; cursor: pointer;
+  border-radius: 999px; padding: 13px; font-family: "Assistant", sans-serif; font-weight: 700; font-size: 15px;
+  margin-bottom: 10px; transition: border-color .15s, background .15s;
+}
+.au-social__btn:hover { border-color: #c2974a; background: #fdf9f1; }
+.au-social__g { font-family: "Rubik", sans-serif; font-weight: 800; color: #4285F4; font-size: 17px; }
+.au-social__btn--fb { color: #1877F2; }
+.au-social__note { font-size: 12.5px; color: #8a7f6a; text-align: center; margin: 6px 0 0; line-height: 1.5; }
+
+/* ---- expanded privacy inside settings ---- */
+.cm-privacy h4 { font-family: "Rubik", sans-serif; font-weight: 800; font-size: 17px; color: #2C3E50; margin: 0 0 10px; }
+.cm-privacy__lead { font-size: 13.5px; color: #4a4a42; }
+.cm-privacy__h { font-weight: 800; color: #2C3E50; font-size: 14px; margin: 14px 0 2px; }
+.cm-privacy__note {
+  background: #fff6e9; border: 1px solid #f0dcae; border-radius: 12px; padding: 12px 14px;
+  font-size: 13.5px; line-height: 1.65; color: #6b5320; margin: 16px 0;
+}

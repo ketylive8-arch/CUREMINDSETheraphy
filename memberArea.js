@@ -1554,12 +1554,31 @@
             ) : (
               <div className="cm-privacy">
                 <button type="button" className="cm-privacy__back" onClick={() => setTab("main")}><Icon name="arrow-right" size={16} /> חזרה להגדרות</button>
-                <p>המידע שאת/ה משתף/ת ב-CureMindset נשמר באופן מאובטח ומשמש אך ורק להתאמה אישית של התהליך שלך.</p>
-                <p><b>איסוף מידע:</b> אנו שומרים שם, פרטי קשר, תשובות האבחון והשיחות עם המלווה הדיגיטלי — כדי לבנות את מפת הדרכים האישית שלך.</p>
-                <p><b>שימוש:</b> המידע משמש להתאמת התכנים, התרגילים והליווי בלבד. איננו מוכרים או משתפים אותו עם צד שלישי.</p>
-                <p><b>בינה מלאכותית:</b> המלווה הדיגיטלי מבוסס על שיטת CureMindset ואינו מהווה ייעוץ רפואי או תחליף לטיפול מקצועי במצבי מצוקה.</p>
-                <p><b>אבטחה:</b> הגישה מוגנת בסיסמה ובאימות טלפון (קוד חד-פעמי ב-SMS). ניתן לבקש מחיקת נתונים בכל עת.</p>
-                <p><b>יצירת קשר:</b> לכל שאלה בנושא פרטיות — ketyse@gmail.com.</p>
+                <h4>מדיניות פרטיות ותנאי שימוש · CureMindset</h4>
+                <p className="cm-privacy__lead">הפרטיות שלך יקרה לנו. מסמך זה מסביר איזה מידע אנו אוספים, כיצד אנו משתמשים בו ושומרים עליו — במסגרת הליווי הרגשי-תודעתי בשיטת CureMindset של קטי שגב.</p>
+
+                <p className="cm-privacy__h">1. מידע שאנו אוספים</p>
+                <p>שם, פרטי קשר (מייל וטלפון), תשובות האבחון הראשוני, והשיחות שלך עם המלווה הדיגיטלי — כדי לבנות ולהתאים את מפת הדרכים האישית שלך.</p>
+
+                <p className="cm-privacy__h">2. כיצד אנו משתמשים במידע</p>
+                <p>להתאמה אישית של התכנים, התרגילים והליווי; לשליחת עדכונים והתראות הקשורים לתהליך; ולשיפור השירות. איננו מוכרים את המידע שלך.</p>
+
+                <p className="cm-privacy__h">3. שיתוף מידע</p>
+                <p>איננו משתפים את המידע האישי שלך עם צד שלישי, למעט ספקי תשתית שמאפשרים את הפעלת השירות (אחסון, שליחת הודעות) ובכפוף לחובת סודיות, או אם נדרש על-פי חוק.</p>
+
+                <p className="cm-privacy__h">4. אחסון ואבטחה</p>
+                <p>הגישה מוגנת בסיסמה ובאימות טלפון (קוד חד-פעמי ב-SMS). המידע נשמר בשרתים מאובטחים. אף שיטה אינה מוגנת ב-100%, ואנו פועלים לשמור על המידע באמצעים מקובלים.</p>
+
+                <p className="cm-privacy__h">5. הזכויות שלך</p>
+                <p>באפשרותך לעיין במידע שלך, לתקן אותו או לבקש את מחיקתו בכל עת — בפנייה אלינו.</p>
+
+                <p className="cm-privacy__h">6. קטינים</p>
+                <p>שימוש של בני נוער נעשה בליווי ובהסכמת הורה/אפוטרופוס, האחראים לפרטיות הקטין/ה.</p>
+
+                <p className="cm-privacy__note">⚠️ <b>הבהרה רפואית:</b> CureMindset הוא ליווי רגשי-תודעתי ואינו מהווה ייעוץ, אבחון או טיפול רפואי או נפשי, ואינו תחליף לגורם מקצועי. במצב מצוקה חריפה או חירום — יש לפנות מיד לגורם מקצועי, לרופא/ה, או לקו סיוע.</p>
+
+                <p className="cm-privacy__h">7. שינויים ויצירת קשר</p>
+                <p>אנו רשאים לעדכן מסמך זה מעת לעת. לכל שאלה בנושא פרטיות — ketyse@gmail.com.</p>
               </div>
             )}
           </div>
@@ -1735,6 +1754,8 @@
 
     const done = stage >= SCRIPT.length;
 
+    const DISCLAIMER =
+      "עוד לפני שנצלול 🌿 חשוב לי שתדעי: המרחב הזה הוא ליווי רגשי-תודעתי בשיטת CureMindset, ואינו תחליף לייעוץ או טיפול רפואי/נפשי מקצועי. אם את/ה במצוקה חריפה או במצב חירום — מומלץ מאוד לפנות לגורם מקצועי או לקו סיוע. וכעת, נמשיך יחד 💚";
     const INSIGHT =
       "הפרופיל שלך מראה עוררות גבוהה של המערכת העצבית. מנגנון ההגנה של תת-המודע מנסה לשמור עלייך, אך מייצר תקיעות. בשיטת CureMindset אנחנו מחליפים את המאמץ בחיווט מחדש.";
     const FINAL =
@@ -1766,6 +1787,8 @@
     // בניית תמלול השיחה עד לשלב הנוכחי
     const bubbles = [];
     for (let i = 0; i <= stage && i < SCRIPT.length; i++) {
+      // הבהרה רפואית — מופיעה אחרי השם, ממש לפני השאלה הראשונה.
+      if (i === 1) bubbles.push({ id: "disc", sender: "bot", text: DISCLAIMER });
       const q = typeof SCRIPT[i].q === "function" ? SCRIPT[i].q(answers) : SCRIPT[i].q;
       bubbles.push({ id: "b" + i, sender: "bot", text: q });
       if (answers[SCRIPT[i].key] !== undefined)
@@ -1837,6 +1860,16 @@
     const [step, setStep] = useState("form"); // form | otp
     const [otp, setOtp] = useState({ email: "", phoneHint: "", code: "" });
     const [resent, setResent] = useState(false);
+    const [socialNote, setSocialNote] = useState("");
+
+    // התחברות חברתית: אם ספק OAuth מוגדר בשרת — מפנה אליו; אחרת מציג הודעת "בקרוב".
+    function socialAuth(provider) {
+      setSocialNote("");
+      fetch(`/api/auth/oauth/${provider}`, { method: "GET" })
+        .then((r) => (r.ok ? r.json() : Promise.reject()))
+        .then((d) => { if (d && d.url) window.location.href = d.url; else throw new Error(); })
+        .catch(() => setSocialNote(`התחברות עם ${provider === "google" ? "Google" : "Facebook"} תופעל בקרוב 🙏 בינתיים אפשר להירשם עם מייל למטה.`));
+    }
     const [onbDone, setOnbDone] = useState(false); // האם סיימו את שאלון האבחון (הרשמה)
     const [onbSummary, setOnbSummary] = useState(""); // תשובות האבחון לשמירה בכרטיס
 
@@ -2007,6 +2040,19 @@
                 {status === "loading" ? "רק רגע..." : isReg ? "יוצרים חשבון ומתחילים" : "כניסה"}
               </button>
             </form>
+
+            <div className="au-social">
+              <div className="au-social__div"><span>או</span></div>
+              <button type="button" className="au-social__btn" onClick={() => socialAuth("google")}>
+                <span className="au-social__g">G</span>
+                {isReg ? "הרשמה עם Google" : "כניסה עם Google"}
+              </button>
+              <button type="button" className="au-social__btn au-social__btn--fb" onClick={() => socialAuth("facebook")}>
+                <Icon name="facebook" size={18} />
+                {isReg ? "הרשמה עם Facebook" : "כניסה עם Facebook"}
+              </button>
+              {socialNote && <p className="au-social__note">{socialNote}</p>}
+            </div>
 
             <p className="au-switch">
               {isReg ? "כבר יש לך חשבון? " : "עדיין אין לך חשבון? "}

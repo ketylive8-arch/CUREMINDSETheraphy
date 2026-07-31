@@ -209,6 +209,28 @@ app.post("/api/auth/logout", (req, res) => {
   res.json({ ok: true });
 });
 
+// התחברות חברתית (OAuth) — מחזיר כתובת התחלה כאשר ספק מוגדר במשתני הסביבה.
+// כשלא מוגדר — 501, והלקוח מציג "בקרוב". קדימה-תואם: מספיק להוסיף CLIENT_ID.
+app.get("/api/auth/oauth/:provider", (req, res) => {
+  const provider = String(req.params.provider || "").toLowerCase();
+  const base = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+  if (provider === "google" && process.env.GOOGLE_CLIENT_ID) {
+    const url =
+      "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=openid%20email%20profile" +
+      `&client_id=${encodeURIComponent(process.env.GOOGLE_CLIENT_ID)}` +
+      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/google/callback")}`;
+    return res.json({ url });
+  }
+  if (provider === "facebook" && process.env.FACEBOOK_APP_ID) {
+    const url =
+      "https://www.facebook.com/v19.0/dialog/oauth?scope=email" +
+      `&client_id=${encodeURIComponent(process.env.FACEBOOK_APP_ID)}` +
+      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/facebook/callback")}`;
+    return res.json({ url });
+  }
+  return res.status(501).json({ error: "OAuth provider not configured", provider });
+});
+
 // פרטי החשבון המחובר — שם, קוד הפניה אישי (חבר מביא חבר) ומספר המוזמנים.
 app.get("/api/auth/me", (req, res) => {
   const accountId = accountIdFromToken(req.header("X-Auth-Token"));
