@@ -1603,125 +1603,130 @@
   /* ---------------------------------------------------------------- */
 
   // שאלון אבחון אינטראקטיבי (בהשראת Curable): מטרה → משך → תובנה → הרשמה.
+  // אבחון שיחתי בהשראת "Clara" של Curable — מותאם לתוכן הרגשי של CureMindset.
+  // מאמנת וירטואלית מלווה את המשתמש/ת צעד־צעד, ובסיום מעבירה את הסיכום להרשמה.
   function OnboardingQuiz({ onComplete, onExit }) {
-    const [started, setStarted] = useState(false); // מסך פתיחה (Welcome) לפני השאלון
-    const [qStep, setQStep] = useState(0); // 0 מטרה · 1 משך · 2 תובנה
-    const [goals, setGoals] = useState([]);
-    const [duration, setDuration] = useState("");
-
-    const GOALS = [
-      ["🧠", "שחרור חסמים תת־מודעים"],
-      ["🌊", "ויסות רגשי"],
-      ["🛡️", "חיזוק החוסן"],
-      ["😌", "הפחתת מתח וחרדה"],
+    const SCRIPT = [
+      { key: "name", type: "text", ph: "השם שלך",
+        q: "היי, נעים מאוד 🌿 אני כאן ללוות אותך בצעדים הראשונים — לגמרי בקצב שלך. איך לקרוא לך?" },
+      { key: "challenge",
+        q: (a) => `${a.name ? a.name + ", " : ""}מה האתגר המרכזי שמביא אותך לכאן?`,
+        opts: ["חרדה ולחץ", "דימוי עצמי נמוך", "קושי בוויסות רגשי", "חסמים ופחדים", "מערכות יחסים"] },
+      { key: "feeling",
+        q: "תודה שאת/ה משתף/ת אותי. ואיך זה גורם לך להרגיש ברוב הזמן?",
+        opts: ["מוצף/ת", "חסר/ת אונים", "עייף/ה", "מתוסכל/ת", "מקווה לשינוי"] },
+      { key: "goal",
+        q: "הבנתי. מה הכי חשוב לך להשיג בתהליך?",
+        opts: ["להפחית חרדה", "לחזק ביטחון עצמי", "כלים לוויסות רגשי", "להבין את שורש הדפוס"] },
+      { key: "mood",
+        q: "ולשאלה אחרונה לפני שנתחיל — איך את/ה מרגיש/ה ממש עכשיו?",
+        opts: ["😟 קשה לי", "😕 ככה־ככה", "🙂 בסדר", "😌 רגוע/ה", "✨ מלא/ת תקווה"] },
     ];
-    const DURATIONS = ["פחות משנה", "1–3 שנים", "מעל 3 שנים"];
 
-    function toggleGoal(g) {
-      setGoals((cur) => (cur.includes(g) ? cur.filter((x) => x !== g) : [...cur, g]));
-    }
-    const pct = Math.round(((qStep + 1) / 3) * 100);
-    const canNext = qStep === 0 ? goals.length > 0 : qStep === 1 ? !!duration : true;
+    const [answers, setAnswers] = useState({});
+    const [stage, setStage] = useState(0); // איזו שאלה ממתינה למענה
+    const [typing, setTyping] = useState(false);
+    const [text, setText] = useState("");
+    const scrollRef = React.useRef(null);
 
-    function insightText() {
-      const p = goals[0] || "";
-      if (p.includes("חרדה") || p.includes("מתח"))
-        return "זיהינו שהמערכת שלך במצב של עוררות־יתר. שיטת CureMindset עובדת בדיוק על שחרור הדפוס הזה — קרקוע הגוף וכיבוי מנגנון האזעקה.";
-      if (p.includes("חסמים"))
-        return "יש פוטנציאל גבוה לשינוי דרך התת־מודע. נזהה ונשחרר יחד את האמונות המגבילות שפועלות מתחת לפני השטח.";
-      if (p.includes("ויסות"))
-        return "נבנה יחד כלי ויסות מעשיים שזמינים לך בכל רגע — כדי שאת תובילי את הרגש, לא הוא אותך.";
-      return "יש בסיס מצוין לצמיחה. שיטת CureMindset תלווה אותך שלב אחר שלב אל חוסן פנימי אמיתי.";
+    const done = stage >= SCRIPT.length;
+
+    function insightFor(a) {
+      const name = a.name || "יקרה";
+      const c = a.challenge || "";
+      if (c.includes("חרדה"))
+        return `${name}, מה שתיארת מוכר וניתן מאוד לשינוי. שיטת CureMindset עובדת בדיוק על כיבוי מנגנון האזעקה שמייצר את החרדה — ונבנה לך תוכנית אישית מהצעד הראשון.`;
+      if (c.includes("דימוי"))
+        return `${name}, דימוי עצמי נבנה מחדש — לא נולדים איתו. נזהה יחד את האמונות המגבילות ונחליף אותן בעוגנים פנימיים יציבים.`;
+      if (c.includes("ויסות"))
+        return `${name}, נבנה יחד ארגז כלי ויסות שזמין לך בכל רגע — כדי שאת/ה תוביל/י את הרגש, לא הוא אותך.`;
+      if (c.includes("חסמים"))
+        return `${name}, יש פוטנציאל אמיתי לשחרור דרך התת־מודע. נזהה את שורש החסם ונפרק אותו שלב אחר שלב.`;
+      if (c.includes("יחסים"))
+        return `${name}, דפוסים בקשרים מתחילים בפנים. נחזק את הבסיס הרגשי שלך, וממנו הקשרים משתנים.`;
+      return `${name}, יש בסיס מצוין לצמיחה. שיטת CureMindset תלווה אותך אל חוסן פנימי שמחזיק לאורך זמן.`;
     }
 
-    function next() {
-      if (qStep < 2) return setQStep(qStep + 1);
-      onComplete(`מטרות: ${goals.join(", ") || "—"} · משך האתגר: ${duration || "—"}`);
+    // גלילה אוטומטית לתחתית עם כל הודעה חדשה
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    }, [stage, typing]);
+
+    function answer(val) {
+      const v = String(val).trim();
+      if (!v) return;
+      const key = SCRIPT[stage].key;
+      setAnswers((a) => ({ ...a, [key]: v }));
+      setText("");
+      setTyping(true);
+      setTimeout(() => { setTyping(false); setStage((s) => s + 1); }, 650);
     }
 
-    // ── מסך פתיחה (Welcome) ──
-    if (!started) {
-      return (
-        <div className="onb">
-          <div className="onb-welcome">
-            <span className="onb-welcome__ic"><Icon name="sparkles" size={30} /></span>
-            <h3 className="onb-welcome__title">רגע לפני שמתחילים 🌿</h3>
-            <p className="onb-welcome__lead">
-              נכיר קצת — 3 שאלות קצרות (פחות מדקה) שיעזרו לי להבין איפה את נמצאת,
-              ולהתאים לך את נקודת הפתיחה בשיטת CureMindset.
-            </p>
-            <ul className="onb-welcome__steps">
-              <li><span>1</span> מה חשוב לך להשיג</li>
-              <li><span>2</span> כמה זמן זה מלווה אותך</li>
-              <li><span>3</span> תובנה ראשונית מותאמת אישית</li>
-            </ul>
-            <div className="onb__nav">
-              <button type="button" className="onb__back" onClick={onExit}>לאתר</button>
-              <button type="button" className="onb__next" onClick={() => setStarted(true)}>בואו נתחיל</button>
-            </div>
-          </div>
-        </div>
-      );
+    function finish() {
+      const a = answers;
+      const summary =
+        `שם: ${a.name || "—"} · אתגר: ${a.challenge || "—"} · תחושה: ${a.feeling || "—"} · ` +
+        `מטרה: ${a.goal || "—"} · מצב עכשיו: ${a.mood || "—"}`;
+      onComplete(summary, a.name || "");
     }
+
+    // בניית תמלול השיחה עד לשלב הנוכחי
+    const bubbles = [];
+    for (let i = 0; i <= stage && i < SCRIPT.length; i++) {
+      const q = typeof SCRIPT[i].q === "function" ? SCRIPT[i].q(answers) : SCRIPT[i].q;
+      bubbles.push({ id: "b" + i, sender: "bot", text: q });
+      if (answers[SCRIPT[i].key] !== undefined)
+        bubbles.push({ id: "u" + i, sender: "user", text: answers[SCRIPT[i].key] });
+    }
+    if (done) bubbles.push({ id: "insight", sender: "bot", text: insightFor(answers) });
+
+    const cur = done ? null : SCRIPT[stage];
+    const pct = Math.round((Math.min(stage, SCRIPT.length) / SCRIPT.length) * 100);
 
     return (
-      <div className="onb">
-        <div className="onb__bar"><span style={{ width: pct + "%" }} /></div>
-
-        {qStep === 0 && (
-          <React.Fragment>
-            <p className="onb__step">שלב 1 מתוך 3</p>
-            <h3 className="onb__q">מה היית רוצה להשיג בתהליך?</h3>
-            <p className="onb__hint">אפשר לבחור יותר מאחד</p>
-            <div className="onb__opts">
-              {GOALS.map(([ic, label]) => {
-                const sel = goals.includes(label);
-                return (
-                  <button type="button" key={label} onClick={() => toggleGoal(label)} className={`onb-card${sel ? " sel" : ""}`}>
-                    <span className="onb-card__ic">{ic}</span>
-                    {label}
-                    <span className="onb-card__chk">{sel ? <Icon name="check-circle-2" size={14} /> : null}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </React.Fragment>
-        )}
-
-        {qStep === 1 && (
-          <React.Fragment>
-            <p className="onb__step">שלב 2 מתוך 3</p>
-            <h3 className="onb__q">כמה זמן הדפוס הזה מלווה אותך?</h3>
-            <p className="onb__hint">זה עוזר לי להתאים את הקצב</p>
-            <div className="onb__opts">
-              {DURATIONS.map((d) => {
-                const sel = duration === d;
-                return (
-                  <button type="button" key={d} onClick={() => setDuration(d)} className={`onb-card${sel ? " sel" : ""}`}>
-                    <span className="onb-card__ic">🕊️</span>
-                    {d}
-                    <span className="onb-card__chk">{sel ? <Icon name="check-circle-2" size={14} /> : null}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </React.Fragment>
-        )}
-
-        {qStep === 2 && (
-          <div className="onb-insight">
-            <span className="onb-insight__ic"><Icon name="shield-check" size={28} /></span>
-            <h3>יש לנו כיוון בשבילך 🌿</h3>
-            <p>{insightText()}</p>
-            <span className="onb-tag">מותאם אישית לפי מה שסימנת</span>
+      <div className="chat-onb">
+        <div className="chat-onb__head">
+          <div className="chat-onb__avatar"><Icon name="sparkles" size={20} /></div>
+          <div className="chat-onb__id">
+            <b>המאמנת האישית שלך</b>
+            <span>{typing ? "כותבת…" : "מחוברת עכשיו"}</span>
           </div>
-        )}
-
-        <div className="onb__nav">
-          <button type="button" className="onb__back" onClick={() => (qStep > 0 ? setQStep(qStep - 1) : setStarted(false))}>חזרה</button>
-          <button type="button" className="onb__next" disabled={!canNext} onClick={next}>
-            {qStep < 2 ? "המשך" : "יצירת החשבון שלי"}
+          <button type="button" className="chat-onb__exit" onClick={onExit} aria-label="חזרה לאתר">
+            <Icon name="x" size={18} />
           </button>
+        </div>
+        <div className="chat-onb__bar"><span style={{ width: pct + "%" }} /></div>
+
+        <div className="chat-onb__scroll" ref={scrollRef}>
+          {bubbles.map((b) => (
+            <div key={b.id} className={`chat-bub chat-bub--${b.sender}`}>{b.text}</div>
+          ))}
+          {typing && (
+            <div className="chat-bub chat-bub--bot chat-bub--typing"><span /><span /><span /></div>
+          )}
+        </div>
+
+        <div className="chat-onb__foot">
+          {done ? (
+            <button type="button" className="chat-onb__cta" onClick={finish}>
+              להמשך יצירת החשבון והתוכנית שלי
+            </button>
+          ) : cur.type === "text" ? (
+            <form className="chat-onb__inrow" onSubmit={(e) => { e.preventDefault(); answer(text); }}>
+              <input className="chat-onb__input" value={text} onChange={(e) => setText(e.target.value)}
+                     placeholder={cur.ph} autoFocus maxLength={40} />
+              <button type="submit" className="chat-onb__send" disabled={!text.trim()} aria-label="שליחה">
+                <Icon name="arrow-left" size={18} />
+              </button>
+            </form>
+          ) : (
+            <div className="chat-onb__opts">
+              {cur.opts.map((o) => (
+                <button type="button" key={o} className="chat-onb__opt" onClick={() => answer(o)}>{o}</button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1806,7 +1811,11 @@
         <div className="au-overlay">
           <OnboardingQuiz
             onExit={onExit}
-            onComplete={(summary) => { setOnbSummary(summary); setOnbDone(true); }}
+            onComplete={(summary, name) => {
+              setOnbSummary(summary);
+              if (name) setForm((f) => ({ ...f, fullName: f.fullName || name }));
+              setOnbDone(true);
+            }}
           />
         </div>
       );
