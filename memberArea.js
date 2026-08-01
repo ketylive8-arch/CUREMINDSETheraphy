@@ -2271,7 +2271,14 @@
 
     const stage = STAGES.find((s) => s.id === current);
 
-    const expired = access && access.status === "expired";
+    // ── מנגנון ניסיון מבוסס-מודולים: 2 מודולי ליבה חינם, ואז Paywall ──
+    // מודולי הליבה הם השלבים המודרכים (1-3). מנוי בתשלום (code/paid) פותח הכל.
+    const FREE_MODULES = 2;
+    const paid = access && (access.status === "code" || access.status === "paid");
+    const modulesUsed = progress.completed.filter((id) => id >= 1 && id <= 3).length;
+    const trialLocked = !paid && modulesUsed >= FREE_MODULES;
+    // ה-Paywall נחסם כאשר תקופת הניסיון פגה (זמן) או שנוצלו 2 המודולים.
+    const expired = (access && access.status === "expired") || trialLocked;
 
     // שער כניסה: בלי חשבון מחובר — אין גישה לאזור האישי.
     if (!loggedIn) {
