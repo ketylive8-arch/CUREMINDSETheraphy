@@ -440,19 +440,23 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
 
     res.json({ reply: result.reply, dailyTask: savedTask, dashboard: buildDashboardData(progress, sessions, checkinRows) });
   } catch (err) {
-    if (err instanceof NoApiKeyError) {
-      return res.status(503).json({ error: "מנוע ה-AI לא מחובר בשרת (חסר OPENAI_API_KEY).", reason: "no-key" });
-    }
+    // הודעה עדינה וללא ז'רגון טכני למשתמש/ת. הסיבה המדויקת נרשמת ללוג לצורך תחזוקה בלבד.
+    const gentle = "אני כאן איתך 🌿 יש כרגע תקלה רגעית בחיבור שלי — נסי שוב בעוד רגע, ואם זה נמשך נטפל בזה יחד.";
     const msg = String((err && err.message) || "");
+    if (err instanceof NoApiKeyError) {
+      console.warn("[checkin] OPENAI_API_KEY missing on server");
+      return res.status(503).json({ error: gentle, reason: "no-key" });
+    }
     console.error("checkin failed:", err);
-    // מזהים את סיבת הכשל מול OpenAI ומחזירים הודעה ברורה בעברית.
     if (/\b401\b|invalid_api_key|Incorrect API key/i.test(msg)) {
-      return res.status(502).json({ error: "מפתח ה-AI שגוי או בוטל — יש לבדוק את OPENAI_API_KEY ב-Render.", reason: "bad-key" });
+      console.warn("[checkin] OpenAI key rejected (401) — check OPENAI_API_KEY on Render");
+      return res.status(502).json({ error: gentle, reason: "bad-key" });
     }
     if (/\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(msg)) {
-      return res.status(502).json({ error: "לחשבון ה-OpenAI אין קרדיט/מכסה. יש להוסיף אמצעי תשלום ב-platform.openai.com → Billing.", reason: "no-credit" });
+      console.warn("[checkin] OpenAI quota/billing (429) — add credit at platform.openai.com");
+      return res.status(502).json({ error: gentle, reason: "no-credit" });
     }
-    res.status(502).json({ error: "מנוע ה-AI לא הצליח להשיב כרגע. נסי שוב עוד רגע.", reason: "unknown" });
+    res.status(502).json({ error: gentle, reason: "unknown" });
   }
 });
 
