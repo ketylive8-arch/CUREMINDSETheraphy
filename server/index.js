@@ -11,6 +11,7 @@ const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
+const { guidedReply } = require("./guidedReply");
 const { registerAccount, loginAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead } = require("./notify");
@@ -408,7 +409,21 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
     const ageGroup = getAgeGroup(req.deviceToken);
     // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI
     const retrieved = retrieveKnowledge(text.trim());
-    const result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved);
+
+    // מנסים קודם את מנוע ה-AI המלא (OpenAI). אם אין מפתח / המפתח נדחה / אין קרדיט —
+    // לא מפילים את הצ'אט: נופלים למנוע המקומי (guidedReply) בשיטת CureMindset. הצ'אט תמיד עונה.
+    let result;
+    try {
+      result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved);
+    } catch (aiErr) {
+      const m = String((aiErr && aiErr.message) || "");
+      const reason =
+        aiErr instanceof NoApiKeyError ? "no-key" :
+        /\b401\b|invalid_api_key|Incorrect API key/i.test(m) ? "bad-key" :
+        /\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(m) ? "no-credit" : "ai-error";
+      console.warn(`[checkin] OpenAI unavailable (${reason}) — using local guided engine.`);
+      result = guidedReply(text.trim(), retrieved);
+    }
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));
     const triggers = withIds(result.triggers);
@@ -440,23 +455,9 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
 
     res.json({ reply: result.reply, dailyTask: savedTask, dashboard: buildDashboardData(progress, sessions, checkinRows) });
   } catch (err) {
-    // הודעה עדינה וללא ז'רגון טכני למשתמש/ת. הסיבה המדויקת נרשמת ללוג לצורך תחזוקה בלבד.
-    const gentle = "אני כאן איתך 🌿 יש כרגע תקלה רגעית בחיבור שלי — נסי שוב בעוד רגע, ואם זה נמשך נטפל בזה יחד.";
-    const msg = String((err && err.message) || "");
-    if (err instanceof NoApiKeyError) {
-      console.warn("[checkin] OPENAI_API_KEY missing on server");
-      return res.status(503).json({ error: gentle, reason: "no-key" });
-    }
-    console.error("checkin failed:", err);
-    if (/\b401\b|invalid_api_key|Incorrect API key/i.test(msg)) {
-      console.warn("[checkin] OpenAI key rejected (401) — check OPENAI_API_KEY on Render");
-      return res.status(502).json({ error: gentle, reason: "bad-key" });
-    }
-    if (/\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(msg)) {
-      console.warn("[checkin] OpenAI quota/billing (429) — add credit at platform.openai.com");
-      return res.status(502).json({ error: gentle, reason: "no-credit" });
-    }
-    res.status(502).json({ error: gentle, reason: "unknown" });
+    // הגענו לכאן רק על תקלה אמיתית (למשל DB) — לא על כשל AI (שכבר טופל ע"י המנוע המקומי).
+    console.error("checkin failed (non-AI):", err);
+    res.status(502).json({ error: "אני כאן איתך 🌿 קרתה תקלה רגעית בשמירה — נסי שוב בעוד רגע.", reason: "server" });
   }
 });
 
