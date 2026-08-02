@@ -1987,10 +1987,10 @@
           {/* Form column (appears on the right in RTL) */}
           <div className="au-form-col">
             <div className="au-form-col__head">
-              <h3>{isReg ? "יוצרים חשבון ומתחילים" : "כניסה לאזור האישי"}</h3>
+              <h3>{isReg ? "בוא/י נתחיל את פריצת הדרך שלך 🌿" : "כניסה לאזור האישי"}</h3>
               <p>
                 {isReg
-                  ? "חשבון אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות."
+                  ? "מרחב אישי ומאובטח — 14 ימי ניסיון חינם, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
                   : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
               </p>
             </div>
@@ -1998,19 +1998,20 @@
             <form onSubmit={submit} className="au-form">
               {isReg && (
                 <input type="text" name="name" autoComplete="name" required value={form.fullName}
-                  onChange={(e) => update("fullName", e.target.value)} placeholder="שם מלא" className="au-input" />
+                  onChange={(e) => update("fullName", e.target.value)} placeholder="איך קוראים לך?" className="au-input" />
               )}
               <input type="email" name="email" autoComplete="email" required value={form.email}
-                onChange={(e) => update("email", e.target.value)} placeholder="כתובת מייל" dir="ltr"
+                onChange={(e) => update("email", e.target.value)}
+                placeholder={isReg ? "לאן לשלוח את מפת הדרכים האישית שלך?" : "כתובת מייל"} dir="ltr"
                 className="au-input" style={{ textAlign: "right" }} />
               {isReg && (
                 <input type="tel" name="tel" autoComplete="tel" required value={form.phone}
-                  onChange={(e) => update("phone", e.target.value)} placeholder="טלפון נייד" dir="ltr"
+                  onChange={(e) => update("phone", e.target.value)} placeholder="טלפון נייד (לשליחת קוד אבטחה)" dir="ltr"
                   className="au-input" style={{ textAlign: "right" }} />
               )}
               <input type="password" name="password" autoComplete={isReg ? "new-password" : "current-password"} required
                 value={form.password} onChange={(e) => update("password", e.target.value)}
-                placeholder="סיסמה (לפחות 6 תווים)" className="au-input" />
+                placeholder={isReg ? "מפתח אישי למרחב השקט שלך (6+ תווים)" : "הסיסמה שלך"} className="au-input" />
 
               {/* consent — one clean line + modal link (no grey scroll box) */}
               {isReg && (
@@ -2027,7 +2028,7 @@
 
               {status === "error" && <p className="au-err">{errorMsg}</p>}
               <button type="submit" className="au-submit" disabled={status === "loading" || (isReg && !agreed)}>
-                {status === "loading" ? "רק רגע..." : isReg ? "יוצרים חשבון ומתחילים" : "כניסה"}
+                {status === "loading" ? "רק רגע..." : isReg ? "מתחילים את פריצת הדרך" : "כניסה"}
               </button>
             </form>
 

@@ -1513,6 +1513,50 @@ function Footer() {
   );
 }
 
+// CTA בולט לפגישת ניסיון חינם (נבדל משיחת ייעוץ/מכירה) — פופאפ מתפוגג, מקושר ליומן.
+function TrialCTA() {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    let dismissed = false;
+    try { dismissed = !!localStorage.getItem("cm_trial_cta_dismissed"); } catch (e) {}
+    if (dismissed) return;
+    const t = setTimeout(() => setShow(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+  function dismiss() {
+    setShow(false);
+    try { localStorage.setItem("cm_trial_cta_dismissed", "1"); } catch (e) {}
+  }
+  if (!show) return null;
+  return (
+    <div
+      dir="rtl"
+      style={{ position: "fixed", left: "16px", bottom: "20px", zIndex: 50 }}
+      className="w-[calc(100%-32px)] sm:w-[360px]"
+    >
+      <div className="relative rounded-2xl bg-white border border-gold-200 shadow-[0_26px_64px_-26px_rgba(120,90,30,0.55)] p-5 pe-10">
+        <button type="button" onClick={dismiss} aria-label="סגירה"
+          className="absolute top-2.5 inset-inline-start-2.5 w-8 h-8 rounded-full bg-ink-50 text-ink-500 hover:bg-ink-100 flex items-center justify-center">
+          <Icon name="x" size={16} />
+        </button>
+        <div className="flex items-start gap-3">
+          <span className="flex-none w-11 h-11 rounded-full bg-gradient-to-br from-gold-100 to-gold-200 text-gold-600 flex items-center justify-center">
+            <Icon name="sparkles" size={22} />
+          </span>
+          <div>
+            <p className="font-heading font-extrabold text-[16px] text-ink-800">פגישת ניסיון חינם 🎁</p>
+            <p className="text-[13.5px] text-ink-500 mt-1 leading-relaxed">30 דקות אישיות עם קטי — היכרות חווייתית עם השיטה. <b className="text-ink-700">לא שיחת מכירה</b>, בלי התחייבות.</p>
+          </div>
+        </div>
+        <a href={BOOKING_LINKS.calendar} target="_blank" rel="noopener noreferrer"
+          className="mt-3.5 w-full inline-flex items-center justify-center gap-2 rounded-full bg-gold-500 hover:bg-gold-600 text-white font-heading font-bold text-[14.5px] py-3 transition-colors">
+          <Icon name="calendar" size={17} /> לקביעת מועד ביומן
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function WhatsAppFloat() {
   return (
     <a
@@ -1549,6 +1593,7 @@ function Home({ onEnterApp }) {
       </main>
       <Footer />
       <WhatsAppFloat />
+      <TrialCTA />
     </>
   );
 }
