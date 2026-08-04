@@ -12,7 +12,7 @@ const Icon = window.Icon;
 const CONTACT = {
   whatsapp: "972543032349",
   phoneDisplay: "054-303-2349",
-  email: "ketylive8@gmail.com",
+  email: "ketyse@gmail.com",
   founder: "קטי שגב",
   brand: "CureMindset",
   social: "שיטה פרקטית לשינוי דפוסי תת־מודע, חיזוק חוסן רגשי ובניית ביטחון פנימי אמיתי.",
@@ -662,7 +662,7 @@ function About() {
             <Eyebrow>על קטי</Eyebrow>
             <h2 className="font-heading font-bold text-ink-800 text-[26px] sm:text-[34px] mb-5">נעים להכיר, אני קטי שגב</h2>
             <p className="text-ink-500 text-[18px] leading-[1.6] mb-5">
-              מאמנת ומטפלת רגשית-תודעתית ומפתחת שיטת CureMindset — גישה המשלבת עבודה עם התת-מודע, כלי NLP
+              מאמנת מנטלית ומפתחת שיטת CureMindset — גישה המשלבת עבודה עם התת-מודע, כלי NLP
               ועקרונות הגמישות המוחית (Neuroplasticity). אני מלווה בני נוער, נשים והורים בדרך מחרדה, עומס
               רגשי וחוסר ביטחון — אל חוסן פנימי, דימוי עצמי חזק ויציבות רגשית אמיתית.
             </p>
