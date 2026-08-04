@@ -467,10 +467,28 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
   }
 });
 
-// ── Profile (age group + trial) ──
+// ── Profile (age group + trial + assessment focus) ──
+// מפרק את סיכום האבחון (last_summary) ל-אתגר/מטרה כדי שה-Dashboard יציג מיקוד אישי.
+function parseAssessment(summary) {
+  const s = String(summary || "");
+  const grab = (label) => {
+    const m = s.match(new RegExp(label + "\\s*:\\s*([^·]+)"));
+    return m ? m[1].trim() : "";
+  };
+  return { name: grab("שם"), challenge: grab("אתגר"), impact: grab("השפעה"), goal: grab("מטרה") };
+}
 api.get("/profile", (req, res) => {
   const row = db.prepare("SELECT age_group, trial_start_at FROM patient_profile WHERE device_token = ?").get(req.deviceToken);
-  res.json({ ageGroup: row?.age_group || "adult", trialStartAt: row?.trial_start_at || null });
+  let summary = "";
+  try {
+    const prow = db.prepare("SELECT last_summary FROM patients WHERE device_token = ?").get(req.deviceToken);
+    summary = (prow && prow.last_summary) ? prow.last_summary : "";
+  } catch (e) { /* אין פרופיל */ }
+  res.json({
+    ageGroup: row?.age_group || "adult",
+    trialStartAt: row?.trial_start_at || null,
+    assessment: summary ? parseAssessment(summary) : null,
+  });
 });
 
 api.put("/profile", (req, res) => {

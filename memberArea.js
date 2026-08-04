@@ -1113,6 +1113,23 @@
       setShowIntro(false);
     }
 
+    // פרופיל האבחון מההרשמה — מציג "המיקוד שלך" מותאם אישית (חיבור הרשמה→תוכן).
+    const [profile, setProfile] = useState(null);
+    useEffect(() => {
+      fetch("/api/profile", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (d && d.assessment && (d.assessment.challenge || d.assessment.goal)) setProfile(d.assessment); })
+        .catch(() => {});
+    }, []);
+    // המלצת מודול לפי האתגר שהוזן באבחון.
+    function recommend(ch) {
+      const c = ch || "";
+      if (c.includes("חרד") || c.includes("עומס") || c.includes("הצפ")) return "מומלץ להתחיל ב‏עוגן‏ — יצירת יציבות וויסות ראשוני.";
+      if (c.includes("ביצוע") || c.includes("דחיינ") || c.includes("כישל")) return "מומלץ להתחיל ב‏גבול ההבחנה‏ — הפרדת רגש ממחשבה ומעשה.";
+      if (c.includes("ביקורת") || c.includes("פרפקצ") || c.includes("ספק")) return "מומלץ להתחיל ב‏דימוי עצמי‏ (שער 2 במסע) — בניית עוגן פנימי.";
+      return "מומלץ להתחיל ב‏קרקוע‏ — חזרה לגוף ולכאן-ועכשיו.";
+    }
+
     async function handleSend() {
       const trimmed = text.trim();
       if (!trimmed || status === "loading") return;
@@ -1171,11 +1188,22 @@
                   <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset · צ'ק-אין</span>
                 </div>
                 <p className="font-heading text-[18px] font-bold text-ink-800 leading-snug">
-                  היי, אני כאן איתך.
+                  היי{profile && profile.name ? ` ${profile.name}` : ""}, אני כאן איתך.
                   <br />
                   ספרי לי איך עבר עלייך היום ומה שלומך עכשיו?
                 </p>
               </header>
+              {profile ? (
+                <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-200 bg-gold-50/70 px-4 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name="sparkles" size={15} className="text-gold-500" />
+                    <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">המיקוד שלך · מותאם אישית מהאבחון</span>
+                  </div>
+                  {profile.challenge ? <p className="text-[13.5px] text-ink-700"><b className="text-ink-800">האתגר שבחרת:</b> {profile.challenge}</p> : null}
+                  {profile.goal ? <p className="text-[13.5px] text-ink-700 mt-1"><b className="text-ink-800">המטרה שלך:</b> {profile.goal}</p> : null}
+                  <p className="text-[12.5px] text-gold-700 mt-2.5 leading-relaxed">{recommend(profile.challenge)}</p>
+                </div>
+              ) : null}
               <NeuroplasticityIntro />
               <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
               {status === "error" ? (
