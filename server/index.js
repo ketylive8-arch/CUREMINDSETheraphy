@@ -12,9 +12,9 @@ const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
-const { registerAccount, loginAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary } = require("./auth");
+const { registerAccount, loginAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
-const { notifyLead } = require("./notify");
+const { notifyLead, notifyEmail } = require("./notify");
 
 const app = express();
 // Behind Render's proxy — needed so req.ip is the real client IP (consent log).
@@ -207,6 +207,42 @@ app.post("/api/auth/login", rateLimit("login", 20), async (req, res) => {
 
 app.post("/api/auth/logout", (req, res) => {
   destroySession(req.header("X-Auth-Token"));
+  res.json({ ok: true });
+});
+
+// ── שכחתי סיסמה: קוד איפוס בן 6 ספרות למייל, ואז הגדרת סיסמה חדשה ──
+const resetCodes = new Map(); // email -> { code, expires, tries }
+app.post("/api/auth/forgot", rateLimit("forgot", 8), async (req, res) => {
+  const email = String((req.body && req.body.email) || "").trim().toLowerCase().slice(0, 160);
+  // תמיד מחזירים ok כדי לא לחשוף אילו מיילים רשומים.
+  if (!email) return res.json({ ok: true });
+  const acc = db.prepare("SELECT id, full_name FROM accounts WHERE email = ?").get(email);
+  if (acc) {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    resetCodes.set(email, { code, expires: Date.now() + 15 * 60 * 1000, tries: 0 });
+    if (process.env.RESET_DEBUG) console.log("[reset TEST] code for", email, "=", code);
+    notifyEmail(email, "איפוס סיסמה · CureMindset", {
+      "שלום": acc.full_name || "",
+      "קוד האיפוס שלך": code,
+      "בתוקף ל-": "15 דקות",
+      "הערה": "אם לא ביקשת לאפס סיסמה — אפשר להתעלם מהמייל הזה.",
+    }).then((r) => { if (r && r.error) console.warn("[reset] email failed:", r.error); });
+  }
+  res.json({ ok: true });
+});
+app.post("/api/auth/reset", rateLimit("reset", 12), (req, res) => {
+  const email = String((req.body && req.body.email) || "").trim().toLowerCase().slice(0, 160);
+  const code = String((req.body && req.body.code) || "").trim();
+  const password = String((req.body && req.body.password) || "");
+  if (password.length < 6) return res.status(400).json({ error: "הסיסמה חייבת להיות לפחות 6 תווים" });
+  const entry = resetCodes.get(email);
+  if (!entry || entry.expires < Date.now()) return res.status(400).json({ error: "הקוד פג תוקף — בקשי קוד חדש" });
+  if (entry.tries >= 5) { resetCodes.delete(email); return res.status(429).json({ error: "יותר מדי ניסיונות — בקשי קוד חדש" }); }
+  if (entry.code !== code) { entry.tries += 1; return res.status(400).json({ error: "קוד שגוי, נסי שוב" }); }
+  const acc = db.prepare("SELECT id FROM accounts WHERE email = ?").get(email);
+  if (!acc) return res.status(400).json({ error: "לא נמצא חשבון" });
+  db.prepare("UPDATE accounts SET password_hash = ? WHERE id = ?").run(hashPassword(password), acc.id);
+  resetCodes.delete(email);
   res.json({ ok: true });
 });
 

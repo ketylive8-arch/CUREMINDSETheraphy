@@ -1878,6 +1878,61 @@
     );
   }
 
+  // שחזור סיסמה: מייל → קוד איפוס (במייל) → סיסמה חדשה.
+  function ForgotPassword({ onBack, initialEmail }) {
+    const [step, setStep] = useState("request"); // request | reset | done
+    const [email, setEmail] = useState(initialEmail || "");
+    const [code, setCode] = useState("");
+    const [password, setPassword] = useState("");
+    const [status, setStatus] = useState("idle");
+    const [err, setErr] = useState("");
+
+    function request(e) {
+      if (e) e.preventDefault();
+      if (!email.trim()) return;
+      setStatus("loading"); setErr("");
+      fetch("/api/auth/forgot", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.trim() }) })
+        .then(() => { setStatus("idle"); setStep("reset"); })
+        .catch(() => { setStatus("idle"); setStep("reset"); });
+    }
+    function reset(e) {
+      if (e) e.preventDefault();
+      if (code.trim().length < 4 || password.length < 6) { setErr("הזיני קוד וסיסמה בת 6 תווים לפחות"); return; }
+      setStatus("loading"); setErr("");
+      fetch("/api/auth/reset", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email.trim(), code: code.trim(), password }) })
+        .then(async (r) => { const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || "שגיאה"); setStep("done"); })
+        .catch((e2) => { setStatus("idle"); setErr(e2.message); });
+    }
+
+    return (
+      <div className="au-card" style={{ gridTemplateColumns: "1fr" }}>
+        <div className="au-form-col">
+          <div className="au-form-col__head">
+            <h3>{step === "done" ? "הסיסמה עודכנה 🌿" : "שחזור סיסמה"}</h3>
+            <p>{step === "request" ? "נשלח לך קוד איפוס למייל." : step === "reset" ? "הזיני את הקוד שקיבלת במייל וסיסמה חדשה." : "מעכשיו אפשר להתחבר עם הסיסמה החדשה."}</p>
+          </div>
+          {step === "request" ? (
+            <form className="au-form" onSubmit={request}>
+              <input className="au-input" type="email" dir="ltr" placeholder="כתובת המייל שלך" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ textAlign: "right" }} />
+              <button type="submit" className="au-submit" disabled={status === "loading" || !email.trim()}>{status === "loading" ? "רק רגע..." : "שליחת קוד איפוס"}</button>
+            </form>
+          ) : step === "reset" ? (
+            <form className="au-form" onSubmit={reset}>
+              <input className="au-input" dir="ltr" placeholder="קוד בן 6 ספרות" value={code} onChange={(e) => setCode(e.target.value)} required style={{ textAlign: "center", letterSpacing: "0.3em" }} />
+              <input className="au-input" type="password" placeholder="סיסמה חדשה (6+ תווים)" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              {err ? <p className="au-err">{err}</p> : null}
+              <button type="submit" className="au-submit" disabled={status === "loading"}>{status === "loading" ? "רק רגע..." : "עדכון סיסמה"}</button>
+              <button type="button" className="au-back" onClick={() => setStep("request")}>לא קיבלתי קוד — שליחה מחדש</button>
+            </form>
+          ) : (
+            <button type="button" className="au-submit" onClick={onBack}>לכניסה עם הסיסמה החדשה</button>
+          )}
+          <button type="button" className="au-back" onClick={onBack}>חזרה לכניסה</button>
+        </div>
+      </div>
+    );
+  }
+
   function AuthGate({ onAuthed, onExit }) {
     const [mode, setMode] = useState("register"); // register | login
     const [form, setForm] = useState({ fullName: "", email: "", phone: "", password: "" });
@@ -1963,6 +2018,15 @@
               setOnbDone(true);
             }}
           />
+        </div>
+      );
+    }
+
+    // ── שחזור סיסמה ──
+    if (mode === "forgot") {
+      return (
+        <div className="au-overlay">
+          <ForgotPassword initialEmail={form.email} onBack={() => { setMode("login"); setStatus("idle"); }} />
         </div>
       );
     }
@@ -2066,6 +2130,9 @@
                 {isReg ? "להתחברות" : "להרשמה"}
               </button>
             </p>
+            {!isReg && (
+              <button type="button" className="au-back" onClick={() => { setMode("forgot"); setStatus("idle"); }}>שכחת סיסמה?</button>
+            )}
             <button type="button" onClick={onExit} className="au-back">חזרה לאתר</button>
           </div>
 

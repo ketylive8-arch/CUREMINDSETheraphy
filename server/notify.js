@@ -38,7 +38,7 @@ function buildHtml(subject, fields) {
 }
 
 // ── 1) Gmail ישיר דרך Nodemailer ──
-async function sendViaGmail(subject, fields) {
+async function sendViaGmail(to, subject, fields) {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) return null; // לא מוגדר — ננסה דרך אחרת
@@ -50,7 +50,7 @@ async function sendViaGmail(subject, fields) {
     });
     await transporter.sendMail({
       from: `CureMindset <${user}>`,
-      to: NOTIFY_TO,
+      to,
       subject,
       html: buildHtml(subject, fields),
     });
@@ -61,7 +61,7 @@ async function sendViaGmail(subject, fields) {
 }
 
 // ── 2) Resend ──
-async function sendViaResend(subject, fields) {
+async function sendViaResend(to, subject, fields) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
   const from = process.env.NOTIFICATION_FROM || "CureMindset <onboarding@resend.dev>";
@@ -69,7 +69,7 @@ async function sendViaResend(subject, fields) {
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [NOTIFY_TO], subject, html: buildHtml(subject, fields) }),
+      body: JSON.stringify({ from, to: [to], subject, html: buildHtml(subject, fields) }),
     });
     return resp.ok ? { sent: true, via: "resend" } : { sent: false, error: `Resend ${resp.status}` };
   } catch (e) {
@@ -78,9 +78,9 @@ async function sendViaResend(subject, fields) {
 }
 
 // ── 3) FormSubmit (גיבוי ללא מפתח) ──
-async function sendViaFormSubmit(subject, fields) {
+async function sendViaFormSubmit(to, subject, fields) {
   try {
-    const resp = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(NOTIFY_TO)}`, {
+    const resp = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ _subject: subject, _template: "table", ...fields }),
@@ -95,15 +95,19 @@ async function sendViaFormSubmit(subject, fields) {
   }
 }
 
-// שולח התראת ליד. מנסה Gmail → Resend → FormSubmit. לעולם לא זורק.
-async function notifyLead(subject, fields) {
+// שולח מייל ליעד כלשהו דרך Gmail → Resend → FormSubmit. לעולם לא זורק.
+async function notifyEmail(to, subject, fields) {
   for (const send of [sendViaGmail, sendViaResend, sendViaFormSubmit]) {
-    const r = await send(subject, fields);
+    const r = await send(to, subject, fields);
     if (r === null) continue; // ספק לא מוגדר — לנסות את הבא
     if (r.sent) return r; // הצלחה
-    // ספק מוגדר אך נכשל — ממשיכים לגיבוי הבא
   }
   return { sent: false, error: "no email channel succeeded" };
 }
 
-module.exports = { notifyLead, NOTIFY_TO };
+// התראת ליד לקטי (ליעד ברירת המחדל).
+async function notifyLead(subject, fields) {
+  return notifyEmail(NOTIFY_TO, subject, fields);
+}
+
+module.exports = { notifyLead, notifyEmail, NOTIFY_TO };
