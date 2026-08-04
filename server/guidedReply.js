@@ -90,10 +90,12 @@ function pickTheme(text) {
   return null;
 }
 
-// תגובה בשיטת CureMindset ללא OpenAI. retrieved = קטעי RAG (לעיגון הפרוטוקול).
-function guidedReply(text, retrieved) {
+// תגובה בשיטת CureMindset ללא OpenAI. retrieved = קטעי RAG; userProfile = תשובות
+// האבחון מההרשמה — מחבר את התגובה למה שהמשתמש/ת הזינ/ה (מותאם, לא סטטי).
+function guidedReply(text, retrieved, userProfile) {
   const seed = String(text || "").length + new Date().getHours();
-  const th = pickTheme(text);
+  // מזהים נושא לפי ההודעה; אם אין — נופלים לאתגר מהאבחון בהרשמה.
+  const th = pickTheme(text) || pickTheme(userProfile);
   const parts = [pick(OPENERS, seed)];
 
   if (th) {

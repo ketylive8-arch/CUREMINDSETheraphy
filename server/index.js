@@ -409,12 +409,18 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
     const ageGroup = getAgeGroup(req.deviceToken);
     // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI
     const retrieved = retrieveKnowledge(text.trim());
+    // פרופיל אישי מהאבחון בהרשמה — מחבר את התוכן למה שהמשתמש/ת הזינ/ה (דינמי, לא סטטי).
+    let userProfile = "";
+    try {
+      const prow = db.prepare("SELECT last_summary FROM patients WHERE device_token = ?").get(req.deviceToken);
+      userProfile = (prow && prow.last_summary) ? prow.last_summary : "";
+    } catch (e) { /* אין פרופיל — ממשיכים בלי */ }
 
     // מנסים קודם את מנוע ה-AI המלא (OpenAI). אם אין מפתח / המפתח נדחה / אין קרדיט —
     // לא מפילים את הצ'אט: נופלים למנוע המקומי (guidedReply) בשיטת CureMindset. הצ'אט תמיד עונה.
     let result;
     try {
-      result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved);
+      result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved, userProfile);
     } catch (aiErr) {
       const m = String((aiErr && aiErr.message) || "");
       const reason =
@@ -422,7 +428,7 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
         /\b401\b|invalid_api_key|Incorrect API key/i.test(m) ? "bad-key" :
         /\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(m) ? "no-credit" : "ai-error";
       console.warn(`[checkin] OpenAI unavailable (${reason}) — using local guided engine.`);
-      result = guidedReply(text.trim(), retrieved);
+      result = guidedReply(text.trim(), retrieved, userProfile);
     }
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));

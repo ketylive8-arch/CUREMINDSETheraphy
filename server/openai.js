@@ -223,14 +223,22 @@ function journeyContext(journeyDay) {
   return `\n[הקשר מסע: יום ${journeyDay} מתוך 14 — ${gate}. התאם/י את התגובה והמשימה היומית לשער הזה.]`;
 }
 
-async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null, retrievedKnowledge = []) {
+// הקשר הפרופיל האישי מהאבחון בהרשמה — מחבר את מה שהמשתמש/ת הזינ/ה לתגובות ה-AI,
+// כך שהתוכן מותאם לאתגר ולמטרה שלו/שלה (המשכיות והקשר, בסגנון Curable).
+function profileContext(userProfile) {
+  if (!userProfile || !String(userProfile).trim()) return "";
+  return `\n[פרופיל אישי מהאבחון הראשוני של המשתמש/ת: ${String(userProfile).trim()}. התייחס/י לזה לאורך השיחה — התאם/י את הדוגמאות, הכלים והמשימה לאתגר ולמטרה שהוגדרו, ואל תבקש/י שוב מידע שכבר ידוע.]`;
+}
+
+async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null, retrievedKnowledge = [], userProfile = "") {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new NoApiKeyError();
 
   const systemPrompt =
     (ageGroup === "youth" ? SYSTEM_PROMPT_YOUTH : SYSTEM_PROMPT_ADULT) +
     knowledgeContext(retrievedKnowledge) +
-    journeyContext(journeyDay);
+    journeyContext(journeyDay) +
+    profileContext(userProfile);
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
