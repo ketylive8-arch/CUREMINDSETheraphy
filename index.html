@@ -67,7 +67,38 @@
 <link rel="stylesheet" href="auth.css" />
 </head>
 <body class="bg-ink-50 text-ink-800">
-<div id="root"></div>
+<!--
+  תוכן סטטי לקריאת מנועי חיפוש ורשתות חברתיות (SEO).
+  React מחליף את כל התוכן הזה ברגע הטעינה (createRoot().render() מנקה את #root),
+  כך שגולשים אמיתיים רואים את האתר המלא — אבל Googlebot, שלא תמיד מריץ את ה-JavaScript,
+  מקבל כאן תוכן אמיתי לאינדוקס במקום דף ריק. אין להסיר.
+-->
+<div id="root">
+  <main style="max-width:820px;margin:0 auto;padding:48px 22px;font-family:Assistant,Arial,sans-serif;line-height:1.75;color:#3d3527">
+    <h1 style="font-size:30px;font-weight:800;color:#8a6a2f;margin-bottom:10px">קטי שגב — CURE MINDSET</h1>
+    <p style="font-size:19px;font-weight:600;margin-bottom:20px">אימון מנטלי וטיפול רגשי מבוסס NLP ותת־מודע — שיטה לשחרור תקיעות, חרדה ועומס רגשי ולבניית חוסן נפשי וביטחון עצמי אמיתי.</p>
+    <p>שיטת CureMindset פותחה על ידי קטי שגב, מאמנת מנטלית ומטפלת רגשית, ומשלבת NLP, עבודה עם תת־המודע ונוירופלסטיות כדי לחולל שינוי עמוק ומחזיק. הליווי מותאם לבני נוער, נשים, הורים ומבוגרים, ומטרתו לשחרר דפוסים מגבילים, להרגיע חרדה ולבנות ביטחון עצמי יציב.</p>
+
+    <h2 style="font-size:22px;font-weight:700;color:#8a6a2f;margin:30px 0 10px">השירותים שלנו</h2>
+    <ul style="padding-inline-start:20px">
+      <li><strong>אימון רגשי ותהליכי עומק מבוססי NLP</strong> — עבודה על שורש הדפוס, פירוק חסמים והטמעת עוגנים רגשיים.</li>
+      <li><strong>ליווי אישי לחוסן וביטחון עצמי</strong> — תהליך מובנה וממוקד תוצאות לשינוי חשיבה וניהול רגשי.</li>
+      <li><strong>סדנאות חוסן רגשי לנוער ולארגונים</strong> — מפגשים קבוצתיים לבתי ספר, רשתות חינוך וצוותים, לחיזוק דימוי עצמי, ויסות רגשי והתמודדות עם לחץ.</li>
+      <li><strong>אזור אישי דיגיטלי</strong> — מאמן מנטלי חכם הזמין 24/7, מותאם אישית על בסיס חומרי השיטה, עם מעקב התקדמות וכלים מעשיים.</li>
+    </ul>
+
+    <h2 style="font-size:22px;font-weight:700;color:#8a6a2f;margin:30px 0 10px">על קטי שגב</h2>
+    <p>קטי שגב היא מאמנת מנטלית ומפתחת שיטת CureMindset, המתמחה בליווי רגשי לבני נוער, נשים והורים. השיטה מתמקדת בשחרור תקיעות רגשית, התמודדות עם חרדה, חיזוק החוסן הנפשי ובניית ביטחון עצמי אמיתי שמחזיק לאורך זמן.</p>
+
+    <h2 style="font-size:22px;font-weight:700;color:#8a6a2f;margin:30px 0 10px">יצירת קשר</h2>
+    <p>
+      לשיחת היכרות ראשונית ללא התחייבות:
+      <a href="https://calendly.com/ketysegev/meet-with-me" style="color:#8a6a2f;font-weight:700">קביעת שיחה ראשונית</a>
+      · <a href="https://wa.me/972543032349" style="color:#8a6a2f;font-weight:700">וואטסאפ</a>
+    </p>
+    <p style="margin-top:24px;color:#8f846d;font-size:15px">טוען את החוויה המלאה של האתר…</p>
+  </main>
+</div>
 
 <script defer src="vendor/react.production.min.js"></script>
 <script defer src="vendor/react-dom.production.min.js"></script>
