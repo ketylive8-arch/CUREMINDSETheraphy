@@ -2013,6 +2013,7 @@
     const [resent, setResent] = useState(false);
     const [onbDone, setOnbDone] = useState(false); // האם סיימו את שאלון האבחון (הרשמה)
     const [onbSummary, setOnbSummary] = useState(""); // תשובות האבחון לשמירה בכרטיס
+    const [postRegQuiz, setPostRegQuiz] = useState(false); // שאלון היכרות אחרי ההרשמה (סגנון Curable)
 
     function update(field, value) {
       setForm((f) => ({ ...f, [field]: value }));
@@ -2021,7 +2022,10 @@
 
     function finishAuth(data) {
       setAuth(data.token, data.fullName);
-      onAuthed();
+      // סגנון Curable: אחרי הרשמה חדשה — קודם השאלון האישי, ואז כניסה למערכת.
+      // בהתחברות של משתמש קיים — נכנסים ישר.
+      if (mode === "register") setPostRegQuiz(true);
+      else onAuthed();
     }
 
     function submit(e) {
@@ -2074,16 +2078,22 @@
 
     const isReg = mode === "register";
 
-    // ── שאלון אבחון (Onboarding) — לפני יצירת החשבון, רק בהרשמה ──
-    if (isReg && !onbDone && step !== "otp") {
+    // ── שאלון היכרות — אחרי יצירת החשבון (סגנון Curable: קודם הרשמה, ואז השאלון) ──
+    if (postRegQuiz) {
       return (
         <div className="au-overlay">
           <OnboardingQuiz
-            onExit={onExit}
-            onComplete={(summary, name) => {
-              setOnbSummary(summary);
-              if (name) setForm((f) => ({ ...f, fullName: f.fullName || name }));
-              setOnbDone(true);
+            onExit={() => onAuthed()}
+            onComplete={(summary) => {
+              // המשתמש כבר מחובר — שומרים את השאלון בשרת ונכנסים למערכת.
+              if (summary) {
+                fetch("/api/onboarding", {
+                  method: "POST",
+                  headers: authHeaders({ "Content-Type": "application/json" }),
+                  body: JSON.stringify({ onboarding: summary }),
+                }).catch(() => {});
+              }
+              onAuthed();
             }}
           />
         </div>

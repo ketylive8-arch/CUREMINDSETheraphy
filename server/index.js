@@ -210,6 +210,22 @@ app.post("/api/auth/logout", (req, res) => {
   res.json({ ok: true });
 });
 
+// שמירת סיכום שאלון ההיכרות עבור משתמש מחובר — כשהשאלון בא אחרי ההרשמה
+// (זרימת Curable: קודם נרשמים, ואז ממלאים את השאלון האישי).
+app.post("/api/onboarding", (req, res) => {
+  const accountId = accountIdFromToken(req.header("X-Auth-Token"));
+  if (!accountId) return res.status(401).json({ error: "לא מחובר" });
+  const onboarding = typeof (req.body && req.body.onboarding) === "string" ? req.body.onboarding.slice(0, 400) : "";
+  if (onboarding) {
+    try {
+      db.prepare("UPDATE patients SET last_summary = ? WHERE device_token = ?").run(onboarding, accountId);
+    } catch (e) {
+      console.warn("[onboarding] save failed:", e.message);
+    }
+  }
+  res.json({ ok: true });
+});
+
 // ── שכחתי סיסמה: קוד איפוס בן 6 ספרות למייל, ואז הגדרת סיסמה חדשה ──
 const resetCodes = new Map(); // email -> { code, expires, tries }
 app.post("/api/auth/forgot", rateLimit("forgot", 8), async (req, res) => {
