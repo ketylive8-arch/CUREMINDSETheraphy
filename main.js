@@ -8,7 +8,8 @@
   const MemberArea = window.MemberArea;
 
   function App() {
-    const [view, setView] = useState("home");
+    // אם המשתמש חזר זה עתה מהתחברות חברתית (Google/Facebook) — נפתח מחובר לאזור האישי.
+    const [view, setView] = useState(window.__cmOpenApp ? "app" : "home");
     return (
       <React.Fragment>
         <Home onEnterApp={() => setView("app")} />

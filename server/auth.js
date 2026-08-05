@@ -101,6 +101,29 @@ function registerAccount({ email, password, fullName, phone, ref }) {
   return { accountId: id, fullName: name, email: normEmail, phone: phone ? String(phone) : "" };
 }
 
+// מציאה או יצירה של חשבון לפי מייל עבור התחברות חברתית (Google / Facebook).
+// אם המייל כבר רשום — מתחברים אליו (גם אם נרשם בעבר עם סיסמה). אחרת נוצר חשבון
+// חדש עם סיסמה אקראית שאינה בשימוש (הכניסה מתבצעת דרך הספק). מחזיר accountId.
+function upsertOAuthAccount({ email, fullName }) {
+  const normEmail = String(email || "").trim().toLowerCase();
+  if (!EMAIL_RE.test(normEmail)) return { error: "מייל לא תקין מהספק", status: 400 };
+  const existing = db.prepare("SELECT id, full_name FROM accounts WHERE email = ?").get(normEmail);
+  if (existing) {
+    ensurePatient(existing.id);
+    return { accountId: existing.id, fullName: existing.full_name, email: normEmail, created: false };
+  }
+  const id = crypto.randomUUID();
+  const name = (String(fullName || "").trim() || normEmail.split("@")[0] || "משתמש").slice(0, 120);
+  const randomPass = crypto.randomBytes(24).toString("hex"); // placeholder — כניסה דרך הספק בלבד
+  db.prepare("INSERT INTO accounts (id, email, password_hash, full_name) VALUES (?, ?, ?, ?)").run(
+    id, normEmail, hashPassword(randomPass), name
+  );
+  ensurePatient(id);
+  db.prepare("UPDATE patients SET display_name = ? WHERE device_token = ?").run(name, id);
+  ensureRefCode(id);
+  return { accountId: id, fullName: name, email: normEmail, created: true };
+}
+
 function loginAccount({ email, password }) {
   const normEmail = String(email || "").trim().toLowerCase();
   const row = db
@@ -124,6 +147,7 @@ function loginAccount({ email, password }) {
 module.exports = {
   registerAccount,
   loginAccount,
+  upsertOAuthAccount,
   destroySession,
   accountIdFromToken,
   hashPassword,

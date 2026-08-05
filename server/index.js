@@ -12,7 +12,7 @@ const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
-const { registerAccount, loginAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
+const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
 
@@ -246,26 +246,120 @@ app.post("/api/auth/reset", rateLimit("reset", 12), (req, res) => {
   res.json({ ok: true });
 });
 
-// התחברות חברתית (OAuth) — מחזיר כתובת התחלה כאשר ספק מוגדר במשתני הסביבה.
-// כשלא מוגדר — 501, והלקוח מציג "בקרוב". קדימה-תואם: מספיק להוסיף CLIENT_ID.
+// ── התחברות חברתית (OAuth) — Google / Facebook ──
+// זרימה מלאה: (1) הלקוח מבקש כתובת התחלה; (2) הספק מחזיר code ל-callback;
+// (3) מחליפים code ב-token, שולפים מייל+שם, יוצרים/מוצאים חשבון, מנפיקים טוקן
+// ומפנים חזרה לאתר עם הטוקן. כשספק לא מוגדר — 501, והלקוח פשוט לא מציג את הכפתור.
+const OAUTH_BASE = () => (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+const oauthStates = new Map(); // state -> expires (הגנת CSRF, תוקף קצר)
+function makeState() {
+  const s = require("node:crypto").randomBytes(16).toString("hex");
+  oauthStates.set(s, Date.now() + 10 * 60 * 1000);
+  return s;
+}
+function consumeState(s) {
+  const exp = oauthStates.get(s);
+  if (!exp) return false;
+  oauthStates.delete(s);
+  return exp > Date.now();
+}
+// ניקוי מצבים שפגו — כדי שהמפה לא תגדל לנצח.
+setInterval(() => { const now = Date.now(); for (const [k, v] of oauthStates) if (v < now) oauthStates.delete(k); }, 15 * 60 * 1000).unref?.();
+
 app.get("/api/auth/oauth/:provider", (req, res) => {
   const provider = String(req.params.provider || "").toLowerCase();
-  const base = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+  const base = OAUTH_BASE();
+  const state = makeState();
   if (provider === "google" && process.env.GOOGLE_CLIENT_ID) {
     const url =
       "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=openid%20email%20profile" +
       `&client_id=${encodeURIComponent(process.env.GOOGLE_CLIENT_ID)}` +
-      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/google/callback")}`;
+      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/google/callback")}` +
+      `&state=${state}`;
     return res.json({ url });
   }
   if (provider === "facebook" && process.env.FACEBOOK_APP_ID) {
     const url =
       "https://www.facebook.com/v19.0/dialog/oauth?scope=email" +
       `&client_id=${encodeURIComponent(process.env.FACEBOOK_APP_ID)}` +
-      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/facebook/callback")}`;
+      `&redirect_uri=${encodeURIComponent(base + "/api/auth/oauth/facebook/callback")}` +
+      `&state=${state}`;
     return res.json({ url });
   }
   return res.status(501).json({ error: "OAuth provider not configured", provider });
+});
+
+// מפנה חזרה לאתר עם הטוקן (או עם שגיאה קריאה) — הלקוח קולט ומתחבר.
+function oauthRedirect(res, { token, name, error }) {
+  const base = OAUTH_BASE();
+  if (token) {
+    return res.redirect(`${base}/?cm_oauth=${encodeURIComponent(token)}&cm_name=${encodeURIComponent(name || "")}`);
+  }
+  return res.redirect(`${base}/?cm_oauth_error=${encodeURIComponent(error || "login_failed")}`);
+}
+
+app.get("/api/auth/oauth/google/callback", async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    if (!code || !consumeState(String(state || ""))) return oauthRedirect(res, { error: "פג תוקף — נסי שוב" });
+    const base = OAUTH_BASE();
+    const tokenResp = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code: String(code),
+        client_id: process.env.GOOGLE_CLIENT_ID || "",
+        client_secret: process.env.GOOGLE_CLIENT_SECRET || "",
+        redirect_uri: base + "/api/auth/oauth/google/callback",
+        grant_type: "authorization_code",
+      }),
+    });
+    const tok = await tokenResp.json();
+    if (!tok.access_token) return oauthRedirect(res, { error: "ההתחברות נכשלה" });
+    const infoResp = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+      headers: { Authorization: `Bearer ${tok.access_token}` },
+    });
+    const info = await infoResp.json();
+    if (!info.email) return oauthRedirect(res, { error: "לא התקבל מייל מהחשבון" });
+    const acc = upsertOAuthAccount({ email: info.email, fullName: info.name });
+    if (acc.error) return oauthRedirect(res, { error: acc.error });
+    const token = createSessionForAccount(acc.accountId);
+    return oauthRedirect(res, { token, name: acc.fullName });
+  } catch (e) {
+    console.warn("[oauth google]", (e && e.message) || e);
+    return oauthRedirect(res, { error: "שגיאה בהתחברות" });
+  }
+});
+
+app.get("/api/auth/oauth/facebook/callback", async (req, res) => {
+  try {
+    const { code, state } = req.query;
+    if (!code || !consumeState(String(state || ""))) return oauthRedirect(res, { error: "פג תוקף — נסי שוב" });
+    const base = OAUTH_BASE();
+    const tokenResp = await fetch(
+      "https://graph.facebook.com/v19.0/oauth/access_token?" +
+        new URLSearchParams({
+          code: String(code),
+          client_id: process.env.FACEBOOK_APP_ID || "",
+          client_secret: process.env.FACEBOOK_APP_SECRET || "",
+          redirect_uri: base + "/api/auth/oauth/facebook/callback",
+        }).toString()
+    );
+    const tok = await tokenResp.json();
+    if (!tok.access_token) return oauthRedirect(res, { error: "ההתחברות נכשלה" });
+    const infoResp = await fetch(
+      "https://graph.facebook.com/me?fields=name,email&access_token=" + encodeURIComponent(tok.access_token)
+    );
+    const info = await infoResp.json();
+    if (!info.email) return oauthRedirect(res, { error: "לא התקבל מייל מהחשבון" });
+    const acc = upsertOAuthAccount({ email: info.email, fullName: info.name });
+    if (acc.error) return oauthRedirect(res, { error: acc.error });
+    const token = createSessionForAccount(acc.accountId);
+    return oauthRedirect(res, { token, name: acc.fullName });
+  } catch (e) {
+    console.warn("[oauth facebook]", (e && e.message) || e);
+    return oauthRedirect(res, { error: "שגיאה בהתחברות" });
+  }
 });
 
 // פרטי החשבון המחובר — שם, קוד הפניה אישי (חבר מביא חבר) ומספר המוזמנים.

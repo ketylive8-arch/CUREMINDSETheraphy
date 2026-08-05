@@ -100,6 +100,74 @@
     try { return localStorage.getItem(REF_KEY) || ""; } catch (e) { return ""; }
   }
 
+  // התחברות חברתית — קליטת הטוקן שחזר מ-Google/Facebook דרך ה-callback בשרת.
+  // מאחסן את הטוקן, מנקה את הכתובת, ומסמן שיש לפתוח את האזור האישי מחובר.
+  (function captureOAuth() {
+    try {
+      const q = new URLSearchParams(location.search);
+      const token = q.get("cm_oauth");
+      const err = q.get("cm_oauth_error");
+      if (token) {
+        setAuth(token, q.get("cm_name") || "");
+        window.__cmOpenApp = true;
+      }
+      if (err) window.__cmOauthError = err;
+      if (token || err) {
+        // מסירים את הפרמטרים מה-URL כדי שלא יישארו/יישלחו בשיתוף
+        q.delete("cm_oauth"); q.delete("cm_name"); q.delete("cm_oauth_error");
+        const clean = location.pathname + (q.toString() ? "?" + q.toString() : "") + location.hash;
+        history.replaceState(null, "", clean);
+      }
+    } catch (e) {}
+  })();
+
+  // התחברות חברתית — מציג כפתור Google/Facebook רק אם הספק מוגדר בשרת.
+  // כך אין "בקרוב": הכפתור מופיע אוטומטית ברגע שקטי מוסיפה את המפתחות ב-Render.
+  const GoogleMark = () => (
+    <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+    </svg>
+  );
+  const FacebookMark = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#1877F2" d="M24 12c0-6.63-5.37-12-12-12S0 5.37 0 12c0 5.99 4.39 10.95 10.13 11.85v-8.38H7.08V12h3.05V9.36c0-3.01 1.79-4.68 4.53-4.68 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.96.93-1.96 1.87V12h3.33l-.53 3.47h-2.8v8.38C19.61 22.95 24 17.99 24 12z"/>
+    </svg>
+  );
+  function SocialLogin() {
+    const [providers, setProviders] = useState([]);
+    useEffect(() => {
+      let alive = true;
+      const defs = [
+        { id: "google", label: "המשך עם Google", Mark: GoogleMark },
+        { id: "facebook", label: "המשך עם Facebook", Mark: FacebookMark },
+      ];
+      Promise.all(
+        defs.map((d) => fetch("/api/auth/oauth/" + d.id).then((r) => (r.ok ? d : null)).catch(() => null))
+      ).then((res) => { if (alive) setProviders(res.filter(Boolean)); });
+      return () => { alive = false; };
+    }, []);
+    function go(id) {
+      fetch("/api/auth/oauth/" + id)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (d && d.url) window.location.href = d.url; })
+        .catch(() => {});
+    }
+    if (!providers.length) return null;
+    return (
+      <div className="au-social">
+        <div className="au-social__div">או</div>
+        {providers.map((p) => (
+          <button key={p.id} type="button" className="au-social__btn" onClick={() => go(p.id)}>
+            <p.Mark /> <span>{p.label}</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
+
   // חבר מביא חבר — כרטיס שיתוף ויראלי: שיתוף בוואטסאפ + קישור הפניה אישי.
   function ShareInvite() {
     const [me, setMe] = useState(null);
@@ -2123,6 +2191,8 @@
                 {status === "loading" ? "רק רגע..." : isReg ? "מתחילים את פריצת הדרך" : "כניסה"}
               </button>
             </form>
+
+            <SocialLogin />
 
             <p className="au-switch">
               {isReg ? "כבר יש לך חשבון? " : "עדיין אין לך חשבון? "}
