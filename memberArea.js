@@ -2303,6 +2303,79 @@
     try { return JSON.parse(localStorage.getItem(PROGRAM_KEY)) || []; } catch { return []; }
   }
 
+  // ספריית 12 התרגילים של CureMindset, מסודרת ל-3 השלבים. תוכן קבוע (לא נשמר בשרת).
+  const CUREMINDSET_STAGES = [
+    {
+      key: 1, title: "ניצחון על חרדות ופחדים", sub: "שחרור העומס הרגשי", icon: "wind",
+      exercises: [
+        { title: "זיהוי שורש הפחד", type: "כתיבה", min: 15, desc: "כתיבה חופשית לאיתור טריגרים ותחושות גופניות — מה מפעיל את הפחד ואיפה הוא יושב בגוף." },
+        { title: "מדיטציית הרפיה ונשימה", type: "מדיטציה", min: 10, desc: "נשימה 4-4-6 (שאיפה 4, החזקה 4, נשיפה 6) להורדת עוררות מערכת העצבים." },
+        { title: "דמיון מודרך — מקום בטוח", type: "דמיון", min: 12, desc: "בניית מרחב פנימי בטוח לוויסות מיידי ברגעי הצפה." },
+        { title: "פירוק דפוסי תת-מודע", type: "CBT", min: 20, desc: "זיהוי דפוסים חוזרים והחלפתם באלטרנטיבות מיטיבות." },
+      ],
+    },
+    {
+      key: 2, title: "בניית דימוי עצמי מנצח", sub: "חיזוק הערך העצמי", icon: "star",
+      exercises: [
+        { title: "זיהוי אמונות מגבילות", type: "כתיבה", min: 15, desc: "רישום אמונות מגבילות ובחינתן מול המציאות." },
+        { title: "דיאלוג פנימי מיטיב", type: "CBT", min: 15, desc: "החלפת הקול הביקורתי הפנימי בקול תומך ומחזק." },
+        { title: "דמיון מודרך — העצמי העתידי", type: "דמיון", min: 15, desc: "התחברות לגרסה העתידית, החזקה והמעצימה של עצמך." },
+        { title: "התקנת עוגן ביטחון", type: "עיגון", min: 10, desc: "יצירת עוגן סומטי (מגע/תנוחה) שמפעיל ביטחון באופן מיידי." },
+      ],
+    },
+    {
+      key: 3, title: "כלים לחיים וחוסן רגשי", sub: "חוסן לטווח ארוך", icon: "trophy",
+      exercises: [
+        { title: "ויסות רגשי בזמן אמת", type: "CBT", min: 10, desc: "כלים מהירים להחזרה לאיזון תוך דקות ברגע של לחץ." },
+        { title: "מדיטציית חוסן ויציבות", type: "מדיטציה", min: 15, desc: "הטמעת גישה למצבי משאב גבוהים — רוגע, ביטחון, עוצמה." },
+        { title: "יומן רגשות", type: "כתיבה", min: 10, desc: "כתיבה יומית לחיזוק מודעות רגשית ובחירה מודעת." },
+        { title: "תרגול עוגנים יומיומיים", type: "עיגון", min: 5, desc: "הפעלת העוגנים במצבי לחץ אמיתיים בשגרה." },
+      ],
+    },
+  ];
+
+  function ExerciseLibrary({ onNavigateStage }) {
+    return (
+      <div className="pt-2">
+        <div className="flex items-baseline gap-2 mb-1">
+          <h2 className="font-heading font-bold text-[20px] text-ink-800">ספריית התרגילים</h2>
+        </div>
+        <p className="text-[13px] text-ink-500 mb-5 leading-relaxed">12 תרגילים מעשיים, מסודרים ל-3 שלבי המסע. בחרי תרגיל — ובקשי מה-AI ללוות אותך דרכו.</p>
+        <div className="space-y-6">
+          {CUREMINDSET_STAGES.map((st) => (
+            <div key={st.key}>
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="shrink-0 w-8 h-8 rounded-full bg-gold-50 border border-gold-200 text-gold-600 flex items-center justify-center"><Icon name={st.icon} size={16} /></span>
+                <div>
+                  <p className="font-heading font-bold text-[14.5px] text-ink-800">שלב {st.key} · {st.title}</p>
+                  <p className="text-[12px] text-ink-500">{st.sub}</p>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {st.exercises.map((ex, i) => (
+                  <div key={i} className="rounded-2xl border border-ink-100 bg-white px-4 py-3.5">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="font-heading font-bold text-[14px] text-ink-800">{ex.title}</p>
+                      <span className="shrink-0 text-[11px] font-heading font-semibold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-0.5">{ex.type} · {ex.min} דק׳</span>
+                    </div>
+                    <p className="text-[12.5px] text-ink-600 leading-relaxed">{ex.desc}</p>
+                    <button
+                      type="button"
+                      onClick={() => onNavigateStage(5)}
+                      className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold-200 text-gold-700 font-heading font-semibold text-[12px] hover:bg-gold-50 transition-colors"
+                    >
+                      <Icon name="message-circle" size={13} /> ליווי AI לתרגיל
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   function ProgramStage({ onNavigateStage }) {
     const [done, setDone] = useState(loadProgramDone);
     const total = 14;
@@ -2379,6 +2452,8 @@
             </div>
           </div>
         ))}
+
+        <ExerciseLibrary onNavigateStage={onNavigateStage} />
       </div>
     );
   }
