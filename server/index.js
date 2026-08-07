@@ -526,6 +526,31 @@ api.post("/sessions", (req, res) => {
   res.status(201).json({ ok: true });
 });
 
+// מעקב יומי — רמת חרדה (1-10), מצב רוח, איכות שינה (1-10) והערה. בשביל הגרף.
+api.get("/mood", (req, res) => {
+  const rows = db
+    .prepare("SELECT anxiety, mood, sleep, note, created_at FROM mood_logs WHERE device_token = ? ORDER BY created_at ASC")
+    .all(req.deviceToken);
+  res.json(rows);
+});
+
+api.post("/mood", (req, res) => {
+  const b = req.body || {};
+  const clamp = (v) => (Number.isFinite(v) ? Math.min(10, Math.max(1, Math.round(v))) : null);
+  const anxiety = clamp(b.anxiety);
+  const sleep = clamp(b.sleep);
+  const mood = typeof b.mood === "string" ? b.mood.slice(0, 20) : null;
+  const note = typeof b.note === "string" ? b.note.slice(0, 500) : null;
+  if (anxiety == null && sleep == null && !mood && !note) {
+    return res.status(400).json({ error: "יש למלא לפחות שדה אחד" });
+  }
+  db.prepare("INSERT INTO mood_logs (device_token, anxiety, mood, sleep, note) VALUES (?, ?, ?, ?, ?)").run(
+    req.deviceToken, anxiety, mood, sleep, note
+  );
+  touchPatientActivity(req.deviceToken);
+  res.status(201).json({ ok: true });
+});
+
 api.get("/dashboard", (req, res) => {
   const progressRow = db.prepare("SELECT unlocked, completed FROM protocol_progress WHERE device_token = ?").get(req.deviceToken);
   const progress = { unlocked: progressRow.unlocked, completed: JSON.parse(progressRow.completed) };

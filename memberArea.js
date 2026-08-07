@@ -2376,6 +2376,129 @@
     );
   }
 
+  // מעקב יומי: רמת חרדה, מצב רוח ואיכות שינה — עם גרף מגמה. תוספת ל"מדד חוסן".
+  const MOOD_OPTIONS = [
+    { key: "calm", label: "רגוע", emoji: "😌" },
+    { key: "positive", label: "טוב", emoji: "🙂" },
+    { key: "neutral", label: "ניטרלי", emoji: "😐" },
+    { key: "anxious", label: "חרד/ה", emoji: "😟" },
+    { key: "overwhelmed", label: "מוצף/ת", emoji: "😰" },
+  ];
+
+  function MoodTrendChart({ log }) {
+    const pts = log.filter((r) => Number.isFinite(r.anxiety) || Number.isFinite(r.sleep)).slice(-14);
+    if (pts.length < 2) {
+      return <p className="text-[12.5px] text-ink-400 text-center py-3">רשמי לפחות שני ימים כדי לראות מגמה 🌱</p>;
+    }
+    const W = 300, H = 120, pad = 10;
+    const x = (i) => pad + (i * (W - 2 * pad)) / (pts.length - 1);
+    const y = (v) => H - pad - ((v - 1) / 9) * (H - 2 * pad);
+    const line = (key) =>
+      pts.map((r, i) => `${i === 0 ? "M" : "L"} ${x(i).toFixed(1)} ${y(r[key] || 1).toFixed(1)}`).join(" ");
+    return (
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ minWidth: 260 }} aria-label="גרף מגמה">
+          {[1, 5, 10].map((g) => (
+            <line key={g} x1={pad} x2={W - pad} y1={y(g)} y2={y(g)} stroke="#eee7d6" strokeWidth="1" />
+          ))}
+          <path d={line("anxiety")} fill="none" stroke="#c2974a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={line("sleep")} fill="none" stroke="#8aa899" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {pts.map((r, i) => (
+            <g key={i}>
+              {Number.isFinite(r.anxiety) && <circle cx={x(i)} cy={y(r.anxiety)} r="2.5" fill="#c2974a" />}
+              {Number.isFinite(r.sleep) && <circle cx={x(i)} cy={y(r.sleep)} r="2.5" fill="#8aa899" />}
+            </g>
+          ))}
+        </svg>
+        <div className="flex items-center justify-center gap-4 mt-1 text-[11.5px]">
+          <span className="inline-flex items-center gap-1.5"><span className="w-3 h-1 rounded-full" style={{ background: "#c2974a" }} /> חרדה</span>
+          <span className="inline-flex items-center gap-1.5"><span className="w-3 h-1 rounded-full" style={{ background: "#8aa899" }} /> איכות שינה</span>
+        </div>
+      </div>
+    );
+  }
+
+  function MoodTracker() {
+    const [log, setLog] = useState([]);
+    const [anxiety, setAnxiety] = useState(5);
+    const [sleep, setSleep] = useState(5);
+    const [mood, setMood] = useState("");
+    const [note, setNote] = useState("");
+    const [saved, setSaved] = useState(false);
+    const [saving, setSaving] = useState(false);
+
+    function refresh() {
+      return fetch("/api/mood", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : []))
+        .then((d) => { if (Array.isArray(d)) setLog(d); })
+        .catch(() => {});
+    }
+    useEffect(() => { let alive = true; refresh().then(() => { if (!alive) return; }); return () => { alive = false; }; }, []);
+
+    function save() {
+      setSaving(true);
+      fetch("/api/mood", {
+        method: "POST",
+        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        body: JSON.stringify({ anxiety, sleep, mood, note }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then(() => refresh())
+        .then(() => { setSaved(true); setNote(""); setTimeout(() => setSaved(false), 2500); })
+        .catch(() => {})
+        .finally(() => setSaving(false));
+    }
+
+    const Slider = ({ label, value, setValue, color }) => (
+      <div>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[13px] font-heading font-semibold text-ink-700">{label}</span>
+          <span className="text-[13px] font-heading font-bold" style={{ color }}>{value}/10</span>
+        </div>
+        <input type="range" min="1" max="10" value={value} onChange={(e) => setValue(Number(e.target.value))}
+          className="w-full" style={{ accentColor: color }} />
+      </div>
+    );
+
+    return (
+      <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-4">
+        <div>
+          <h3 className="font-heading font-bold text-[16px] text-ink-800">צ׳ק-אין יומי</h3>
+          <p className="text-[12.5px] text-ink-500 mt-0.5">איך את/ה מרגיש/ה היום? רגע קצר של מודעות — ונראה את המגמה לאורך זמן.</p>
+        </div>
+
+        <Slider label="רמת חרדה" value={anxiety} setValue={setAnxiety} color="#c2974a" />
+        <Slider label="איכות שינה" value={sleep} setValue={setSleep} color="#8aa899" />
+
+        <div>
+          <span className="text-[13px] font-heading font-semibold text-ink-700 block mb-2">מצב הרוח</span>
+          <div className="flex flex-wrap gap-2">
+            {MOOD_OPTIONS.map((m) => (
+              <button key={m.key} type="button" onClick={() => setMood(m.key)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[12.5px] font-heading font-semibold transition-colors ${mood === m.key ? "border-gold-400 bg-gold-50 text-gold-700" : "border-ink-200 text-ink-600 hover:border-gold-300"}`}>
+                <span>{m.emoji}</span> {m.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2}
+          placeholder="משהו שתרצה/י לרשום להיום? (לא חובה)"
+          className="w-full rounded-2xl border border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-700 resize-none focus:outline-none focus:border-gold-300" />
+
+        <button type="button" onClick={save} disabled={saving}
+          className="w-full rounded-full bg-gold-500 text-white font-heading font-bold text-[14px] py-3 hover:bg-gold-600 transition-colors disabled:opacity-60">
+          {saving ? "שומר..." : saved ? "נשמר! 🌿" : "שמירת הצ׳ק-אין"}
+        </button>
+
+        <div className="pt-1">
+          <p className="text-[12.5px] font-heading font-semibold text-ink-600 mb-1.5">המגמה שלך</p>
+          <MoodTrendChart log={log} />
+        </div>
+      </div>
+    );
+  }
+
   function ProgramStage({ onNavigateStage }) {
     const [done, setDone] = useState(loadProgramDone);
     const total = 14;
@@ -2575,7 +2698,8 @@
             <ProgramStage onNavigateStage={navigateToStage} />
           </div>
         ) : current === 4 ? (
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50">
+          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50 space-y-6">
+            <MoodTracker />
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
           </div>
         ) : current === 5 ? (

@@ -74,6 +74,16 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS mood_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_token TEXT NOT NULL REFERENCES patients(device_token),
+    anxiety INTEGER,
+    mood TEXT,
+    sleep INTEGER,
+    note TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE TABLE IF NOT EXISTS daily_tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     device_token TEXT NOT NULL REFERENCES patients(device_token),
