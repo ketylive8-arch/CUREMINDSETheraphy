@@ -608,16 +608,15 @@
     );
   }
 
-  // Thin banner above the stages while on a free trial: days left + code entry shortcut.
-  function TrialBanner({ daysLeft, onEnterCode }) {
+  // Thin banner above the stages while on a free trial: warm days-left note only.
+  // (The access-code entry lives in the settings sheet — a new client shouldn't be
+  // confronted with a "personal code" prompt they don't have yet.)
+  function TrialBanner({ daysLeft }) {
     return (
-      <div className="flex items-center justify-between gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
+      <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
         <span className="text-[12.5px] text-gold-700 font-medium">
-          ניסיון חינם — {daysLeft === 1 ? "יום אחרון" : `נותרו ${daysLeft} ימים`}
+          🌿 המסע שלך פתוח — {daysLeft === 1 ? "יום אחרון בהתנסות" : `נותרו ${daysLeft} ימי התנסות`}
         </span>
-        <button type="button" onClick={onEnterCode} className="text-[12.5px] font-bold text-gold-700 underline shrink-0">
-          יש לי קוד אישי
-        </button>
       </div>
     );
   }
@@ -1124,6 +1123,7 @@
 
   // שלב 2 — פופאפ הסבר התהליך: מה קורה, ואיפה נכנס התשלום. מוצג בכניסה הראשונה.
   function ProcessIntro({ onStart }) {
+    const name = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
     const steps = [
       ["1", "אשאל אותך כמה שאלות", "על מה שאת מרגישה עכשיו — בגוף, ברגש ובמחשבות."],
       ["2", "תקבלי שיקוף אישי + צעד מעשי", "תובנה והכוונה מיד, מבוססות על השיטה של קטי."],
@@ -1139,8 +1139,8 @@
           <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-3">
             <Icon name="heart-handshake" size={26} />
           </div>
-          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">איך זה עובד?</h3>
-          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">שלושה צעדים פשוטים למסע שלך עם CureMindset.</p>
+          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">{name ? `היי ${name} 🌿 ככה זה עובד` : "איך זה עובד?"}</h3>
+          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name ? `שלושה צעדים פשוטים למסע האישי שלך, ${name}.` : "שלושה צעדים פשוטים למסע שלך עם CureMindset."}</p>
           <div className="space-y-3 text-right">
             {steps.map(([n, t, d]) => (
               <div key={n} className="flex gap-3 items-start">
@@ -1720,9 +1720,12 @@
   }
 
   function StageNav({ stages, progress, current, onSelect }) {
+    // מסע מודרך: מציגים רק שלבים שנפתחו (או תמידיים). שלב נעול מופיע רק כשמגיעים אליו,
+    // כך שמשתמש חדש לא מוצף בכל השלבים בבת אחת — הם נחשפים בהדרגה בזמן ההתקדמות.
+    const visible = stages.filter((s) => s.alwaysUnlocked || s.id <= progress.unlocked);
     return (
       <div className="flex items-center px-4 py-3.5 gap-1 border-b border-ink-100 bg-white shrink-0">
-        {stages.map((s, i) => {
+        {visible.map((s, i) => {
           const done = progress.completed.includes(s.id);
           const locked = !s.alwaysUnlocked && s.id > progress.unlocked;
           const isCurrent = s.id === current;
@@ -1745,7 +1748,7 @@
                 </span>
                 <span className={`text-[10.5px] font-heading font-semibold ${isCurrent ? "text-ink-800" : "text-ink-400"}`}>{s.title}</span>
               </button>
-              {i < stages.length - 1 ? <span className="h-px w-3 bg-ink-100 mt-[-14px]" aria-hidden="true" /> : null}
+              {i < visible.length - 1 ? <span className="h-px w-3 bg-ink-100 mt-[-14px]" aria-hidden="true" /> : null}
             </React.Fragment>
           );
         })}

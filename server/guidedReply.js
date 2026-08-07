@@ -92,11 +92,23 @@ function pickTheme(text) {
 
 // תגובה בשיטת CureMindset ללא OpenAI. retrieved = קטעי RAG; userProfile = תשובות
 // האבחון מההרשמה — מחבר את התגובה למה שהמשתמש/ת הזינ/ה (מותאם, לא סטטי).
+// שולף את השם הפרטי מסיכום ההרשמה ("שם: קטי · אתגר: ...") כדי לפנות אישית.
+function firstNameFrom(userProfile) {
+  const m = String(userProfile || "").match(/שם:\s*([^·|\n]+)/);
+  if (!m) return "";
+  const full = m[1].trim();
+  if (!full || full === "—") return "";
+  return full.split(/\s+/)[0].slice(0, 20);
+}
+
 function guidedReply(text, retrieved, userProfile) {
   const seed = String(text || "").length + new Date().getHours();
   // מזהים נושא לפי ההודעה; אם אין — נופלים לאתגר מהאבחון בהרשמה.
   const th = pickTheme(text) || pickTheme(userProfile);
-  const parts = [pick(OPENERS, seed)];
+  const name = firstNameFrom(userProfile);
+  // פנייה אישית בשם: פותחים ב"{שם}, ..." כשיש שם.
+  const opener = pick(OPENERS, seed);
+  const parts = [name ? `${name}, ${opener}` : opener];
 
   if (th) {
     parts.push(th.mechanism);
