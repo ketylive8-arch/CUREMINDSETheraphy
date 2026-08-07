@@ -725,6 +725,26 @@
             </div>
           ) : null}
 
+          {profile.moodLogs && profile.moodLogs.length > 0 ? (() => {
+            const MOOD_LABELS = { calm: "😌 רגוע", positive: "🙂 טוב", neutral: "😐 ניטרלי", anxious: "😟 חרד", overwhelmed: "😰 מוצף" };
+            const last = profile.moodLogs[profile.moodLogs.length - 1];
+            return (
+              <div className="mb-7">
+                <h2 className="font-heading text-[13px] font-semibold uppercase tracking-wider text-ink-400 mb-3 flex items-center gap-1.5">
+                  <Icon name="sparkles" size={13} className="text-gold-600" />
+                  צ׳ק-אין יומי · מגמת הלקוח ({profile.moodLogs.length})
+                </h2>
+                <div className="rounded-xl bg-white border border-ink-100 p-3.5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <span className="text-[13px] text-ink-700"><b className="text-gold-700">חרדה אחרונה:</b> {last.anxiety != null ? last.anxiety + "/10" : "—"}</span>
+                  <span className="text-[13px] text-ink-700"><b className="text-gold-700">שינה:</b> {last.sleep != null ? last.sleep + "/10" : "—"}</span>
+                  <span className="text-[13px] text-ink-700"><b className="text-gold-700">מצב רוח:</b> {MOOD_LABELS[last.mood] || "—"}</span>
+                  <span className="text-[11.5px] text-ink-400 w-full">עודכן: {formatDateTime(last.created_at)}</span>
+                  {last.note ? <span className="text-[12.5px] text-ink-600 w-full">״{last.note}״</span> : null}
+                </div>
+              </div>
+            );
+          })() : null}
+
           <h2 className="font-heading text-[16px] font-bold text-ink-800 mb-5 flex items-center gap-2">
             <Icon name="clock" size={15} className="text-gold-600" />
             תיק מטופל/ת · סרט הפעילות המלא

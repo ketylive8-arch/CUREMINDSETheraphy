@@ -949,6 +949,9 @@ admin.get("/patients/:token", (req, res) => {
   const goals = db
     .prepare("SELECT id, title, area, progress, status, created_at FROM client_goals WHERE device_token = ? ORDER BY created_at ASC")
     .all(token);
+  const moodLogs = db
+    .prepare("SELECT anxiety, mood, sleep, note, created_at FROM mood_logs WHERE device_token = ? ORDER BY created_at ASC")
+    .all(token);
 
   res.json({
     deviceToken: patient.device_token,
@@ -960,6 +963,7 @@ admin.get("/patients/:token", (req, res) => {
     sessions,
     materials,
     goals,
+    moodLogs,
   });
 });
 
