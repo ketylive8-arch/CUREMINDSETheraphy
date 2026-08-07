@@ -1719,10 +1719,15 @@
     );
   }
 
+  // שלבי הפרוטוקול הישן (עוגן / גבול ההבחנה / קרקוע) אינם חלק ממערכת CureMindset
+  // ואינם מוצגים למשתמש — נשארים בקוד לתאימות, אך מחוץ למסע.
+  const LEGACY_STAGE_IDS = [1, 2, 3];
+
   function StageNav({ stages, progress, current, onSelect }) {
-    // מסע מודרך: מציגים רק שלבים שנפתחו (או תמידיים). שלב נעול מופיע רק כשמגיעים אליו,
-    // כך שמשתמש חדש לא מוצף בכל השלבים בבת אחת — הם נחשפים בהדרגה בזמן ההתקדמות.
-    const visible = stages.filter((s) => s.alwaysUnlocked || s.id <= progress.unlocked);
+    // מציגים רק את שלבי מערכת CureMindset (לא את הפרוטוקול הישן), וגם הם בהדרגה.
+    const visible = stages.filter(
+      (s) => !LEGACY_STAGE_IDS.includes(s.id) && (s.alwaysUnlocked || s.id <= progress.unlocked)
+    );
     return (
       <div className="flex items-center px-4 py-3.5 gap-1 border-b border-ink-100 bg-white shrink-0">
         {visible.map((s, i) => {
