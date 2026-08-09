@@ -2683,9 +2683,7 @@
           onStories={() => { onExit(); setTimeout(() => { const el = document.getElementById("testimonials"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 400); }}
         />
         {showSettings && <SettingsSheet userName={userName} onClose={() => setShowSettings(false)} onLogout={logout} onManage={() => { setShowSettings(false); setShowCodeEntry(true); }} />}
-        {access && access.status === "trial" && (
-          <TrialBanner daysLeft={access.daysLeft} onEnterCode={() => setShowCodeEntry(true)} />
-        )}
+        {access && access.status === "trial" && <TrialBanner daysLeft={access.daysLeft} />}
         <StageNav stages={STAGES} progress={progress} current={current} onSelect={setCurrent} />
         {showNotifications && <NotificationsPanel onClose={() => setShowNotifications(false)} />}
         {(expired || showCodeEntry) && (
