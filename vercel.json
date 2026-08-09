@@ -5,8 +5,6 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://curemindsetheraphy.onrender.com/api/$1" },
     { "source": "/uploads/(.*)", "destination": "https://curemindsetheraphy.onrender.com/uploads/$1" },
-    { "source": "/robots.txt", "destination": "https://curemindsetheraphy.onrender.com/robots.txt" },
-    { "source": "/sitemap.xml", "destination": "https://curemindsetheraphy.onrender.com/sitemap.xml" },
     { "source": "/workshops", "destination": "/index.html" },
     { "source": "/dashboard", "destination": "/index.html" },
     { "source": "/admin", "destination": "/admin.html" },
