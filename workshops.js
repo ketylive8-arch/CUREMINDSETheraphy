@@ -180,6 +180,7 @@
 
   function Station({ w, idx }) {
     const c = CATS[w.cat];
+    const [open, setOpen] = useState(false);
     const styleVars = { "--wk-accent": c.accent, "--wk-accent-soft": c.soft, "--wk-accent-line": c.line };
     return (
       <div className="wk-station" style={styleVars}>
@@ -189,39 +190,51 @@
             <span className="wk-badge__n">{String(idx + 1).padStart(2, "0")}</span>
           </div>
         </div>
-        <article className="wk-card">
-          <div className="wk-card__chips">
-            <span className="wk-chip">{c.label}</span>
-            {w.meta.map((m) => <span key={m} className="wk-chip">{m}</span>)}
-          </div>
-          <h3 className="wk-card__title">{w.title}</h3>
-          <p className="wk-card__sub">{w.sub}</p>
-          <p className="wk-card__tagline">{w.tagline}</p>
-          <p className="wk-card__invite">{w.invite}</p>
+        <article className={`wk-card${open ? " is-open" : ""}`}>
+          {/* כותרת לחיצה — פותחת/סוגרת את הכרטיס באנימציה */}
+          <button type="button" className="wk-card__head" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+            <span className="wk-card__headmain">
+              <span className="wk-card__chips">
+                <span className="wk-chip">{c.label}</span>
+                {w.meta.map((m) => <span key={m} className="wk-chip">{m}</span>)}
+              </span>
+              <span className="wk-card__title">{w.title}</span>
+              <span className="wk-card__sub">{w.sub}</span>
+              <span className="wk-card__tagline">{w.tagline}</span>
+            </span>
+            <span className="wk-card__chev" aria-hidden="true"><Svg d="m6 9 6 6 6-6" size={20} /></span>
+          </button>
 
-          <div className="wk-label">{w.stepsLabel}</div>
-          <ul className="wk-steps">
-            {w.steps.map((s, i) => (
-              <li key={i}><b>{s[0]}</b>{s[1] ? ` — ${s[1]}` : ""}</li>
-            ))}
-          </ul>
+          {/* גוף נפתח — אנימציית grid-rows חלקה */}
+          <div className="wk-card__reveal">
+            <div className="wk-card__revealinner">
+              <p className="wk-card__invite">{w.invite}</p>
 
-          <div className="wk-label">מה יוצאים איתו</div>
-          <div className="wk-results">
-            {w.results.map((r) => (
-              <span key={r} className="wk-result"><Check />{r}</span>
-            ))}
-          </div>
+              <div className="wk-label">{w.stepsLabel}</div>
+              <ul className="wk-steps">
+                {w.steps.map((s, i) => (
+                  <li key={i}><b>{s[0]}</b>{s[1] ? ` — ${s[1]}` : ""}</li>
+                ))}
+              </ul>
 
-          {w.note ? <p className="wk-note">{w.note}</p> : null}
+              <div className="wk-label">מה יוצאים איתו</div>
+              <div className="wk-results">
+                {w.results.map((r) => (
+                  <span key={r} className="wk-result"><Check />{r}</span>
+                ))}
+              </div>
 
-          <div className="wk-card__foot">
-            <a className="wk-btn wk-btn--primary" href={waLink(w.title)} target="_blank" rel="noopener noreferrer">
-              <Svg d={["M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2Z"]} size={15} /> להזמנת הסדנה
-            </a>
-            <a className="wk-btn wk-btn--ghost" href="#wk-signup">פרטים והרשמה</a>
-            <div className="wk-meta">
-              <span><Compass size={14} /> {w.audience}</span>
+              {w.note ? <p className="wk-note">{w.note}</p> : null}
+
+              <div className="wk-card__foot">
+                <a className="wk-btn wk-btn--primary" href={waLink(w.title)} target="_blank" rel="noopener noreferrer">
+                  <Svg d={["M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2Z"]} size={15} /> להזמנת הסדנה
+                </a>
+                <a className="wk-btn wk-btn--ghost" href="#wk-signup">פרטים והרשמה</a>
+                <div className="wk-meta">
+                  <span><Compass size={14} /> {w.audience}</span>
+                </div>
+              </div>
             </div>
           </div>
         </article>
