@@ -2384,6 +2384,99 @@
     );
   }
 
+  // מודול מודרך בסגנון Curable (Learn / Write / Calm) — מותאם לעולם הרגשי של CureMindset.
+  // התוכן מבוסס על מסמך המלל של קטי, בהתאמה מ"כאב פיזי" ל"עומס רגשי / חרדה".
+  const LEARN_TEXT =
+    "דמייני שהמוח שלך הוא כמו מערכת אזעקה של בית. אחרי תקופה של לחץ, חרדה או עומס רגשי — האזעקה הפכה רגישה מדי. היא מצפצפת גם כשרוח קלה נושבת על החלון, גם כשאין באמת סכנה. המטרה שלנו ב-CureMindset היא לא לכבות את האזעקה — היא נועדה להגן עלייך — אלא לכוון אותה מחדש, בעדינות, כך שתפעל רק כשצריך. ככל שתתרגלי, המערכת העצבית לומדת מחדש שהיא בטוחה, והעוצמה של החרדה יורדת.";
+
+  function BreathingGuide() {
+    const [on, setOn] = useState(false);
+    const [phase, setPhase] = useState(0);
+    useEffect(() => {
+      if (!on) { setPhase(0); return; }
+      const id = setInterval(() => setPhase((p) => (p + 1) % 4), 4000);
+      return () => clearInterval(id);
+    }, [on]);
+    const PHASES = [
+      { label: "שאיפה", scale: 1.18 },
+      { label: "החזקה", scale: 1.18 },
+      { label: "נשיפה", scale: 0.72 },
+      { label: "המתנה", scale: 0.72 },
+    ];
+    const cur = PHASES[phase];
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <div style={{
+          width: 132, height: 132, borderRadius: "50%", display: "grid", placeItems: "center",
+          background: "radial-gradient(circle, #f6ecd6, #e6cf9f)", border: "2px solid #c2974a",
+          color: "#a9791f", fontFamily: "Rubik, sans-serif", fontWeight: 800, fontSize: 17,
+          transform: `scale(${on ? cur.scale : 0.85})`, transition: "transform 3.7s ease-in-out",
+        }}>
+          {on ? cur.label : "מוכנה?"}
+        </div>
+        <button type="button" onClick={() => setOn((o) => !o)}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
+          <Icon name={on ? "pause" : "play"} size={14} /> {on ? "עצירה" : "נשימת קופסה · 4-4-4-4"}
+        </button>
+      </div>
+    );
+  }
+
+  function GuidedModule() {
+    const NOTE_KEY = "cm_module1_letter";
+    const [letter, setLetter] = useState(() => { try { return localStorage.getItem(NOTE_KEY) || ""; } catch (e) { return ""; } });
+    const [saved, setSaved] = useState(false);
+    function saveLetter() {
+      try { localStorage.setItem(NOTE_KEY, letter); } catch (e) {}
+      setSaved(true); setTimeout(() => setSaved(false), 2000);
+    }
+    return (
+      <div className="rounded-3xl border border-gold-200 bg-white overflow-hidden mb-7">
+        <div className="px-5 py-4" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)", color: "#fff" }}>
+          <p className="font-heading font-semibold text-[11.5px] tracking-[0.16em] opacity-90">מודול פתיחה · CURE MINDSET</p>
+          <h3 className="font-heading font-extrabold text-[19px]">להבין את האזעקה</h3>
+          <p className="text-[12.5px] opacity-90 mt-0.5">שלושה צעדים קצרים: ללמוד · לכתוב · להירגע</p>
+        </div>
+        <div className="p-5 space-y-6">
+          {/* 1. Learn */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">1</span>
+              <span className="font-heading font-bold text-[14.5px] text-ink-800">ללמוד</span>
+              <span className="text-[11.5px] text-ink-400">· אודיו · 3 דק׳</span>
+            </div>
+            <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">{LEARN_TEXT}</p>
+            <SpeakButton text={LEARN_TEXT} label="האזנה לשיעור" />
+          </div>
+          {/* 2. Write */}
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">2</span>
+              <span className="font-heading font-bold text-[14.5px] text-ink-800">לכתוב</span>
+              <span className="text-[11.5px] text-ink-400">· 5 דק׳</span>
+            </div>
+            <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">כתבי מכתב קצר לעומס הרגשי שלך. אל תנסי להיות נחמדה — תגידי לו מה הוא מונע ממך לעשות ואיך הוא גורם לך להרגיש. הוצאת הרגשות האלה על הנייר היא הצעד הראשון להורדת העומס מהמערכת העצבית.</p>
+            <textarea value={letter} onChange={(e) => setLetter(e.target.value)} rows={4}
+              placeholder="היקר/ה שלי, עומס..." className="w-full rounded-2xl border border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-700 resize-none focus:outline-none focus:border-gold-300" />
+            <button type="button" onClick={saveLetter}
+              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
+              {saved ? "נשמר 🌿" : "שמירה"}
+            </button>
+          </div>
+          {/* 3. Calm */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">3</span>
+              <span className="font-heading font-bold text-[14.5px] text-ink-800">להירגע</span>
+              <span className="text-[11.5px] text-ink-400">· 2 דק׳</span>
+            </div>
+            <BreathingGuide />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   function ExerciseLibrary({ onNavigateStage }) {
     return (
       <div className="pt-2">
@@ -2565,6 +2658,7 @@
     }
     return (
       <div className="space-y-7">
+        <GuidedModule />
         <div>
           <p className="font-heading font-semibold text-[12px] tracking-[0.18em] text-gold-600 mb-1">CURE MINDSET</p>
           <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · מסע 14 יום</h2>
