@@ -2342,6 +2342,48 @@
     },
   ];
 
+  // כפתור "האזנה" — ממיר טקסט לדיבור בעברית ישירות במכשיר (Web Speech API).
+  // לא מייצר קובץ; משתמש בקול המובנה (למשל Carmit — קול אישה של אפל). חינמי ומיידי.
+  function SpeakButton({ text, label }) {
+    const [speaking, setSpeaking] = useState(false);
+    const supported = typeof window !== "undefined" && "speechSynthesis" in window;
+    useEffect(() => () => { try { if (supported) window.speechSynthesis.cancel(); } catch (e) {} }, []);
+    function pickHebrewVoice() {
+      const voices = window.speechSynthesis.getVoices() || [];
+      const he = voices.filter((v) => /(^|[^a-z])he|iw|hebrew|עברית/i.test(v.lang + " " + v.name));
+      const female = he.find((v) => /carmit|female|woman|נקבה/i.test(v.name));
+      return female || he[0] || null;
+    }
+    function toggle() {
+      if (!supported) return;
+      const synth = window.speechSynthesis;
+      if (speaking) { synth.cancel(); setSpeaking(false); return; }
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(String(text || ""));
+      u.lang = "he-IL";
+      const v = pickHebrewVoice();
+      if (v) u.voice = v;
+      u.rate = 0.94; u.pitch = 1.06;
+      u.onend = () => setSpeaking(false);
+      u.onerror = () => setSpeaking(false);
+      setSpeaking(true);
+      synth.speak(u);
+    }
+    if (!supported) return null;
+    return (
+      <button
+        type="button"
+        onClick={toggle}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-heading font-semibold text-[12px] transition-colors ${
+          speaking ? "bg-gold-500 text-white" : "border border-gold-200 text-gold-700 hover:bg-gold-50"
+        }`}
+        aria-label={speaking ? "עצירת ההאזנה" : "האזנה לתוכן"}
+      >
+        <Icon name={speaking ? "pause" : "headphones"} size={13} /> {speaking ? "עצירה" : label || "האזנה"}
+      </button>
+    );
+  }
+
   function ExerciseLibrary({ onNavigateStage }) {
     return (
       <div className="pt-2">
@@ -2367,13 +2409,16 @@
                       <span className="shrink-0 text-[11px] font-heading font-semibold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-0.5">{ex.type} · {ex.min} דק׳</span>
                     </div>
                     <p className="text-[12.5px] text-ink-600 leading-relaxed">{ex.desc}</p>
-                    <button
-                      type="button"
-                      onClick={() => onNavigateStage(5)}
-                      className="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold-200 text-gold-700 font-heading font-semibold text-[12px] hover:bg-gold-50 transition-colors"
-                    >
-                      <Icon name="message-circle" size={13} /> ליווי AI לתרגיל
-                    </button>
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      <SpeakButton text={`${ex.title}. ${ex.desc}`} />
+                      <button
+                        type="button"
+                        onClick={() => onNavigateStage(5)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold-200 text-gold-700 font-heading font-semibold text-[12px] hover:bg-gold-50 transition-colors"
+                      >
+                        <Icon name="message-circle" size={13} /> ליווי AI לתרגיל
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
