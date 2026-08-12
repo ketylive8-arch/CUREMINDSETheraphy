@@ -100,6 +100,33 @@
   </main>
 </div>
 
+<!--
+  מסך טעינה ממותג — מכסה את התוכן הסטטי (שנועד לגוגל) בזמן שה-JavaScript נטען,
+  כדי שמשתמשים לא יראו טקסט גולמי מהבהב. main.js מסיר אותו כש-React עולה.
+-->
+<style>
+  #cm-splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 80% at 50% 18%, #ffffff 0%, #FBF6EC 55%, #F1E4CB 100%);
+    transition:opacity .55s ease;font-family:Assistant,Arial,sans-serif}
+  #cm-splash.cm-hide{opacity:0;pointer-events:none}
+  .cm-splash__box{text-align:center;padding:20px}
+  .cm-splash__logo{width:74px;height:74px;margin:0 auto 12px;display:block}
+  .cm-splash__name{font-family:Rubik,Assistant,sans-serif;font-weight:800;font-size:25px;color:#a9791f;letter-spacing:.4px}
+  .cm-splash__spin{width:34px;height:34px;margin:22px auto 0;border-radius:50%;
+    border:3px solid #ecdcb8;border-top-color:#c2974a;animation:cmspin .8s linear infinite}
+  .cm-splash__txt{margin-top:16px;color:#8f846d;font-size:14.5px}
+  @keyframes cmspin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.cm-splash__spin{animation:none}}
+</style>
+<div id="cm-splash" aria-hidden="true">
+  <div class="cm-splash__box">
+    <img src="images/logo.svg" alt="" class="cm-splash__logo" />
+    <div class="cm-splash__name">CureMindset</div>
+    <div class="cm-splash__spin"></div>
+    <div class="cm-splash__txt">רגע, מכינים לך את המרחב האישי…</div>
+  </div>
+</div>
+
 <script defer src="vendor/react.production.min.js"></script>
 <script defer src="vendor/react-dom.production.min.js"></script>
 <script defer src="vendor/babel.min.js"></script>
