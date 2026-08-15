@@ -2422,57 +2422,108 @@
     );
   }
 
-  function GuidedModule() {
-    const NOTE_KEY = "cm_module1_letter";
-    const [letter, setLetter] = useState(() => { try { return localStorage.getItem(NOTE_KEY) || ""; } catch (e) { return ""; } });
+  // סדרת מודולים מודרכים (יום אחר יום), בסגנון Curable ובתוכן השיטה של קטי.
+  const GUIDED_MODULES = [
+    {
+      id: 1, title: "להבין את האזעקה", learnMin: 3,
+      learn: LEARN_TEXT,
+      write: "כתבי מכתב קצר לעומס הרגשי שלך. אל תנסי להיות נחמדה — תגידי לו מה הוא מונע ממך לעשות ואיך הוא גורם לך להרגיש. הוצאת הרגשות האלה על הנייר היא הצעד הראשון להורדת העומס מהמערכת העצבית.",
+      writePh: "היקר/ה שלי, עומס...",
+      calm: { type: "breath" },
+    },
+    {
+      id: 2, title: "העוגן שלך", learnMin: 3,
+      learn: "לכל אחת מאיתנו יש רגע שבו הרגשנו בטוחות, חזקות, רגועות לגמרי — והגוף זוכר את זה. עוגן הוא דרך לחבר את התחושה הזו לתנועה קטנה, כמו לחיצה עדינה של האגודל והאצבע. ככה, ברגע של לחץ או חרדה, במקום להיסחף — נוכל להפעיל את הרוגע והביטחון הזה בשנייה אחת. ככל שנתרגל, המוח לומד: התנועה הזו = בטוחה.",
+      write: "כתבי על רגע אחד בחיים שבו הרגשת בטוחה ועוצמתית לגמרי. איפה היית? מה ראית, שמעת, והרגשת בגוף? ככל שתיכנסי לפרטים — העוגן יהיה חזק יותר.",
+      writePh: "הרגע שבו הרגשתי חזקה היה...",
+      calm: { type: "practice", text: "עצמי עיניים לרגע. חזרי אל הרגע שכתבת עליו — ראי אותו, שמעי אותו, הרגישי אותו בגוף. וכשהתחושה הכי חזקה — לחצי בעדינות אגודל ואצבע יחד, וספרי עד חמש. שחררי. כך העוגן שלך נטמע. חזרי על זה שלוש פעמים." },
+    },
+    {
+      id: 3, title: "הקול הפנימי המיטיב", learnMin: 4,
+      learn: "יש בתוכנו קול שמבקר — 'לא מספיק טוב', 'לא אצליח', 'משהו לא בסדר איתי'. הקול הזה חושב שהוא מגן עלינו, אבל בפועל הוא מחליש. הבשורה: אפשר ללמד את המוח קול חדש — קול של חברה טובה. אותה חמלה, אותה עדינות שהיינו נותנות למישהי שאנחנו אוהבות — מגיעה גם לנו. זה לא מזייף; זה מאמן את המוח לדפוס חדש.",
+      write: "כתבי משפט אחד שהקול המבקר אומר לך לאחרונה. ועכשיו — כתבי מה חברה טובה, שאוהבת אותך באמת, הייתה אומרת לך במקום.",
+      writePh: "הקול המבקר אומר לי... / חברה טובה הייתה אומרת...",
+      calm: { type: "practice", text: "הניחי יד על הלב. שלוש נשימות עמוקות ואיטיות. ועכשיו אמרי לעצמך, בקול רך ואוהב, את המשפט התומך שכתבת. שמעי אותו. תני לו להתיישב בגוף." },
+    },
+  ];
+
+  function GuidedModuleItem({ mod, idx, open, onToggle }) {
+    const NOTE_KEY = "cm_module" + mod.id + "_write";
+    const [text, setText] = useState(() => { try { return localStorage.getItem(NOTE_KEY) || ""; } catch (e) { return ""; } });
     const [saved, setSaved] = useState(false);
-    function saveLetter() {
-      try { localStorage.setItem(NOTE_KEY, letter); } catch (e) {}
+    function save() {
+      try { localStorage.setItem(NOTE_KEY, text); } catch (e) {}
       setSaved(true); setTimeout(() => setSaved(false), 2000);
     }
     return (
-      <div className="rounded-3xl border border-gold-200 bg-white overflow-hidden mb-7">
-        <div className="px-5 py-4" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)", color: "#fff" }}>
-          <p className="font-heading font-semibold text-[11.5px] tracking-[0.16em] opacity-90">מודול פתיחה · CURE MINDSET</p>
-          <h3 className="font-heading font-extrabold text-[19px]">להבין את האזעקה</h3>
-          <p className="text-[12.5px] opacity-90 mt-0.5">שלושה צעדים קצרים: ללמוד · לכתוב · להירגע</p>
+      <div className="rounded-3xl border border-gold-200 bg-white overflow-hidden">
+        <button type="button" onClick={onToggle} aria-expanded={open}
+          className="w-full flex items-center gap-3 px-5 py-4 text-right" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)", color: "#fff" }}>
+          <span className="shrink-0 w-8 h-8 rounded-full bg-white/25 flex items-center justify-center font-heading font-extrabold text-[14px]">{mod.id}</span>
+          <span className="flex-1 min-w-0">
+            <span className="block font-heading font-semibold text-[10.5px] tracking-[0.16em] opacity-90">מודול {mod.id} · CURE MINDSET</span>
+            <span className="block font-heading font-extrabold text-[17px]">{mod.title}</span>
+          </span>
+          <span className="shrink-0" style={{ transition: "transform .3s", transform: open ? "rotate(180deg)" : "none" }}><Icon name="chevron-down" size={20} /></span>
+        </button>
+        {open ? (
+          <div className="p-5 space-y-6">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">1</span>
+                <span className="font-heading font-bold text-[14.5px] text-ink-800">ללמוד</span>
+                <span className="text-[11.5px] text-ink-400">· אודיו · {mod.learnMin} דק׳</span>
+              </div>
+              <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">{mod.learn}</p>
+              <SpeakButton text={mod.learn} label="האזנה לשיעור" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">2</span>
+                <span className="font-heading font-bold text-[14.5px] text-ink-800">לכתוב</span>
+                <span className="text-[11.5px] text-ink-400">· 5 דק׳</span>
+              </div>
+              <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">{mod.write}</p>
+              <textarea value={text} onChange={(e) => setText(e.target.value)} rows={4}
+                placeholder={mod.writePh} className="w-full rounded-2xl border border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-700 resize-none focus:outline-none focus:border-gold-300" />
+              <button type="button" onClick={save}
+                className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
+                {saved ? "נשמר 🌿" : "שמירה"}
+              </button>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">3</span>
+                <span className="font-heading font-bold text-[14.5px] text-ink-800">להירגע</span>
+                <span className="text-[11.5px] text-ink-400">· 2 דק׳</span>
+              </div>
+              {mod.calm.type === "breath" ? (
+                <BreathingGuide />
+              ) : (
+                <div className="rounded-2xl bg-gold-50 border border-gold-200 px-4 py-3.5">
+                  <p className="text-[13.5px] text-ink-700 leading-relaxed mb-2.5">{mod.calm.text}</p>
+                  <SpeakButton text={mod.calm.text} label="האזנה להנחיה" />
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
+  function GuidedModule() {
+    const [openId, setOpenId] = useState(1);
+    return (
+      <div className="space-y-3 mb-2">
+        <div>
+          <h2 className="font-heading font-bold text-[20px] text-ink-800">המודולים המודרכים</h2>
+          <p className="text-[13px] text-ink-500 mt-0.5">מסע צעד-אחר-צעד: בכל מודול ללמוד · לכתוב · להירגע. אפשר גם להאזין.</p>
         </div>
-        <div className="p-5 space-y-6">
-          {/* 1. Learn */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">1</span>
-              <span className="font-heading font-bold text-[14.5px] text-ink-800">ללמוד</span>
-              <span className="text-[11.5px] text-ink-400">· אודיו · 3 דק׳</span>
-            </div>
-            <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">{LEARN_TEXT}</p>
-            <SpeakButton text={LEARN_TEXT} label="האזנה לשיעור" />
-          </div>
-          {/* 2. Write */}
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">2</span>
-              <span className="font-heading font-bold text-[14.5px] text-ink-800">לכתוב</span>
-              <span className="text-[11.5px] text-ink-400">· 5 דק׳</span>
-            </div>
-            <p className="text-[13.5px] text-ink-600 leading-relaxed mb-2.5">כתבי מכתב קצר לעומס הרגשי שלך. אל תנסי להיות נחמדה — תגידי לו מה הוא מונע ממך לעשות ואיך הוא גורם לך להרגיש. הוצאת הרגשות האלה על הנייר היא הצעד הראשון להורדת העומס מהמערכת העצבית.</p>
-            <textarea value={letter} onChange={(e) => setLetter(e.target.value)} rows={4}
-              placeholder="היקר/ה שלי, עומס..." className="w-full rounded-2xl border border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-700 resize-none focus:outline-none focus:border-gold-300" />
-            <button type="button" onClick={saveLetter}
-              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
-              {saved ? "נשמר 🌿" : "שמירה"}
-            </button>
-          </div>
-          {/* 3. Calm */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center font-heading font-bold text-[12px]">3</span>
-              <span className="font-heading font-bold text-[14.5px] text-ink-800">להירגע</span>
-              <span className="text-[11.5px] text-ink-400">· 2 דק׳</span>
-            </div>
-            <BreathingGuide />
-          </div>
-        </div>
+        {GUIDED_MODULES.map((mod, idx) => (
+          <GuidedModuleItem key={mod.id} mod={mod} idx={idx} open={openId === mod.id}
+            onToggle={() => setOpenId((cur) => (cur === mod.id ? 0 : mod.id))} />
+        ))}
       </div>
     );
   }
