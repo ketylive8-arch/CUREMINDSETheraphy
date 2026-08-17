@@ -729,10 +729,26 @@ const VISION_PILLARS = [
 ];
 
 const VISION_JOURNEY = [
-  { step: "01", stage: "כיול המצפן האישי", focus: "זיקוק מטרות מדויקות, חיוביות ומעוררות השראה בעלות חיבור רגשי עמוק.", result: "סנכרון מלא של תת-המודע לעבר השגת המטרות בבהירות ובמיקוד." },
-  { step: "02", stage: "יציבות דינמית ואינטגרציה", focus: "איחוד החלקים הפנימיים ליצירת סנכרון בין חופש, יצירתיות ומבנה יציב.", result: "זרימה מלאה בעשייה, הרמוניה פנימית ופתיחת אפשרויות חדשות." },
-  { step: "03", stage: "שחרור פוטנציאל לאורך קו הזמן", focus: "הענקת משאבים ולמידות חיוביות לזיכרון הקיים, וחיזוק הערך העצמי.", result: "תחושת ערך עצמי מוחלטת, חופש פעולה ורוגע פנימי עמוק." },
-  { step: "04", stage: "התקנת עוגני עוצמה ונסיקה", focus: "חיווט נוירולוגי של מצבי משאב גבוהים ותרגומם לצעדי איכות ביום-יום.", result: "מנהיגות עצמית, חוסן רגשי גבוה ויכולת מימוש גבוהה." },
+  {
+    step: "01", icon: "compass", stage: "מתחילים בבהירות",
+    inside: "יחד נעצור את הרעש, ונקשיב למה שבאמת חשוב לך. לא מטרות מהראש — אלא מהמקום הרגשי העמוק שמניע אותך באמת.",
+    result: "פתאום ברור לאן הולכים. תת-המודע מפסיק להיאבק בך — ומתחיל לעבוד בשבילך.",
+  },
+  {
+    step: "02", icon: "anchor", stage: "מחזירים לעצמך יציבות",
+    inside: "כל החלקים שנקרעו בין \"מה שאני רוצה\" ל\"מה שמצופה ממני\" חוזרים לדבר אחד עם השני. במקום מאבק פנימי מתיש — שקט.",
+    result: "הרמוניה במקום מתח. את פועלת מתוך זרימה, לא מתוך מאמץ מתמיד.",
+  },
+  {
+    step: "03", icon: "wind", stage: "משחררים את מה שכבד",
+    inside: "בעדינות ובקצב שלך, נלך אל הרגעים שהשאירו סימן — וניתן להם משמעות חדשה. לא למחוק את העבר, אלא לשחרר את האחיזה שלו בך.",
+    result: "הערך העצמי שלך מפסיק להיות תלוי באישור מבחוץ. רוגע פנימי אמיתי שמחזיק.",
+  },
+  {
+    step: "04", icon: "sparkles", stage: "עוברים לחיים",
+    inside: "מעגנים בגוף את התחושות של ביטחון, רוגע ועוצמה — כדי שברגע של לחץ, הן יהיו שם בשבילך. בלחיצת כפתור פנימית.",
+    result: "חוסן רגשי שנשאר. את מובילה את החיים שלך — לא מגיבה אליהם.",
+  },
 ];
 
 function Vision() {
@@ -771,31 +787,39 @@ function Vision() {
           ))}
         </div>
 
-        {/* המסע התהליכי — טבלה מעוצבת, נגללת בנייד */}
-        <Reveal className="text-center mb-8">
-          <h3 className="font-heading font-bold text-ink-800 text-[22px] sm:text-[26px]">המסע התהליכי: מבהירות להגשמה מלאה</h3>
+        {/* המסע התהליכי — ציר זמן ויזואלי, רגיש ואישי */}
+        <Reveal className="text-center mb-3">
+          <h3 className="font-heading font-bold text-ink-800 text-[22px] sm:text-[26px]">המסע שלך — צעד אחר צעד, מבפנים החוצה</h3>
         </Reveal>
-        <Reveal className="overflow-x-auto mb-20 max-w-full">
-          <div className="min-w-[640px] rounded-2xl overflow-hidden border border-gold-200 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
-            <div className="grid grid-cols-[auto_1.3fr_1.3fr] bg-gold-500 text-white text-[14px] font-heading font-bold">
-              <div className="px-5 py-4">שלב</div>
-              <div className="px-5 py-4">מיקוד מעצים</div>
-              <div className="px-5 py-4">התוצאה בשטח</div>
-            </div>
-            {VISION_JOURNEY.map((r, i) => (
-              <div key={r.step} className={`grid grid-cols-[auto_1.3fr_1.3fr] text-[15px] ${i % 2 ? "bg-gold-50/50" : "bg-white"}`}>
-                <div className="px-5 py-4 font-heading font-extrabold text-gold-600 text-[20px] flex items-start gap-2">
-                  <span>{r.step}</span>
+        <Reveal className="text-center max-w-[600px] mx-auto mb-12">
+          <p className="text-ink-500 text-[16px] leading-[1.7]">לא קפיצה גדולה ומפחידה — אלא מסע עדין שבו כל שלב מניח את היסוד לבא אחריו. ככה שינוי אמיתי מחזיק.</p>
+        </Reveal>
+        <div className="max-w-[760px] mx-auto mb-20">
+          {VISION_JOURNEY.map((r, i) => (
+            <Reveal key={r.step} style={{ transitionDelay: `${i * 80}ms` }}>
+              <div className="flex gap-4 sm:gap-5">
+                {/* rail */}
+                <div className="flex flex-col items-center flex-none">
+                  <div className="relative w-12 h-12 rounded-full bg-gold-500 text-white flex items-center justify-center shadow-[0_10px_24px_-10px_rgba(194,151,74,0.9)]">
+                    <Icon name={r.icon} size={20} />
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white border border-gold-300 text-gold-600 text-[11px] font-heading font-extrabold flex items-center justify-center">{r.step}</span>
+                  </div>
+                  {i < VISION_JOURNEY.length - 1 ? <div className="w-[2px] flex-1 bg-gold-200 my-1.5 min-h-[28px]" /> : null}
                 </div>
-                <div className="px-5 py-4 text-ink-700">
-                  <span className="font-semibold text-ink-800 block mb-1">{r.stage}</span>
-                  {r.focus}
+                {/* card */}
+                <div className="flex-1 pb-8">
+                  <div className="rounded-2xl bg-white border border-gold-200 p-5 sm:p-6 shadow-[0_4px_24px_-10px_rgba(0,0,0,0.10)]">
+                    <h4 className="font-heading font-bold text-ink-800 text-[19px] sm:text-[21px] mb-2.5">{r.stage}</h4>
+                    <p className="text-ink-600 text-[16px] leading-[1.7] mb-3.5">{r.inside}</p>
+                    <p className="text-[15px] text-gold-700 bg-gold-50 rounded-xl px-4 py-2.5 leading-relaxed">
+                      <span className="font-heading font-bold">מה שמרגישים: </span>{r.result}
+                    </p>
+                  </div>
                 </div>
-                <div className="px-5 py-4 text-ink-600">{r.result}</div>
               </div>
-            ))}
-          </div>
-        </Reveal>
+            </Reveal>
+          ))}
+        </div>
 
         {/* כרטיס ציטוט מרכזי */}
         <Reveal className="max-w-[860px] mx-auto">
