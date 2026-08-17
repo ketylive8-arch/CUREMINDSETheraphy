@@ -391,6 +391,9 @@
     const [code, setCode] = useState("");
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
+    const [showCode, setShowCode] = useState(!expired); // בהתנסות שהסתיימה — התשלום ראשי, הקוד משני
+    const PAY_LINK = "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ";
+    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
 
     function redeem() {
       const trimmed = code.trim();
@@ -406,79 +409,91 @@
           if (!r.ok) throw new Error(data.error || "משהו השתבש, נסי שוב");
           onUnlocked(data);
         })
-        .catch((e) => {
-          setStatus("error");
-          setErrorMsg(e.message);
-        });
+        .catch((e) => { setStatus("error"); setErrorMsg(e.message); });
     }
 
+    const CodeBox = (
+      <div className="w-full flex flex-col gap-2.5">
+        <input
+          type="text" value={code}
+          onChange={(e) => { setCode(e.target.value); setStatus("idle"); }}
+          onKeyDown={(e) => e.key === "Enter" && redeem()}
+          placeholder="CM-XXXX-XXXX" dir="ltr"
+          className="w-full text-center tracking-widest font-heading font-bold text-[16px] py-3.5 rounded-2xl border-2 border-ink-200 focus:border-gold-500 outline-none text-ink-800 placeholder:text-ink-300"
+        />
+        {status === "error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
+        <button type="button" disabled={!code.trim() || status === "loading"} onClick={redeem}
+          className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600">
+          {status === "loading" ? "בודק..." : "הפעלת הקוד"}
+        </button>
+      </div>
+    );
+
+    // ── מסך "המסע שלך רק התחיל" — מעבר טבעי ורגשי לתשלום (לא וואטסאפ) ──
+    if (expired) {
+      return (
+        <div className="absolute inset-0 z-50 overflow-y-auto" style={{ background: "linear-gradient(180deg,#ffffff 0%,#FBF6EC 100%)" }} dir="rtl">
+          <div className="min-h-full flex flex-col items-center justify-center px-7 py-10 text-center max-w-[440px] mx-auto w-full">
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)" }}>
+              <Icon name="sparkles" size={28} className="text-white" />
+            </div>
+            <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName ? `${firstName}, ` : ""}המסע שלך רק התחיל 🌿</h2>
+            <p className="text-[14.5px] text-ink-500 leading-relaxed mb-6">14 הימים הראשונים היו רק הפתיחה. המודולים, התרגילים והמלווה שמכיר אותך — כולם ממשיכים איתך. בואי נמשיך יחד את הדרך.</p>
+
+            <div className="w-full space-y-2.5 mb-7 text-right">
+              {[
+                "המשך המסע המלא — כל 14 המודולים והתרגילים",
+                "המלווה החכם שמכיר אותך, זמין 24/7",
+                "מעקב רגשי יומי והחומרים האישיים שלך",
+              ].map((t) => (
+                <div key={t} className="flex items-start gap-2.5">
+                  <span className="shrink-0 mt-0.5 text-gold-600"><Icon name="check-circle-2" size={17} /></span>
+                  <span className="text-[13.5px] text-ink-700 leading-relaxed">{t}</span>
+                </div>
+              ))}
+            </div>
+
+            <a href={PAY_LINK} target="_blank" rel="noopener noreferrer"
+              className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
+              להמשיך את המסע →
+            </a>
+            <button type="button" onClick={onExit}
+              className="mt-2.5 w-full py-3 rounded-2xl border border-gold-300 text-gold-700 bg-gold-50 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors">
+              לצפייה בכל המסלולים
+            </button>
+
+            <div className="mt-6 w-full">
+              {showCode ? (
+                <div className="w-full">
+                  <p className="text-[12.5px] text-ink-500 mb-2">קיבלת קוד אישי מקטי? הזיני אותו כאן:</p>
+                  {CodeBox}
+                </div>
+              ) : (
+                <button type="button" onClick={() => setShowCode(true)} className="text-[13px] text-gold-700 underline font-semibold">כבר יש לך קוד גישה?</button>
+              )}
+            </div>
+
+            <div className="mt-6 flex flex-col items-center gap-2">
+              <button type="button" onClick={onShowSummary} className="text-[13px] text-ink-500 underline">הסיכום שלי מהמסע 🌿</button>
+              <a href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%20%F0%9F%8C%BF" target="_blank" rel="noopener noreferrer" className="text-[12.5px] text-ink-400 underline">שאלה לפני שממשיכים? כתבי לי</a>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ── מסך הזנת קוד (כשלוחצים "יש לי קוד" — לא חסימה) ──
     return (
       <div className="absolute inset-0 z-50 bg-white flex flex-col items-center justify-center gap-5 px-7 text-center" dir="rtl">
         <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center">
           <Icon name="shield-check" size={26} className="text-gold-600" />
         </div>
         <div>
-          <p className="font-heading font-bold text-[18px] text-ink-800">
-            {expired ? "תקופת ההתנסות שלך הסתיימה" : "הפעלת קוד אישי"}
-          </p>
-          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">
-            {expired
-              ? "כדי להמשיך את המסע — בחרי מסלול ובצעי תשלום, ומיד תקבלי ממני קוד אישי לכניסה."
-              : "קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח."}
-          </p>
+          <p className="font-heading font-bold text-[18px] text-ink-800">הפעלת קוד אישי</p>
+          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח.</p>
         </div>
-
-        <div className="w-full flex flex-col gap-2.5">
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => { setCode(e.target.value); setStatus("idle"); }}
-            onKeyDown={(e) => e.key === "Enter" && redeem()}
-            placeholder="CM-XXXX-XXXX"
-            dir="ltr"
-            className="w-full text-center tracking-widest font-heading font-bold text-[16px] py-3.5 rounded-2xl border-2 border-ink-200 focus:border-gold-500 outline-none text-ink-800 placeholder:text-ink-300"
-          />
-          {status === "error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
-          <button
-            type="button"
-            disabled={!code.trim() || status === "loading"}
-            onClick={redeem}
-            className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
-          >
-            {status === "loading" ? "בודק..." : "הפעלת הקוד"}
-          </button>
-        </div>
-
-        {expired ? (
-          <div className="w-full flex flex-col gap-2.5">
-            <button
-              type="button"
-              onClick={onShowSummary}
-              className="w-full py-3 rounded-2xl bg-gold-50 border border-gold-300 text-gold-700 font-heading font-bold text-[14px] hover:bg-gold-100 transition-colors"
-            >
-              מה עברתי במסע — הסיכום שלי
-            </button>
-            <button
-              type="button"
-              onClick={onExit}
-              className="w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-semibold text-[14px] hover:bg-gold-600 transition-colors"
-            >
-              לצפייה במסלולים ולתשלום
-            </button>
-            <a
-              href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99!%20%D7%A1%D7%99%D7%99%D7%9E%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%AA%D7%A7%D7%95%D7%A4%D7%AA%20%D7%94%D7%A0%D7%99%D7%A1%D7%99%D7%95%D7%9F%20%D7%95%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%94%D7%9E%D7%A9%D7%99%D7%9A%20%F0%9F%8C%BF"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-3 rounded-2xl border border-gold-300 text-gold-700 bg-gold-50 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors"
-            >
-              דברי איתי בוואטסאפ
-            </a>
-          </div>
-        ) : (
-          <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline">
-            סגירה
-          </button>
-        )}
+        {CodeBox}
+        <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline">סגירה</button>
       </div>
     );
   }
