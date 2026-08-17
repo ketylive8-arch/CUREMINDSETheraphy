@@ -2698,8 +2698,23 @@
 
   function ProgramStage({ onNavigateStage }) {
     const [done, setDone] = useState(loadProgramDone);
+    const [currentDay, setCurrentDay] = useState(1); // היום שנפתח לפי ימים מההרשמה
     const total = 14;
     const completed = done.length;
+    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
+    // פתיחה הדרגתית: יום N נפתח N ימים אחרי ההרשמה. מחשבים מ-trialStartAt.
+    useEffect(() => {
+      fetch("/api/profile", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (!d || !d.trialStartAt) return;
+          const start = new Date(String(d.trialStartAt).replace(" ", "T"));
+          if (isNaN(start)) return;
+          const days = Math.floor((Date.now() - start.getTime()) / 86400000) + 1;
+          setCurrentDay(Math.min(14, Math.max(1, days)));
+        })
+        .catch(() => {});
+    }, []);
     function toggle(day) {
       setDone((prev) => {
         const next = prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day];
@@ -2707,13 +2722,25 @@
         return next;
       });
     }
+    const todayTitle = (() => {
+      for (const g of PROGRAM_GATES) { const hit = g.days.find((x) => x.day === currentDay); if (hit) return hit.title; }
+      return "";
+    })();
     return (
       <div className="space-y-7">
         <GuidedModule />
+        {/* חיבוק יומי — הקומפניון שמחכה לך */}
+        <div className="rounded-3xl px-5 py-4 flex items-center gap-3" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)", color: "#fff" }}>
+          <span className="shrink-0 w-11 h-11 rounded-full bg-white/25 flex items-center justify-center"><Icon name="sparkles" size={22} /></span>
+          <div className="min-w-0">
+            <p className="font-heading font-extrabold text-[16px]">{firstName ? `היי ${firstName}, ` : ""}יום {currentDay} שלך מחכה 🌿</p>
+            <p className="text-[12.5px] opacity-90 truncate">{todayTitle ? `היום: ${todayTitle}` : "מוכנה להמשיך את המסע?"}</p>
+          </div>
+        </div>
         <div>
           <p className="font-heading font-semibold text-[12px] tracking-[0.18em] text-gold-600 mb-1">CURE MINDSET</p>
           <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · מסע 14 יום</h2>
-          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">תוכנית מובנית, יום אחרי יום — עם תרגול קצר ושיחת AI ממוקדת בכל שלב. בקצב שלך.</p>
+          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">כל יום נפתח מודול חדש. תרגול קצר ושיחת AI ממוקדת — בקצב שלך.</p>
           <div className="mt-4">
             <div className="flex items-center justify-between text-[12px] text-ink-500 mb-1.5">
               <span>{completed} מתוך {total} ימים הושלמו</span>
@@ -2734,8 +2761,23 @@
             <div className="space-y-3">
               {g.days.map((d) => {
                 const isDone = done.includes(d.day);
+                const locked = d.day > currentDay;
+                const isToday = d.day === currentDay;
+                if (locked) {
+                  return (
+                    <div key={d.day} className="rounded-2xl border border-ink-100 bg-ink-50/60 px-4 py-3.5 opacity-90">
+                      <div className="flex items-center gap-3">
+                        <span className="shrink-0 w-9 h-9 rounded-full bg-ink-100 text-ink-400 flex items-center justify-center"><Icon name="lock" size={16} /></span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-heading font-bold text-[14px] text-ink-500">יום {d.day} · {d.title}</p>
+                          <p className="text-[12px] text-gold-600 mt-0.5 font-semibold">נפתח בעוד {d.day - currentDay} {d.day - currentDay === 1 ? "יום" : "ימים"} 🌿</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 return (
-                  <div key={d.day} className={`rounded-2xl border px-4 py-4 transition-colors ${isDone ? "border-gold-300 bg-gold-50" : "border-ink-100 bg-white"}`}>
+                  <div key={d.day} className={`rounded-2xl border px-4 py-4 transition-colors ${isDone ? "border-gold-300 bg-gold-50" : isToday ? "border-gold-400 bg-gold-50/60 shadow-[0_8px_24px_-14px_rgba(194,151,74,0.8)]" : "border-ink-100 bg-white"}`}>
                     <div className="flex items-start gap-3">
                       <button
                         type="button"
@@ -2746,7 +2788,7 @@
                         {isDone ? <Icon name="check-circle" size={18} /> : d.day}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className="font-heading font-bold text-[15px] text-ink-800">יום {d.day} · {d.title}</p>
+                        <p className="font-heading font-bold text-[15px] text-ink-800">יום {d.day} · {d.title}{isToday ? <span className="mr-2 align-middle text-[10.5px] font-heading font-bold text-white bg-gold-500 rounded-full px-2 py-0.5">היום</span> : null}</p>
                         <p className="text-[13px] text-ink-600 mt-1 leading-relaxed">{d.focus}</p>
                         <p className="text-[12.5px] text-gold-700 mt-1.5"><span className="font-semibold">תרגול:</span> {d.practice}</p>
                         <div className="flex flex-wrap gap-2 mt-3">
