@@ -894,6 +894,16 @@ admin.get("/knowledge", (req, res) => {
   res.json({ files, test });
 });
 
+// סטטוס ה-AI — האם GPT מלא פעיל, או שהמערכת רצה במנוע המקומי (ולמה).
+admin.get("/ai-status", async (req, res) => {
+  try {
+    const { aiStatus } = require("./openai");
+    res.json(await aiStatus());
+  } catch (e) {
+    res.json({ configured: false, working: false, reason: "בדיקה נכשלה: " + String((e && e.message) || e).slice(0, 120) });
+  }
+});
+
 admin.get("/patients", (req, res) => {
   const patients = db.prepare("SELECT device_token, display_name, last_interaction_at FROM patients ORDER BY created_at DESC").all();
   const result = patients.map((p) => {

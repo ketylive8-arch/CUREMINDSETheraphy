@@ -251,6 +251,46 @@
   }
 
   // נרשמות חדשות לסדנאות — מהטופס בדף הבית (פתוח כברירת מחדל = תיבת הלידים)
+  function AIStatusPanel({ authHeader }) {
+    const [st, setSt] = useState(null);
+    const [loading, setLoading] = useState(true);
+    function check() {
+      setLoading(true);
+      fetch("/api/admin/ai-status", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { setSt(d); setLoading(false); })
+        .catch(() => setLoading(false));
+    }
+    useEffect(() => { check(); }, []);
+    const ok = st && st.working;
+    const border = ok ? "#6f9268" : "#c9922f";
+    const bg = ok ? "#eef4ec" : "#fdf6e6";
+    const tint = ok ? "#4b6b45" : "#8a6414";
+    return (
+      <div className="rounded-2xl p-4" style={{ background: bg, border: `1px solid ${border}` }}>
+        <div className="flex items-center justify-between mb-1.5">
+          <h2 className="font-heading font-bold text-[15px] text-ink-800 flex items-center gap-1.5">
+            <Icon name="sparkles" size={14} className="text-gold-600" /> מנוע ה-AI
+          </h2>
+          <button type="button" onClick={check} className="text-[12px] font-semibold underline" style={{ color: tint }}>בדיקה מחדש</button>
+        </div>
+        {loading ? (
+          <p className="text-[13px] text-ink-500">בודק את החיבור ל-GPT...</p>
+        ) : st ? (
+          <div>
+            <span className="inline-block text-[13px] font-heading font-bold" style={{ color: tint }}>
+              {ok ? "🟢 GPT-4o-mini פעיל — עונה עם המתודה המלאה" : st.configured ? "🟡 מפתח מוגדר אך לא עובד" : "🟡 מצב מקומי (בלי GPT)"}
+            </span>
+            {!ok && st.reason ? <p className="text-[12.5px] text-ink-600 mt-1.5 leading-relaxed">{st.reason}</p> : null}
+            {!ok ? <p className="text-[11.5px] text-ink-400 mt-1.5">הלקוחות עדיין מקבלים תשובות מהמנוע המקומי (עובד, אך פשוט יותר). כדי להפעיל GPT — יש להגדיר מפתח פעיל ב-Render.</p> : null}
+          </div>
+        ) : (
+          <p className="text-[13px] text-ink-500">לא ניתן היה לבדוק כרגע.</p>
+        )}
+      </div>
+    );
+  }
+
   function WorkshopSignupsPanel({ authHeader }) {
     const [rows, setRows] = useState([]);
     const [open, setOpen] = useState(true);
@@ -337,6 +377,7 @@
         </header>
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
+          <AIStatusPanel authHeader={authHeader} />
           <WorkshopSignupsPanel authHeader={authHeader} />
           <AccessCodesPanel authHeader={authHeader} />
           {error ? (

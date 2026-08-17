@@ -282,4 +282,35 @@ async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = n
   };
 }
 
-module.exports = { runBehavioralHealthCheck, NoApiKeyError };
+// בדיקת סטטוס לבק-אופיס: האם המפתח מוגדר, והאם קריאה אמיתית ל-OpenAI מצליחה.
+// כך קטי רואה שחור-על-לבן אם ה-AI רץ על GPT מלא או נפל למנוע המקומי (ולמה).
+async function aiStatus() {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return { configured: false, working: false, model: "gpt-4o-mini", reason: "לא הוגדר מפתח OPENAI_API_KEY בשרת (Render) — המערכת רצה במנוע המקומי." };
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000); // לא תוקע את הבק-אופיס אם OpenAI איטי
+  try {
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ model: "gpt-4o-mini", max_tokens: 1, messages: [{ role: "user", content: "ping" }] }),
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (resp.ok) return { configured: true, working: true, model: "gpt-4o-mini", reason: "" };
+    const body = await resp.text().catch(() => "");
+    let reason = `שגיאה ${resp.status} מ-OpenAI`;
+    if (resp.status === 401) reason = "המפתח לא תקין או בוטל (401)";
+    else if (resp.status === 429) reason = "נגמר הקרדיט בחשבון או חריגה ממכסה (429)";
+    else if (resp.status >= 500) reason = "תקלה זמנית אצל OpenAI (" + resp.status + ")";
+    return { configured: true, working: false, model: "gpt-4o-mini", reason, detail: body.slice(0, 220) };
+  } catch (e) {
+    clearTimeout(timer);
+    const msg = e && e.name === "AbortError" ? "OpenAI לא הגיב תוך 8 שניות (timeout)" : "כשל בחיבור ל-OpenAI: " + String((e && e.message) || e).slice(0, 140);
+    return { configured: true, working: false, model: "gpt-4o-mini", reason: msg };
+  }
+}
+
+module.exports = { runBehavioralHealthCheck, NoApiKeyError, aiStatus };
