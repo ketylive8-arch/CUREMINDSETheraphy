@@ -2672,11 +2672,38 @@
       </div>
     );
 
+    // רצף (streak) — ימים רצופים עם צ'ק-אין. בונה הרגל, כמו קומפניון שמחכה לך כל יום.
+    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
+    const dayKeys = [...new Set(log.map((r) => String(r.created_at || "").slice(0, 10)).filter(Boolean))];
+    function computeStreak(keys) {
+      if (!keys.length) return 0;
+      const sorted = [...new Set(keys)].sort().reverse();
+      const dayMs = 86400000;
+      const parse = (s) => new Date(s + "T00:00:00");
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      if (Math.round((today - parse(sorted[0])) / dayMs) > 1) return 0; // נשבר אם עברו יותר מיום
+      let streak = 1;
+      for (let k = 1; k < sorted.length; k++) {
+        if (Math.round((parse(sorted[k - 1]) - parse(sorted[k])) / dayMs) === 1) streak++;
+        else break;
+      }
+      return streak;
+    }
+    const streak = computeStreak(dayKeys);
+    const checkedToday = dayKeys.includes(new Date().toISOString().slice(0, 10));
+    const hour = new Date().getHours();
+    const greetTime = hour < 12 ? "בוקר טוב" : hour < 18 ? "צהריים טובים" : "ערב טוב";
+
     return (
       <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-4">
         <div>
-          <h3 className="font-heading font-bold text-[16px] text-ink-800">צ׳ק-אין יומי</h3>
-          <p className="text-[12.5px] text-ink-500 mt-0.5">איך את/ה מרגיש/ה היום? רגע קצר של מודעות — ונראה את המגמה לאורך זמן.</p>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-heading font-bold text-[16px] text-ink-800">{greetTime}{firstName ? ` ${firstName}` : ""} 🌿</h3>
+            {streak > 0 ? (
+              <span className="inline-flex items-center gap-1 text-[12px] font-heading font-bold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-1 shrink-0">🔥 {streak} {streak === 1 ? "יום" : "ימים"} ברצף</span>
+            ) : null}
+          </div>
+          <p className="text-[12.5px] text-ink-500 mt-0.5">{checkedToday ? "עשית צ׳ק-אין היום — יופי! אפשר לעדכן אם משהו השתנה." : "איך היה הלילה? איך את/ה מרגיש/ה עכשיו? רגע קצר של מודעות."}</p>
         </div>
 
         <Slider label="רמת חרדה" value={anxiety} setValue={setAnxiety} color="#c2974a" />
