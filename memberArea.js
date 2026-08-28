@@ -2588,6 +2588,89 @@
     );
   }
 
+  // ── שלב A: התמונה הקלינית — השיקוף החכם שהמערכת לומדת מכל צ'ק-אין ומצב-רוח ──
+  // מושך את /api/clinical-profile ומציג תובנות אנושיות + שבבי-מדד. תוספת ל"מדד חוסן",
+  // לא שוברת כלום. אם אין מספיק נתונים — מציג הודעה עדינה ומזמינה במקום כרטיס ריק.
+  function ClinicalInsights() {
+    const [profile, setProfile] = useState(null);
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+      let alive = true;
+      fetch("/api/clinical-profile", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (alive) { setProfile(d); setLoaded(true); } })
+        .catch(() => { if (alive) setLoaded(true); });
+      return () => { alive = false; };
+    }, []);
+
+    if (!loaded) return null;
+
+    const TONE = {
+      positive: { accent: "#8aa899", emoji: "🌿" },
+      care: { accent: "#c2974a", emoji: "💛" },
+      neutral: { accent: "#b8ad97", emoji: "•" },
+    };
+
+    const hasData = profile && profile.dataPoints > 0;
+    const anx = profile && profile.anxiety;
+    const anxLabel = anx && ({ improving: "בירידה ↓", worsening: "בעלייה ↑", stable: "יציבה" }[anx.direction]);
+
+    // שבבי-מדד קומפקטיים — רק מה שבשל מספיק להצגה.
+    const chips = [];
+    if (hasData && anxLabel) chips.push({ k: "מגמת חרדה", v: anxLabel + (anx.recentAvg != null ? ` · ${anx.recentAvg}/10` : "") });
+    if (hasData && profile.peakTimes && profile.peakTimes.label) chips.push({ k: "שעת שיא", v: profile.peakTimes.label });
+    if (hasData && profile.topTriggers && profile.topTriggers.length) chips.push({ k: "חוזר אצלך", v: profile.topTriggers[0].label });
+    if (hasData && profile.whatHelps && profile.whatHelps.helpfulCategories.length) chips.push({ k: "עוזר לך", v: profile.whatHelps.helpfulCategories[0].label });
+    if (hasData && profile.engagement && profile.engagement.streak >= 2) chips.push({ k: "רצף", v: `🔥 ${profile.engagement.streak} ימים` });
+
+    return (
+      <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-heading font-bold text-[16px] text-ink-800">התמונה הקלינית שלך ✨</h3>
+          {profile && profile.maturity === "low" && hasData ? (
+            <span className="text-[11px] font-heading font-semibold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-1 shrink-0">נבנית</span>
+          ) : null}
+        </div>
+
+        {!hasData ? (
+          <p className="text-[13px] text-ink-500 leading-relaxed">
+            כאן תיבנה בהדרגה התמונה החכמה שלך — מגמות, שעות שיא, מה עוזר לך באמת. כל צ'ק-אין ומדידת מצב-רוח מחדדים אותה. בואי נתחיל 🌱
+          </p>
+        ) : (
+          <>
+            {chips.length ? (
+              <div className="flex flex-wrap gap-2">
+                {chips.map((c, i) => (
+                  <span key={i} className="inline-flex items-center gap-1.5 text-[12px] bg-gold-50 border border-gold-200 rounded-full px-3 py-1.5">
+                    <span className="text-ink-400">{c.k}</span>
+                    <span className="font-heading font-bold text-ink-700">{c.v}</span>
+                  </span>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="space-y-2.5">
+              {(profile.insights || []).map((ins, i) => {
+                const t = TONE[ins.tone] || TONE.neutral;
+                return (
+                  <div key={i} className="flex items-start gap-2.5 rounded-2xl bg-ink-50 px-3.5 py-2.5" style={{ borderRight: `3px solid ${t.accent}` }}>
+                    <span className="text-[14px] leading-5 shrink-0">{t.emoji}</span>
+                    <p className="text-[13px] text-ink-700 leading-relaxed">{ins.text}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="text-[11px] text-ink-400 leading-relaxed pt-1">
+              התמונה נבנית מהצ'ק-אינים ומדידות מצב-הרוח שלך, ומתעדכנת אוטומטית. היא ליווי — לא אבחון רפואי.
+            </p>
+          </>
+        )}
+      </div>
+    );
+  }
+
   // מעקב יומי: רמת חרדה, מצב רוח ואיכות שינה — עם גרף מגמה. תוספת ל"מדד חוסן".
   const MOOD_OPTIONS = [
     { key: "calm", label: "רגוע", emoji: "😌" },
@@ -3026,6 +3109,7 @@
           </div>
         ) : current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50 space-y-6">
+            <ClinicalInsights />
             <MoodTracker />
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
           </div>

@@ -12,6 +12,7 @@ const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
+const { buildClinicalProfile, profileToPromptContext } = require("./clinicalProfile");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
@@ -562,6 +563,29 @@ api.get("/dashboard", (req, res) => {
   res.json(buildDashboardData(progress, sessions, checkinRows));
 });
 
+// ── שלב A: פרופיל קליני חכם — טוען את כל נתוני המשתמש/ת ומזקק לתמונה קלינית ──
+function loadClinicalProfile(token) {
+  const moodLogs = db
+    .prepare("SELECT anxiety, mood, sleep, note, created_at FROM mood_logs WHERE device_token = ? ORDER BY created_at ASC")
+    .all(token);
+  const checkins = db
+    .prepare("SELECT triggers, patterns, wins, created_at FROM checkins WHERE device_token = ? ORDER BY created_at ASC")
+    .all(token);
+  const tasks = db
+    .prepare("SELECT category, completed FROM daily_tasks WHERE device_token = ?")
+    .all(token);
+  return buildClinicalProfile({ moodLogs, checkins, tasks, journeyDay: getJourneyDay(token) });
+}
+
+api.get("/clinical-profile", (req, res) => {
+  try {
+    res.json(loadClinicalProfile(req.deviceToken));
+  } catch (err) {
+    console.error("clinical-profile failed:", err);
+    res.status(500).json({ error: "failed to build clinical profile" });
+  }
+});
+
 api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
   const { text } = req.body || {};
   if (typeof text !== "string" || !text.trim()) {
@@ -586,6 +610,13 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
       const prow = db.prepare("SELECT last_summary FROM patients WHERE device_token = ?").get(req.deviceToken);
       userProfile = (prow && prow.last_summary) ? prow.last_summary : "";
     } catch (e) { /* אין פרופיל — ממשיכים בלי */ }
+
+    // שלב A: מוסיפים את התמונה הקלינית המצטברת (מגמות, טריגרים, מה עוזר) כדי
+    // שהתשובה תהיה מותאמת אישית ולא גנרית. נכשל בשקט אם אין מספיק נתונים.
+    try {
+      const clinicalCtx = profileToPromptContext(loadClinicalProfile(req.deviceToken));
+      if (clinicalCtx) userProfile = userProfile ? `${userProfile}\n${clinicalCtx}` : clinicalCtx;
+    } catch (e) { /* אין מספיק נתונים לפרופיל — ממשיכים */ }
 
     // מנסים קודם את מנוע ה-AI המלא (OpenAI). אם אין מפתח / המפתח נדחה / אין קרדיט —
     // לא מפילים את הצ'אט: נופלים למנוע המקומי (guidedReply) בשיטת CureMindset. הצ'אט תמיד עונה.
