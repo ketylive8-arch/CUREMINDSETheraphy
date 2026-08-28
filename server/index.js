@@ -4,7 +4,8 @@ const crypto = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 
-const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications } = require("./db");
+const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
+  listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -674,6 +675,50 @@ api.put("/profile", (req, res) => {
 // ── Access (14-day trial + personal access codes) ──
 api.get("/access", (req, res) => {
   res.json(getAccessStatus(req.deviceToken));
+});
+
+/* ═══ מודל המוצר: תוכניות, enrollment ו-72 שעות (מסע המשתמש) ═══ */
+
+// קטלוג התוכניות הציבורי (לדף התוכניות / דפי הפרטים).
+api.get("/programs", (req, res) => {
+  res.json(listPrograms().map((p) => ({
+    programId: p.program_id, slug: p.slug, title: p.title, subtitle: p.subtitle,
+    description: p.description, audience: p.audience, ageGroup: p.age_group,
+    duration: p.duration, trialHours: p.trial_hours, priceDisplay: p.price_display,
+    billingFrequency: p.billing_frequency, moduleIds: JSON.parse(p.module_ids || "[]"),
+  })));
+});
+
+api.get("/programs/:slug", (req, res) => {
+  const p = getProgram(req.params.slug);
+  if (!p) return res.status(404).json({ error: "program_not_found" });
+  res.json({ programId: p.program_id, slug: p.slug, title: p.title, subtitle: p.subtitle,
+    description: p.description, audience: p.audience, ageGroup: p.age_group, duration: p.duration,
+    trialHours: p.trial_hours, priceDisplay: p.price_display, billingFrequency: p.billing_frequency,
+    moduleIds: JSON.parse(p.module_ids || "[]") });
+});
+
+// בחירת תוכנית → enrollment עם programId + התחלת 72 שעות בשרת. דורש חשבון מאומת.
+api.post("/enroll", rateLimit("enroll", 20), (req, res) => {
+  if (!req.accountId) return res.status(401).json({ error: "יש להתחבר או להירשם כדי להתחיל תוכנית" });
+  const programId = String(req.body?.programId || req.body?.slug || "").trim();
+  if (!programId) return res.status(400).json({ error: "programId is required" });
+  const r = enrollUser(req.accountId, programId);
+  if (r.error) return res.status(404).json({ error: r.error });
+  res.json({ enrollmentId: r.enrollment.id, programId: r.enrollment.program_id,
+    created: r.created, trial: enrollmentTrialStatus(r.enrollment) });
+});
+
+// "התוכניות שלי" + שחזור מסע: כל enrollment עם סטטוס 72 השעות המחושב בשרת.
+api.get("/my-enrollments", (req, res) => {
+  if (!req.accountId) return res.json({ enrollments: [] });
+  const rows = getEnrollments(req.accountId).map((e) => {
+    const prog = getProgram(e.program_id);
+    return { enrollmentId: e.id, programId: e.program_id, slug: prog ? prog.slug : null,
+      title: prog ? prog.title : e.program_id, status: e.status, currentModuleId: e.current_module_id,
+      progressPercent: e.progress_percent, trial: enrollmentTrialStatus(e) };
+  });
+  res.json({ enrollments: rows });
 });
 
 api.post("/access/redeem", rateLimit("redeem", 10), (req, res) => {

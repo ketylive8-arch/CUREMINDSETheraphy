@@ -7,6 +7,7 @@
 // A tiny adapter below re-exposes the exact prepare().run/get/all + exec() API that
 // node:sqlite used, so none of the existing SQL across the codebase had to change.
 const path = require("node:path");
+const crypto = require("node:crypto");
 const { Database } = require("node-sqlite3-wasm");
 
 // Persist to a real SQLite file. On a persistent disk (set DB_FILE, e.g.
@@ -165,6 +166,134 @@ db.exec(`
     redeemed_by TEXT REFERENCES patients(device_token),
     redeemed_at TEXT
   );
+
+  /* ═══ מודל המוצר: תוכניות, הרשמות ומסע רציף (מסמך "מסע המשתמש") ═══ */
+
+  CREATE TABLE IF NOT EXISTS programs (
+    program_id TEXT PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    subtitle TEXT,
+    description TEXT,
+    audience TEXT,                 -- teen | parent | adult | org
+    age_group TEXT,                -- youth | adult
+    duration TEXT,
+    outcomes TEXT,                 -- JSON array
+    module_ids TEXT,               -- JSON array
+    audio_asset_ids TEXT,          -- JSON array
+    preview_content TEXT,
+    trial_hours INTEGER NOT NULL DEFAULT 72,
+    price_display TEXT,
+    billing_frequency TEXT,
+    grow_product_id TEXT,
+    status TEXT NOT NULL DEFAULT 'published',   -- draft | published | paused
+    version INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS enrollments (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,          -- account id (server-verified identity)
+    program_id TEXT NOT NULL REFERENCES programs(program_id),
+    status TEXT NOT NULL DEFAULT 'trial_active', -- trial_active | trial_expired | subscribed | cancelled
+    enrolled_at TEXT NOT NULL DEFAULT (datetime('now')),
+    trial_started_at TEXT NOT NULL DEFAULT (datetime('now')),
+    trial_ends_at TEXT NOT NULL,
+    current_module_id TEXT,
+    progress_percent INTEGER NOT NULL DEFAULT 0,
+    last_activity_at TEXT,
+    completed_at TEXT,
+    subscription_status TEXT NOT NULL DEFAULT 'none', -- none | pending | active | cancelled
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_enroll_user ON enrollments(user_id);
+
+  CREATE TABLE IF NOT EXISTS conversations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    program_id TEXT,
+    module_id TEXT,
+    role TEXT NOT NULL,            -- user | assistant
+    content TEXT NOT NULL,
+    safety_flag TEXT,
+    is_archived INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id, enrollment_id);
+
+  CREATE TABLE IF NOT EXISTS summaries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    summary_text TEXT NOT NULL,
+    source_conversation_id INTEGER,
+    confirmed_by_user INTEGER NOT NULL DEFAULT 0,
+    version INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS assessments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    assessment_type TEXT NOT NULL,
+    score INTEGER,
+    score_version TEXT,
+    inputs TEXT,
+    explanation TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS recommendations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    module_id TEXT NOT NULL,
+    reason TEXT,
+    source_assessment_id INTEGER,
+    is_current INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS module_progress (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    module_id TEXT NOT NULL,
+    asset_id TEXT,
+    progress_percent INTEGER NOT NULL DEFAULT 0,
+    started_at TEXT,
+    completed_at TEXT,
+    reflection_text TEXT,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    enrollment_id TEXT REFERENCES enrollments(id),
+    provider TEXT NOT NULL DEFAULT 'grow',
+    provider_product_id TEXT,
+    status TEXT NOT NULL DEFAULT 'pending', -- pending | active | failed | cancelled
+    trial_ends_at TEXT,
+    first_charge_at TEXT,
+    last_webhook_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
+  CREATE TABLE IF NOT EXISTS audit_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    actor_user_id TEXT,
+    action TEXT NOT NULL,
+    entity_type TEXT,
+    entity_id TEXT,
+    metadata_redacted TEXT,
+    timestamp TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -199,7 +328,7 @@ function ensurePatient(deviceToken) {
   db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
 }
 
-const TRIAL_DAYS = 14;
+const TRIAL_DAYS = 3;
 
 // Access resolution: a redeemed code wins (unlimited unless it carries an expiry);
 // otherwise the automatic 14-day trial that starts on first contact (ensurePatient).
@@ -250,4 +379,77 @@ function scheduleEngagementNotifications(deviceToken) {
   msgs.forEach((m) => stmt.run(deviceToken, m));
 }
 
-module.exports = { db, ensurePatient, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications };
+/* ═══════════════════════════════════════════════════════════════════
+   מודל המוצר — תוכניות, הרשמות ו-72 שעות ניסיון (server-side).
+   ═══════════════════════════════════════════════════════════════════ */
+
+const TRIAL_HOURS = 72;
+
+function nowIso() { return new Date().toISOString().replace("T", " ").slice(0, 19); }
+function genId(prefix) { return prefix + "_" + crypto.randomBytes(9).toString("hex"); }
+
+// זריעת קטלוג התוכניות (מקור אמת יחיד בשרת). ניתן להרחבה מה-Back Office.
+function seedPrograms() {
+  const PROGRAMS = [
+    { program_id: "prog_digital_adult", slug: "digital-adult", title: "המרחב האישי — מבוגרים", subtitle: "מאמן רגשי חכם בכף היד", description: "ליווי דיגיטלי יומי בשיטת CureMindset למבוגרים: שיחה, מודול, אודיו ותרגול.", audience: "adult", age_group: "adult", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["conflict", "loyalty", "belonging"]) },
+    { program_id: "prog_digital_teen", slug: "digital-teen", title: "המרחב האישי — נוער", subtitle: "מלווה דיגיטלי לגיל ההתבגרות", description: "ליווי יומי לנוער: שפה ישירה ואמפתית, מודולים וכלים מעשיים לחוסן וביטחון.", audience: "teen", age_group: "youth", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["belonging", "motivation-map", "conflict"]) },
+    { program_id: "prog_digital_parent", slug: "digital-parent", title: "המרחב האישי — הורים", subtitle: "ליווי להורה למתבגר", description: "ליווי דיגיטלי להורים: הבנת התהליך, גבולות פרטיות וכלים לתמיכה במתבגר.", audience: "parent", age_group: "adult", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["loyalty", "conflict"]) },
+  ];
+  const ins = db.prepare(`INSERT OR IGNORE INTO programs
+    (program_id, slug, title, subtitle, description, audience, age_group, duration, trial_hours, price_display, billing_frequency, grow_product_id, module_ids)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`);
+  for (const p of PROGRAMS) ins.run(
+    p.program_id, p.slug, p.title, p.subtitle, p.description, p.audience, p.age_group,
+    p.duration, p.trial_hours, p.price_display, p.billing_frequency, p.grow_product_id, p.module_ids
+  );
+}
+seedPrograms();
+
+function auditLog(actorUserId, action, entityType, entityId, metadata) {
+  try {
+    db.prepare("INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id, metadata_redacted) VALUES (?,?,?,?,?)")
+      .run(actorUserId || null, action, entityType || null, entityId || null, metadata ? JSON.stringify(metadata) : null);
+  } catch (e) { /* audit must never break a request */ }
+}
+
+function listPrograms() {
+  return db.prepare("SELECT * FROM programs WHERE status = 'published' ORDER BY rowid").all();
+}
+function getProgram(idOrSlug) {
+  return db.prepare("SELECT * FROM programs WHERE program_id = ? OR slug = ?").get(idOrSlug, idOrSlug) || null;
+}
+
+// יצירת/מציאת enrollment פעיל לתוכנית — לא דורס enrollment קודם, ומתחיל 72 שעות server-side.
+function enrollUser(userId, programId) {
+  const prog = getProgram(programId);
+  if (!prog) return { error: "program_not_found" };
+  const existing = db.prepare("SELECT * FROM enrollments WHERE user_id = ? AND program_id = ?").get(userId, prog.program_id);
+  if (existing) return { enrollment: existing, created: false };
+  const id = genId("enr");
+  const started = nowIso();
+  const ends = new Date(Date.now() + (prog.trial_hours || TRIAL_HOURS) * 3600 * 1000).toISOString().replace("T", " ").slice(0, 19);
+  db.prepare(`INSERT INTO enrollments (id, user_id, program_id, status, trial_started_at, trial_ends_at, current_module_id)
+    VALUES (?,?,?, 'trial_active', ?, ?, ?)`).run(id, userId, prog.program_id, started, ends, JSON.parse(prog.module_ids || "[]")[0] || null);
+  auditLog(userId, "enroll", "enrollment", id, { programId: prog.program_id });
+  return { enrollment: db.prepare("SELECT * FROM enrollments WHERE id = ?").get(id), created: true };
+}
+
+function getEnrollments(userId) {
+  return db.prepare("SELECT * FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC").all(userId);
+}
+
+// סטטוס ה-72 שעות מחושב אך ורק בצד השרת מ-trial_ends_at.
+function enrollmentTrialStatus(enr) {
+  if (!enr) return { status: "none", hoursLeft: 0 };
+  if (enr.subscription_status === "active") return { status: "subscribed", hoursLeft: null };
+  const ends = new Date(enr.trial_ends_at.replace(" ", "T") + "Z").getTime();
+  const msLeft = ends - Date.now();
+  if (msLeft > 0) return { status: "trial_active", hoursLeft: Math.ceil(msLeft / 3600000) };
+  return { status: "trial_expired", hoursLeft: 0 };
+}
+
+module.exports = {
+  db, ensurePatient, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
+  // מודל המוצר:
+  TRIAL_HOURS, listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
+};
