@@ -5,7 +5,8 @@ const express = require("express");
 const multer = require("multer");
 
 const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
-  listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog } = require("./db");
+  listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
+  getActiveEnrollment, growGateStatus, applyPaymentWebhook } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -127,6 +128,25 @@ app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
     );
   } catch (e) {
     console.warn("[consent] log failed:", e.message);
+  }
+
+  // ── register → enrollment: יוצר enrollment אמיתי + מתחיל 72 שעות (server-side) ──
+  // בחירת התוכנית מגיעה מדף התוכניות (slug/programId); אם חסרה — נגזרת מקבוצת הגיל.
+  try {
+    const ageGroup = ["youth", "teen", "adult", "parent"].includes(String(req.body.ageGroup))
+      ? String(req.body.ageGroup) : "adult";
+    // שמירת קבוצת הגיל בכרטיס (device_token == accountId עבור חשבון רשום).
+    db.prepare("UPDATE patient_profile SET age_group = ? WHERE device_token = ?").run(
+      ageGroup === "teen" ? "youth" : ageGroup, result.accountId
+    );
+    const slugFromAge = { youth: "digital-teen", teen: "digital-teen", parent: "digital-parent", adult: "digital-adult" };
+    const wanted = String(req.body.slug || req.body.programId || slugFromAge[ageGroup] || "digital-adult");
+    const prog = getProgram(wanted);
+    if (prog) {
+      enrollUser(result.accountId, prog.program_id); // יוצר enrollment + 72h + audit log (idempotent)
+    }
+  } catch (e) {
+    console.warn("[enroll] register-time enrollment failed:", e.message);
   }
 
   // תשובות שאלון האבחון (Onboarding) — נשמרות בכרטיס הלקוח ומופיעות ב-CRM של קטי.
@@ -385,7 +405,32 @@ app.get("/api/auth/me", (req, res) => {
   if (!accountId) return res.status(401).json({ error: "לא מחובר" });
   const summary = accountSummary(accountId);
   if (!summary) return res.status(404).json({ error: "לא נמצא" });
-  res.json(summary);
+  // שחזור המסע אחרי refresh/login: סטטוס גישה (72h server-side) + ה-enrollment הפעיל.
+  const access = getAccessStatus(accountId); // device_token == accountId עבור חשבון רשום
+  const enrollments = getEnrollments(accountId).map((e) => ({
+    enrollmentId: e.id, programId: e.program_id, currentModuleId: e.current_module_id,
+    trial: enrollmentTrialStatus(e),
+  }));
+  res.json({ ...summary, access, enrollments, activeEnrollment: enrollments[0] || null });
+});
+
+// ── Webhook תשלום (Grow) — מפעיל מנוי רק לאחר אימות חתימה, אידמפוטנטי ──
+// סטטוס "paid" נקבע כאן בלבד, לעולם לא לפי redirect בצד הלקוח.
+// חתימה: HMAC-SHA256 מעל `${eventId}:${userId}:${enrollmentId||""}` עם GROW_WEBHOOK_SECRET.
+// (יש להתאים לסכמת החתימה האמיתית של Grow כשחשבון הספק יחובר.)
+app.post("/api/webhooks/grow", (req, res) => {
+  const secret = process.env.GROW_WEBHOOK_SECRET;
+  if (!secret) return res.status(503).json({ error: "webhook_not_configured" });
+  const { eventId, userId, enrollmentId, providerProductId, signature } = req.body || {};
+  if (!eventId || !userId || !signature) return res.status(400).json({ error: "missing_fields" });
+  const expected = crypto.createHmac("sha256", secret)
+    .update(`${eventId}:${userId}:${enrollmentId || ""}`).digest("hex");
+  const ok = signature.length === expected.length &&
+    crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  if (!ok) return res.status(401).json({ error: "bad_signature" });
+  const result = applyPaymentWebhook({ eventId, userId, enrollmentId, providerProductId });
+  if (!result.ok) return res.status(400).json(result);
+  res.json({ ok: true, duplicate: !!result.duplicate });
 });
 
 app.post("/api/workshop-signup", (req, res) => {
@@ -719,6 +764,42 @@ api.get("/my-enrollments", (req, res) => {
       progressPercent: e.progress_percent, trial: enrollmentTrialStatus(e) };
   });
   res.json({ enrollments: rows });
+});
+
+// ── שער התשלום (Grow) — server-side בלבד ──
+// מחזיר קישור checkout אך ורק כשה-trial נגמר. בזמן trial מחזיר 403 חוסם.
+// אסור להסתמך על הסתרת כפתור בצד הלקוח — ההחלטה כאן.
+api.get("/checkout", (req, res) => {
+  if (!req.accountId) return res.status(401).json({ error: "נדרשת התחברות" });
+  const gate = growGateStatus(req.accountId);
+  if (!gate.allowed) {
+    // trial פעיל / מנוי קיים / קוד — לא מחזירים checkout URL.
+    return res.status(403).json({
+      allowed: false, state: gate.state, reason: gate.reason,
+      hoursLeft: gate.hoursLeft ?? null,
+      message: gate.state === "trial_active"
+        ? "התוכנית בתשלום תיפתח בסיום 72 שעות ההתנסות."
+        : "אין צורך בתשלום כרגע.",
+    });
+  }
+  const prog = gate.programId ? getProgram(gate.programId) : null;
+  const growBase = process.env.GROW_CHECKOUT_URL || null; // מוגדר רק כשחשבון Grow מחובר
+  const checkoutUrl = growBase && gate.growProductId ? `${growBase}?product=${encodeURIComponent(gate.growProductId)}&ref=${encodeURIComponent(req.accountId)}` : null;
+  res.json({
+    allowed: true, state: gate.state, programId: gate.programId,
+    // תנאים גלויים לפני checkout (מחיר, מטבע, תדירות, מה כלול, חיוב ראשון, ביטול, מדיניות).
+    pricing: {
+      price: prog ? prog.price_display : "₪297 לחודש",
+      currency: "ILS",
+      billingFrequency: prog ? prog.billing_frequency : "monthly",
+      firstChargeAt: "מיד עם ההצטרפות (בתום ההתנסות)",
+      includes: ["גישה מלאה למלווה CureMindset", "כל המודולים והאודיו", "מעקב התקדמות והיסטוריה", "ליווי מתמשך"],
+      cancellationPolicy: "ניתן לבטל בכל עת מאזור החשבון; החיוב מפסיק ממחזור החיוב הבא.",
+      termsUrl: "/terms", privacyUrl: "/privacy",
+    },
+    checkoutUrl, // null אם Grow עדיין לא חובר — הלקוח לא יקבל קישור מזויף
+    checkoutReady: !!checkoutUrl,
+  });
 });
 
 api.post("/access/redeem", rateLimit("redeem", 10), (req, res) => {

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CureMindset — המרחב שלי</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --gold:#c2974a; --gold-600:#a87b3a; --gold-50:#fbf4e6; --gold-100:#f6e7c9;
+    --ink:#1c1a16; --ink-700:#332f28; --ink-500:#766f60; --ink-300:#cfc9bc;
+    --bg:#faf9f7; --card:#ffffff; --line:#eee6d6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:
+     radial-gradient(120% 60% at 80% -10%, #fbf3e2 0%, rgba(251,243,226,0) 60%),
+     var(--bg);
+     color:var(--ink);font-family:Assistant,system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:920px;margin:0 auto;padding:28px 20px 64px}
+  .brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold)}
+  .brand b{font-family:Rubik;font-weight:800;letter-spacing:.3px;color:var(--gold-600)}
+  h1{font-family:Rubik;font-weight:800;text-align:center;font-size:30px;margin:.2em 0 .1em}
+  .sub{text-align:center;color:var(--ink-500);margin:0 0 26px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;
+     box-shadow:0 18px 45px -30px rgba(28,26,22,.35)}
+  .prog{cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,border-color .2s}
+  .prog:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 22px 50px -26px rgba(194,151,74,.5)}
+  .prog .tag{display:inline-block;font-size:12px;font-weight:700;color:var(--gold-600);
+     background:var(--gold-50);border:1px solid var(--gold-100);border-radius:999px;padding:3px 11px;margin-bottom:12px}
+  .prog h3{font-family:Rubik;margin:.1em 0 .3em;font-size:19px}
+  .prog p{margin:.2em 0 0;color:var(--ink-500);font-size:14.5px}
+  .prog .price{margin-top:14px;font-weight:700;color:var(--ink-700)}
+  .btn{appearance:none;border:0;cursor:pointer;font-family:Rubik;font-weight:700;font-size:15px;
+     color:#fff;background:linear-gradient(180deg,var(--gold),var(--gold-600));border-radius:14px;
+     padding:13px 22px;box-shadow:0 14px 30px -14px rgba(194,151,74,.8);transition:transform .12s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.ghost{background:#fff;color:var(--gold-600);border:1px solid var(--gold-100);box-shadow:none}
+  /* space */
+  .hero-space{background:linear-gradient(160deg,#fffdf9,#fbf3e2);border:1px solid var(--gold-100);
+     border-radius:24px;padding:26px;margin-bottom:18px}
+  .trialbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+     background:var(--ink);color:#fff;border-radius:16px;padding:14px 20px;margin-bottom:18px}
+  .trialbar .h{font-family:Rubik;font-weight:800;font-size:22px;color:#ffe9bd}
+  .trialbar small{color:#d9d3c6}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .step .ic{width:44px;height:44px;border-radius:12px;background:var(--gold-50);border:1px solid var(--gold-100);
+     display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .muted{color:var(--ink-500);font-size:14px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .pay{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px}
+  .pay ul{margin:12px 0;padding-inline-start:20px;color:var(--ink-700)}
+  .pay .big{font-family:Rubik;font-weight:800;font-size:28px;color:var(--ink)}
+  .terms{font-size:13px;color:var(--ink-500);border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+  .disc{font-size:12.5px;color:var(--ink-500);text-align:center;margin-top:22px}
+  .loading{text-align:center;color:var(--ink-500);padding:40px}
+</style>
+</head>
+<body>
+<div id="root"><div class="loading">טוען…</div></div>
+
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script>
+const API = (window.CM_API || ""); // same-origin by default
+const h = React.createElement;
+const {useState, useEffect} = React;
+
+function api(path, opts){
+  const token = localStorage.getItem("cm_token");
+  const headers = {"Content-Type":"application/json"};
+  if(token) headers["X-Auth-Token"] = token;
+  if(!localStorage.getItem("cm_dev")) localStorage.setItem("cm_dev", "dev-"+Math.random().toString(16).slice(2));
+  headers["X-Device-Token"] = localStorage.getItem("cm_dev");
+  return fetch(API+"/api"+path, {...opts, headers}).then(async r=>({ok:r.ok, status:r.status, body: await r.json().catch(()=>({}))}));
+}
+
+function Programs({onPick}){
+  const [progs,setProgs]=useState(null);
+  useEffect(()=>{ api("/programs").then(r=>setProgs(r.body||[])); },[]);
+  if(!progs) return h("div",{className:"loading"},"טוען תוכניות…");
+  const tagFor = a => a==="teen"?"נוער":a==="parent"?"הורים":"מבוגרים";
+  return h("div",null,
+    h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
+    h("h1",null,"בחרי את המרחב שלך"),
+    h("p",{className:"sub"},"מרחב אישי לבניית חוסן, בהירות וביטחון פנימי — עם 72 שעות התנסות מלאה."),
+    h("div",{className:"grid"},
+      progs.map(p=>h("div",{key:p.programId,className:"card prog",onClick:()=>onPick(p)},
+        h("span",{className:"tag"},tagFor(p.audience)),
+        h("h3",null,p.title),
+        h("p",null,p.subtitle),
+        h("div",{className:"price"},p.priceDisplay+" · 72 שעות התנסות"),
+        h("div",{className:"row"}, h("button",{className:"btn"},"התחילי כאן"))
+      ))
+    ),
+    h("p",{className:"disc"},"הליווי אינו תחליף לטיפול רפואי או נפשי מקצועי.")
+  );
+}
+
+function Countdown({endsAt}){
+  const [now,setNow]=useState(Date.now());
+  useEffect(()=>{ const t=setInterval(()=>setNow(Date.now()),1000); return ()=>clearInterval(t); },[]);
+  const ms = new Date(endsAt).getTime()-now;
+  if(ms<=0) return h("span",{className:"h"},"ההתנסות הסתיימה");
+  const hh=Math.floor(ms/3600000), mm=Math.floor(ms%3600000/60000), ss=Math.floor(ms%60000/1000);
+  return h("span",{className:"h"}, String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0")+":"+String(ss).padStart(2,"0"));
+}
+
+function Space({me,program,onExpired}){
+  const acc = me.access||{};
+  const enr = me.activeEnrollment||{};
+  const moduleName = ({conflict:"קונפליקט פנימי",loyalty:"נאמנות לעצמי",belonging:"שייכות",
+    "motivation-map":"מפת מוטיבציה"})[enr.currentModuleId] || "המודול שלך";
+  const expired = acc.status==="expired";
+  useEffect(()=>{ if(expired) onExpired(); },[expired]);
+  return h("div",null,
+    h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
+    h("div",{className:"trialbar"},
+      h("div",null,
+        h("div",null, h(Countdown,{endsAt: acc.trialEndsAt || new Date(Date.now()+72*3600e3).toISOString()})),
+        h("small",null,"נותרו מ-72 שעות ההתנסות שלך")
+      ),
+      h("div",null, h("small",null,"התוכנית: "), (program&&program.title)||enr.programId)
+    ),
+    h("div",{className:"hero-space"},
+      h("h1",{style:{textAlign:"right",margin:"0 0 4px"}},"שלום, "+(me.fullName||"")+" 🌿"),
+      h("p",{className:"muted",style:{margin:0}},"המרחב שלך שמור — נמשיך בדיוק מהמקום שבו עצרנו.")
+    ),
+    h("div",{className:"card"},
+      h("div",{className:"step"},
+        h("div",{className:"ic"},"💬"),
+        h("div",null,
+          h("h3",{style:{margin:"0 0 3px",fontFamily:"Rubik"}},"הצעד הבא שלי"),
+          h("p",{className:"muted",style:{margin:0}},"שיחה קצרה עם המלווה על מה שעולה בך היום — במודול \""+moduleName+"\"."),
+          h("div",{className:"row"},
+            h("button",{className:"btn"},"פתחי שיחה"),
+            h("button",{className:"btn ghost"},"האזנה לאודיו מודרך")
+          )
+        )
+      )
+    ),
+    h("p",{className:"disc"},"הנתונים שלך נשמרים בשרת לפי החשבון — גם אחרי רענון, יציאה או מכשיר אחר.")
+  );
+}
+
+function Paywall({onBack}){
+  const [data,setData]=useState(null);
+  useEffect(()=>{ api("/checkout").then(r=>setData(r.body)); },[]);
+  if(!data) return h("div",{className:"loading"},"טוען…");
+  const p = data.pricing||{};
+  return h("div",null,
+    h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
+    h("h1",null,"72 השעות הסתיימו 🌱"),
+    h("p",{className:"sub"},"כדי להמשיך את הליווי — הנה בדיוק מה שכולל המנוי, בשקיפות מלאה."),
+    h("div",{className:"pay"},
+      h("div",{className:"big"}, p.price||"₪297 לחודש"),
+      h("div",{className:"muted"}, "חיוב "+(p.billingFrequency==="monthly"?"חודשי":p.billingFrequency)+" · "+(p.currency||"ILS")+" · חיוב ראשון: "+(p.firstChargeAt||"")),
+      h("ul",null,(p.includes||[]).map((x,i)=>h("li",{key:i},x))),
+      h("div",{className:"row"},
+        h("button",{className:"btn"}, data.checkoutReady? "להצטרפות ולתשלום":"התשלום ייפתח בקרוב"),
+        h("button",{className:"btn ghost",onClick:onBack},"חזרה")
+      ),
+      h("div",{className:"terms"},
+        (p.cancellationPolicy||"")+" · ",
+        h("a",{href:p.termsUrl||"#"},"תנאי שימוש"), " · ",
+        h("a",{href:p.privacyUrl||"#"},"מדיניות פרטיות")
+      )
+    ),
+    h("p",{className:"disc"},"סטטוס התשלום מאומת בשרת בלבד (webhook) — לא לפי הפניה בדפדפן.")
+  );
+}
+
+function App(){
+  const [view,setView]=useState("programs"); // programs | space | pay
+  const [me,setMe]=useState(null);
+  const [program,setProgram]=useState(null);
+
+  // שחזור המסע בטעינה: אם יש חשבון מחובר — חוזרים בדיוק למקום שבו עצרנו.
+  useEffect(()=>{
+    if(!localStorage.getItem("cm_token")) return;
+    api("/auth/me").then(r=>{
+      if(!r.ok || !r.body || !r.body.activeEnrollment) return;
+      setMe(r.body);
+      setView(r.body.access && r.body.access.status==="expired" ? "pay" : "space");
+    });
+  },[]);
+
+  function pick(p){
+    setProgram(p);
+    // הרשמה אמיתית (חשבון הדגמה) + enrollment 72h — מול השרת האמיתי
+    const email = "demo_"+Date.now()+"@staging.local";
+    api("/auth/register",{method:"POST",body:JSON.stringify({
+      email, password:"Demo12345!", fullName:"אורחת", ageGroup:p.audience, slug:p.slug, consent:true
+    })}).then(r=>{
+      if(r.body && r.body.token){ localStorage.setItem("cm_token", r.body.token); }
+      return api("/auth/me");
+    }).then(r=>{ setMe(r.body); setView("space"); });
+  }
+  function refreshMe(){ return api("/auth/me").then(r=>setMe(r.body)); }
+
+  let content;
+  if(view==="programs") content = h(Programs,{onPick:pick});
+  else if(view==="space" && me) content = h(Space,{me,program,onExpired:()=>setView("pay")});
+  else if(view==="pay") content = h(Paywall,{onBack:()=>refreshMe().then(()=>setView("space"))});
+  else content = h("div",{className:"loading"},"טוען…");
+  return h("div",{className:"wrap"}, content);
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+</script>
+</body>
+</html>

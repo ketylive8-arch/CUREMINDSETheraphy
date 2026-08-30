@@ -294,6 +294,13 @@ db.exec(`
     metadata_redacted TEXT,
     timestamp TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- אירועי webhook של ספק התשלום — מונע עיבוד כפול (idempotency) של אותו אירוע.
+  CREATE TABLE IF NOT EXISTS webhook_events (
+    event_id TEXT PRIMARY KEY,
+    provider TEXT NOT NULL DEFAULT 'grow',
+    processed_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -328,29 +335,39 @@ function ensurePatient(deviceToken) {
   db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
 }
 
-const TRIAL_DAYS = 3;
+// מקור אמת יחיד לאורך ההתנסות: בדיוק 72 שעות מרגע פתיחת החשבון/ה-enrollment.
+// (TRIAL_HOURS מוגדר מטה — משמש כאן וב-enrollUser כדי שאין שני שעונים סותרים.)
 
-// Access resolution: a redeemed code wins (unlimited unless it carries an expiry);
-// otherwise the automatic 14-day trial that starts on first contact (ensurePatient).
+// Access resolution: a redeemed code / active subscription wins; otherwise the
+// automatic 72-hour trial that starts on first contact (ensurePatient / register).
+// Server-authoritative: the client never decides accessStatus.
 function getAccessStatus(deviceToken) {
   const row = db
     .prepare("SELECT trial_start_at, access_code, access_expires_at FROM patient_profile WHERE device_token = ?")
     .get(deviceToken);
-  if (!row) return { status: "expired", daysLeft: 0 };
+  if (!row) return { status: "expired", daysLeft: 0, hoursLeft: 0 };
 
   if (row.access_code) {
-    if (!row.access_expires_at) return { status: "code", daysLeft: null };
+    if (!row.access_expires_at) return { status: "code", daysLeft: null, hoursLeft: null };
     const msLeft = new Date(row.access_expires_at.replace(" ", "T") + "Z").getTime() - Date.now();
-    if (msLeft > 0) return { status: "code", daysLeft: Math.ceil(msLeft / 86400000) };
+    if (msLeft > 0) return { status: "code", daysLeft: Math.ceil(msLeft / 86400000), hoursLeft: Math.ceil(msLeft / 3600000) };
   }
 
   if (row.trial_start_at) {
     const started = new Date(row.trial_start_at.replace(" ", "T") + "Z").getTime();
-    const msLeft = started + TRIAL_DAYS * 86400000 - Date.now();
-    if (msLeft > 0) return { status: "trial", daysLeft: Math.ceil(msLeft / 86400000) };
+    const endsAt = started + TRIAL_HOURS * 3600000; // 72h exactly
+    const msLeft = endsAt - Date.now();
+    if (msLeft > 0) {
+      return {
+        status: "trial",
+        daysLeft: Math.ceil(msLeft / 86400000),
+        hoursLeft: Math.ceil(msLeft / 3600000),
+        trialEndsAt: new Date(endsAt).toISOString(),
+      };
+    }
   }
 
-  return { status: "expired", daysLeft: 0 };
+  return { status: "expired", daysLeft: 0, hoursLeft: 0 };
 }
 
 // Day 1 is the first day of the trial; keeps counting past 14 for subscribers
@@ -448,8 +465,62 @@ function enrollmentTrialStatus(enr) {
   return { status: "trial_expired", hoursLeft: 0 };
 }
 
+/* ═══ תשלום Grow — שער server-side + webhook אידמפוטנטי ═══ */
+
+// ה-enrollment הפעיל האחרון של המשתמש (או null).
+function getActiveEnrollment(userId) {
+  return getEnrollments(userId)[0] || null;
+}
+
+// החלטת שער התשלום — מחושבת אך ורק בשרת. checkout מותר רק כשה-trial נגמר.
+// לעולם לא מחזיר checkoutUrl בזמן trial פעיל.
+function growGateStatus(userId) {
+  const access = getAccessStatus(userId); // device_token == accountId עבור חשבון רשום
+  const enr = getActiveEnrollment(userId);
+  if (enr && enr.subscription_status === "active") {
+    return { allowed: false, state: "subscribed", reason: "already_subscribed" };
+  }
+  if (access.status === "code") {
+    return { allowed: false, state: "code_access", reason: "has_access_code" };
+  }
+  if (access.status === "trial") {
+    // עדיין בהתנסות — אסור להחזיר קישור תשלום.
+    return { allowed: false, state: "trial_active", reason: "trial_not_ended", hoursLeft: access.hoursLeft };
+  }
+  // ה-trial נגמר — מותר להציג checkout עם תנאים מלאים.
+  const prog = enr ? getProgram(enr.program_id) : null;
+  return {
+    allowed: true,
+    state: "trial_expired",
+    programId: enr ? enr.program_id : null,
+    growProductId: prog ? prog.grow_product_id : null,
+  };
+}
+
+// מעבד אירוע תשלום מאומת מהספק — אידמפוטנטי לפי event_id.
+// מפעיל מנוי רק דרך כאן (webhook), לעולם לא לפי redirect בצד הלקוח.
+function applyPaymentWebhook({ eventId, userId, enrollmentId, providerProductId, provider = "grow" }) {
+  if (!eventId) return { ok: false, error: "missing_event_id" };
+  const seen = db.prepare("SELECT 1 FROM webhook_events WHERE event_id = ?").get(eventId);
+  if (seen) return { ok: true, duplicate: true }; // כבר עובד — לא לחייב/לשנות שוב
+  db.prepare("INSERT INTO webhook_events (event_id, provider) VALUES (?, ?)").run(eventId, provider);
+
+  const enr = enrollmentId
+    ? db.prepare("SELECT * FROM enrollments WHERE id = ? AND user_id = ?").get(enrollmentId, userId)
+    : getActiveEnrollment(userId);
+  if (enr) {
+    db.prepare("UPDATE enrollments SET subscription_status = 'active', status = 'subscribed', updated_at = datetime('now') WHERE id = ?").run(enr.id);
+    db.prepare(`INSERT INTO subscriptions (user_id, enrollment_id, provider, provider_product_id, status, first_charge_at, last_webhook_at)
+      VALUES (?,?,?,?, 'active', datetime('now'), datetime('now'))`).run(userId, enr.id, provider, providerProductId || null);
+  }
+  auditLog(userId, "subscription_active", "enrollment", enr ? enr.id : null, { provider, eventId });
+  return { ok: true, duplicate: false, enrollmentId: enr ? enr.id : null };
+}
+
 module.exports = {
   db, ensurePatient, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
   // מודל המוצר:
   TRIAL_HOURS, listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
+  // תשלום:
+  getActiveEnrollment, growGateStatus, applyPaymentWebhook,
 };
