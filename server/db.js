@@ -165,6 +165,17 @@ db.exec(`
     redeemed_by TEXT REFERENCES patients(device_token),
     redeemed_at TEXT
   );
+
+  -- שלב C: יומן התראות קליניות — כל התראה שנוצרה (הידרדרות/נטישה/ציון דרך).
+  -- משמש גם לדדופ יומי (לא לספם את המשתמש/ת) וגם כפיד לדשבורד של קטי (שלב D).
+  CREATE TABLE IF NOT EXISTS clinical_alert_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_token TEXT NOT NULL REFERENCES patients(device_token),
+    kind TEXT NOT NULL,
+    severity TEXT NOT NULL DEFAULT 'medium',
+    therapist_note TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and

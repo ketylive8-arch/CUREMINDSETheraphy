@@ -10,6 +10,13 @@
   const AUTH_KEY = "cm_admin_auth";
 
   const STATUS_DOT = { green: "bg-emerald-500", yellow: "bg-amber-500", red: "bg-rose-500" };
+  // שלב D: מיפוי רמת הסיכון הקלינית (מבוסס-מגמה) לתווית וצבע.
+  const RISK_META = {
+    attention: { label: "דורש התייחסות", dot: "bg-rose-500", pill: "bg-rose-50 text-rose-600 border-rose-200" },
+    watch: { label: "מעקב", dot: "bg-amber-500", pill: "bg-amber-50 text-amber-700 border-amber-200" },
+    calm: { label: "רגוע", dot: "bg-emerald-500", pill: "bg-emerald-50 text-emerald-600 border-emerald-200" },
+  };
+  const ALERT_SEV = { high: "bg-rose-50 text-rose-600 border-rose-200", medium: "bg-amber-50 text-amber-700 border-amber-200", positive: "bg-emerald-50 text-emerald-600 border-emerald-200" };
   const MATERIAL_TYPES = [
     { value: "lesson", label: "שיעור קצר / מיקרו-לרנינג (טקסט)", icon: "book-open" },
     { value: "audio", label: "קובץ שמע (דמיון מודרך)", icon: "headphones" },
@@ -134,6 +141,9 @@
             <span className="text-[12.5px] text-ink-500 truncate">{patient.status}</span>
           </span>
         </span>
+        {patient.risk && RISK_META[patient.risk] && patient.risk !== "calm" ? (
+          <span className={`text-[11px] font-heading font-semibold rounded-full px-2.5 py-1 border shrink-0 ${RISK_META[patient.risk].pill}`}>{RISK_META[patient.risk].label}</span>
+        ) : null}
         <Icon name="arrow-up-right" size={16} className="text-ink-300 shrink-0 rtl-flip" />
       </button>
     );
@@ -733,6 +743,49 @@
         </header>
 
         <main className="max-w-2xl mx-auto px-5 py-7">
+          {profile.clinicalProfile && profile.clinicalProfile.dataPoints > 0 ? (() => {
+            const cp = profile.clinicalProfile;
+            const rm = RISK_META[cp.risk && cp.risk.level] || RISK_META.calm;
+            const anxDir = cp.anxiety && ({ improving: "בירידה ↓", worsening: "בעלייה ↑", stable: "יציבה", unknown: "—" }[cp.anxiety.direction]);
+            return (
+              <div className="mb-7">
+                <h2 className="font-heading text-[13px] font-semibold uppercase tracking-wider text-ink-400 mb-3 flex items-center gap-1.5">
+                  <Icon name="heart-handshake" size={13} className="text-gold-600" />
+                  התמונה הקלינית
+                  <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${rm.pill}`}>{rm.label}</span>
+                </h2>
+                <div className="rounded-2xl bg-white border border-ink-100 p-4 space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {anxDir ? <span className="text-[12px] bg-ink-50 rounded-full px-3 py-1.5"><span className="text-ink-400">מגמת חרדה </span><b className="text-ink-700">{anxDir}{cp.anxiety.recentAvg != null ? ` · ${cp.anxiety.recentAvg}/10` : ""}</b></span> : null}
+                    {cp.peakTimes && cp.peakTimes.label ? <span className="text-[12px] bg-ink-50 rounded-full px-3 py-1.5"><span className="text-ink-400">שעת שיא </span><b className="text-ink-700">{cp.peakTimes.label}</b></span> : null}
+                    {cp.engagement ? <span className="text-[12px] bg-ink-50 rounded-full px-3 py-1.5"><span className="text-ink-400">מעורבות </span><b className="text-ink-700">{cp.engagement.checkinCount} צ׳ק-אין · רצף {cp.engagement.streak}</b></span> : null}
+                  </div>
+                  {cp.topTriggers && cp.topTriggers.length ? (
+                    <p className="text-[12.5px] text-ink-600"><b className="text-gold-700">טריגרים חוזרים:</b> {cp.topTriggers.map((t) => `${t.label} (${t.count})`).join(" · ")}</p>
+                  ) : null}
+                  {cp.whatHelps && cp.whatHelps.helpfulCategories && cp.whatHelps.helpfulCategories.length ? (
+                    <p className="text-[12.5px] text-ink-600"><b className="text-gold-700">מה שעוזר בפועל:</b> {cp.whatHelps.helpfulCategories.map((c) => c.label).join(" · ")}</p>
+                  ) : null}
+                  {cp.risk && cp.risk.reasons && cp.risk.reasons.length ? (
+                    <p className="text-[12px] text-ink-500 border-t border-ink-100 pt-2.5">{cp.risk.reasons.join(" · ")}</p>
+                  ) : null}
+                </div>
+
+                {profile.alerts && profile.alerts.length ? (
+                  <div className="mt-3 space-y-2">
+                    <p className="text-[12px] font-heading font-semibold text-ink-400">פיד התראות אחרונות</p>
+                    {profile.alerts.slice(0, 6).map((a, i) => (
+                      <div key={i} className={`flex items-start gap-2 text-[12.5px] rounded-xl border px-3 py-2 ${ALERT_SEV[a.severity] || ALERT_SEV.medium}`}>
+                        <span className="flex-1">{a.therapist_note || a.kind}</span>
+                        <span className="text-[10.5px] opacity-70 shrink-0">{formatDateTime(a.created_at)}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })() : null}
+
           <div className="mb-7">
             <h2 className="font-heading text-[13px] font-semibold uppercase tracking-wider text-ink-400 mb-3 flex items-center gap-1.5">
               <Icon name="upload" size={13} className="text-gold-600" />

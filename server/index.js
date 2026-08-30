@@ -13,6 +13,8 @@ const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
 const { buildClinicalProfile, profileToPromptContext } = require("./clinicalProfile");
+const { buildRecommendation } = require("./recommend");
+const { recordAndNudge, recentAlertsForPatient } = require("./clinicalAlerts");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
@@ -549,6 +551,8 @@ api.post("/mood", (req, res) => {
     req.deviceToken, anxiety, mood, sleep, note
   );
   touchPatientActivity(req.deviceToken);
+  // שלב C: הערכת מגמה מיד אחרי דיווח מצב-רוח — התערבות בזמן אם צריך.
+  try { recordAndNudge(req.deviceToken, loadClinicalProfile(req.deviceToken)); } catch (e) { /* לא חוסם שמירה */ }
   res.status(201).json({ ok: true });
 });
 
@@ -583,6 +587,17 @@ api.get("/clinical-profile", (req, res) => {
   } catch (err) {
     console.error("clinical-profile failed:", err);
     res.status(500).json({ error: "failed to build clinical profile" });
+  }
+});
+
+// ── שלב B: מנוע ההתאמה — ההמלצה החכמה לרגע הזה, נגזרת מהתמונה הקלינית ──
+api.get("/recommendation", (req, res) => {
+  try {
+    const profile = loadClinicalProfile(req.deviceToken);
+    res.json(buildRecommendation(profile, { ageGroup: getAgeGroup(req.deviceToken) }));
+  } catch (err) {
+    console.error("recommendation failed:", err);
+    res.status(500).json({ error: "failed to build recommendation" });
   }
 });
 
@@ -644,6 +659,8 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?)`
     ).run(req.deviceToken, text.trim(), result.reply, JSON.stringify(triggers), JSON.stringify(patterns), JSON.stringify(balanceAlerts), JSON.stringify(wins));
     touchPatientActivity(req.deviceToken);
+    // שלב C: אחרי שהצ'ק-אין נשמר — מעריכים מגמה עדכנית ומתערבים בזמן אם צריך.
+    try { recordAndNudge(req.deviceToken, loadClinicalProfile(req.deviceToken)); } catch (e) { /* לא חוסם */ }
 
     // Save the daily task if one was generated
     let savedTask = null;
@@ -935,19 +952,51 @@ admin.get("/ai-status", async (req, res) => {
   }
 });
 
+const RISK_RANK = { attention: 3, watch: 2, calm: 1 };
 admin.get("/patients", (req, res) => {
   const patients = db.prepare("SELECT device_token, display_name, last_interaction_at FROM patients ORDER BY created_at DESC").all();
   const result = patients.map((p) => {
     const { status, color } = computeStatus(p.device_token);
+    // שלב D: מוסיפים את רמת הסיכון הקלינית (מגמה, לא רק צ'ק-אין אחרון) לכל שורה.
+    let risk = null, anxietyDirection = null;
+    try {
+      const prof = loadClinicalProfile(p.device_token);
+      risk = prof.risk && prof.risk.level;
+      anxietyDirection = prof.anxiety && prof.anxiety.direction;
+    } catch (e) { /* אין מספיק נתונים */ }
     return {
       deviceToken: p.device_token,
       displayName: p.display_name,
       status,
       statusColor: color,
+      risk,
+      anxietyDirection,
       lastInteractionAt: p.last_interaction_at,
     };
   });
+  // דורשי-תשומת-לב קודם — כדי שקטי תראה מיד מי צריך אותה.
+  result.sort((a, b) => (RISK_RANK[b.risk] || 0) - (RISK_RANK[a.risk] || 0));
   res.json(result);
+});
+
+// שלב D: פיד התראות קליני גלובלי — מי צריך התייחסות עכשיו, על פני כל המטופלים.
+admin.get("/alerts", (req, res) => {
+  const rows = db
+    .prepare(
+      `SELECT a.device_token, a.kind, a.severity, a.therapist_note, a.created_at, p.display_name
+       FROM clinical_alert_log a LEFT JOIN patients p ON p.device_token = a.device_token
+       WHERE a.severity IN ('high','medium')
+       ORDER BY a.created_at DESC LIMIT 50`
+    )
+    .all();
+  res.json(rows.map((r) => ({
+    deviceToken: r.device_token,
+    displayName: r.display_name,
+    kind: r.kind,
+    severity: r.severity,
+    note: r.therapist_note,
+    createdAt: r.created_at,
+  })));
 });
 
 admin.patch("/patients/:token", (req, res) => {
@@ -994,12 +1043,19 @@ admin.get("/patients/:token", (req, res) => {
     .prepare("SELECT anxiety, mood, sleep, note, created_at FROM mood_logs WHERE device_token = ? ORDER BY created_at ASC")
     .all(token);
 
+  // שלב D: התמונה הקלינית המלאה + פיד ההתראות של המטופל/ת — הלב של הדשבורד לקטי.
+  let clinicalProfile = null, alerts = [];
+  try { clinicalProfile = loadClinicalProfile(token); } catch (e) { /* אין מספיק נתונים */ }
+  try { alerts = recentAlertsForPatient(token, 20); } catch (e) { /* אין התראות */ }
+
   res.json({
     deviceToken: patient.device_token,
     displayName: patient.display_name,
     status,
     statusColor: color,
     createdAt: patient.created_at,
+    clinicalProfile,
+    alerts,
     checkins,
     sessions,
     materials,

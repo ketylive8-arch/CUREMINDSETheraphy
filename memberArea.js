@@ -75,6 +75,22 @@
   const AUTH_TOKEN_KEY = "cm_auth_token";
   const AUTH_NAME_KEY = "cm_auth_name";
 
+  // ── פלטת המותג של השכבה הקלינית (A→D) ──────────────────────────────────
+  // אפור בהיר סגלגל · תכלת · זהב · כתמתם/משמש. מוגדרת פעם אחת ומשמשת את כל
+  // הרכיבים החכמים החדשים, כדי שכולם ידברו באותה שפה חזותית.
+  const CM = {
+    lavender: "#8B86A0",      // אפור בהיר סגלגל — עמוק (טקסט/אקסנט)
+    lavenderSoft: "#F2F1F7",  // רקע סגלגל בהיר
+    lavenderLine: "#DED9EA",  // מסגרת סגלגלה
+    sky: "#4FA6D0",           // תכלת
+    skySoft: "#E6F2F9",
+    gold: "#C2974A",          // זהב (המשך המותג הקיים)
+    goldSoft: "#F4EEDE",
+    apricot: "#E58C4E",       // כתמתם/משמש
+    apricotSoft: "#FBEBDD",
+    ink: "#2D2A26",
+  };
+
   function getAuthToken() {
     try { return localStorage.getItem(AUTH_TOKEN_KEY) || ""; } catch (e) { return ""; }
   }
@@ -2588,6 +2604,44 @@
     );
   }
 
+  // ── שלב B: מנוע ההתאמה — ההמלצה החכמה לרגע הזה ─────────────────────────────
+  // מושך את /api/recommendation ומציג כרטיס אחד, מדויק, בקול הקומפניון: מה כדאי
+  // לתרגל *עכשיו* ולמה — עם כפתור שמוביל ישר לפעולה. נגזר מהתמונה הקלינית (שלב A).
+  function SmartRecommendation({ onGo }) {
+    const [rec, setRec] = useState(null);
+    const [loaded, setLoaded] = useState(false);
+    useEffect(() => {
+      let alive = true;
+      fetch("/api/recommendation", { headers: authHeaders() })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (alive) { setRec(d); setLoaded(true); } })
+        .catch(() => { if (alive) setLoaded(true); });
+      return () => { alive = false; };
+    }, []);
+    if (!loaded || !rec || !rec.title) return null;
+    return (
+      <div className="rounded-3xl px-5 py-5 space-y-3" style={{ background: `linear-gradient(135deg, ${CM.lavenderSoft} 0%, ${CM.apricotSoft} 100%)`, border: `1px solid ${CM.lavenderLine}` }}>
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full" style={{ color: "#fff", background: CM.apricot }}>המלצה חכמה עכשיו</span>
+        </div>
+        {rec.reason ? (
+          <p className="text-[13px] leading-relaxed" style={{ color: CM.lavender }}>{rec.reason}</p>
+        ) : null}
+        <div>
+          <h3 className="font-heading font-bold text-[17px]" style={{ color: CM.ink }}>{rec.title}</h3>
+          <p className="text-[13px] leading-relaxed mt-1" style={{ color: CM.ink }}>{rec.description}</p>
+        </div>
+        <button
+          onClick={() => { if (onGo && rec.targetStage) onGo(rec.targetStage); }}
+          className="w-full rounded-2xl py-3 font-heading font-bold text-[14px] text-white transition-transform active:scale-[0.98]"
+          style={{ background: CM.gold }}
+        >
+          {rec.ctaLabel || "בואי נתחיל"} ←
+        </button>
+      </div>
+    );
+  }
+
   // ── שלב A: התמונה הקלינית — השיקוף החכם שהמערכת לומדת מכל צ'ק-אין ומצב-רוח ──
   // מושך את /api/clinical-profile ומציג תובנות אנושיות + שבבי-מדד. תוספת ל"מדד חוסן",
   // לא שוברת כלום. אם אין מספיק נתונים — מציג הודעה עדינה ומזמינה במקום כרטיס ריק.
@@ -2607,9 +2661,9 @@
     if (!loaded) return null;
 
     const TONE = {
-      positive: { accent: "#8aa899", emoji: "🌿" },
-      care: { accent: "#c2974a", emoji: "💛" },
-      neutral: { accent: "#b8ad97", emoji: "•" },
+      positive: { accent: CM.sky, emoji: "🌿" },
+      care: { accent: CM.apricot, emoji: "🧡" },
+      neutral: { accent: CM.gold, emoji: "•" },
     };
 
     const hasData = profile && profile.dataPoints > 0;
@@ -2625,11 +2679,11 @@
     if (hasData && profile.engagement && profile.engagement.streak >= 2) chips.push({ k: "רצף", v: `🔥 ${profile.engagement.streak} ימים` });
 
     return (
-      <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-4">
+      <div className="rounded-3xl border bg-white px-5 py-5 space-y-4" style={{ borderColor: CM.lavenderLine }}>
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-heading font-bold text-[16px] text-ink-800">התמונה הקלינית שלך ✨</h3>
+          <h3 className="font-heading font-bold text-[16px]" style={{ color: CM.ink }}>התמונה הקלינית שלך ✨</h3>
           {profile && profile.maturity === "low" && hasData ? (
-            <span className="text-[11px] font-heading font-semibold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-1 shrink-0">נבנית</span>
+            <span className="text-[11px] font-heading font-semibold rounded-full px-2.5 py-1 shrink-0" style={{ color: CM.lavender, background: CM.lavenderSoft, border: `1px solid ${CM.lavenderLine}` }}>נבנית</span>
           ) : null}
         </div>
 
@@ -2642,9 +2696,9 @@
             {chips.length ? (
               <div className="flex flex-wrap gap-2">
                 {chips.map((c, i) => (
-                  <span key={i} className="inline-flex items-center gap-1.5 text-[12px] bg-gold-50 border border-gold-200 rounded-full px-3 py-1.5">
-                    <span className="text-ink-400">{c.k}</span>
-                    <span className="font-heading font-bold text-ink-700">{c.v}</span>
+                  <span key={i} className="inline-flex items-center gap-1.5 text-[12px] rounded-full px-3 py-1.5" style={{ background: CM.lavenderSoft, border: `1px solid ${CM.lavenderLine}` }}>
+                    <span style={{ color: CM.lavender }}>{c.k}</span>
+                    <span className="font-heading font-bold" style={{ color: CM.ink }}>{c.v}</span>
                   </span>
                 ))}
               </div>
@@ -2654,9 +2708,9 @@
               {(profile.insights || []).map((ins, i) => {
                 const t = TONE[ins.tone] || TONE.neutral;
                 return (
-                  <div key={i} className="flex items-start gap-2.5 rounded-2xl bg-ink-50 px-3.5 py-2.5" style={{ borderRight: `3px solid ${t.accent}` }}>
+                  <div key={i} className="flex items-start gap-2.5 rounded-2xl px-3.5 py-2.5" style={{ background: CM.lavenderSoft, borderRight: `3px solid ${t.accent}` }}>
                     <span className="text-[14px] leading-5 shrink-0">{t.emoji}</span>
-                    <p className="text-[13px] text-ink-700 leading-relaxed">{ins.text}</p>
+                    <p className="text-[13px] leading-relaxed" style={{ color: CM.ink }}>{ins.text}</p>
                   </div>
                 );
               })}
@@ -3109,6 +3163,7 @@
           </div>
         ) : current === 4 ? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50 space-y-6">
+            <SmartRecommendation onGo={navigateToStage} />
             <ClinicalInsights />
             <MoodTracker />
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
