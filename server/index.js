@@ -884,6 +884,22 @@ api.get("/tasks", (req, res) => {
   res.json(rows);
 });
 
+// יצירת משימה יומית ידנית (בנוסף למשימות שנוצרות אוטומטית מהצ'ק-אין).
+api.post("/tasks", (req, res) => {
+  const title = typeof req.body?.title === "string" ? req.body.title.trim().slice(0, 120) : "";
+  if (!title) return res.status(400).json({ error: "נדרש תיאור משימה" });
+  const description = typeof req.body?.description === "string" ? req.body.description.trim().slice(0, 500) : "";
+  const allowed = ["mindfulness", "practice", "reflection", "movement", "connection"];
+  const category = allowed.includes(req.body?.category) ? req.body.category : "mindfulness";
+  const info = db.prepare(
+    "INSERT INTO daily_tasks (device_token, title, description, category) VALUES (?, ?, ?, ?)"
+  ).run(req.deviceToken, title, description, category);
+  const row = db.prepare(
+    "SELECT id, title, description, category, completed, created_at FROM daily_tasks WHERE id = ?"
+  ).get(info.lastInsertRowid);
+  res.status(201).json(row);
+});
+
 api.post("/tasks/:id/complete", (req, res) => {
   const id = parseInt(req.params.id, 10);
   if (!id) return res.status(400).json({ error: "invalid task id" });
