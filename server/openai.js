@@ -180,7 +180,7 @@ const SYSTEM_PROMPT_YOUTH = `${KETY_KNOWLEDGE_BASE}
 
 class NoApiKeyError extends Error {
   constructor() {
-    super("OPENAI_API_KEY is not configured on the server");
+    super("AI engine is not configured on the server");
   }
 }
 

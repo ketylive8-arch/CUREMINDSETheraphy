@@ -282,7 +282,7 @@
               {ok ? "🟢 GPT-4o-mini פעיל — עונה עם המתודה המלאה" : st.configured ? "🟡 מפתח מוגדר אך לא עובד" : "🟡 מצב מקומי (בלי GPT)"}
             </span>
             {!ok && st.reason ? <p className="text-[12.5px] text-ink-600 mt-1.5 leading-relaxed">{st.reason}</p> : null}
-            {!ok ? <p className="text-[11.5px] text-ink-400 mt-1.5">הלקוחות עדיין מקבלים תשובות מהמנוע המקומי (עובד, אך פשוט יותר). כדי להפעיל GPT — יש להגדיר מפתח פעיל ב-Render.</p> : null}
+            {!ok ? <p className="text-[11.5px] text-ink-400 mt-1.5">הלקוחות עדיין מקבלים תשובות מהמנוע המקומי (עובד, אך פשוט יותר). כדי להפעיל את המנוע המתקדם — יש להגדיר מפתח AI בשרת.</p> : null}
           </div>
         ) : (
           <p className="text-[13px] text-ink-500">לא ניתן היה לבדוק כרגע.</p>
