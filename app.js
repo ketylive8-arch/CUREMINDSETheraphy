@@ -1031,11 +1031,9 @@ function Home({ onEnterApp }) {
       <main>
         <Hero />
         <FreeTrialBanner />
-        <Problem />
         <HowItWorks />
         <Vision />
         <About />
-        {window.WorkshopsSection ? <window.WorkshopsSection /> : <Workshops />}
         <CureTeens />
         <Plans onEnterApp={onEnterApp} />
         <Organizations />
