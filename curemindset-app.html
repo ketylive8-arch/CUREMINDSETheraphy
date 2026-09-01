@@ -84,13 +84,13 @@ function Programs({onPick}){
   return h("div",null,
     h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
     h("h1",null,"בחרי את המרחב שלך"),
-    h("p",{className:"sub"},"מרחב אישי לבניית חוסן, בהירות וביטחון פנימי — עם 72 שעות התנסות מלאה."),
+    h("p",{className:"sub"},"מרחב אישי לבניית חוסן, בהירות וביטחון פנימי — עם 3 ימי התנסות מלאה."),
     h("div",{className:"grid"},
       progs.map(p=>h("div",{key:p.programId,className:"card prog",onClick:()=>onPick(p)},
         h("span",{className:"tag"},tagFor(p.audience)),
         h("h3",null,p.title),
         h("p",null,p.subtitle),
-        h("div",{className:"price"},p.priceDisplay+" · 72 שעות התנסות"),
+        h("div",{className:"price"},p.priceDisplay+" · 3 ימי התנסות"),
         h("div",{className:"row"}, h("button",{className:"btn"},"התחילי כאן"))
       ))
     ),
@@ -99,12 +99,11 @@ function Programs({onPick}){
 }
 
 function Countdown({endsAt}){
-  const [now,setNow]=useState(Date.now());
-  useEffect(()=>{ const t=setInterval(()=>setNow(Date.now()),1000); return ()=>clearInterval(t); },[]);
-  const ms = new Date(endsAt).getTime()-now;
-  if(ms<=0) return h("span",{className:"h"},"ההתנסות הסתיימה");
-  const hh=Math.floor(ms/3600000), mm=Math.floor(ms%3600000/60000), ss=Math.floor(ms%60000/1000);
-  return h("span",{className:"h"}, String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0")+":"+String(ss).padStart(2,"0"));
+  // הצגה רכה, בלי שעון ספירה־לאחור — כמה ימים נותרו במרחב ההתנסות.
+  const ms = new Date(endsAt).getTime()-Date.now();
+  if(ms<=0) return h("span",{className:"h"},"סיום ההתנסות");
+  const days = Math.max(1, Math.ceil(ms/86400000));
+  return h("span",{className:"h"}, "מרחב ההתנסות שלך פתוח");
 }
 
 function Space({me,program,onExpired}){
@@ -119,7 +118,7 @@ function Space({me,program,onExpired}){
     h("div",{className:"trialbar"},
       h("div",null,
         h("div",null, h(Countdown,{endsAt: acc.trialEndsAt || new Date(Date.now()+72*3600e3).toISOString()})),
-        h("small",null,"נותרו מ-72 שעות ההתנסות שלך")
+        h("small",null,"3 ימי התנסות — מרחב להתנסות ולצמיחה")
       ),
       h("div",null, h("small",null,"התוכנית: "), (program&&program.title)||enr.programId)
     ),

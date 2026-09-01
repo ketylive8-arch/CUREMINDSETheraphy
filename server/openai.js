@@ -180,7 +180,7 @@ const SYSTEM_PROMPT_YOUTH = `${KETY_KNOWLEDGE_BASE}
 
 class NoApiKeyError extends Error {
   constructor() {
-    super("AI engine is not configured on the server");
+    super("OPENAI_API_KEY is not configured on the server");
   }
 }
 
@@ -297,7 +297,7 @@ async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = n
 async function aiStatus() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return { configured: false, working: false, model: "gpt-4o-mini", reason: "לא הוגדר מפתח OPENAI_API_KEY בשרת (Render) — המערכת רצה במנוע המקומי." };
+    return { configured: false, working: false, model: "gpt-4o-mini", reason: "מנוע ה-AI המתקדם אינו מופעל — המערכת רצה כרגע במנוע המקומי." };
   }
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 8000); // לא תוקע את הבק-אופיס אם OpenAI איטי

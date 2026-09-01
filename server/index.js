@@ -499,6 +499,30 @@ app.post("/api/send-lead", rateLimit("send-lead", 20), async (req, res) => {
 // מאמרים: משיכה מערוץ ה-RSS של קטי (ARTICLES_RSS_URL ב-Environment ברנדר).
 // פירסור מינימלי ללא תלויות + מטמון 30 דקות; אם אין כתובת או שיש תקלה — [].
 let articlesCache = { at: 0, items: [] };
+
+// מאמרים מקוריים של CureMindset — מוצגים כשהפיד של הבלוג ריק/לא זמין,
+// כדי שדף המאמרים לעולם לא יהיה ריק. תוכן מקורי מבוסס שיטת קטי שגב.
+const FALLBACK_ARTICLES = [
+  {
+    title: "חרדה אצל בני נוער — מה באמת קורה במוח, ואיך מרגיעים אותו",
+    link: "https://ketysegev.blogspot.com/",
+    pubDate: "",
+    description: "חרדה אינה חולשה — היא מערכת התראה שלמדה לירות מוקדם מדי. בשיטת CureMindset עובדים עם ויסות מערכת העצבים (נשימה, עיגון גוף) לצד מסגור מחדש של המחשבה שמזינה את האזעקה, כדי להחזיר תחושת שליטה בהדרגה.",
+  },
+  {
+    title: "דימוי עצמי נמוך: איך בונים ביטחון פנימי שמחזיק",
+    link: "https://ketysegev.blogspot.com/",
+    pubDate: "",
+    description: "ביטחון עצמי אמיתי לא נבנה ממחמאות מבחוץ אלא מ'עוגן בית' פנימי — ערך עצמי, כבוד וביטחון קיומי. כאן מתרגלים לזהות את הקול המבקר, להפריד בינו לבין העובדות, ולבנות זהות של 'בוחר/ת' במקום 'נפגע/ת'.",
+  },
+  {
+    title: "חוסן רגשי בתקופה לא יציבה — שלושה כלים מעשיים",
+    link: "https://ketysegev.blogspot.com/",
+    pubDate: "",
+    description: "חוסן הוא מיומנות נלמדת, לא תכונה מולדת. שלושה כלים שאפשר לתרגל כבר היום: נשימת קופסה לוויסות מיידי, עוגן SOS לרגעי הצפה, ומיקרו-צעד אחד קטן שמחזיר תנועה קדימה גם כשהכל מרגיש תקוע.",
+  },
+];
+
 function parseRssItems(xml) {
   const items = [];
   const itemRe = /<item[\s\S]*?<\/item>/g;
@@ -527,11 +551,13 @@ app.get("/api/articles", async (req, res) => {
     const r = await fetch(rssUrl, { headers: { "User-Agent": "CureMindset-Site/1.0" } });
     if (!r.ok) throw new Error(`RSS fetch failed: ${r.status}`);
     const items = parseRssItems(await r.text());
-    articlesCache = { at: Date.now(), items };
-    res.json(items);
+    // אם הבלוג ריק/לא נותן פריטים — מגישים את המאמרים המקוריים במקום דף ריק.
+    const out = items.length ? items : FALLBACK_ARTICLES;
+    articlesCache = { at: Date.now(), items: out };
+    res.json(out);
   } catch (err) {
     console.error("articles rss failed:", err.message);
-    res.json(articlesCache.items);
+    res.json(articlesCache.items.length ? articlesCache.items : FALLBACK_ARTICLES);
   }
 });
 
@@ -917,11 +943,23 @@ api.post("/notifications/read-all", (req, res) => {
   res.json({ ok: true });
 });
 
+// ערכת הכלים הבסיסית של CureMindset — זמינה לכל משתמש/ת מהרגע הראשון (לפי מפרט העיצוב §5.6).
+// כלים טקסטואליים עם הוראות מלאות; כלי אודיו מסומנים "בקרוב" עד שיועלה אודיו אמיתי (בלי נגן מזויף).
+const DEFAULT_TOOLS = [
+  { id: "tool-box-breath", title: "נשימת קופסה", type: "exercise", url: null, notes: "שאיפה 4 שניות · החזקה 4 · נשיפה 4 · החזקה 4. חוזרים 3 פעמים. מרגיע את מערכת העצבים תוך פחות מדקה." },
+  { id: "tool-sos-anchor", title: "עוגן SOS", type: "exercise", url: null, notes: "יד על הלב, נשימה עמוקה, ואומרים בשקט: \"אני כאן, אני בטוח/ה\". עוגן מהיר לרגעי הצפה." },
+  { id: "tool-air-journal", title: "יומן רגעי אוויר", type: "exercise", url: null, notes: "כותבים בחופשיות 3 דקות — בלי לתקן, בלי לשפוט. פורק את העומס ומפנה מקום." },
+  { id: "tool-micro-step", title: "מיקרו-צעד", type: "exercise", url: null, notes: "בוחרים פעולה אחת קטנה שאפשר לעשות ב-2 דקות ומבצעים אותה עכשיו. תנועה קטנה שוברת תקיעות." },
+  { id: "tool-home-anchor", title: "עוגן הבית (אודיו מודרך)", type: "audio", url: null, notes: "תרגול מונחה לבניית מרחב פנימי בטוח. האודיו יתווסף בקרוב." },
+  { id: "tool-future-pacing", title: "Future Pacing (אודיו מודרך)", type: "audio", url: null, notes: "דמיון מודרך לתסריט עתידי מיטיב. האודיו יתווסף בקרוב." },
+];
+
 api.get("/materials", (req, res) => {
   const rows = db
     .prepare("SELECT id, title, type, url, notes, created_at FROM client_materials WHERE device_token = ? ORDER BY created_at DESC")
     .all(req.deviceToken);
-  res.json(rows);
+  // הכלים האישיים שקטי הקצתה מופיעים ראשונים; ערכת הכלים הבסיסית תמיד זמינה אחריהם.
+  res.json([...rows, ...DEFAULT_TOOLS]);
 });
 
 // ── Personal goals ("היעדים שלי") — the client's whole-person targets + progress ──
@@ -1026,7 +1064,8 @@ admin.get("/ai-status", async (req, res) => {
     const { aiStatus } = require("./openai");
     res.json(await aiStatus());
   } catch (e) {
-    res.json({ configured: false, working: false, reason: "בדיקה נכשלה: " + String((e && e.message) || e).slice(0, 120) });
+    console.warn("[ai-status] check failed:", (e && e.message) || e); // פרטים בלוג השרת בלבד
+    res.json({ configured: false, working: false, reason: "בדיקת מנוע ה-AI נכשלה כרגע. נסי שוב עוד רגע." });
   }
 });
 

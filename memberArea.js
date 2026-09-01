@@ -121,8 +121,8 @@
     } catch (e) {}
   })();
 
-  // התחברות חברתית — מציג כפתור Google/Facebook רק אם הספק מוגדר בשרת.
-  // הכפתור מופיע אוטומטית ברגע שמפתחות ה-AI מוגדרים בשרת.
+  // התחברות חברתית — מציג כפתור Google/Facebook רק אם הספק מוגדר בצד השרת.
+  // הכפתור מופיע אוטומטית ברגע שההתחברות החברתית מופעלת.
   const GoogleMark = () => (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -382,7 +382,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Access gate — 14-day trial + personal access code                 */
+  /* Access gate — 3-day (72h) trial + personal access code                 */
   /* ---------------------------------------------------------------- */
 
   // Shown as a blocking overlay when the trial expired (dismissible=false), or as a
@@ -438,7 +438,7 @@
               <Icon name="sparkles" size={28} className="text-white" />
             </div>
             <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName ? `${firstName}, ` : ""}המסע שלך רק התחיל 🌿</h2>
-            <p className="text-[14.5px] text-ink-500 leading-relaxed mb-6">14 הימים הראשונים היו רק הפתיחה. המודולים, התרגילים והמלווה שמכיר אותך — כולם ממשיכים איתך. בואי נמשיך יחד את הדרך.</p>
+            <p className="text-[14.5px] text-ink-500 leading-relaxed mb-6">3 הימים הראשונים היו רק הפתיחה. המודולים, התרגילים והמלווה שמכיר אותך — כולם ממשיכים איתך. בואי נמשיך יחד את הדרך.</p>
 
             <div className="w-full space-y-2.5 mb-7 text-right">
               {[
@@ -1233,8 +1233,8 @@
               ? (errData.error || "תקופת הניסיון הסתיימה — נדרש קוד גישה כדי להמשיך בליווי.") + " אפשר להזין קוד גישה במסך המסלולים."
               : errData.error ||
                   (res.status === 503
-                    ? "המנוע הדיגיטלי לא זמין כרגע. אנא נסו שוב מאוחר יותר או פנו לקטי בוואטסאפ."
-                    : "מנוע ה-AI לא הצליח להשיב כרגע. נסי שוב עוד רגע.")
+                    ? "המלווה אינו זמין כרגע. נסי שוב עוד רגע."
+                    : "המלווה לא הצליח להשיב כרגע. נסי שוב עוד רגע.")
           );
           throw new Error("request failed");
         }
@@ -2183,7 +2183,7 @@
               <h3>{isReg ? "בוא/י נתחיל את פריצת הדרך שלך 🌿" : "כניסה לאזור האישי"}</h3>
               <p>
                 {isReg
-                  ? "מרחב אישי ומאובטח — 72 שעות ניסיון חינם, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
+                  ? "מרחב אישי ומאובטח — 3 ימי התנסות חינם להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
                   : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
               </p>
             </div>
@@ -2252,7 +2252,7 @@
               האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולמסע הפנימי, בליווי מבוסס השיטה של קטי שגב.
             </p>
             <ul className="au-benefits">
-              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>72 שעות ניסיון חינם — בלי התחייבות</li>
+              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>3 ימי התנסות חינם — מרחב להתנסות ולצמיחה, בלי התחייבות</li>
               <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>שיחות פרטיות ומוצפנות — רק את רואה אותן</li>
               <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>ליווי AI מבוסס השיטה והתכנים של קטי</li>
             </ul>
@@ -2277,7 +2277,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 8 — Structured program: CURE MINDSET 14-day journey          */
+  /* Stage 8 — Structured program: CURE MINDSET guided journey          */
   /* ---------------------------------------------------------------- */
 
   const PROGRAM_GATES = [
