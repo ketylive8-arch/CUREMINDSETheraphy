@@ -68,11 +68,9 @@ function spotifyEmbed(url) {
 const CONTENT = {
   nav: {
     links: [
-      { label: "מה עובר עלייך?", href: "#problem" },
       { label: "איך זה עובד", href: "#how-it-works" },
       { label: "השיטה", href: "#vision" },
       { label: "תוכניות", href: "#plans" },
-      { label: "סדנאות", href: "#workshops" },
       { label: "CURE Teens", href: "#cure-teens" },
       { label: "לארגונים", href: "#organizations" },
       { label: "סיפורי שינוי", href: "#results" },
