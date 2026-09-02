@@ -31,9 +31,10 @@ const PAYMENT_LINKS = {
 
 const MEDIA_LINKS = {
   linktree: "https://linktr.ee/Ketysegev",
+  instagram: "https://instagram.com/ketysegev",
+  youtubeChannel: "https://www.youtube.com/@ketynlplive",
   radio: "https://youtu.be/8q_5IAAJohQ?si=eL3RHvjbHDqWsuqj",
   spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",
-  youtubeChannel: "",
   video1: "https://www.youtube.com/watch?v=u2yy8yY_SN8",
   video2: "",
   article1: "https://ketysegev.blogspot.com/2026/03/blog-post.html",
@@ -950,6 +951,18 @@ function Footer() {
                 <a href={waLink("היי קטי!")} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
                   <Icon name="whatsapp" size={16} />
                   וואטסאפ
+                </a>
+              </li>
+              <li>
+                <a href={MEDIA_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
+                  <span className="w-4 h-4 inline-flex items-center justify-center">📷</span>
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a href={MEDIA_LINKS.youtubeChannel} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
+                  <span className="w-4 h-4 inline-flex items-center justify-center">▶</span>
+                  YouTube
                 </a>
               </li>
             </ul>
