@@ -8,120 +8,134 @@
 
 ---
 
-## משימות לפי עדיפות
+## מה שכבר נעשה (02.09.2026) — אל תשנה את זה
+
+### חיבור רשתות חברתיות
+- Instagram נוסף לפוטר (instagram.com/ketysegev) עם אייקון 📷
+- YouTube נוסף לפוטר (youtube.com/@ketynlplive) עם אייקון ▶
+- JSON-LD sameAs עודכן ב-index.html עם Instagram + YouTube
+- MEDIA_LINKS ב-app.js עודכן עם קישורים מלאים
+
+### ניקוי תפריט
+- "מה עובר עלייך?" הוסר מה-nav (הסקשן עצמו כבר הוסר קודם)
+- "סדנאות" הוסר מה-nav (הסקשן עצמו כבר הוסר קודם)
+- התפריט עכשיו: איך זה עובד, השיטה, תוכניות, CURE Teens, לארגונים, סיפורי שינוי
+
+### Cache busting
+- כל קבצי CSS/JS עודכנו ל-v=20260904 ב-index.html
+
+---
+
+## משימות לביצוע (לפי עדיפות)
 
 ### 1. טופס לכידת לידים בדף הנחיתה (CRITICAL)
 
-כרגע יש רק קישורי `mailto:` שפותחים מייל במכשיר של הלקוח. זה לא קולט לידים — מי שלא שולח מייל, אבוד.
+כרגע יש רק קישורי mailto: שפותחים מייל במכשיר של הלקוח. זה לא קולט לידים — מי שלא שולח מייל, אבוד.
 
-**מה לבנות:**
-- טופס הרשמה אמיתי ב-section "תוכניות" וב-CTA הסופי
+מה לבנות:
+- טופס הרשמה אמיתי ב-section "תוכניות" (#plans) וב-CTA הסופי
 - שדות: שם מלא, טלפון, אימייל, נושא פנייה (dropdown: נוער/פרטי/ארגון/אחר)
-- הטופס שולח POST ל-`/api/send-lead` (כבר קיים בשרת!)
+- הטופס שולח POST ל-/api/send-lead (כבר קיים בשרת! קרא server/index.js שורות 477+)
 - אחרי שליחה: הודעת "תודה, נחזור אלייך תוך 24 שעות" + כפתור וואטסאפ
-- עיצוב: כרטיס לבן עם border gold, RTL, גודל נעים, אנימציית Reveal
-- ולידציה: שם לפחות 2 תווים, טלפון ישראלי תקין, אימייל תקין
+- עיצוב: כרטיס לבן עם border gold, RTL, אנימציית Reveal (השתמש בקומפוננטת Reveal הקיימת)
+- ולידציה: שם לפחות 2 תווים, טלפון ישראלי תקין (10 ספרות, מתחיל ב-05), אימייל תקין
+- אם יש כבר טופס ב-memberArea.js — קח ממנו השראה לעיצוב
 
-**בדוק:** שה-endpoint `/api/send-lead` מקבל את השדות הנכונים (קרא server/index.js שורות 477+).
+חשוב: ה-endpoint /api/send-lead כבר קיים ומקבל נתונים. בדוק מה הוא מצפה לקבל (שדות) והתאם את הטופס לזה.
 
 ---
 
 ### 2. חיבור כפתורי תשלום לכל המסלולים
 
-כרגע רק `PAYMENT_LINKS.digital` מלא. השאר ריקים:
-```js
+כרגע ב-app.js:
 const PAYMENT_LINKS = {
-  digital: "https://pay.grow.link/NDcyNjY~...",
-  youth: "",      // EMPTY
-  recommended: "", // EMPTY
-  premium: "",     // EMPTY
+  digital: "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ",
+  youth: "",      // ריק — נופל ל-WhatsApp
+  recommended: "", // ריק — נופל ל-WhatsApp
+  premium: "",     // ריק — נופל ל-WhatsApp
 };
-```
 
-**מה לעשות:**
-- כש-`PAYMENT_LINKS[plan.id]` ריק, הכפתור כבר נופל ל-WhatsApp fallback — זה נכון
-- אבל תוודא שהטקסט ב-WhatsApp מזהה את המסלול הנכון: "אשמח להתחיל במסלול {plan.badge}"
-- הוסף הודעת placeholder עדינה: "תשלום אונליין בקרוב — נא ליצור קשר להרשמה"
-
----
-
-### 3. ניווט ו-UX
-
-- וודא שכל הקישורים בתפריט מובילים ל-sectionים שקיימים (Hero, HowItWorks, Vision, About, CureTeens, Plans, Organizations, Testimonials, FinalCta)
-- הסראת "מה עובר עלייך?" ו"סדנאות" מהתפריט — כבר בוצע, רק וודא
-- בדוק שסקרול חלק (smooth scroll) עובד לכל anchor
-- וודא ש-mobile menu נסגר אחרי לחיצה על קישור
+מה לעשות:
+- כש-PAYMENT_LINKS[plan.id] ריק, הכפתור נופל ל-WhatsApp — זה נכון ועובד
+- וודא שהטקסט ב-WhatsApp מזהה את המסלול הנכון: "אשמח להתחיל במסלול {plan.badge}"
+- אם אין קישור תשלום, הצג טקסט עדין: "תשלום אונליין בקרוב — נא ליצור קשר להרשמה"
+- אל תשנה את המחירים: 97/197/397 ₪
 
 ---
 
-### 4. SEO ו-Meta Tags
+### 3. Schema.org LocalBusiness ב-JSON-LD
 
-המטא-תגיות ב-index.html כבר טובות. תוסיף:
-- `<meta name="google-site-verification" content="">` — placeholder לאימות Google Search Console
-- Schema.org `LocalBusiness` או `ProfessionalService` ב-JSON-LD:
-  ```json
-  {
-    "@type": "ProfessionalService",
-    "name": "CureMindset — קטי שגב",
-    "description": "אימון מנטאלי וחוסן רגשי לנוער ומבוגרים",
-    "telephone": "+972543032349",
-    "email": "ketyse@gmail.com",
-    "url": "https://ketysegev.com",
-    "areaServed": "חיפה והצפון, כל הארץ (אונליין)",
-    "priceRange": "₪97-₪397"
-  }
-  ```
-- עדכן את `og:image` לתמונה הכי טובה של קטי (kety-920.jpg כרגע — וודא שהוא קיים)
+ב-index.html כבר יש JSON-LD מסוג WebSite + Person. תוסיף:
+
+{
+  "@type": "ProfessionalService",
+  "name": "CureMindset — קטי שגב | אימון מנטאלי",
+  "description": "אימון מנטאלי וחוסן רגשי לנוער, חיילים ומבוגרים. שיטת CURE: Clarity, Resilience, Rewire, Empowerment.",
+  "telephone": "+972543032349",
+  "email": "ketyse@gmail.com",
+  "url": "https://ketysegev.com",
+  "areaServed": "חיפה והצפון, כל הארץ (אונליין)",
+  "priceRange": "₪97-₪397",
+  "sameAs": ["https://linktr.ee/Ketysegev", "https://instagram.com/ketysegev", "https://www.youtube.com/@ketynlplive"]
+}
+
+זה יעזור ל-Google Business Profile להופיע במפות ובחיפושים מקומיים.
 
 ---
 
-### 5. ביצועים ואבטחה
+### 4. ביצועים ואבטחה
 
-- וודא שכל התמונות טעונות עם `loading="lazy"` חוץ מ-hero
-- הוסף `rel="noopener noreferrer"` לכל קישור חיצוני שנפתח ב-tab חדש
-- וודא שאין console errors בדף
+- וודא שכל התמונות טעונות עם loading="lazy" חוץ מ-hero
+- הוסף rel="noopener noreferrer" לכל קישור חיצוני שנפתח ב-target="_blank" (רובם כבר יש — וודא)
+- בדוק שאין console errors בדף
 - בדוק שהאתר עובד נכון ב-mobile (viewport, touch targets מינימום 44px)
 
 ---
 
-### 6. נגישות (Accessibility)
+### 5. נגישות (Accessibility)
 
-- הוסף `alt` לכל תמונה (רובן כבר יש, וודא)
-- הוסף `aria-label` לכל כפתור אייקון
+- הוסף alt לכל תמונה (רובן כבר יש — וודא שיש לכולן)
+- הוסף aria-label לכל כפתור שהוא אייקון בלבד
 - וודא ניגודיות צבעים תקינה (WCAG AA)
 - וודא ניווט מקלדת עובד (Tab, Enter)
+- החלף את ה-emoji 📷 ו-▶ בפוטר ב-SVG אייקונים אמיתיים (השתמש ב-icons.js)
 
 ---
 
-### 7. תוכן שיווקי — עדכונים נדרשים
+### 6. תוכן שיווקי — וידוא
 
-- בסקשן "תוכניות": וודא שהמחירים הם 97/197/397 ₪ (לא 340/750/1700/3500)
+- בסקשן "תוכניות": וודא שהמחירים הם 97/197/397 ₪
 - בסקשן "תוכניות": וודא שהמלל מתאר מסלולים דיגיטליים (לא סדנאות)
 - ב-CTA הסופי: וודא שהטקסט מפנה להרשמה/ניסיון חינם (72 שעות)
 - וודא שאין שום אזכור של "סדנאות" או "מה עובר עלייך" בשום מקום בדף
+- וודא שאין קישורים שבורים (#workshops, #problem — כבר הוסרו מה-nav אבל וודא שלא נשארו בקוד)
 
 ---
 
-### 8. חיבורים חברתיים (כבר בוצע — רק וודא)
+### 7. חיבורים חברתיים (כבר בוצע — רק וודא)
 
-- Instagram: https://instagram.com/ketysegev — בפוטר וב-JSON-LD
-- YouTube: https://www.youtube.com/@ketynlplive — בפוטר וב-JSON-LD
-- Linktree: https://linktr.ee/Ketysegev — ב-MEDIA_LINKS
-- Calendly: https://calendly.com/ketysegev/meet-with-me — בכפתורי CTA
-- WhatsApp: wa.me/972543032349 — בפוטר ובכפתורים
+כל הקישורים כבר מחוברים בפוטר וב-JSON-LD:
+- Instagram: https://instagram.com/ketysegev
+- YouTube: https://www.youtube.com/@ketynlplive
+- Linktree: https://linktr.ee/Ketysegev
+- Facebook: https://www.facebook.com/Ketyse
+- Blogspot: https://ketysegev.blogspot.com/
+- Calendly: https://calendly.com/ketysegev/meet-with-me
+- WhatsApp: https://wa.me/972543032349
+- Spotify: https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3
+- Grow Payment (digital only): https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ
 
 ---
 
-### 9. Google Business Profile (לא טכני — הערה לקטי)
+### 8. Google Business Profile (הערה — לא טכני)
 
-יש דף עסקי ב-Google שכתוב "קטי שגב ניהול חרדות". צריך לעדכן:
+יש דף עסקי ב-Google שכתוב "קטי שגב ניהול חרדות". צריך לעדכן ידנית ב-business.google.com:
 - שם עסק: "CureMindset — קטי שגב | אימון מנטאלי"
 - קטגוריה: אימון אישי / ייעוץ רגשי
-- תיאור: "אימון מנטאלי וחוסן רגשי לנוער, חיילים ומבוגרים. שיטת CURE: Clarity, Resilience, Rewire, Empowerment."
+- תיאור: "אימון מנטאלי וחוסן רגשי לנוער, חיילים ומבוגרים. שיטת CURE."
 - אתר: ketysegev.com
 - טלפון: 054-3032349
-- שעות: ימים א-ה 9:00-19:00, ו 9:00-14:00
-- כתובת: חיפה (אם יש מרחב פיזי) או "שירות אונליין בלבד"
+- שעות: א-ה 9:00-19:00, ו 9:00-14:00
 
 ---
 
@@ -130,4 +144,5 @@ const PAYMENT_LINKS = {
 - אל תחזיר סקשנים שהוסרו ("מה עובר עלייך", סדנאות)
 - אם אתה מוסיף קוד, שמור על הסגנון הקיים (Tailwind classes, RTL, Hebrew)
 - בדוק כל שינוי לפני commit
-- עדכן את CLAUDE.md אחרי שינויים משמעותיים
+- שמור על כל הקישורים החברתיים שכבר נוספו (Instagram, YouTube בפוטר)
+- אל תשנה את קובץ CLAUDE_CODE_TASKS.md — זה מסמך התקשורת עם המנהל
