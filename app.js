@@ -862,6 +862,184 @@ function Testimonials() {
 }
 
 /* ---------------------------------------------------------------- */
+/* Lead Capture Form  →  POST /api/send-lead                        */
+/* ---------------------------------------------------------------- */
+
+const LEAD_SUBJECTS = [
+  { value: "", label: "מה מעניין אותך?" },
+  { value: "personal", label: "ליווי אישי (מבוגרים)" },
+  { value: "teens", label: "CURE Teens — נוער והורים" },
+  { value: "organization", label: "סדנה / הרצאה לארגון" },
+  { value: "other", label: "אחר / לא בטוחה עדיין" },
+];
+
+function normalizePhone(v) {
+  return (v || "").replace(/[^\d]/g, "");
+}
+
+function LeadForm({ compact = false }) {
+  const [form, setForm] = useState({ fullName: "", phone: "", email: "", subject: "" });
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState("idle"); // idle | sending | done | error
+
+  const set = (k) => (e) => {
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+    setErrors((er) => ({ ...er, [k]: undefined }));
+  };
+
+  function validate() {
+    const er = {};
+    if (!form.fullName || form.fullName.trim().length < 2) er.fullName = "נא למלא שם מלא";
+    const phone = normalizePhone(form.phone);
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
+    const phoneOk = /^05\d{8}$/.test(phone);
+    if (!form.phone && !form.email) {
+      er.phone = "נא להשאיר טלפון או אימייל";
+    } else {
+      if (form.phone && !phoneOk) er.phone = "מספר נייד לא תקין (10 ספרות, מתחיל ב-05)";
+      if (form.email && !emailOk) er.email = "כתובת אימייל לא תקינה";
+    }
+    return er;
+  }
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    const er = validate();
+    if (Object.keys(er).length) { setErrors(er); return; }
+    setStatus("sending");
+    const subjectLabel = (LEAD_SUBJECTS.find((s) => s.value === form.subject) || {}).label || "";
+    try {
+      const res = await fetch("/api/send-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: normalizePhone(form.phone),
+          onboarding: subjectLabel,
+          source: "landing-lead-form",
+        }),
+      });
+      if (!res.ok) throw new Error("bad status " + res.status);
+      setStatus("done");
+    } catch (_err) {
+      setStatus("error");
+    }
+  }
+
+  if (status === "done") {
+    return (
+      <div className="rounded-2xl bg-white border border-gold-200 shadow-soft p-8 text-center max-w-[520px] mx-auto">
+        <div className="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-4">
+          <Icon name="check-circle-2" size={26} />
+        </div>
+        <h3 className="font-heading font-extrabold text-ink-800 text-[22px] mb-2">קיבלנו את הפרטים שלך</h3>
+        <p className="text-ink-600 text-[15.5px] mb-6">
+          קטי או מישהי מהצוות תחזור אליך בהקדם. רוצה להתחיל כבר עכשיו? אפשר לכתוב לנו ישירות בוואטסאפ.
+        </p>
+        <Button as="a" href={waLink("היי קטי! השארתי פרטים באתר ואשמח להתקדם")} target="_blank" rel="noopener noreferrer" size="md" className="mx-auto">
+          <Icon name="whatsapp" size={18} className="shrink-0" />
+          להמשך שיחה בוואטסאפ
+        </Button>
+      </div>
+    );
+  }
+
+  const inputCls =
+    "w-full rounded-xl border bg-white px-4 py-3.5 text-[15.5px] text-ink-800 placeholder-ink-400 outline-none transition-colors focus:border-gold-400 focus:ring-2 focus:ring-gold-200";
+  const errCls = "text-[13px] text-red-600 mt-1";
+
+  return (
+    <form onSubmit={onSubmit} noValidate className={`text-start ${compact ? "" : "rounded-2xl bg-white border border-ink-100 shadow-soft p-7 sm:p-9"} max-w-[520px] mx-auto`}>
+      <div className="flex flex-col gap-4">
+        <div>
+          <label htmlFor="lead-name" className="block text-[14px] font-semibold text-ink-700 mb-1.5">שם מלא</label>
+          <input id="lead-name" type="text" autoComplete="name" value={form.fullName} onChange={set("fullName")}
+            placeholder="איך לפנות אליך?" className={`${inputCls} ${errors.fullName ? "border-red-400" : "border-ink-200"}`}
+            aria-invalid={!!errors.fullName} />
+          {errors.fullName && <p className={errCls}>{errors.fullName}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="lead-phone" className="block text-[14px] font-semibold text-ink-700 mb-1.5">טלפון נייד</label>
+          <input id="lead-phone" type="tel" inputMode="tel" autoComplete="tel" dir="ltr" value={form.phone} onChange={set("phone")}
+            placeholder="050-000-0000" className={`${inputCls} text-right ${errors.phone ? "border-red-400" : "border-ink-200"}`}
+            aria-invalid={!!errors.phone} />
+          {errors.phone && <p className={errCls}>{errors.phone}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="lead-email" className="block text-[14px] font-semibold text-ink-700 mb-1.5">אימייל</label>
+          <input id="lead-email" type="email" inputMode="email" autoComplete="email" dir="ltr" value={form.email} onChange={set("email")}
+            placeholder="name@email.com" className={`${inputCls} text-right ${errors.email ? "border-red-400" : "border-ink-200"}`}
+            aria-invalid={!!errors.email} />
+          {errors.email && <p className={errCls}>{errors.email}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="lead-subject" className="block text-[14px] font-semibold text-ink-700 mb-1.5">מה מעניין אותך?</label>
+          <select id="lead-subject" value={form.subject} onChange={set("subject")}
+            className={`${inputCls} border-ink-200 appearance-none`}
+            style={{
+              backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A9987A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "left 1rem center",
+              backgroundSize: "16px 16px",
+            }}>
+            {LEAD_SUBJECTS.map((s) => (
+              <option key={s.value} value={s.value} disabled={s.value === ""}>{s.label}</option>
+            ))}
+          </select>
+        </div>
+
+        {status === "error" && (
+          <p className="text-[14px] text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5 text-center">
+            משהו השתבש בשליחה. אפשר לנסות שוב או לכתוב לנו בוואטסאפ.
+          </p>
+        )}
+
+        <Button as="button" type="submit" variant="primary" size="md" className="w-full mt-1" disabled={status === "sending"}>
+          {status === "sending" ? "שולח…" : "שליחה — ונחזור אליך"}
+        </Button>
+
+        <p className="text-[12.5px] text-ink-400 text-center leading-relaxed">
+          הפרטים נשמרים אצל קטי בלבד ולא מועברים לגורם שלישי. 3 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת.
+        </p>
+      </div>
+    </form>
+  );
+}
+
+function LeadSection() {
+  return (
+    <section id="lead" className="py-20 sm:py-28 bg-white border-t border-ink-100">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <Reveal>
+          <Eyebrow>נתחיל לדבר</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] mb-4 leading-tight">
+            השאירי פרטים — ונחזור אליך
+          </h2>
+          <p className="text-ink-600 text-[17px] leading-relaxed mb-6">
+            לא צריך להגיע עם תשובות. משאירים שם וטלפון או אימייל, ואנחנו חוזרים אליך כדי לבדוק יחד אם השיטה מתאימה לך או לבן/בת שלך.
+          </p>
+          <ul className="flex flex-col gap-2.5">
+            {["3 ימי התנסות חינם — בלי התחייבות", "שיחה אישית להיכרות והתאמה", "פרטיות מלאה — הנתונים שלך נשארים אצלנו"].map((t, i) => (
+              <li key={i} className="flex items-center gap-2.5 text-ink-700 text-[15.5px] font-medium">
+                <Icon name="check-circle-2" size={18} className="text-gold-600 shrink-0" />
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+        <Reveal style={{ transitionDelay: "120ms" }}>
+          <LeadForm />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /* Final CTA                                                        */
 /* ---------------------------------------------------------------- */
 
@@ -879,9 +1057,7 @@ function FinalCta() {
           <div className="flex flex-col items-center gap-4">
             <Button
               as="a"
-              href={waLink("היי קטי! אשמח להתחיל ניסיון חינם")}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#lead"
               size="lg"
               className="px-10 py-4 text-[18px]"
             >
@@ -954,14 +1130,14 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href={MEDIA_LINKS.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
-                  <span className="w-4 h-4 inline-flex items-center justify-center">📷</span>
+                <a href={MEDIA_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
+                  <Icon name="instagram" size={16} className="shrink-0" />
                   Instagram
                 </a>
               </li>
               <li>
-                <a href={MEDIA_LINKS.youtubeChannel} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
-                  <span className="w-4 h-4 inline-flex items-center justify-center">▶</span>
+                <a href={MEDIA_LINKS.youtubeChannel} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex items-center gap-2 text-white/60 text-[14.5px] hover:text-gold-400 transition-colors">
+                  <Icon name="youtube" size={16} className="shrink-0" />
                   YouTube
                 </a>
               </li>
@@ -1004,7 +1180,7 @@ function TrialCTA() {
             <Icon name="sparkles" size={22} />
           </span>
           <div>
-            <p className="font-heading font-extrabold text-[16px] text-ink-800">פגישת ניסיון חינם 🎁</p>
+            <p className="font-heading font-extrabold text-[16px] text-ink-800">פגישת ניסיון חינם</p>
             <p className="text-[13.5px] text-ink-500 mt-1 leading-relaxed">3 ימים חינם · בלי כרטיס אשראי · היכרות חווייתית עם השיטה.</p>
           </div>
         </div>
@@ -1047,6 +1223,7 @@ function Home({ onEnterApp }) {
         <About />
         <CureTeens />
         <Plans onEnterApp={onEnterApp} />
+        <LeadSection />
         <Organizations />
         <Testimonials />
         <FinalCta />
