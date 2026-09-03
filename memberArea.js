@@ -649,7 +649,11 @@
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
     { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
     { id: 8, icon: "graduation-cap", title: "התוכנית שלי", subtitle: "מסע CURE MINDSET · 14 יום במודולים", alwaysUnlocked: true },
+    { id: 9, icon: "video", title: "המפגש שלי", subtitle: "מפגש זום אישי וחי עם קטי", alwaysUnlocked: true },
   ];
+
+  // קישור קביעת מפגש (Calendly של קטי) — המפגש הווירטואלי החי.
+  const CALENDAR_LINK = "https://calendly.com/ketysegev/meet-with-me";
 
   /* ---------------------------------------------------------------- */
   /* Shared bits */
@@ -1290,6 +1294,8 @@
     async function send() {
       const trimmed = input.trim();
       if (!trimmed || sending) return;
+      // היסטוריה אחרונה (עד 8 הודעות) נשלחת כדי שקטי תמשיך ברצף וזוכרת את השיחה.
+      const priorHistory = messages.slice(-8).map((m) => ({ role: m.role, text: m.text }));
       setMessages((m) => [...m, { role: "user", text: trimmed, ts: Date.now() }]);
       setInput("");
       setSending(true);
@@ -1297,7 +1303,7 @@
         const res = await fetch("/api/checkin", {
           method: "POST",
           headers: authHeaders({ "Content-Type": "application/json" }),
-          body: JSON.stringify({ text: trimmed }),
+          body: JSON.stringify({ text: trimmed, history: priorHistory }),
         });
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -2944,6 +2950,75 @@
     );
   }
 
+  // מפגש וירטואלי חי עם קטי דרך זום — כלול במסלול פרימיום, קביעה דרך היומן.
+  function VirtualSessionStage({ paid, onNavigateStage }) {
+    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
+    const waBook = "https://wa.me/972543032349?text=" + encodeURIComponent("היי קטי! אשמח לקבוע מפגש זום אישי");
+    return (
+      <div className="space-y-5">
+        <div className="rounded-3xl bg-gradient-to-br from-gold-400 to-gold-600 text-white px-6 py-7 shadow-soft">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center"><Icon name="video" size={20} /></span>
+            <span className="text-[12px] font-heading font-semibold uppercase tracking-wider text-white/85">מפגש אישי · פנים אל פנים בזום</span>
+          </div>
+          <h2 className="font-heading font-extrabold text-[24px] leading-tight">
+            {firstName ? `${firstName}, ` : ""}מפגש חי עם קטי — לא רק צ'אט
+          </h2>
+          <p className="text-[14.5px] text-white/90 leading-relaxed mt-2">
+            פעם בחודש את/ה יושב/ת מול קטי בשיחת וידאו אישית: לוקחים את מה שעלה בצ'אט ובמסע, מעמיקים יחד ובונים את הצעד הבא — בליווי אנושי אמיתי.
+          </p>
+        </div>
+
+        <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5">
+          <p className="font-heading font-bold text-[15px] text-ink-800 mb-3">איך זה עובד</p>
+          <ul className="space-y-3">
+            {[
+              ["calendar", "בוחרים מועד שנוח לך", "קובעים דרך היומן — המפגש נכנס אוטומטית עם קישור זום."],
+              ["video", "נפגשים בזום, 45 דקות", "שיחת עומק אישית — ממשיכים בדיוק מאיפה שהצ'אט עצר."],
+              ["heart", "יוצאים עם תוכנית", "צעד ברור להמשך, שנשמר גם באזור האישי שלך."],
+            ].map(([ic, t, d], i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="shrink-0 w-9 h-9 rounded-full bg-gold-50 text-gold-600 flex items-center justify-center border border-gold-200"><Icon name={ic} size={17} /></span>
+                <div>
+                  <p className="font-heading font-bold text-[14px] text-ink-800">{t}</p>
+                  <p className="text-[13px] text-ink-600 leading-relaxed">{d}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {paid ? (
+          <div className="rounded-3xl border border-gold-300 bg-gold-50 px-5 py-5 text-center">
+            <p className="font-heading font-bold text-[15px] text-ink-800 mb-1">המפגש שלך כלול במסלול</p>
+            <p className="text-[13px] text-ink-600 mb-4">בחרו מועד עכשיו — נתראה בזום.</p>
+            <a href={CALENDAR_LINK} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors">
+              <Icon name="calendar" size={18} /> לקביעת מפגש הזום שלי
+            </a>
+          </div>
+        ) : (
+          <div className="rounded-3xl border border-gold-300 bg-gold-50 px-5 py-5 text-center">
+            <p className="font-heading font-bold text-[15px] text-ink-800 mb-1">המפגש החי כלול במסלול הפרימיום</p>
+            <p className="text-[13px] text-ink-600 mb-4">משדרגים למסלול פרימיום ומקבלים מפגש זום אישי מדי חודש — יחד עם כל התכנים.</p>
+            <button type="button" onClick={() => onNavigateStage && onNavigateStage(8)}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors mb-2.5">
+              לצפייה במסלולים ולשדרוג
+            </button>
+            <a href={waBook} target="_blank" rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border border-gold-300 text-gold-700 font-heading font-semibold text-[14px] hover:bg-white transition-colors">
+              <Icon name="whatsapp" size={17} /> לתיאום שיחת היכרות קצרה
+            </a>
+          </div>
+        )}
+
+        <p className="text-[11.5px] text-ink-400 text-center leading-relaxed px-2">
+          המפגש הווירטואלי הוא ליווי רגשי-תודעתי בשיטת CureMindset ואינו תחליף לטיפול רפואי/נפשי מקצועי.
+        </p>
+      </div>
+    );
+  }
+
   function MemberArea({ onExit }) {
     const [loggedIn, setLoggedIn] = useState(() =>!!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
@@ -3063,6 +3138,10 @@
         ): current === 8? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <ProgramStage onNavigateStage={navigateToStage} />
+          </div>
+        ): current === 9? (
+          <div className="flex-1 overflow-y-auto px-5 py-6">
+            <VirtualSessionStage paid={paid} onNavigateStage={navigateToStage} />
           </div>
         ): current === 4? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50 space-y-6">

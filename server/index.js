@@ -635,7 +635,7 @@ api.get("/dashboard", (req, res) => {
 });
 
 api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
-  const { text } = req.body || {};
+  const { text, history } = req.body || {};
   if (typeof text !== "string" || !text.trim()) {
     return res.status(400).json({ error: "text is required" });
   }
@@ -663,7 +663,7 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
     // לא מפילים את הצ'אט: נופלים למנוע המקומי (guidedReply) בשיטת CureMindset. הצ'אט תמיד עונה.
     let result;
     try {
-      result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved, userProfile);
+      result = await runBehavioralHealthCheck(text.trim(), ageGroup, getJourneyDay(req.deviceToken), retrieved, userProfile, Array.isArray(history) ? history : []);
     } catch (aiErr) {
       const m = String((aiErr && aiErr.message) || "");
       const reason =

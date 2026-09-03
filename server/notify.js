@@ -14,7 +14,7 @@
 //
 // כל הפונקציות לעולם לא זורקות — כישלון מחזיר { sent:false, error }.
 
-const NOTIFY_TO = process.env.NOTIFICATION_EMAIL || "ketyse@gmail.com";
+const NOTIFY_TO = process.env.NOTIFICATION_EMAIL || "ketylive8@gmail.com";
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -31,7 +31,7 @@ function buildHtml(subject, fields) {
     .join("");
   return (
     `<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:auto">` +
-    `<h2 style="color:#b5892f">🌿 ${esc(subject)}</h2>` +
+    `<h2 style="color:#b5892f">${esc(subject)}</h2>` +
     `<table style="border-collapse:collapse;width:100%;background:#faf7f0;border-radius:10px;overflow:hidden">${rows}</table>` +
     `<p style="color:#999;font-size:12px;margin-top:14px">התראה אוטומטית ממערכת CureMindset · ketysegev.com</p></div>`
   );

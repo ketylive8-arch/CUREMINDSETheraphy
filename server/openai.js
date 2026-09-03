@@ -240,7 +240,7 @@ function profileContext(userProfile) {
   return `\n[פרופיל אישי מהאבחון הראשוני של המשתמש/ת: ${String(userProfile).trim()}. התייחס/י לזה לאורך השיחה — התאם/י את הדוגמאות, הכלים והמשימה לאתגר ולמטרה שהוגדרו, ואל תבקש/י שוב מידע שכבר ידוע.]`;
 }
 
-async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null, retrievedKnowledge = [], userProfile = "") {
+async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = null, retrievedKnowledge = [], userProfile = "", history = []) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new NoApiKeyError();
 
@@ -250,6 +250,16 @@ async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = n
     journeyContext(journeyDay) +
     profileContext(userProfile);
 
+  // היסטוריית השיחה — כדי שקטי "תזכור" ותמשיך ברצף אנושי טבעי, לא כמו פנייה מנותקת.
+  // מגבילים ל-8 ההודעות האחרונות, טקסט בלבד, כדי לא לנפח את הבקשה.
+  const priorMessages = (Array.isArray(history) ? history : [])
+    .filter((m) => m && typeof m.text === "string" && m.text.trim())
+    .slice(-8)
+    .map((m) => ({
+      role: m.role === "kety" || m.role === "assistant" ? "assistant" : "user",
+      content: String(m.text).slice(0, 1500),
+    }));
+
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -257,11 +267,12 @@ async function runBehavioralHealthCheck(text, ageGroup = "adult", journeyDay = n
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
+      model: process.env.OPENAI_MODEL || "gpt-4o",
       response_format: { type: "json_object" },
       temperature: 0.72,
       messages: [
         { role: "system", content: systemPrompt },
+        ...priorMessages,
         { role: "user", content: text },
       ],
     }),
