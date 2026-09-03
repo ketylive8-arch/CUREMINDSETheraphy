@@ -10,7 +10,7 @@
   const ResilienceDashboard = window.ResilienceDashboard;
 
   /* ---------------------------------------------------------------- */
-  /* Persistence                                                       */
+  /* Persistence */
   /* ---------------------------------------------------------------- */
 
   const PROGRESS_KEY = "cm_protocol_progress";
@@ -19,7 +19,7 @@
   function loadProgress() {
     try {
       const raw = JSON.parse(localStorage.getItem(PROGRESS_KEY));
-      return { unlocked: raw && raw.unlocked ? raw.unlocked : 1, completed: (raw && raw.completed) || [] };
+      return { unlocked: raw && raw.unlocked? raw.unlocked: 1, completed: (raw && raw.completed) || [] };
     } catch (e) {
       return { unlocked: 1, completed: [] };
     }
@@ -88,7 +88,7 @@
     try { localStorage.removeItem(AUTH_TOKEN_KEY); localStorage.removeItem(AUTH_NAME_KEY); } catch (e) {}
   }
 
-  // חבר מביא חבר — קולטים ?ref= מהקישור בכניסה ושומרים אותו עד ההרשמה.
+  // חבר מביא חבר — קולטים?ref= מהקישור בכניסה ושומרים אותו עד ההרשמה.
   const REF_KEY = "cm_ref";
   (function captureRef() {
     try {
@@ -115,7 +115,7 @@
       if (token || err) {
         // מסירים את הפרמטרים מה-URL כדי שלא יישארו/יישלחו בשיתוף
         q.delete("cm_oauth"); q.delete("cm_name"); q.delete("cm_oauth_error");
-        const clean = location.pathname + (q.toString() ? "?" + q.toString() : "") + location.hash;
+        const clean = location.pathname + (q.toString()? "?" + q.toString(): "") + location.hash;
         history.replaceState(null, "", clean);
       }
     } catch (e) {}
@@ -145,13 +145,13 @@
         { id: "facebook", label: "המשך עם Facebook", Mark: FacebookMark },
       ];
       Promise.all(
-        defs.map((d) => fetch("/api/auth/oauth/" + d.id).then((r) => (r.ok ? d : null)).catch(() => null))
+        defs.map((d) => fetch("/api/auth/oauth/" + d.id).then((r) => (r.ok? d: null)).catch(() => null))
       ).then((res) => { if (alive) setProviders(res.filter(Boolean)); });
       return () => { alive = false; };
     }, []);
     function go(id) {
       fetch("/api/auth/oauth/" + id)
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => (r.ok? r.json(): null))
         .then((d) => { if (d && d.url) window.location.href = d.url; })
         .catch(() => {});
     }
@@ -175,14 +175,14 @@
     useEffect(() => {
       let alive = true;
       fetch("/api/auth/me", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => (r.ok? r.json(): null))
         .then((d) => { if (alive) setMe(d); })
         .catch(() => {});
       return () => { alive = false; };
     }, []);
-    const origin = (typeof location !== "undefined" && location.origin) || "https://ketysegev.com";
-    const link = me && me.refCode ? `${origin}/?ref=${me.refCode}` : origin;
-    const waText = `גיליתי משהו ששווה — CURE MINDSET של קטי שגב, שיטה לחוסן רגשי וביטחון עצמי 🌿 מוזמנ/ת להתחיל כאן: ${link}`;
+    const origin = (typeof location!== "undefined" && location.origin) || "https://ketysegev.com";
+    const link = me && me.refCode? `${origin}/?ref=${me.refCode}`: origin;
+    const waText = `גיליתי משהו ששווה — CURE MINDSET של קטי שגב, שיטה לחוסן רגשי וביטחון עצמי מוזמנ/ת להתחיל כאן: ${link}`;
     const waHref = `https://wa.me/?text=${encodeURIComponent(waText)}`;
     function copyLink() {
       try {
@@ -191,7 +191,7 @@
     }
     return (
       <div className="cm-slide-up-in rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-3">
-        <p className="font-heading font-bold text-[15px] text-ink-800">אהבת? שתפי את זה הלאה 🌿</p>
+        <p className="font-heading font-bold text-[15px] text-ink-800">אהבת? שתפי את זה הלאה </p>
         <p className="text-[13px] text-ink-600 leading-relaxed">
           כל מי שיצטרפ/ה דרך הקישור האישי שלך יתחיל/תתחיל את המסע — ואת עוזרת להם לצמוח.
         </p>
@@ -210,12 +210,12 @@
             type="button" onClick={copyLink}
             className="shrink-0 px-4 py-2.5 rounded-xl bg-gold-500 text-white font-heading font-bold text-[13px] hover:bg-gold-600 transition-colors"
           >
-            {copied ? "הועתק ✓" : "העתקה"}
+            {copied? "הועתק ✓": "העתקה"}
           </button>
         </div>
-        {me && me.referrals > 0 ? (
-          <p className="text-[12.5px] text-gold-700 font-semibold text-center">כבר הזמנת {me.referrals} אנשים — כל הכבוד! 💛</p>
-        ) : null}
+        {me && me.referrals > 0? (
+          <p className="text-[12.5px] text-gold-700 font-semibold text-center">כבר הזמנת {me.referrals} אנשים — כל הכבוד!</p>
+        ): null}
       </div>
     );
   }
@@ -230,7 +230,7 @@
 
     function load() {
       fetch("/api/goals", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : { goals: [], areas: [] }))
+        .then((r) => (r.ok? r.json(): { goals: [], areas: [] }))
         .then((d) => { setGoals(d.goals || []); setAreas(d.areas || []); setArea((a) => a || (d.areas && d.areas[0]) || ""); })
         .catch(() => {});
     }
@@ -252,11 +252,11 @@
       fetch(`/api/goals/${g.id}`, { method: "DELETE", headers: authHeaders() }).then(load);
     }
 
-    const active = goals.filter((g) => g.status !== "archived");
+    const active = goals.filter((g) => g.status!== "archived");
     return (
       <div className="cm-slide-up-in rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-3.5">
         <div>
-          <p className="font-heading font-bold text-[15px] text-ink-800">🎯 היעדים שלי</p>
+          <p className="font-heading font-bold text-[15px] text-ink-800"> היעדים שלי</p>
           <p className="text-[12.5px] text-ink-500 mt-1">2–5 יעדים אישיים שאנחנו עוקבים אחריהם יחד — הצמיחה שלך, מדידה.</p>
         </div>
 
@@ -279,7 +279,7 @@
                 <button type="button" onClick={() => bump(g, -10)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 text-ink-600 font-bold hover:border-gold-400">−</button>
                 <button type="button" onClick={() => bump(g, 10)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 text-ink-600 font-bold hover:border-gold-400">+</button>
               </div>
-              <span className="text-[12.5px] font-heading font-bold text-gold-700">{g.progress}%{g.status === "done" ? " ✓ הושלם" : ""}</span>
+              <span className="text-[12.5px] font-heading font-bold text-gold-700">{g.progress}%{g.status === "done"? " ✓ הושלם": ""}</span>
             </div>
           </div>
         ))}
@@ -313,7 +313,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Age group onboarding                                              */
+  /* Age group onboarding */
   /* ---------------------------------------------------------------- */
 
   function AgeGroupOnboarding({ onDone }) {
@@ -361,10 +361,10 @@
                   : "border-ink-200 bg-ink-50 hover:border-gold-300"
               }`}
             >
-              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value ? "bg-gold-500 text-white" : "bg-ink-200 text-ink-600"}`}>
+              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value? "bg-gold-500 text-white": "bg-ink-200 text-ink-600"}`}>
                 <Icon name={opt.icon} size={20} />
               </span>
-              <span className={`font-heading font-bold text-[15px] ${selected === opt.value ? "text-gold-700" : "text-ink-700"}`}>{opt.label}</span>
+              <span className={`font-heading font-bold text-[15px] ${selected === opt.value? "text-gold-700": "text-ink-700"}`}>{opt.label}</span>
               <span className="text-[12px] text-ink-400">{opt.desc}</span>
             </button>
           ))}
@@ -375,14 +375,14 @@
           onClick={confirm}
           className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
         >
-          {saving ? "שומר..." : "מתחילים"}
+          {saving? "שומר...": "מתחילים"}
         </button>
       </div>
     );
   }
 
   /* ---------------------------------------------------------------- */
-  /* Access gate — 3-day (72h) trial + personal access code                 */
+  /* Access gate — 3-day (72h) trial + personal access code */
   /* ---------------------------------------------------------------- */
 
   // Shown as a blocking overlay when the trial expired (dismissible=false), or as a
@@ -424,7 +424,7 @@
         {status === "error" && <p className="text-[13px] text-red-500 font-medium">{errorMsg}</p>}
         <button type="button" disabled={!code.trim() || status === "loading"} onClick={redeem}
           className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600">
-          {status === "loading" ? "בודק..." : "הפעלת הקוד"}
+          {status === "loading"? "בודק...": "הפעלת הקוד"}
         </button>
       </div>
     );
@@ -437,7 +437,7 @@
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)" }}>
               <Icon name="sparkles" size={28} className="text-white" />
             </div>
-            <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName ? `${firstName}, ` : ""}המסע שלך רק התחיל 🌿</h2>
+            <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName? `${firstName}, `: ""}המסע שלך רק התחיל </h2>
             <p className="text-[14.5px] text-ink-500 leading-relaxed mb-6">3 הימים הראשונים היו רק הפתיחה. המודולים, התרגילים והמלווה שמכיר אותך — כולם ממשיכים איתך. בואי נמשיך יחד את הדרך.</p>
 
             <div className="w-full space-y-2.5 mb-7 text-right">
@@ -463,18 +463,18 @@
             </button>
 
             <div className="mt-6 w-full">
-              {showCode ? (
+              {showCode? (
                 <div className="w-full">
                   <p className="text-[12.5px] text-ink-500 mb-2">קיבלת קוד אישי מקטי? הזיני אותו כאן:</p>
                   {CodeBox}
                 </div>
-              ) : (
+              ): (
                 <button type="button" onClick={() => setShowCode(true)} className="text-[13px] text-gold-700 underline font-semibold">כבר יש לך קוד גישה?</button>
               )}
             </div>
 
             <div className="mt-6 flex flex-col items-center gap-2">
-              <button type="button" onClick={onShowSummary} className="text-[13px] text-ink-500 underline">הסיכום שלי מהמסע 🌿</button>
+              <button type="button" onClick={onShowSummary} className="text-[13px] text-ink-500 underline">הסיכום שלי מהמסע </button>
               <a href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%20%F0%9F%8C%BF" target="_blank" rel="noopener noreferrer" className="text-[12.5px] text-ink-400 underline">שאלה לפני שממשיכים? כתבי לי</a>
             </div>
           </div>
@@ -505,7 +505,7 @@
 
     useEffect(() => {
       fetch("/api/journey-summary", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => (r.ok? r.json(): null))
         .then(setData)
         .catch(() => {});
     }, []);
@@ -530,11 +530,11 @@
       `סיכום המסע שלי ב-CureMindset · ${data.journeyDay} ימים`,
       "",
       `שיחות צ'ק-אין: ${s.checkins}`,
-      `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief ? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)` : ""}`,
+      `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)`: ""}`,
       `משימות יומיות שהושלמו: ${s.tasksDone} מתוך ${s.tasksTotal}`,
       "",
-      data.wins.length ? "הניצחונות שלי:\n" + data.wins.map((w) => `• ${w.title || w.text}`).join("\n") : "",
-      data.patterns.length ? "\nדפוסים שזיהינו יחד:\n" + data.patterns.map((p) => `• ${p.title}`).join("\n") : "",
+      data.wins.length? "הניצחונות שלי:\n" + data.wins.map((w) => `• ${w.title || w.text}`).join("\n"): "",
+      data.patterns.length? "\nדפוסים שזיהינו יחד:\n" + data.patterns.map((p) => `• ${p.title}`).join("\n"): "",
       "",
       "CureMindset · שיטת קטי שגב",
     ].join("\n");
@@ -560,7 +560,7 @@
             ))}
           </div>
 
-          {s.avgRelief != null && (
+          {s.avgRelief!= null && (
             <div className="rounded-2xl bg-gold-500 py-4 px-5 text-center">
               <p className="font-heading font-extrabold text-[26px] text-white leading-none">{s.avgRelief}%</p>
               <p className="text-[12.5px] text-white mt-1.5">ירידה ממוצעת בעומס הרגשי אחרי תרגול</p>
@@ -576,7 +576,7 @@
                     <Icon name="shield-check" size={16} className="text-gold-500 mt-0.5 shrink-0" />
                     <span>
                       <span className="font-semibold">{w.title || w.text}</span>
-                      {w.description ? <span className="text-ink-500"> — {w.description}</span> : null}
+                      {w.description? <span className="text-ink-500"> — {w.description}</span>: null}
                     </span>
                   </li>
                 ))}
@@ -591,7 +591,7 @@
                 {data.patterns.map((p, i) => (
                   <li key={i} className="rounded-xl border border-ink-100 px-3.5 py-3 text-[13.5px] text-ink-600 leading-snug">
                     <span className="font-semibold text-ink-800">{p.title}</span>
-                    {p.description ? ` — ${p.description}` : ""}
+                    {p.description? ` — ${p.description}`: ""}
                   </li>
                 ))}
               </ul>
@@ -630,14 +630,14 @@
     return (
       <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
         <span className="text-[12.5px] text-gold-700 font-medium">
-          🌿 המסע שלך פתוח — {daysLeft === 1 ? "יום אחרון בהתנסות" : `נותרו ${daysLeft} ימי התנסות`}
+           המסע שלך פתוח — {daysLeft === 1? "יום אחרון בהתנסות": `נותרו ${daysLeft} ימי התנסות`}
         </span>
       </div>
     );
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage metadata                                                    */
+  /* Stage metadata */
   /* ---------------------------------------------------------------- */
 
   const STAGES = [
@@ -652,7 +652,7 @@
   ];
 
   /* ---------------------------------------------------------------- */
-  /* Shared bits                                                       */
+  /* Shared bits */
   /* ---------------------------------------------------------------- */
 
   function Field({ icon, label, value, onChange, placeholder, textarea }) {
@@ -661,10 +661,10 @@
     return (
       <label className="block">
         <span className="flex items-center gap-2 mb-2 text-[13px] font-heading font-semibold text-ink-700">
-          {icon ? <Icon name={icon} size={16} className="text-gold-600 shrink-0" /> : null}
+          {icon? <Icon name={icon} size={16} className="text-gold-600 shrink-0" />: null}
           {label}
         </span>
-        {textarea ? (
+        {textarea? (
           <textarea
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -672,7 +672,7 @@
             rows={2}
             className={`${inputClass} resize-none`}
           />
-        ) : (
+        ): (
           <input
             type="text"
             value={value}
@@ -691,7 +691,7 @@
         type="button"
         onClick={onClick}
         className={`px-3.5 py-2 rounded-full text-[13px] font-heading font-semibold border transition-colors ${
-          active ? "bg-gold-500 text-white border-gold-500" : "bg-white text-ink-600 border-ink-200 hover:border-gold-300"
+          active? "bg-gold-500 text-white border-gold-500": "bg-white text-ink-600 border-ink-200 hover:border-gold-300"
         }`}
       >
         {children}
@@ -705,7 +705,7 @@
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}
-            className={`h-1.5 rounded-full transition-all ${i + 1 === current ? "w-6 bg-gold-500" : "w-1.5 bg-ink-200"}`}
+            className={`h-1.5 rounded-full transition-all ${i + 1 === current? "w-6 bg-gold-500": "w-1.5 bg-ink-200"}`}
           />
         ))}
       </div>
@@ -718,13 +718,13 @@
         <div className="cm-breathe w-24 h-24 rounded-full bg-gradient-to-br from-gold-200 to-gold-400 shadow-soft flex items-center justify-center">
           <div className="w-14 h-14 rounded-full bg-white/70" />
         </div>
-        {label ? <p className="mt-4 text-[13px] text-ink-500 text-center">{label}</p> : null}
+        {label? <p className="mt-4 text-[13px] text-ink-500 text-center">{label}</p>: null}
       </div>
     );
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 1 — Anchoring                                                */
+  /* Stage 1 — Anchoring */
   /* ---------------------------------------------------------------- */
 
   function AnchorStage({ onComplete }) {
@@ -755,7 +755,7 @@
           iconPos="end"
           disabled={!canContinue}
           onClick={() => canContinue && onComplete(anchorWord.trim())}
-          style={!canContinue ? { opacity: 0.45, cursor: "not-allowed" } : undefined}
+          style={!canContinue? { opacity: 0.45, cursor: "not-allowed" }: undefined}
         >
           השלמתי את העוגן · למעבר לשלב הבא
         </Button>
@@ -764,7 +764,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 2 — Differentiation Border                                  */
+  /* Stage 2 — Differentiation Border */
   /* ---------------------------------------------------------------- */
 
   function BorderStage({ onComplete }) {
@@ -816,7 +816,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 3 — Grounding (3-2-1 protocol)                               */
+  /* Stage 3 — Grounding (3-2-1 protocol) */
   /* ---------------------------------------------------------------- */
 
   const TENSION_AREAS = ["כתפיים", "חזה", "בטן", "צוואר וגרון", "ידיים", "ראש"];
@@ -832,7 +832,7 @@
     const [sessionsCount, setSessionsCount] = useState(() => loadSessions().length);
 
     function toggleTension(area) {
-      setTension((prev) => (prev.includes(area) ? prev.filter((a) => a !== area) : [...prev, area]));
+      setTension((prev) => (prev.includes(area)? prev.filter((a) => a!== area): [...prev, area]));
     }
 
     function updateAt(list, setList, index, value) {
@@ -862,7 +862,7 @@
       <div className="space-y-5">
         <StepDots total={4} current={step} />
 
-        {step === 1 ? (
+        {step === 1? (
           <div className="space-y-5">
             <div>
               <h3 className="font-heading font-bold text-lg text-ink-800 mb-2">שלב 1 · בדיקת גוף</h3>
@@ -884,9 +884,9 @@
               המשך לשלב 2
             </Button>
           </div>
-        ) : null}
+        ): null}
 
-        {step === 2 ? (
+        {step === 2? (
           <div className="space-y-5">
             <div>
               <h3 className="font-heading font-bold text-lg text-ink-800 mb-2">שלב 2 · תרגול 3-2-1</h3>
@@ -943,9 +943,9 @@
               </Button>
             </div>
           </div>
-        ) : null}
+        ): null}
 
-        {step === 3 ? (
+        {step === 3? (
           <div className="space-y-5">
             <div>
               <h3 className="font-heading font-bold text-lg text-ink-800 mb-2">שלב 3 · עוגן הקרקוע</h3>
@@ -966,9 +966,9 @@
               </Button>
             </div>
           </div>
-        ) : null}
+        ): null}
 
-        {step === 4 ? (
+        {step === 4? (
           <div className="space-y-6">
             <div>
               <h3 className="font-heading font-bold text-lg text-ink-800 mb-2">כמה ירד העומס הרגשי?</h3>
@@ -992,18 +992,18 @@
               </div>
               <div className="flex flex-wrap gap-2 justify-center mt-4">
                 {[0, 25, 50, 75, 100].map((v) => (
-                  <Chip key={v} active={score === v} onClick={() => !saved && setScore(v)}>
+                  <Chip key={v} active={score === v} onClick={() =>!saved && setScore(v)}>
                     {v}%
                   </Chip>
                 ))}
               </div>
             </div>
 
-            {!saved ? (
+            {!saved? (
               <Button as="button" type="button" variant="primary" className="w-full" icon="check-circle-2" onClick={handleSave}>
                 שמירת התוצאה
               </Button>
-            ) : (
+            ): (
               <div className="space-y-3">
                 <p className="flex items-center justify-center gap-2 text-[14px] font-heading font-semibold text-gold-700 bg-gold-50 border border-gold-100 rounded-2xl px-4 py-3">
                   <Icon name="check-circle-2" size={18} /> התוצאה נשמרה. השלמתם {sessionsCount} תרגולי קרקוע עד כה.
@@ -1014,13 +1014,13 @@
               </div>
             )}
           </div>
-        ) : null}
+        ): null}
       </div>
     );
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 5 — Conversational Check-in (Behavioral Health Check)       */
+  /* Stage 5 — Conversational Check-in (Behavioral Health Check) */
   /* ---------------------------------------------------------------- */
 
   function ListeningWaveform() {
@@ -1047,8 +1047,8 @@
         <div
           className="relative rounded-3xl border backdrop-blur-xl transition-all duration-500"
           style={{
-            borderColor: filled ? "rgba(211,168,87,0.65)" : "rgba(255,255,255,0.12)",
-            boxShadow: filled ? "0 0 34px -6px rgba(211,168,87,0.45)" : "0 0 0 rgba(0,0,0,0)",
+            borderColor: filled? "rgba(211,168,87,0.65)": "rgba(255,255,255,0.12)",
+            boxShadow: filled? "0 0 34px -6px rgba(211,168,87,0.45)": "0 0 0 rgba(0,0,0,0)",
             background: "rgba(255,255,255,0.05)",
           }}
         >
@@ -1068,7 +1068,7 @@
               disabled={!filled || disabled}
               aria-label="שליחה"
               className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-gold-300 to-gold-500 text-ink-800 shadow-soft transition-all ${
-                filled && !disabled ? "cm-send-pulse opacity-100 scale-100" : "opacity-35 scale-95"
+                filled &&!disabled? "cm-send-pulse opacity-100 scale-100": "opacity-35 scale-95"
               }`}
             >
               <Icon name="arrow-up" size={18} strokeWidth={2.5} />
@@ -1096,7 +1096,7 @@
     return (
       <p className="text-[15px] leading-relaxed text-ink-700">
         {typed}
-        {typed.length < reply.length ? <span className="cm-cursor-blink text-gold-400">▍</span> : null}
+        {typed.length < reply.length? <span className="cm-cursor-blink text-gold-400">▍</span>: null}
       </p>
     );
   }
@@ -1111,7 +1111,7 @@
             <Icon name="sparkles" size={14} className="text-gold-400 shrink-0" />
             <span className="font-heading font-semibold text-[14px] text-ink-800">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
           </span>
-          <Icon name={open ? "chevron-up" : "chevron-down"} size={16} className="text-ink-400 shrink-0" />
+          <Icon name={open? "chevron-up": "chevron-down"} size={16} className="text-ink-400 shrink-0" />
         </button>
         {open && (
           <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-ink-600 space-y-3" dir="rtl">
@@ -1154,8 +1154,8 @@
           <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-3">
             <Icon name="heart-handshake" size={26} />
           </div>
-          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">{name ? `היי ${name} 🌿 ככה זה עובד` : "איך זה עובד?"}</h3>
-          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name ? `שלושה צעדים פשוטים למסע האישי שלך, ${name}.` : "שלושה צעדים פשוטים למסע שלך עם CureMindset."}</p>
+          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">{name? `היי ${name}, ככה זה עובד`: "איך זה עובד?"}</h3>
+          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name? `שלושה צעדים פשוטים למסע האישי שלך, ${name}.`: "שלושה צעדים פשוטים למסע שלך עם CureMindset."}</p>
           <div className="space-y-3 text-right">
             {steps.map(([n, t, d]) => (
               <div key={n} className="flex gap-3 items-start">
@@ -1171,7 +1171,7 @@
             type="button" onClick={onStart}
             className="w-full mt-5 py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors"
           >
-            בואו נתחיל 🌿
+            בואו נתחיל
           </button>
           <p className="text-[10.5px] text-ink-400 mt-3 leading-relaxed">
             השירות אינו מהווה ייעוץ רפואי. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.
@@ -1181,44 +1181,118 @@
     );
   }
 
+  // אינדיקציית "קטי מקלידה..." — שלוש נקודות מונפשות, נקי בלי אימוג'ים.
+  function TypingDots() {
+    return (
+      <div className="flex items-center gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <span key={i} className="w-2 h-2 rounded-full bg-gold-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+        ))}
+      </div>
+    );
+  }
+
+  // בועת הודעה בשיחה — משתמש (זהב, מימין) או קטי (לבן, משמאל).
+  function ChatBubble({ msg, animate, onNavigateStage }) {
+    const isUser = msg.role === "user";
+    if (isUser) {
+      return (
+        <div className="flex justify-start cm-fade-in-soft">
+          <div className="max-w-[82%] rounded-3xl rounded-br-lg bg-gold-500 text-white px-4 py-3 shadow-soft">
+            <p className="text-[14.5px] leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="flex justify-end cm-fade-in-soft">
+        <div className="max-w-[86%] w-full">
+          <div className="flex items-center gap-2 mb-1.5 justify-end pe-1">
+            <span className="text-[11px] font-heading font-semibold text-gold-500">קטי · מלווה דיגיטלית</span>
+            <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center shrink-0">
+              <Icon name="sparkles" size={13} />
+            </span>
+          </div>
+          <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3.5 shadow-softer">
+            {animate? (
+              <TypedReply reply={msg.text} />
+            ): (
+              <p className="text-[14.5px] leading-relaxed text-ink-700 whitespace-pre-wrap">{msg.text}</p>
+            )}
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
+              <SpeakButton text={msg.text} label="האזנה" />
+              {msg.locked? (
+                <a href="/#plans" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12px] hover:bg-gold-600 transition-colors">
+                  למסלולים
+                </a>
+              ): null}
+            </div>
+          </div>
+          {msg.task? (
+            <div className="mt-2.5 rounded-2xl border border-gold-400/40 bg-gold-50/70 px-4 py-3.5">
+              <div className="flex items-center gap-2 mb-1">
+                <Icon name="heart" size={14} className="text-gold-600 shrink-0" />
+                <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">תרגול אישי בשבילך</span>
+              </div>
+              <p className="font-heading font-bold text-[14px] text-ink-800">{msg.task.title}</p>
+              {msg.task.description? <p className="text-[13px] text-ink-600 leading-relaxed mt-0.5">{msg.task.description}</p>: null}
+              <button type="button" onClick={() => onNavigateStage && onNavigateStage(7)}
+                className="mt-2.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12.5px] hover:bg-gold-600 transition-colors">
+                לתרגול המלא
+              </button>
+            </div>
+          ): null}
+        </div>
+      </div>
+    );
+  }
+
+  // מסך הליבה: שיחה רציפה עם קטי AI — היסטוריה נשמרת, "קטי מקלידה", האזנה, הובלה לתרגול/תשלום.
   function CheckInStage({ onDashboardUpdate, onNavigateStage }) {
-    const [text, setText] = useState("");
-    const [status, setStatus] = useState("idle"); // idle | loading | done | error
-    const [reply, setReply] = useState("");
-    const [errMsg, setErrMsg] = useState("");
-    const [dashboardData, setDashboardData] = useState(null);
-    const [showDashboard, setShowDashboard] = useState(false);
-    const [showIntro, setShowIntro] = useState(() => {
-      try { return !localStorage.getItem("cm_intro_seen"); } catch (e) { return true; }
+    const THREAD_KEY = "cm_chat_thread_v1";
+    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
+    const greeting = `היי${firstName? " " + firstName: ""}, אני קטי — אני כאן איתך, בלי שיפוט ובלי למהר.\nמה עובר עלייך עכשיו? כתבי בחופשיות, כמו שזה יוצא.`;
+
+    const [messages, setMessages] = useState(() => {
+      try {
+        const raw = localStorage.getItem(THREAD_KEY);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr) && arr.length) return arr.map((m) => ({...m, fresh: false }));
+        }
+      } catch (e) {}
+      return [{ role: "kety", text: greeting, ts: Date.now(), fresh: false }];
     });
+    const [input, setInput] = useState("");
+    const [sending, setSending] = useState(false);
+    const [showIntro, setShowIntro] = useState(() => {
+      try { return!localStorage.getItem("cm_intro_seen"); } catch (e) { return true; }
+    });
+    const scrollRef = useRef(null);
+
     function dismissIntro() {
       try { localStorage.setItem("cm_intro_seen", "1"); } catch (e) {}
       setShowIntro(false);
     }
 
-    // פרופיל האבחון מההרשמה — מציג "המיקוד שלך" מותאם אישית (חיבור הרשמה→תוכן).
-    const [profile, setProfile] = useState(null);
+    // שמירת היסטוריית השיחה במכשיר (עד 60 הודעות אחרונות).
     useEffect(() => {
-      fetch("/api/profile", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : null))
-        .then((d) => { if (d && d.assessment && (d.assessment.challenge || d.assessment.goal)) setProfile(d.assessment); })
-        .catch(() => {});
-    }, []);
-    // המלצת מודול לפי האתגר שהוזן באבחון.
-    function recommend(ch) {
-      const c = ch || "";
-      if (c.includes("חרד") || c.includes("עומס") || c.includes("הצפ")) return "מומלץ להתחיל ב‏עוגן‏ — יצירת יציבות וויסות ראשוני.";
-      if (c.includes("ביצוע") || c.includes("דחיינ") || c.includes("כישל")) return "מומלץ להתחיל ב‏גבול ההבחנה‏ — הפרדת רגש ממחשבה ומעשה.";
-      if (c.includes("ביקורת") || c.includes("פרפקצ") || c.includes("ספק")) return "מומלץ להתחיל ב‏דימוי עצמי‏ (שער 2 במסע) — בניית עוגן פנימי.";
-      return "מומלץ להתחיל ב‏קרקוע‏ — חזרה לגוף ולכאן-ועכשיו.";
-    }
+      try { localStorage.setItem(THREAD_KEY, JSON.stringify(messages.slice(-60))); } catch (e) {}
+    }, [messages]);
 
-    async function handleSend() {
-      const trimmed = text.trim();
-      if (!trimmed || status === "loading") return;
-      setStatus("loading");
-      setErrMsg("");
-      setShowDashboard(false);
+    // גלילה אוטומטית לתחתית עם כל הודעה חדשה / בזמן הקלדה.
+    useEffect(() => {
+      const el = scrollRef.current;
+      if (el) el.scrollTop = el.scrollHeight;
+    }, [messages, sending]);
+
+    async function send() {
+      const trimmed = input.trim();
+      if (!trimmed || sending) return;
+      setMessages((m) => [...m, { role: "user", text: trimmed, ts: Date.now() }]);
+      setInput("");
+      setSending(true);
       try {
         const res = await fetch("/api/checkin", {
           method: "POST",
@@ -1226,127 +1300,93 @@
           body: JSON.stringify({ text: trimmed }),
         });
         if (!res.ok) {
-          // Surface WHY so it's clear what's blocking the AI (server sends a Hebrew reason).
           const errData = await res.json().catch(() => ({}));
-          setErrMsg(
-            res.status === 402
-              ? (errData.error || "תקופת הניסיון הסתיימה — נדרש קוד גישה כדי להמשיך בליווי.") + " אפשר להזין קוד גישה במסך המסלולים."
-              : errData.error ||
-                  (res.status === 503
-                    ? "המלווה אינו זמין כרגע. נסי שוב עוד רגע."
-                    : "המלווה לא הצליח להשיב כרגע. נסי שוב עוד רגע.")
-          );
-          throw new Error("request failed");
+          const locked = res.status === 402;
+          const msg = locked
+            ? (errData.error || "תקופת ההתנסות הסתיימה — כדי להמשיך בליווי אפשר להצטרף לאחד המסלולים.")
+            : (errData.error || (res.status === 503
+                ? "אני כאן, רק צריכה רגע — ננסה שוב בעוד רגע?"
+                : "לא הצלחתי להשיב כרגע. ננסה שוב בעוד רגע? אני איתך."));
+          setMessages((m) => [...m, { role: "kety", text: msg, ts: Date.now(), fresh: true, locked }]);
+          return;
         }
         const data = await res.json();
-        setReply(data.reply || "תודה שחלקת את זה איתי. אני כאן.");
-        setDashboardData(data.dashboard || null);
-        if (onDashboardUpdate) onDashboardUpdate(data.dashboard || null);
-        setStatus("done");
-        setText("");
-        setTimeout(() => setShowDashboard(true), 350);
+        if (onDashboardUpdate && data.dashboard) onDashboardUpdate(data.dashboard);
+        setMessages((m) => [...m, {
+          role: "kety",
+          text: data.reply || "תודה ששיתפת אותי בזה. אני כאן.",
+          ts: Date.now(),
+          fresh: true,
+          task: data.dailyTask || null,
+        }]);
       } catch (e) {
-        setStatus("error");
+        setMessages((m) => [...m, { role: "kety", text: "נראה שיש רגע של תקלה בחיבור. ננסה שוב עוד רגע? אני כאן.", ts: Date.now(), fresh: true }]);
+      } finally {
+        setSending(false);
       }
     }
 
-    function startOver() {
-      setStatus("idle");
-      setReply("");
-      setShowDashboard(false);
+    function onKeyDown(e) {
+      if (e.key === "Enter" &&!e.shiftKey) {
+        e.preventDefault();
+        send();
+      }
     }
 
+    const lastIdx = messages.length - 1;
+
     return (
-      <div className="relative min-h-full overflow-hidden">
-        {showIntro ? <ProcessIntro onStart={dismissIntro} /> : null}
-        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-gold-400/25 blur-3xl cm-glow-drift" />
-        <div className="pointer-events-none absolute bottom-[-90px] -left-12 h-64 w-64 rounded-full bg-gold-300/15 blur-3xl cm-glow-drift-slow" />
+      <div className="relative flex flex-col h-full overflow-hidden">
+        {showIntro? <ProcessIntro onStart={dismissIntro} />: null}
+        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-gold-400/20 blur-3xl cm-glow-drift" />
 
-        <div className="relative z-10 px-1 pb-4">
-          {status === "idle" || status === "error" ? (
-            <>
-              <header className="mb-6 px-1 cm-fade-in-soft">
-                <div className="flex items-center gap-2 mb-3">
-                  <Icon name="message-circle" size={15} className="text-gold-400" />
-                  <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset · צ'ק-אין</span>
-                </div>
-                <p className="font-heading text-[18px] font-bold text-ink-800 leading-snug">
-                  היי{profile && profile.name ? ` ${profile.name}` : ""}, אני כאן איתך.
-                  <br />
-                  ספרי לי איך עבר עלייך היום ומה שלומך עכשיו?
-                </p>
-              </header>
-              {profile ? (
-                <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-200 bg-gold-50/70 px-4 py-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon name="sparkles" size={15} className="text-gold-500" />
-                    <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">המיקוד שלך · מותאם אישית מהאבחון</span>
-                  </div>
-                  {profile.challenge ? <p className="text-[13.5px] text-ink-700"><b className="text-ink-800">האתגר שבחרת:</b> {profile.challenge}</p> : null}
-                  {profile.goal ? <p className="text-[13.5px] text-ink-700 mt-1"><b className="text-ink-800">המטרה שלך:</b> {profile.goal}</p> : null}
-                  <p className="text-[12.5px] text-gold-700 mt-2.5 leading-relaxed">{recommend(profile.challenge)}</p>
-                </div>
-              ) : null}
-              <NeuroplasticityIntro />
-              <CheckInComposer text={text} setText={setText} onSend={handleSend} disabled={status === "loading"} />
-              {status === "error" ? (
-                <div className="cm-fade-in-soft mt-5 rounded-2xl border border-ink-200 bg-white px-4 py-4 text-center">
-                  <p className="text-[13px] leading-relaxed text-ink-600">{errMsg || "לא הצלחנו כרגע להתחבר אלייך — נסי שוב בעוד רגע."}</p>
-                </div>
-              ) : null}
-            </>
-          ) : null}
-
-          {status === "loading" ? <ListeningWaveform /> : null}
-
-          {status === "done" ? (
-            <div className="space-y-6">
-              <div className="cm-fade-in-soft rounded-3xl border border-gold-200 bg-white px-5 py-5 backdrop-blur-xl">
-                <div className="flex items-center gap-2 mb-2.5">
-                  <Icon name="sparkles" size={13} className="text-gold-400" />
-                  <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">CureMindset</span>
-                </div>
-                <TypedReply reply={reply} />
+        {/* אזור ההודעות — נגלל */}
+        <div ref={scrollRef} className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4">
+          {messages.map((m, i) => (
+            <ChatBubble
+              key={m.ts + "-" + i}
+              msg={m}
+              animate={m.role === "kety" && m.fresh && i === lastIdx}
+              onNavigateStage={onNavigateStage}
+            />
+          ))}
+          {sending? (
+            <div className="flex justify-end cm-fade-in-soft">
+              <div className="flex items-center gap-2.5 rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3 shadow-softer">
+                <TypingDots />
+                <span className="text-[12.5px] text-ink-400">קטי מקלידה…</span>
               </div>
-
-              {showDashboard && dashboardData ? (
-                <div className="cm-slide-up-in">
-                  <ResilienceDashboard data={dashboardData} onNavigateStage={onNavigateStage} />
-                </div>
-              ) : null}
-
-              {showDashboard ? (
-                <div className="cm-slide-up-in rounded-3xl border border-gold-400/30 bg-gold-400/[0.06] px-5 py-5 space-y-3.5">
-                  <p className="font-heading font-bold text-[15px] text-ink-800">להעמיק את השינוי — הצעד הבא שלך</p>
-                  <p className="text-[13px] text-ink-600 leading-relaxed">
-                    קבלי את התרגול וההמלצה האישית ישירות לוואטסאפ, והצטרפי לליווי המלא של CureMindset כדי להפוך את זה לשינוי שמחזיק.
-                  </p>
-                  <a
-                    href={`https://wa.me/972543032349?text=${encodeURIComponent("היי קטי! סיימתי שיחת ייעוץ דיגיטלית ואשמח לקבל את התרגול, הליווי וההמלצה האישית")}`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-[#25D366] text-white font-heading font-bold text-[14px] hover:opacity-90 transition-opacity"
-                  >
-                    <Icon name="whatsapp" size={18} /> קבלת התרגול והליווי בוואטסאפ
-                  </a>
-                  <a
-                    href="/#plans" target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[14px] hover:bg-gold-600 transition-colors"
-                  >
-                    להצטרפות לתוכניות הליווי המלאות
-                  </a>
-                </div>
-              ) : null}
-
-              {showDashboard ? <GoalsCard /> : null}
-              {showDashboard ? <ShareInvite /> : null}
-
-              {showDashboard ? (
-                <Button as="button" type="button" variant="secondary" className="w-full" icon="message-circle" onClick={startOver}>
-                  שיחה נוספת
-                </Button>
-              ) : null}
             </div>
-          ) : null}
+          ): null}
+        </div>
+
+        {/* מחבר ההודעות — נעוץ בתחתית */}
+        <div className="relative z-10 shrink-0 border-t border-gold-100 bg-white/85 backdrop-blur-xl px-3 py-3">
+          <div className="flex items-end gap-2">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value.slice(0, 4000))}
+              onKeyDown={onKeyDown}
+              placeholder="כתבי כאן בחופשיות…"
+              rows={1}
+              disabled={sending}
+              className="flex-1 resize-none max-h-32 rounded-3xl border border-ink-200 bg-ink-50/60 px-4 py-3 text-[15px] leading-relaxed text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400 focus:ring-2 focus:ring-gold-200 transition-colors"
+            />
+            <button
+              type="button"
+              onClick={send}
+              disabled={!input.trim() || sending}
+              aria-label="שליחה"
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-500 text-white shadow-soft transition-all ${
+                input.trim() &&!sending? "opacity-100 scale-100 hover:from-gold-500 hover:to-gold-600": "opacity-40 scale-95"
+              }`}
+            >
+              <Icon name="arrow-up" size={18} strokeWidth={2.5} />
+            </button>
+          </div>
+          <p className="text-[10.5px] text-ink-300 text-center mt-2">
+            זמינה 24/7 · שיחה פרטית ומוצפנת · אינו תחליף לטיפול רפואי
+          </p>
         </div>
       </div>
     );
@@ -1377,16 +1417,16 @@
           <div className="flex-1 min-w-0">
             <p className="text-[10.5px] font-heading font-semibold uppercase tracking-wider text-gold-600 mb-0.5">{meta.label}</p>
             <p className="font-heading font-bold text-[14.5px] text-ink-800 leading-snug">{material.title}</p>
-            {material.notes ? (
-              <p className={`mt-1 leading-relaxed ${isLesson ? "text-[13.5px] text-ink-700 whitespace-pre-line" : "text-[12.5px] text-ink-500"}`}>
+            {material.notes? (
+              <p className={`mt-1 leading-relaxed ${isLesson? "text-[13.5px] text-ink-700 whitespace-pre-line": "text-[12.5px] text-ink-500"}`}>
                 {material.notes}
               </p>
-            ) : null}
+            ): null}
           </div>
         </div>
-        {material.type === "audio" && hasUrl ? (
+        {material.type === "audio" && hasUrl? (
           <div className="mt-3"><audio controls src={material.url} className="w-full" /></div>
-        ) : hasUrl ? (
+        ): hasUrl? (
           <div className="mt-3">
             <a
               href={material.url}
@@ -1394,11 +1434,11 @@
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-gold-600 hover:text-gold-700"
             >
-              {isLesson ? "לצפייה בתוכן" : "לפתיחת הקובץ"}
+              {isLesson? "לצפייה בתוכן": "לפתיחת הקובץ"}
               <Icon name="arrow-up-right" size={13} />
             </a>
           </div>
-        ) : null}
+        ): null}
       </div>
     );
   }
@@ -1409,8 +1449,8 @@
 
     useEffect(() => {
       fetch("/api/materials", { headers: authHeaders() })
-        .then((res) => (res.ok ? res.json() : Promise.reject()))
-        .then((data) => setMaterials(Array.isArray(data) ? data : []))
+        .then((res) => (res.ok? res.json(): Promise.reject()))
+        .then((data) => setMaterials(Array.isArray(data)? data: []))
         .catch(() => setError(true));
     }, []);
 
@@ -1424,19 +1464,19 @@
           <p className="text-[13px] text-ink-500 leading-relaxed">חומרים אישיים שהוקצו לך — דמיון מודרך, דפי עבודה וסיכומים.</p>
         </header>
 
-        {error ? (
+        {error? (
           <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
             <p className="text-[13px] text-ink-500">לא הצלחנו לטעון את החומרים כרגע. נסי שוב בעוד רגע.</p>
           </div>
-        ) : materials === null ? (
+        ): materials === null? (
           <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
             <p className="text-[13px] text-ink-400">טוענת...</p>
           </div>
-        ) : materials.length === 0 ? (
+        ): materials.length === 0? (
           <div className="rounded-2xl border border-ink-100 bg-white px-4 py-6 text-center">
             <p className="text-[13px] text-ink-500">עוד לא הוקצו לך חומרים. כשהמטפלת תשייך לך משהו, הוא יופיע כאן.</p>
           </div>
-        ) : (
+        ): (
           materials.map((m) => <MaterialCard key={m.id} material={m} />)
         )}
       </div>
@@ -1444,7 +1484,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Tasks stage                                                        */
+  /* Tasks stage */
   /* ---------------------------------------------------------------- */
 
   const TASK_CATEGORY_ICONS = {
@@ -1470,19 +1510,19 @@
     useEffect(() => {
       fetch("/api/tasks", { headers: authHeaders() })
         .then((r) => r.json())
-        .then((data) => setTasks(Array.isArray(data) ? data : []))
+        .then((data) => setTasks(Array.isArray(data)? data: []))
         .catch(() => setTasks([]));
     }, []);
 
     function completeTask(id) {
       setCompleting(id);
       fetch(`/api/tasks/${id}/complete`, { method: "POST", headers: authHeaders() })
-        .then(() => setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, completed: 1 } : t))))
+        .then(() => setTasks((prev) => prev.map((t) => (t.id === id? {...t, completed: 1 }: t))))
         .finally(() => setCompleting(null));
     }
 
-    const pending = tasks ? tasks.filter((t) => !t.completed) : [];
-    const done = tasks ? tasks.filter((t) => t.completed) : [];
+    const pending = tasks? tasks.filter((t) =>!t.completed): [];
+    const done = tasks? tasks.filter((t) => t.completed): [];
 
     return (
       <div className="space-y-4">
@@ -1494,16 +1534,16 @@
           <p className="text-[13px] text-ink-500 leading-relaxed">משימות קטנות שנגזרו עבורך מהשיחות עם הבוט הטיפולי. צעד קטן ביום.</p>
         </header>
 
-        {tasks === null ? (
+        {tasks === null? (
           <div className="rounded-2xl border border-ink-100 bg-white px-4 py-5 text-center">
             <p className="text-[13px] text-ink-400">טוענת...</p>
           </div>
-        ) : pending.length === 0 && done.length === 0 ? (
+        ): pending.length === 0 && done.length === 0? (
           <div className="rounded-2xl border border-ink-100 bg-white px-4 py-6 text-center">
             <Icon name="sparkles" size={28} className="text-gold-300 mx-auto mb-2" />
             <p className="text-[13px] text-ink-500">עוד אין משימות. אחרי הצ'ק-אין הראשון שלך תקבלי משימה יומית מותאמת אישית.</p>
           </div>
-        ) : (
+        ): (
           <>
             {pending.map((task) => (
               <div key={task.id} className="rounded-2xl border border-gold-200 bg-gold-50 px-4 py-4 flex items-start gap-3">
@@ -1522,7 +1562,7 @@
                   disabled={completing === task.id}
                   className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-semibold bg-gold-500 text-white hover:bg-gold-600 transition-colors disabled:opacity-50"
                 >
-                  {completing === task.id ? "..." : "עשיתי!"}
+                  {completing === task.id? "...": "עשיתי!"}
                 </button>
               </div>
             ))}
@@ -1544,7 +1584,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Phone frame + nav                                                  */
+  /* Phone frame + nav */
   /* ---------------------------------------------------------------- */
 
   function PhoneFrame({ children }) {
@@ -1569,8 +1609,8 @@
     useEffect(() => {
       function loadUnread() {
         fetch("/api/notifications", { headers: authHeaders() })
-          .then((r) => r.ok ? r.json() : [])
-          .then((rows) => setUnread(rows.filter((n) => !n.read).length))
+          .then((r) => r.ok? r.json(): [])
+          .then((rows) => setUnread(rows.filter((n) =>!n.read).length))
           .catch(() => {});
       }
       loadUnread();
@@ -1604,7 +1644,7 @@
             <Icon name="bell" size={18} />
             {unread > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
-                {unread > 9 ? "9+" : unread}
+                {unread > 9? "9+": unread}
               </span>
             )}
           </button>
@@ -1630,11 +1670,11 @@
         <div className="cm-sheet__panel">
           <div className="cm-sheet__head">
             <span className="cm-sheet__hic"><Icon name="sliders-horizontal" size={19} /></span>
-            <b>{tab === "privacy" ? "פרטיות ותנאים" : "הגדרות"}</b>
+            <b>{tab === "privacy"? "פרטיות ותנאים": "הגדרות"}</b>
             <button type="button" className="cm-sheet__x" onClick={onClose} aria-label="סגירה"><Icon name="x" size={18} /></button>
           </div>
           <div className="cm-sheet__scroll">
-            {tab === "main" ? (
+            {tab === "main"? (
               <React.Fragment>
                 <p className="cm-sheet__sec">חשבון</p>
                 <div className="cm-sheet__row">
@@ -1660,9 +1700,9 @@
                   <div className="cm-sheet__txt"><b>התנתקות</b></div>
                   <Icon name="arrow-left" size={18} />
                 </button>
-                <p className="cm-sheet__ver">CureMindset · השיטה של קטי שגב 🌿</p>
+                <p className="cm-sheet__ver">CureMindset · השיטה של קטי שגב </p>
               </React.Fragment>
-            ) : (
+            ): (
               <div className="cm-privacy">
                 <button type="button" className="cm-privacy__back" onClick={() => setTab("main")}><Icon name="arrow-right" size={16} /> חזרה להגדרות</button>
                 <h4>מדיניות פרטיות ותנאי שימוש · CureMindset</h4>
@@ -1686,7 +1726,7 @@
                 <p className="cm-privacy__h">6. קטינים</p>
                 <p>שימוש של בני נוער נעשה בליווי ובהסכמת הורה/אפוטרופוס, האחראים לפרטיות הקטין/ה.</p>
 
-                <p className="cm-privacy__note">⚠️ <b>הבהרה רפואית:</b> CureMindset הוא ליווי רגשי-תודעתי ואינו מהווה ייעוץ, אבחון או טיפול רפואי או נפשי, ואינו תחליף לגורם מקצועי. במצב מצוקה חריפה או חירום — יש לפנות מיד לגורם מקצועי, לרופא/ה, או לקו סיוע.</p>
+                <p className="cm-privacy__note"> <b>הבהרה רפואית:</b> CureMindset הוא ליווי רגשי-תודעתי ואינו מהווה ייעוץ, אבחון או טיפול רפואי או נפשי, ואינו תחליף לגורם מקצועי. במצב מצוקה חריפה או חירום — יש לפנות מיד לגורם מקצועי, לרופא/ה, או לקו סיוע.</p>
 
                 <p className="cm-privacy__h">7. שינויים ויצירת קשר</p>
                 <p>אנו רשאים לעדכן מסמך זה מעת לעת. לכל שאלה בנושא פרטיות — ketyse@gmail.com.</p>
@@ -1704,11 +1744,11 @@
       { icon: "sliders-horizontal", label: "הגדרות ופרופיל", run: onSettings },
       { icon: "star", label: "סיפורי הצלחה", run: onStories },
       { icon: "message-circle", label: "עזרה ותמיכה",
-        run: () => window.open("https://wa.me/972543032349?text=" + encodeURIComponent("היי קטי, אשמח לעזרה 🙏"), "_blank", "noopener") },
+        run: () => window.open("https://wa.me/972543032349?text=" + encodeURIComponent("היי קטי, אשמח לעזרה"), "_blank", "noopener") },
       { icon: "log-out", label: "התנתקות", run: onLogout },
     ];
     return (
-      <div className={`cm-drawer${open ? " cm-drawer--open" : ""}`} aria-hidden={!open}>
+      <div className={`cm-drawer${open? " cm-drawer--open": ""}`} aria-hidden={!open}>
         <div className="cm-drawer__scrim" onClick={onClose} />
         <aside className="cm-drawer__panel" role="dialog" aria-label="תפריט">
           <div className="cm-drawer__head">
@@ -1728,7 +1768,7 @@
               </button>
             ))}
           </nav>
-          <p className="cm-drawer__foot">CureMindset · השיטה של קטי שגב 🌿</p>
+          <p className="cm-drawer__foot">CureMindset · השיטה של קטי שגב </p>
         </aside>
       </div>
     );
@@ -1741,34 +1781,34 @@
   function StageNav({ stages, progress, current, onSelect }) {
     // מציגים רק את שלבי מערכת CureMindset (לא את הפרוטוקול הישן), וגם הם בהדרגה.
     const visible = stages.filter(
-      (s) => !LEGACY_STAGE_IDS.includes(s.id) && (s.alwaysUnlocked || s.id <= progress.unlocked)
+      (s) =>!LEGACY_STAGE_IDS.includes(s.id) && (s.alwaysUnlocked || s.id <= progress.unlocked)
     );
     return (
       <div className="flex items-center px-4 py-3.5 gap-1 border-b border-ink-100 bg-white shrink-0">
         {visible.map((s, i) => {
           const done = progress.completed.includes(s.id);
-          const locked = !s.alwaysUnlocked && s.id > progress.unlocked;
+          const locked =!s.alwaysUnlocked && s.id > progress.unlocked;
           const isCurrent = s.id === current;
           return (
             <React.Fragment key={s.id}>
               <button
                 type="button"
                 disabled={locked}
-                onClick={() => !locked && onSelect(s.id)}
+                onClick={() =>!locked && onSelect(s.id)}
                 className={`flex flex-col items-center gap-1.5 flex-1 py-1 rounded-xl transition-colors ${
-                  locked ? "opacity-40 cursor-not-allowed" : "cursor-pointer hover:bg-gold-50"
+                  locked? "opacity-40 cursor-not-allowed": "cursor-pointer hover:bg-gold-50"
                 }`}
               >
                 <span
                   className={`w-9 h-9 rounded-full flex items-center justify-center ${
-                    isCurrent ? "bg-gold-500 text-white" : done ? "bg-gold-100 text-gold-600" : "bg-ink-100 text-ink-400"
+                    isCurrent? "bg-gold-500 text-white": done? "bg-gold-100 text-gold-600": "bg-ink-100 text-ink-400"
                   }`}
                 >
-                  <Icon name={locked ? "lock" : done && !isCurrent ? "check-circle-2" : s.icon} size={16} />
+                  <Icon name={locked? "lock": done &&!isCurrent? "check-circle-2": s.icon} size={16} />
                 </span>
-                <span className={`text-[10.5px] font-heading font-semibold ${isCurrent ? "text-ink-800" : "text-ink-400"}`}>{s.title}</span>
+                <span className={`text-[10.5px] font-heading font-semibold ${isCurrent? "text-ink-800": "text-ink-400"}`}>{s.title}</span>
               </button>
-              {i < visible.length - 1 ? <span className="h-px w-3 bg-ink-100 mt-[-14px]" aria-hidden="true" /> : null}
+              {i < visible.length - 1? <span className="h-px w-3 bg-ink-100 mt-[-14px]" aria-hidden="true" />: null}
             </React.Fragment>
           );
         })}
@@ -1777,7 +1817,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Notifications panel                                               */
+  /* Notifications panel */
   /* ---------------------------------------------------------------- */
 
   function NotificationsPanel({ onClose }) {
@@ -1786,19 +1826,19 @@
 
     useEffect(() => {
       fetch("/api/notifications", { headers: authHeaders() })
-        .then((r) => r.ok ? r.json() : [])
+        .then((r) => r.ok? r.json(): [])
         .then((rows) => { setNotifications(rows); setLoading(false); })
         .catch(() => setLoading(false));
     }, []);
 
     function markAllRead() {
       fetch("/api/notifications/read-all", { method: "POST", headers: authHeaders() });
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: 1 })));
+      setNotifications((prev) => prev.map((n) => ({...n, read: 1 })));
     }
 
     function markRead(id) {
       fetch(`/api/notifications/${id}/read`, { method: "POST", headers: authHeaders() });
-      setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: 1 } : n));
+      setNotifications((prev) => prev.map((n) => n.id === id? {...n, read: 1 }: n));
     }
 
     const typeIcon = { reminder: "clock", win: "trophy", info: "info" };
@@ -1822,13 +1862,13 @@
               key={n.id}
               type="button"
               onClick={() => markRead(n.id)}
-              className={`w-full text-right flex gap-3 px-5 py-4 transition-colors hover:bg-gold-50 ${n.read ? "opacity-60" : "bg-gold-50/40"}`}
+              className={`w-full text-right flex gap-3 px-5 py-4 transition-colors hover:bg-gold-50 ${n.read? "opacity-60": "bg-gold-50/40"}`}
             >
-              <span className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type === "win" ? "bg-gold-100 text-gold-600" : "bg-ink-100 text-ink-500"}`}>
+              <span className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${n.type === "win"? "bg-gold-100 text-gold-600": "bg-ink-100 text-ink-500"}`}>
                 <Icon name={typeIcon[n.type] || "bell"} size={15} />
               </span>
               <div className="flex-1 min-w-0">
-                <p className={`text-[13px] leading-snug ${n.read ? "text-ink-500" : "text-ink-800 font-medium"}`}>{n.message}</p>
+                <p className={`text-[13px] leading-snug ${n.read? "text-ink-500": "text-ink-800 font-medium"}`}>{n.message}</p>
                 <p className="text-[11px] text-ink-400 mt-1">{new Date(n.created_at).toLocaleDateString("he-IL")}</p>
               </div>
               {!n.read && <span className="w-2 h-2 rounded-full bg-gold-500 mt-1.5 shrink-0" />}
@@ -1840,11 +1880,11 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Root                                                               */
+  /* Root */
   /* ---------------------------------------------------------------- */
 
   /* ---------------------------------------------------------------- */
-  /* Auth gate — הרשמה והתחברות עם מייל וסיסמה                          */
+  /* Auth gate — הרשמה והתחברות עם מייל וסיסמה */
   /* ---------------------------------------------------------------- */
 
   // שאלון אבחון אינטראקטיבי (בהשראת Curable): מטרה → משך → תובנה → הרשמה.
@@ -1853,7 +1893,7 @@
   function OnboardingQuiz({ onComplete, onExit }) {
     const SCRIPT = [
       { key: "name", type: "text", ph: "השם שלך",
-        q: "היי, אני כאן איתך מטעם CureMindset 🌿 יחד נזהה את הדפוס שמעכב אותך, ונתחיל לבנות חוסן וביטחון אמיתי — כזה שמחזיק. ספרי לי, איך קוראים לך?" },
+        q: "היי, אני כאן איתך מטעם CureMindset יחד נזהה את הדפוס שמעכב אותך, ונתחיל לבנות חוסן וביטחון אמיתי — כזה שמחזיק. ספרי לי, איך קוראים לך?" },
       { key: "challenge",
         q: "נעים להכיר! מה האתגר המרכזי שתרצי/ה לשחרר כרגע?",
         opts: ["עומס, הצפה רגשית ותקיעות", "חרדת ביצוע, פחד מכישלון או דחיינות", "ביקורת עצמית גבוהה ופרפקציוניזם", "ספק עצמי וחוסר שקט פנימי"] },
@@ -1874,11 +1914,11 @@
     const done = stage >= SCRIPT.length;
 
     const DISCLAIMER =
-      "עוד לפני שנצלול 🌿 חשוב לי שתדעי: המרחב הזה הוא ליווי רגשי-תודעתי בשיטת CureMindset, ואינו תחליף לייעוץ או טיפול רפואי/נפשי מקצועי. אם את/ה במצוקה חריפה או במצב חירום — מומלץ מאוד לפנות לגורם מקצועי או לקו סיוע. וכעת, נמשיך יחד 💛";
+      "עוד לפני שנצלול חשוב לי שתדעי: המרחב הזה הוא ליווי רגשי-תודעתי בשיטת CureMindset, ואינו תחליף לייעוץ או טיפול רפואי/נפשי מקצועי. אם את/ה במצוקה חריפה או במצב חירום — מומלץ מאוד לפנות לגורם מקצועי או לקו סיוע. וכעת, נמשיך יחד";
     const INSIGHT =
-      "אני כבר רואה את התמונה שלך 🌿 המערכת שלך פשוט עובדת שעות נוספות כדי להגן עלייך — וזה בדיוק מה שמייצר את התקיעות. בשיטת CureMindset נחליף יחד את המאמץ הזה בחיווט מחדש, בעדינות ובקצב שלך.";
+      "אני כבר רואה את התמונה שלך המערכת שלך פשוט עובדת שעות נוספות כדי להגן עלייך — וזה בדיוק מה שמייצר את התקיעות. בשיטת CureMindset נחליף יחד את המאמץ הזה בחיווט מחדש, בעדינות ובקצב שלך.";
     const FINAL =
-      "איזה כיף להכיר אותך 🌿 כבר יש לי תמונה ראשונית שלך והכיוון שמתאים לך. בואי ניצור לך מרחב אישי ונשמור את מה שהתחלנו — כדי לקבל את התוכנית שלך:";
+      "איזה כיף להכיר אותך כבר יש לי תמונה ראשונית שלך והכיוון שמתאים לך. בואי ניצור לך מרחב אישי ונשמור את מה שהתחלנו — כדי לקבל את התוכנית שלך:";
 
     // גלילה אוטומטית לתחתית עם כל הודעה חדשה
     useEffect(() => {
@@ -1890,7 +1930,7 @@
       const v = String(val).trim();
       if (!v) return;
       const key = SCRIPT[stage].key;
-      setAnswers((a) => ({ ...a, [key]: v }));
+      setAnswers((a) => ({...a, [key]: v }));
       setText("");
       setTyping(true);
       setTimeout(() => { setTyping(false); setStage((s) => s + 1); }, 800);
@@ -1908,9 +1948,9 @@
     for (let i = 0; i <= stage && i < SCRIPT.length; i++) {
       // הבהרה רפואית — מופיעה אחרי השם, ממש לפני השאלה הראשונה.
       if (i === 1) bubbles.push({ id: "disc", sender: "bot", text: DISCLAIMER });
-      const q = typeof SCRIPT[i].q === "function" ? SCRIPT[i].q(answers) : SCRIPT[i].q;
+      const q = typeof SCRIPT[i].q === "function"? SCRIPT[i].q(answers): SCRIPT[i].q;
       bubbles.push({ id: "b" + i, sender: "bot", text: q });
-      if (answers[SCRIPT[i].key] !== undefined)
+      if (answers[SCRIPT[i].key]!== undefined)
         bubbles.push({ id: "u" + i, sender: "user", text: answers[SCRIPT[i].key] });
     }
     if (done) {
@@ -1918,7 +1958,7 @@
       bubbles.push({ id: "final", sender: "bot", text: FINAL });
     }
 
-    const cur = done ? null : SCRIPT[stage];
+    const cur = done? null: SCRIPT[stage];
     const pct = Math.round((Math.min(stage, SCRIPT.length) / SCRIPT.length) * 100);
 
     return (
@@ -1927,7 +1967,7 @@
           <div className="chat-onb__avatar"><Icon name="sparkles" size={20} /></div>
           <div className="chat-onb__id">
             <b>CureMindset Companion</b>
-            <span>{typing ? "מקליד…" : "כאן איתך, ברגע הזה"}</span>
+            <span>{typing? "מקליד…": "כאן איתך, ברגע הזה"}</span>
           </div>
           <button type="button" className="chat-onb__exit" onClick={onExit} aria-label="חזרה לאתר">
             <Icon name="x" size={18} />
@@ -1945,11 +1985,11 @@
         </div>
 
         <div className="chat-onb__foot">
-          {done ? (
+          {done? (
             <button type="button" className="chat-onb__cta" onClick={finish}>
               להרשמה וקבלת התוכנית האישית
             </button>
-          ) : cur.type === "text" ? (
+          ): cur.type === "text"? (
             <form className="chat-onb__inrow" onSubmit={(e) => { e.preventDefault(); answer(text); }}>
               <input className="chat-onb__input" value={text} onChange={(e) => setText(e.target.value)}
                      placeholder={cur.ph} autoFocus maxLength={40} />
@@ -1957,7 +1997,7 @@
                 <Icon name="arrow-left" size={18} />
               </button>
             </form>
-          ) : (
+          ): (
             <div className="chat-onb__opts">
               {cur.opts.map((o) => (
                 <button type="button" key={o} className="chat-onb__opt" onClick={() => answer(o)}>{o}</button>
@@ -1999,23 +2039,23 @@
       <div className="au-card" style={{ gridTemplateColumns: "1fr" }}>
         <div className="au-form-col">
           <div className="au-form-col__head">
-            <h3>{step === "done" ? "הסיסמה עודכנה 🌿" : "שחזור סיסמה"}</h3>
-            <p>{step === "request" ? "נשלח לך קוד איפוס למייל." : step === "reset" ? "הזיני את הקוד שקיבלת במייל וסיסמה חדשה." : "מעכשיו אפשר להתחבר עם הסיסמה החדשה."}</p>
+            <h3>{step === "done"? "הסיסמה עודכנה ": "שחזור סיסמה"}</h3>
+            <p>{step === "request"? "נשלח לך קוד איפוס למייל.": step === "reset"? "הזיני את הקוד שקיבלת במייל וסיסמה חדשה.": "מעכשיו אפשר להתחבר עם הסיסמה החדשה."}</p>
           </div>
-          {step === "request" ? (
+          {step === "request"? (
             <form className="au-form" onSubmit={request}>
               <input className="au-input" type="email" dir="ltr" placeholder="כתובת המייל שלך" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ textAlign: "right" }} />
-              <button type="submit" className="au-submit" disabled={status === "loading" || !email.trim()}>{status === "loading" ? "רק רגע..." : "שליחת קוד איפוס"}</button>
+              <button type="submit" className="au-submit" disabled={status === "loading" ||!email.trim()}>{status === "loading"? "רק רגע...": "שליחת קוד איפוס"}</button>
             </form>
-          ) : step === "reset" ? (
+          ): step === "reset"? (
             <form className="au-form" onSubmit={reset}>
               <input className="au-input" dir="ltr" placeholder="קוד בן 6 ספרות" value={code} onChange={(e) => setCode(e.target.value)} required style={{ textAlign: "center", letterSpacing: "0.3em" }} />
               <input className="au-input" type="password" placeholder="סיסמה חדשה (6+ תווים)" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              {err ? <p className="au-err">{err}</p> : null}
-              <button type="submit" className="au-submit" disabled={status === "loading"}>{status === "loading" ? "רק רגע..." : "עדכון סיסמה"}</button>
+              {err? <p className="au-err">{err}</p>: null}
+              <button type="submit" className="au-submit" disabled={status === "loading"}>{status === "loading"? "רק רגע...": "עדכון סיסמה"}</button>
               <button type="button" className="au-back" onClick={() => setStep("request")}>לא קיבלתי קוד — שליחה מחדש</button>
             </form>
-          ) : (
+          ): (
             <button type="button" className="au-submit" onClick={onBack}>לכניסה עם הסיסמה החדשה</button>
           )}
           <button type="button" className="au-back" onClick={onBack}>חזרה לכניסה</button>
@@ -2039,7 +2079,7 @@
     const [postRegQuiz, setPostRegQuiz] = useState(false); // שאלון היכרות אחרי ההרשמה (סגנון Curable)
 
     function update(field, value) {
-      setForm((f) => ({ ...f, [field]: value }));
+      setForm((f) => ({...f, [field]: value }));
       if (status === "error") setStatus("idle");
     }
 
@@ -2055,8 +2095,8 @@
       e.preventDefault();
       if (status === "loading") return;
       setStatus("loading");
-      const url = mode === "register" ? "/api/auth/register" : "/api/auth/login";
-      const body = mode === "register" ? { ...form, ref: getRef(), onboarding: onbSummary } : { email: form.email, password: form.password };
+      const url = mode === "register"? "/api/auth/register": "/api/auth/login";
+      const body = mode === "register"? {...form, ref: getRef(), onboarding: onbSummary }: { email: form.email, password: form.password };
       fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
         .then(async (r) => {
           const data = await r.json().catch(() => ({}));
@@ -2143,22 +2183,22 @@
                 <h3>אימות מספר הטלפון</h3>
                 <p>
                   שלחנו קוד בן 6 ספרות ב-SMS
-                  {otp.phoneHint ? <> למספר שמסתיים ב-<b dir="ltr">{otp.phoneHint}</b></> : null}. הזיני אותו כאן להשלמת ההרשמה.
+                  {otp.phoneHint? <> למספר שמסתיים ב-<b dir="ltr">{otp.phoneHint}</b></>: null}. הזיני אותו כאן להשלמת ההרשמה.
                 </p>
               </div>
               <form onSubmit={submitOtp} className="au-form">
                 <input
                   type="text" inputMode="numeric" autoComplete="one-time-code" required
                   value={otp.code}
-                  onChange={(e) => { setOtp((o) => ({ ...o, code: e.target.value.replace(/\D/g, "").slice(0, 6) })); if (status === "error") setStatus("idle"); }}
-                  placeholder="●  ●  ●  ●  ●  ●"
+                  onChange={(e) => { setOtp((o) => ({...o, code: e.target.value.replace(/\D/g, "").slice(0, 6) })); if (status === "error") setStatus("idle"); }}
+                  placeholder="● ● ● ● ● ●"
                   className="au-input"
                   style={{ textAlign: "center", letterSpacing: "0.5em", fontSize: "22px", fontWeight: 700, direction: "ltr" }}
                 />
                 {status === "error" && <p className="au-err">{errorMsg}</p>}
                 {resent && <p style={{ color: "#6f9268", fontSize: "13.5px", fontWeight: 600, textAlign: "center", margin: 0 }}>נשלח קוד חדש ✓</p>}
                 <button type="submit" className="au-submit" disabled={status === "loading" || otp.code.length < 4}>
-                  {status === "loading" ? "מאמת…" : "אימות והמשך"}
+                  {status === "loading"? "מאמת…": "אימות והמשך"}
                 </button>
               </form>
               <p className="au-switch">
@@ -2180,7 +2220,7 @@
           {/* Form column (appears on the right in RTL) */}
           <div className="au-form-col">
             <div className="au-form-col__head">
-              <h3>{isReg ? "בוא/י נתחיל את פריצת הדרך שלך 🌿" : "כניסה לאזור האישי"}</h3>
+              <h3>{isReg? "בוא/י נתחיל את פריצת הדרך שלך ": "כניסה לאזור האישי"}</h3>
               <p>
                 {isReg
                   ? "מרחב אישי ומאובטח — 3 ימי התנסות חינם להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
@@ -2195,16 +2235,16 @@
               )}
               <input type="email" name="email" autoComplete="email" required value={form.email}
                 onChange={(e) => update("email", e.target.value)}
-                placeholder={isReg ? "לאן לשלוח את מפת הדרכים האישית שלך?" : "כתובת מייל"} dir="ltr"
+                placeholder={isReg? "לאן לשלוח את מפת הדרכים האישית שלך?": "כתובת מייל"} dir="ltr"
                 className="au-input" style={{ textAlign: "right" }} />
               {isReg && (
                 <input type="tel" name="tel" autoComplete="tel" required value={form.phone}
                   onChange={(e) => update("phone", e.target.value)} placeholder="טלפון נייד (לשליחת קוד אבטחה)" dir="ltr"
                   className="au-input" style={{ textAlign: "right" }} />
               )}
-              <input type="password" name="password" autoComplete={isReg ? "new-password" : "current-password"} required
+              <input type="password" name="password" autoComplete={isReg? "new-password": "current-password"} required
                 value={form.password} onChange={(e) => update("password", e.target.value)}
-                placeholder={isReg ? "מפתח אישי למרחב השקט שלך (6+ תווים)" : "הסיסמה שלך"} className="au-input" />
+                placeholder={isReg? "מפתח אישי למרחב השקט שלך (6+ תווים)": "הסיסמה שלך"} className="au-input" />
 
               {/* consent — one clean line + modal link (no grey scroll box) */}
               {isReg && (
@@ -2220,17 +2260,17 @@
               )}
 
               {status === "error" && <p className="au-err">{errorMsg}</p>}
-              <button type="submit" className="au-submit" disabled={status === "loading" || (isReg && !agreed)}>
-                {status === "loading" ? "רק רגע..." : isReg ? "מתחילים את פריצת הדרך" : "כניסה"}
+              <button type="submit" className="au-submit" disabled={status === "loading" || (isReg &&!agreed)}>
+                {status === "loading"? "רק רגע...": isReg? "מתחילים את פריצת הדרך": "כניסה"}
               </button>
             </form>
 
             <SocialLogin />
 
             <p className="au-switch">
-              {isReg ? "כבר יש לך חשבון? " : "עדיין אין לך חשבון? "}
-              <button type="button" onClick={() => { setMode(isReg ? "login" : "register"); setStatus("idle"); }}>
-                {isReg ? "להתחברות" : "להרשמה"}
+              {isReg? "כבר יש לך חשבון? ": "עדיין אין לך חשבון? "}
+              <button type="button" onClick={() => { setMode(isReg? "login": "register"); setStatus("idle"); }}>
+                {isReg? "להתחברות": "להרשמה"}
               </button>
             </p>
             {!isReg && (
@@ -2247,7 +2287,7 @@
               <path d="M8 100 L100 112 L192 100 L100 88 Z" fill="currentColor" stroke="none" opacity="0.35" />
             </svg>
             <div className="au-brand__logo"><Icon name="heart-handshake" size={26} /></div>
-            <h2>{isReg ? "ברוכה הבאה ל־CureMindset" : "המרחב האישי שלך מחכה לך"}</h2>
+            <h2>{isReg? "ברוכה הבאה ל־CureMindset": "המרחב האישי שלך מחכה לך"}</h2>
             <p className="au-brand__sub">
               האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולמסע הפנימי, בליווי מבוסס השיטה של קטי שגב.
             </p>
@@ -2277,7 +2317,7 @@
   }
 
   /* ---------------------------------------------------------------- */
-  /* Stage 8 — Structured program: CURE MINDSET guided journey          */
+  /* Stage 8 — Structured program: CURE MINDSET guided journey */
   /* ---------------------------------------------------------------- */
 
   const PROGRAM_GATES = [
@@ -2361,7 +2401,7 @@
   // לא מייצר קובץ; משתמש בקול המובנה (למשל Carmit — קול אישה של אפל). חינמי ומיידי.
   function SpeakButton({ text, label }) {
     const [speaking, setSpeaking] = useState(false);
-    const supported = typeof window !== "undefined" && "speechSynthesis" in window;
+    const supported = typeof window!== "undefined" && "speechSynthesis" in window;
     useEffect(() => () => { try { if (supported) window.speechSynthesis.cancel(); } catch (e) {} }, []);
     function pickHebrewVoice() {
       const voices = window.speechSynthesis.getVoices() || [];
@@ -2390,11 +2430,11 @@
         type="button"
         onClick={toggle}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-heading font-semibold text-[12px] transition-colors ${
-          speaking ? "bg-gold-500 text-white" : "border border-gold-200 text-gold-700 hover:bg-gold-50"
+          speaking? "bg-gold-500 text-white": "border border-gold-200 text-gold-700 hover:bg-gold-50"
         }`}
-        aria-label={speaking ? "עצירת ההאזנה" : "האזנה לתוכן"}
+        aria-label={speaking? "עצירת ההאזנה": "האזנה לתוכן"}
       >
-        <Icon name={speaking ? "pause" : "headphones"} size={13} /> {speaking ? "עצירה" : label || "האזנה"}
+        <Icon name={speaking? "pause": "headphones"} size={13} /> {speaking? "עצירה": label || "האזנה"}
       </button>
     );
   }
@@ -2425,13 +2465,13 @@
           width: 132, height: 132, borderRadius: "50%", display: "grid", placeItems: "center",
           background: "radial-gradient(circle, #f6ecd6, #e6cf9f)", border: "2px solid #c2974a",
           color: "#a9791f", fontFamily: "Rubik, sans-serif", fontWeight: 800, fontSize: 17,
-          transform: `scale(${on ? cur.scale : 0.85})`, transition: "transform 3.7s ease-in-out",
+          transform: `scale(${on? cur.scale: 0.85})`, transition: "transform 3.7s ease-in-out",
         }}>
-          {on ? cur.label : "מוכנה?"}
+          {on? cur.label: "מוכנה?"}
         </div>
-        <button type="button" onClick={() => setOn((o) => !o)}
+        <button type="button" onClick={() => setOn((o) =>!o)}
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
-          <Icon name={on ? "pause" : "play"} size={14} /> {on ? "עצירה" : "נשימת קופסה · 4-4-4-4"}
+          <Icon name={on? "pause": "play"} size={14} /> {on? "עצירה": "נשימת קופסה · 4-4-4-4"}
         </button>
       </div>
     );
@@ -2479,9 +2519,9 @@
             <span className="block font-heading font-semibold text-[10.5px] tracking-[0.16em] opacity-90">מודול {mod.id} · CURE MINDSET</span>
             <span className="block font-heading font-extrabold text-[17px]">{mod.title}</span>
           </span>
-          <span className="shrink-0" style={{ transition: "transform .3s", transform: open ? "rotate(180deg)" : "none" }}><Icon name="chevron-down" size={20} /></span>
+          <span className="shrink-0" style={{ transition: "transform.3s", transform: open? "rotate(180deg)": "none" }}><Icon name="chevron-down" size={20} /></span>
         </button>
-        {open ? (
+        {open? (
           <div className="p-5 space-y-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
@@ -2503,7 +2543,7 @@
                 placeholder={mod.writePh} className="w-full rounded-2xl border border-ink-200 px-3.5 py-2.5 text-[13px] text-ink-700 resize-none focus:outline-none focus:border-gold-300" />
               <button type="button" onClick={save}
                 className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[13px] hover:bg-gold-600 transition-colors">
-                {saved ? "נשמר 🌿" : "שמירה"}
+                {saved? "נשמר ": "שמירה"}
               </button>
             </div>
             <div>
@@ -2512,9 +2552,9 @@
                 <span className="font-heading font-bold text-[14.5px] text-ink-800">להירגע</span>
                 <span className="text-[11.5px] text-ink-400">· 2 דק׳</span>
               </div>
-              {mod.calm.type === "breath" ? (
+              {mod.calm.type === "breath"? (
                 <BreathingGuide />
-              ) : (
+              ): (
                 <div className="rounded-2xl bg-gold-50 border border-gold-200 px-4 py-3.5">
                   <p className="text-[13.5px] text-ink-700 leading-relaxed mb-2.5">{mod.calm.text}</p>
                   <SpeakButton text={mod.calm.text} label="האזנה להנחיה" />
@@ -2522,7 +2562,7 @@
               )}
             </div>
           </div>
-        ) : null}
+        ): null}
       </div>
     );
   }
@@ -2537,7 +2577,7 @@
         </div>
         {GUIDED_MODULES.map((mod, idx) => (
           <GuidedModuleItem key={mod.id} mod={mod} idx={idx} open={openId === mod.id}
-            onToggle={() => setOpenId((cur) => (cur === mod.id ? 0 : mod.id))} />
+            onToggle={() => setOpenId((cur) => (cur === mod.id? 0: mod.id))} />
         ))}
       </div>
     );
@@ -2590,23 +2630,23 @@
 
   // מעקב יומי: רמת חרדה, מצב רוח ואיכות שינה — עם גרף מגמה. תוספת ל"מדד חוסן".
   const MOOD_OPTIONS = [
-    { key: "calm", label: "רגוע", emoji: "😌" },
-    { key: "positive", label: "טוב", emoji: "🙂" },
-    { key: "neutral", label: "ניטרלי", emoji: "😐" },
-    { key: "anxious", label: "חרד/ה", emoji: "😟" },
-    { key: "overwhelmed", label: "מוצף/ת", emoji: "😰" },
+    { key: "calm", label: "רגוע" },
+    { key: "positive", label: "טוב" },
+    { key: "neutral", label: "ניטרלי" },
+    { key: "anxious", label: "חרד/ה" },
+    { key: "overwhelmed", label: "מוצף/ת" },
   ];
 
   function MoodTrendChart({ log }) {
     const pts = log.filter((r) => Number.isFinite(r.anxiety) || Number.isFinite(r.sleep)).slice(-14);
     if (pts.length < 2) {
-      return <p className="text-[12.5px] text-ink-400 text-center py-3">רשמי לפחות שני ימים כדי לראות מגמה 🌱</p>;
+      return <p className="text-[12.5px] text-ink-400 text-center py-3">רשמי לפחות שני ימים כדי לראות מגמה </p>;
     }
     const W = 300, H = 120, pad = 10;
     const x = (i) => pad + (i * (W - 2 * pad)) / (pts.length - 1);
     const y = (v) => H - pad - ((v - 1) / 9) * (H - 2 * pad);
     const line = (key) =>
-      pts.map((r, i) => `${i === 0 ? "M" : "L"} ${x(i).toFixed(1)} ${y(r[key] || 1).toFixed(1)}`).join(" ");
+      pts.map((r, i) => `${i === 0? "M": "L"} ${x(i).toFixed(1)} ${y(r[key] || 1).toFixed(1)}`).join(" ");
     return (
       <div className="overflow-x-auto">
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ minWidth: 260 }} aria-label="גרף מגמה">
@@ -2641,7 +2681,7 @@
 
     function refresh() {
       return fetch("/api/mood", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : []))
+        .then((r) => (r.ok? r.json(): []))
         .then((d) => { if (Array.isArray(d)) setLog(d); })
         .catch(() => {});
     }
@@ -2651,10 +2691,10 @@
       setSaving(true);
       fetch("/api/mood", {
         method: "POST",
-        headers: { ...authHeaders(), "Content-Type": "application/json" },
+        headers: {...authHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ anxiety, sleep, mood, note }),
       })
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => (r.ok? r.json(): null))
         .then(() => refresh())
         .then(() => { setSaved(true); setNote(""); setTimeout(() => setSaved(false), 2500); })
         .catch(() => {})
@@ -2692,18 +2732,18 @@
     const streak = computeStreak(dayKeys);
     const checkedToday = dayKeys.includes(new Date().toISOString().slice(0, 10));
     const hour = new Date().getHours();
-    const greetTime = hour < 12 ? "בוקר טוב" : hour < 18 ? "צהריים טובים" : "ערב טוב";
+    const greetTime = hour < 12? "בוקר טוב": hour < 18? "צהריים טובים": "ערב טוב";
 
     return (
       <div className="rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-4">
         <div>
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-heading font-bold text-[16px] text-ink-800">{greetTime}{firstName ? ` ${firstName}` : ""} 🌿</h3>
-            {streak > 0 ? (
-              <span className="inline-flex items-center gap-1 text-[12px] font-heading font-bold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-1 shrink-0">🔥 {streak} {streak === 1 ? "יום" : "ימים"} ברצף</span>
-            ) : null}
+            <h3 className="font-heading font-bold text-[16px] text-ink-800">{greetTime}{firstName? ` ${firstName}`: ""} </h3>
+            {streak > 0? (
+              <span className="inline-flex items-center gap-1 text-[12px] font-heading font-bold text-gold-700 bg-gold-50 border border-gold-200 rounded-full px-2.5 py-1 shrink-0">{streak} {streak === 1? "יום": "ימים"} ברצף</span>
+            ): null}
           </div>
-          <p className="text-[12.5px] text-ink-500 mt-0.5">{checkedToday ? "עשית צ׳ק-אין היום — יופי! אפשר לעדכן אם משהו השתנה." : "איך היה הלילה? איך את/ה מרגיש/ה עכשיו? רגע קצר של מודעות."}</p>
+          <p className="text-[12.5px] text-ink-500 mt-0.5">{checkedToday? "עשית צ׳ק-אין היום — יופי! אפשר לעדכן אם משהו השתנה.": "איך היה הלילה? איך את/ה מרגיש/ה עכשיו? רגע קצר של מודעות."}</p>
         </div>
 
         <Slider label="רמת חרדה" value={anxiety} setValue={setAnxiety} color="#c2974a" />
@@ -2714,8 +2754,8 @@
           <div className="flex flex-wrap gap-2">
             {MOOD_OPTIONS.map((m) => (
               <button key={m.key} type="button" onClick={() => setMood(m.key)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[12.5px] font-heading font-semibold transition-colors ${mood === m.key ? "border-gold-400 bg-gold-50 text-gold-700" : "border-ink-200 text-ink-600 hover:border-gold-300"}`}>
-                <span>{m.emoji}</span> {m.label}
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-[12.5px] font-heading font-semibold transition-colors ${mood === m.key? "border-gold-400 bg-gold-50 text-gold-700": "border-ink-200 text-ink-600 hover:border-gold-300"}`}>
+                {m.label}
               </button>
             ))}
           </div>
@@ -2727,7 +2767,7 @@
 
         <button type="button" onClick={save} disabled={saving}
           className="w-full rounded-full bg-gold-500 text-white font-heading font-bold text-[14px] py-3 hover:bg-gold-600 transition-colors disabled:opacity-60">
-          {saving ? "שומר..." : saved ? "נשמר! 🌿" : "שמירת הצ׳ק-אין"}
+          {saving? "שומר...": saved? "נשמר! ": "שמירת הצ׳ק-אין"}
         </button>
 
         <div className="pt-1">
@@ -2747,9 +2787,9 @@
     // פתיחה הדרגתית: יום N נפתח N ימים אחרי ההרשמה. מחשבים מ-trialStartAt.
     useEffect(() => {
       fetch("/api/profile", { headers: authHeaders() })
-        .then((r) => (r.ok ? r.json() : null))
+        .then((r) => (r.ok? r.json(): null))
         .then((d) => {
-          if (!d || !d.trialStartAt) return;
+          if (!d ||!d.trialStartAt) return;
           const start = new Date(String(d.trialStartAt).replace(" ", "T"));
           if (isNaN(start)) return;
           const days = Math.floor((Date.now() - start.getTime()) / 86400000) + 1;
@@ -2759,7 +2799,7 @@
     }, []);
     function toggle(day) {
       setDone((prev) => {
-        const next = prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day];
+        const next = prev.includes(day)? prev.filter((d) => d!== day): [...prev, day];
         try { localStorage.setItem(PROGRAM_KEY, JSON.stringify(next)); } catch (e) {}
         return next;
       });
@@ -2775,8 +2815,8 @@
         <div className="rounded-3xl px-5 py-4 flex items-center gap-3" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)", color: "#fff" }}>
           <span className="shrink-0 w-11 h-11 rounded-full bg-white/25 flex items-center justify-center"><Icon name="sparkles" size={22} /></span>
           <div className="min-w-0">
-            <p className="font-heading font-extrabold text-[16px]">{firstName ? `היי ${firstName}, ` : ""}יום {currentDay} שלך מחכה 🌿</p>
-            <p className="text-[12.5px] opacity-90 truncate">{todayTitle ? `היום: ${todayTitle}` : "מוכנה להמשיך את המסע?"}</p>
+            <p className="font-heading font-extrabold text-[16px]">{firstName? `היי ${firstName}, `: ""}יום {currentDay} שלך מחכה </p>
+            <p className="text-[12.5px] opacity-90 truncate">{todayTitle? `היום: ${todayTitle}`: "מוכנה להמשיך את המסע?"}</p>
           </div>
         </div>
         <div>
@@ -2812,25 +2852,25 @@
                         <span className="shrink-0 w-9 h-9 rounded-full bg-ink-100 text-ink-400 flex items-center justify-center"><Icon name="lock" size={16} /></span>
                         <div className="flex-1 min-w-0">
                           <p className="font-heading font-bold text-[14px] text-ink-500">יום {d.day} · {d.title}</p>
-                          <p className="text-[12px] text-gold-600 mt-0.5 font-semibold">נפתח בעוד {d.day - currentDay} {d.day - currentDay === 1 ? "יום" : "ימים"} 🌿</p>
+                          <p className="text-[12px] text-gold-600 mt-0.5 font-semibold">נפתח בעוד {d.day - currentDay} {d.day - currentDay === 1? "יום": "ימים"} </p>
                         </div>
                       </div>
                     </div>
                   );
                 }
                 return (
-                  <div key={d.day} className={`rounded-2xl border px-4 py-4 transition-colors ${isDone ? "border-gold-300 bg-gold-50" : isToday ? "border-gold-400 bg-gold-50/60 shadow-[0_8px_24px_-14px_rgba(194,151,74,0.8)]" : "border-ink-100 bg-white"}`}>
+                  <div key={d.day} className={`rounded-2xl border px-4 py-4 transition-colors ${isDone? "border-gold-300 bg-gold-50": isToday? "border-gold-400 bg-gold-50/60 shadow-[0_8px_24px_-14px_rgba(194,151,74,0.8)]": "border-ink-100 bg-white"}`}>
                     <div className="flex items-start gap-3">
                       <button
                         type="button"
                         onClick={() => toggle(d.day)}
-                        aria-label={isDone ? "בטל סימון" : "סמן כהושלם"}
-                        className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center font-heading font-bold text-[14px] transition-colors ${isDone ? "bg-gold-500 text-white" : "bg-gold-50 text-gold-600 border border-gold-200"}`}
+                        aria-label={isDone? "בטל סימון": "סמן כהושלם"}
+                        className={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center font-heading font-bold text-[14px] transition-colors ${isDone? "bg-gold-500 text-white": "bg-gold-50 text-gold-600 border border-gold-200"}`}
                       >
-                        {isDone ? <Icon name="check-circle" size={18} /> : d.day}
+                        {isDone? <Icon name="check-circle" size={18} />: d.day}
                       </button>
                       <div className="flex-1 min-w-0">
-                        <p className="font-heading font-bold text-[15px] text-ink-800">יום {d.day} · {d.title}{isToday ? <span className="mr-2 align-middle text-[10.5px] font-heading font-bold text-white bg-gold-500 rounded-full px-2 py-0.5">היום</span> : null}</p>
+                        <p className="font-heading font-bold text-[15px] text-ink-800">יום {d.day} · {d.title}{isToday? <span className="mr-2 align-middle text-[10.5px] font-heading font-bold text-white bg-gold-500 rounded-full px-2 py-0.5">היום</span>: null}</p>
                         <p className="text-[13px] text-ink-600 mt-1 leading-relaxed">{d.focus}</p>
                         <p className="text-[12.5px] text-gold-700 mt-1.5"><span className="font-semibold">תרגול:</span> {d.practice}</p>
                         <div className="flex flex-wrap gap-2 mt-3">
@@ -2846,7 +2886,7 @@
                             onClick={() => toggle(d.day)}
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-ink-200 text-ink-600 font-heading font-semibold text-[12.5px] hover:border-gold-300 transition-colors"
                           >
-                            {isDone ? "בטל סימון" : "סמן כהושלם"}
+                            {isDone? "בטל סימון": "סמן כהושלם"}
                           </button>
                         </div>
                       </div>
@@ -2868,7 +2908,7 @@
   function OpeningCarousel({ onDone }) {
     const CREAM = "#FAF7F2", GOLD = "#DCCAA4", INK = "#2D2A26";
     const SCREENS = [
-      { icon: "heart-handshake", title: "ברוכה הבאה 🌿", text: "הגעת למקום הנכון. כאן נלווה אותך צעד אחר צעד — בעדינות, ובקצב שלך." },
+      { icon: "heart-handshake", title: "ברוכה הבאה ", text: "הגעת למקום הנכון. כאן נלווה אותך צעד אחר צעד — בעדינות, ובקצב שלך." },
       { icon: "wind", title: "מה שאת מרגישה — זו לא חולשה", text: "חרדה, עומס, ביקורת עצמית — הם אזעקה של המערכת העצבית שמנסה להגן עלייך. ואפשר לכוון אותה מחדש." },
       { icon: "sparkles", title: "השיטה: לחווט מחדש את המוח", text: "CureMindset משלבת NLP ונוירופלסטיות — ומלמדת את המוח מסלול חדש, רגוע ובטוח. זה מדע, לא קסם." },
       { icon: "users", title: "ואת לא לבד בזה", text: "מעל 500 אנשים כבר עשו את המסע הזה והחזירו לעצמם את השליטה בחיים. עכשיו תורך." },
@@ -2882,7 +2922,7 @@
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 20px" }}>
           <div style={{ display: "flex", gap: 6 }}>
             {SCREENS.map((_, k) => (
-              <span key={k} style={{ width: k === i ? 22 : 7, height: 7, borderRadius: 99, background: k === i ? INK : GOLD, transition: "all .3s" }} />
+              <span key={k} style={{ width: k === i? 22: 7, height: 7, borderRadius: 99, background: k === i? INK: GOLD, transition: "all.3s" }} />
             ))}
           </div>
           <button type="button" onClick={onDone} style={{ background: "none", border: "none", color: "#9b917f", fontSize: 13, cursor: "pointer" }}>דלג</button>
@@ -2895,9 +2935,9 @@
           <p style={{ fontSize: 16.5, lineHeight: 1.7, color: "#5c554b", maxWidth: 340, margin: 0 }}>{s.text}</p>
         </div>
         <div style={{ padding: "0 28px 34px" }}>
-          <button type="button" onClick={() => (last ? onDone() : setI(i + 1))}
+          <button type="button" onClick={() => (last? onDone(): setI(i + 1))}
             style={{ width: "100%", padding: 16, borderRadius: 18, border: "none", cursor: "pointer", background: INK, color: CREAM, fontFamily: '"Rubik",sans-serif', fontWeight: 800, fontSize: 16.5 }}>
-            {last ? "בואי נתחיל 🌿" : "המשך"}
+            {last? "בואי נתחיל ": "המשך"}
           </button>
         </div>
       </div>
@@ -2905,16 +2945,16 @@
   }
 
   function MemberArea({ onExit }) {
-    const [loggedIn, setLoggedIn] = useState(() => !!getAuthToken());
+    const [loggedIn, setLoggedIn] = useState(() =>!!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
     // Open on the AI check-in (stage 5, "צ'ק-אין") so a client who registers
     // immediately meets the AI that asks questions — not the anchor exercise.
     const [current, setCurrent] = useState(5);
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [showOnboarding, setShowOnboarding] = useState(() => !localStorage.getItem(AGE_GROUP_KEY));
+    const [showOnboarding, setShowOnboarding] = useState(() =>!localStorage.getItem(AGE_GROUP_KEY));
     // Carousel פתיחה — מוצג פעם אחת למשתמש חדש, לפני מסך הכניסה/הצ'אט.
-    const [showCarousel, setShowCarousel] = useState(() => { try { return !localStorage.getItem("cm_carousel_seen"); } catch (e) { return true; } });
+    const [showCarousel, setShowCarousel] = useState(() => { try { return!localStorage.getItem("cm_carousel_seen"); } catch (e) { return true; } });
     // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
@@ -2933,7 +2973,7 @@
     useEffect(() => {
       if (!loggedIn) return;
       fetch("/api/access", { headers: authHeaders() })
-        .then((res) => (res.ok ? res.json() : { status: "trial", daysLeft: 14 }))
+        .then((res) => (res.ok? res.json(): { status: "trial", daysLeft: 14 }))
         .then(setAccess)
         .catch(() => setAccess({ status: "trial", daysLeft: 14 }));
     }, [loggedIn]);
@@ -2941,7 +2981,7 @@
     useEffect(() => {
       if (!loggedIn) return;
       fetch("/api/dashboard", { headers: authHeaders() })
-        .then((res) => (res.ok ? res.json() : null))
+        .then((res) => (res.ok? res.json(): null))
         .then((data) => data && setServerDashboard(data))
         .catch(() => {});
     }, [loggedIn]);
@@ -2955,7 +2995,7 @@
 
     function unlock(stageId, nextUnlocked) {
       setProgress((prev) => {
-        const completed = prev.completed.includes(stageId) ? prev.completed : [...prev.completed, stageId];
+        const completed = prev.completed.includes(stageId)? prev.completed: [...prev.completed, stageId];
         const unlocked = Math.max(prev.unlocked, nextUnlocked);
         const next = { completed, unlocked };
         saveProgress(next);
@@ -2965,7 +3005,7 @@
 
     function navigateToStage(stageId) {
       const target = STAGES.find((s) => s.id === stageId);
-      setCurrent(target && (target.alwaysUnlocked || stageId <= progress.unlocked) ? stageId : progress.unlocked);
+      setCurrent(target && (target.alwaysUnlocked || stageId <= progress.unlocked)? stageId: progress.unlocked);
     }
 
     const stage = STAGES.find((s) => s.id === current);
@@ -2975,7 +3015,7 @@
     const FREE_MODULES = 2;
     const paid = access && (access.status === "code" || access.status === "paid");
     const modulesUsed = progress.completed.filter((id) => id >= 1 && id <= 3).length;
-    const trialLocked = !paid && modulesUsed >= FREE_MODULES;
+    const trialLocked =!paid && modulesUsed >= FREE_MODULES;
     // ה-Paywall נחסם כאשר תקופת הניסיון פגה (זמן) או שנוצלו 2 המודולים.
     const expired = (access && access.status === "expired") || trialLocked;
 
@@ -2983,9 +3023,9 @@
     if (!loggedIn) {
       return (
         <PhoneFrame>
-          {showCarousel ? (
+          {showCarousel? (
             <OpeningCarousel onDone={() => { try { localStorage.setItem("cm_carousel_seen", "1"); } catch (e) {} setShowCarousel(false); }} />
-          ) : (
+          ): (
             <AuthGate onAuthed={() => setLoggedIn(true)} onExit={onExit} />
           )}
         </PhoneFrame>
@@ -2994,7 +3034,7 @@
 
     return (
       <PhoneFrame>
-        <Header subtitle={stage ? stage.subtitle : ""} onExit={logout} onNotifications={() => setShowNotifications(true)} onMenu={() => setShowDrawer(true)} />
+        <Header subtitle={stage? stage.subtitle: ""} onExit={logout} onNotifications={() => setShowNotifications(true)} onMenu={() => setShowDrawer(true)} />
         <Drawer
           open={showDrawer}
           onClose={() => setShowDrawer(false)}
@@ -3018,48 +3058,48 @@
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
         {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
-        {showOnboarding && !expired ? (
+        {showOnboarding &&!expired? (
           <div className="flex-1" />
-        ) : current === 8 ? (
+        ): current === 8? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <ProgramStage onNavigateStage={navigateToStage} />
           </div>
-        ) : current === 4 ? (
+        ): current === 4? (
           <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50 space-y-6">
             <MoodTracker />
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
           </div>
-        ) : current === 5 ? (
-          <div className="flex-1 overflow-y-auto px-4 py-6 bg-ink-50">
+        ): current === 5? (
+          <div className="flex-1 min-h-0 flex flex-col bg-ink-50">
             <CheckInStage onDashboardUpdate={setServerDashboard} onNavigateStage={navigateToStage} />
           </div>
-        ) : current === 6 ? (
+        ): current === 6? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <MaterialsStage />
           </div>
-        ) : current === 7 ? (
+        ): current === 7? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <TasksStage />
           </div>
-        ) : (
+        ): (
           <div className="flex-1 overflow-y-auto px-5 py-6">
-            {current === 1 ? (
+            {current === 1? (
               <AnchorStage
                 onComplete={() => {
                   unlock(1, 2);
                   setCurrent(2);
                 }}
               />
-            ) : null}
-            {current === 2 ? (
+            ): null}
+            {current === 2? (
               <BorderStage
                 onComplete={() => {
                   unlock(2, 3);
                   setCurrent(3);
                 }}
               />
-            ) : null}
-            {current === 3 ? <GroundStage onComplete={() => unlock(3, 3)} /> : null}
+            ): null}
+            {current === 3? <GroundStage onComplete={() => unlock(3, 3)} />: null}
           </div>
         )}
       </PhoneFrame>
