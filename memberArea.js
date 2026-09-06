@@ -1639,6 +1639,7 @@
           >
             <Icon name="menu" size={20} />
           </button>
+          <img src="images/logo.svg" alt="CureMindset" className="h-8 w-auto shrink-0" onError={(e) => { e.currentTarget.style.display = "none"; }} />
           <div>
             <p className="font-heading font-bold text-[15px] text-ink-800">CureMindset · אזור אישי</p>
             <p className="text-[12px] text-ink-500">{subtitle}</p>

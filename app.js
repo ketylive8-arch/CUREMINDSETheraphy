@@ -1089,6 +1089,7 @@ function Footer() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 border-b border-white/10">
           <div>
+            <img src="images/logo.svg" alt="CureMindset" className="h-11 w-auto mb-3" onError={(e) => { e.currentTarget.style.display = "none"; }} />
             <span className="font-heading font-extrabold text-[22px] tracking-tight text-white block mb-3">
               Cure<span className="text-gold-400">Mindset</span>
             </span>
