@@ -517,8 +517,29 @@ function applyPaymentWebhook({ eventId, userId, enrollmentId, providerProductId,
   return { ok: true, duplicate: false, enrollmentId: enr ? enr.id : null };
 }
 
+// ביטול מנוי ביוזמת הלקוח — מסמן canceled ומחזיר האם זכאי/ת להחזר מלא (עד 15 יום מהחיוב הראשון).
+function cancelSubscription(userId, enrollmentId) {
+  const enr = enrollmentId
+    ? db.prepare("SELECT * FROM enrollments WHERE id = ? AND user_id = ?").get(enrollmentId, userId)
+    : getActiveEnrollment(userId);
+  if (!enr) return { ok: false, error: "no_active_enrollment" };
+  db.prepare("UPDATE enrollments SET subscription_status = 'cancelled', status = 'cancelled', updated_at = datetime('now') WHERE id = ?").run(enr.id);
+  db.prepare("UPDATE subscriptions SET status = 'cancelled' WHERE enrollment_id = ? AND status = 'active'").run(enr.id);
+  // זכאות להחזר מלא: תוך 15 יום מהחיוב הראשון.
+  const sub = db.prepare("SELECT first_charge_at FROM subscriptions WHERE enrollment_id = ? ORDER BY id DESC LIMIT 1").get(enr.id);
+  let refundEligible = false, daysSinceCharge = null;
+  if (sub && sub.first_charge_at) {
+    const charged = new Date(String(sub.first_charge_at).replace(" ", "T") + "Z").getTime();
+    daysSinceCharge = Math.floor((Date.now() - charged) / 86400000);
+    refundEligible = daysSinceCharge <= 15;
+  }
+  auditLog(userId, "subscription_cancelled", "enrollment", enr.id, { refundEligible, daysSinceCharge });
+  return { ok: true, enrollmentId: enr.id, refundEligible, daysSinceCharge };
+}
+
 module.exports = {
   db, ensurePatient, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
+  cancelSubscription,
   // מודל המוצר:
   TRIAL_HOURS, listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
   // תשלום:

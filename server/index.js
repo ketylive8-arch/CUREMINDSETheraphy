@@ -6,7 +6,7 @@ const multer = require("multer");
 
 const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
   listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
-  getActiveEnrollment, growGateStatus, applyPaymentWebhook } = require("./db");
+  getActiveEnrollment, growGateStatus, applyPaymentWebhook, cancelSubscription } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -430,6 +430,21 @@ app.post("/api/webhooks/grow", (req, res) => {
   if (!ok) return res.status(401).json({ error: "bad_signature" });
   const result = applyPaymentWebhook({ eventId, userId, enrollmentId, providerProductId });
   if (!result.ok) return res.status(400).json(result);
+  // אישור/קבלה ללקוח + התראה לקטי — רק בתשלום חדש (לא בכפילות webhook).
+  if (!result.duplicate) {
+    try {
+      const acct = db.prepare("SELECT full_name, email FROM accounts WHERE id = ?").get(userId);
+      if (acct?.email) {
+        notifyEmail(acct.email, "אישור הצטרפות ותשלום · CureMindset", {
+          "שם": acct.full_name || "",
+          "סטטוס": "המנוי הופעל — ברוכה הבאה למסע המלא",
+          "מדיניות החזר": "החזר כספי מלא תוך 15 יום מהיום, ללא שאלות",
+          "קבלה רשמית": "קבלת מס נשלחת בנפרד מספק הסליקה (Grow)",
+        }).catch(() => {});
+      }
+      notifyLead("תשלום חדש התקבל — CureMindset", { "שם": acct?.full_name || "", "אימייל": acct?.email || "" }).catch(() => {});
+    } catch (e) {}
+  }
   res.json({ ok: true, duplicate: !!result.duplicate });
 });
 
@@ -745,7 +760,26 @@ api.put("/profile", (req, res) => {
 
 // ── Access (14-day trial + personal access codes) ──
 api.get("/access", (req, res) => {
-  res.json(getAccessStatus(req.deviceToken));
+  const status = getAccessStatus(req.deviceToken);
+  // תזכורת מייל חד-פעמית כשנותרו ≤24 שעות בהתנסות (נשלחת פעם אחת בלבד, מוגן ע"י audit).
+  try {
+    if (req.accountId && status.status === "trial" && status.hoursLeft != null && status.hoursLeft <= 24) {
+      const already = db.prepare("SELECT 1 FROM audit_logs WHERE actor_user_id = ? AND action = 'trial_reminder_sent' LIMIT 1").get(req.accountId);
+      if (!already) {
+        const acct = db.prepare("SELECT full_name, email FROM accounts WHERE id = ?").get(req.accountId);
+        db.prepare("INSERT INTO audit_logs (actor_user_id, action, entity_type, entity_id, metadata_redacted) VALUES (?,?,?,?,?)")
+          .run(req.accountId, "trial_reminder_sent", "account", req.accountId, "{}");
+        if (acct?.email) {
+          notifyEmail(acct.email, "ההתנסות שלך מסתיימת מחר · CureMindset", {
+            "שם": acct.full_name || "",
+            "מה קורה עכשיו": "נותר יום אחרון בהתנסות. אפשר להמשיך את המסע המלא — או פשוט להמשיך לדבר איתי.",
+            "3 ימים חינם": "בלי כרטיס אשראי · ביטול בכל עת · החזר מלא תוך 15 יום",
+          }).catch(() => {});
+        }
+      }
+    }
+  } catch (e) { /* תזכורת היא bonus — לעולם לא מפילה את /access */ }
+  res.json(status);
 });
 
 /* ═══ מודל המוצר: תוכניות, enrollment ו-72 שעות (מסע המשתמש) ═══ */
@@ -821,10 +855,34 @@ api.get("/checkout", (req, res) => {
       firstChargeAt: "מיד עם ההצטרפות (בתום ההתנסות)",
       includes: ["גישה מלאה למלווה CureMindset", "כל המודולים והאודיו", "מעקב התקדמות והיסטוריה", "ליווי מתמשך"],
       cancellationPolicy: "ניתן לבטל בכל עת מאזור החשבון; החיוב מפסיק ממחזור החיוב הבא.",
+      refundPolicy: "התחייבות שקט נפשי: החזר כספי מלא תוך 15 יום מהחיוב הראשון, ללא שאלות.",
       termsUrl: "/terms", privacyUrl: "/privacy",
     },
     checkoutUrl, // null אם Grow עדיין לא חובר — הלקוח לא יקבל קישור מזויף
     checkoutReady: !!checkoutUrl,
+  });
+});
+
+// ── ביטול מנוי ביוזמת הלקוח + זכאות להחזר מלא (15 יום) ──
+api.post("/cancel-subscription", rateLimit("cancel-sub", 10), (req, res) => {
+  if (!req.accountId) return res.status(401).json({ error: "נדרשת התחברות" });
+  const result = cancelSubscription(req.accountId, req.body?.enrollmentId || null);
+  if (!result.ok) return res.status(400).json({ error: result.error === "no_active_enrollment" ? "לא נמצא מנוי פעיל לביטול." : result.error });
+  // מודיעים לקטי על ביטול (כדי לטפל בהחזר דרך Grow אם רלוונטי).
+  try {
+    const acct = db.prepare("SELECT full_name, email FROM accounts WHERE id = ?").get(req.accountId);
+    notifyLead("ביטול מנוי — CureMindset", {
+      "שם": acct?.full_name || "", "אימייל": acct?.email || "",
+      "זכאי/ת להחזר מלא": result.refundEligible ? "כן (בתוך 15 יום)" : "לא (חלף חלון 15 הימים)",
+      "ימים מהחיוב הראשון": result.daysSinceCharge == null ? "—" : String(result.daysSinceCharge),
+    }).catch(() => {});
+  } catch (e) {}
+  res.json({
+    ok: true,
+    refundEligible: result.refundEligible,
+    message: result.refundEligible
+      ? "המנוי בוטל. את/ה בתוך חלון 15 הימים — מגיע לך החזר כספי מלא, ונטפל בו בהקדם."
+      : "המנוי בוטל. החיוב יפסק ממחזור החיוב הבא.",
   });
 });
 

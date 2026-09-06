@@ -457,6 +457,10 @@
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
               להמשיך את המסע →
             </a>
+            <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[12.5px] text-gold-700 font-semibold">
+              <Icon name="shield-check" size={15} className="text-gold-600" />
+              החזר כספי מלא תוך 15 יום — בלי שאלות
+            </p>
             <button type="button" onClick={onExit}
               className="mt-2.5 w-full py-3 rounded-2xl border border-gold-300 text-gold-700 bg-gold-50 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors">
               לצפייה בכל המסלולים
@@ -1670,6 +1674,15 @@
   // מסך הגדרות (בהשראת Curable App Settings) — חשבון, פרטיות ואבטחה, התנתקות.
   function SettingsSheet({ userName, onClose, onLogout, onManage }) {
     const [tab, setTab] = useState("main"); // main | privacy
+    const [cancelStep, setCancelStep] = useState("idle"); // idle | confirm | done
+    const [cancelMsg, setCancelMsg] = useState("");
+    function doCancel() {
+      setCancelStep("sending");
+      fetch("/api/cancel-subscription", { method: "POST", headers: authHeaders({ "Content-Type": "application/json" }), body: "{}" })
+        .then((r) => r.json())
+        .then((d) => { setCancelMsg(d.message || (d.error || "המנוי בוטל.")); setCancelStep("done"); })
+        .catch(() => { setCancelMsg("לא הצלחנו לבטל כרגע — נסי שוב או כתבי לנו בוואטסאפ."); setCancelStep("done"); });
+    }
     return (
       <div className="cm-sheet" role="dialog" aria-label="הגדרות">
         <div className="cm-sheet__scrim" onClick={onClose} />
@@ -1701,6 +1714,25 @@
                 </button>
 
                 <p className="cm-sheet__sec">כללי</p>
+                {cancelStep === "done" ? (
+                  <div className="cm-sheet__row"><span className="cm-sheet__ic"><Icon name="check-circle-2" size={18} /></span>
+                    <div className="cm-sheet__txt"><b>המנוי בוטל</b><small>{cancelMsg}</small></div></div>
+                ) : cancelStep === "confirm" || cancelStep === "sending" ? (
+                  <div className="cm-sheet__row" style={{ flexWrap: "wrap", gap: "8px" }}>
+                    <div className="cm-sheet__txt" style={{ width: "100%" }}><b>לבטל את המנוי?</b><small>החזר כספי מלא תוך 15 יום מהחיוב הראשון.</small></div>
+                    <button type="button" disabled={cancelStep === "sending"} onClick={doCancel}
+                      className="px-4 py-2 rounded-xl bg-red-500 text-white font-heading font-bold text-[13px] disabled:opacity-50">
+                      {cancelStep === "sending" ? "מבטל…" : "כן, לבטל"}</button>
+                    <button type="button" onClick={() => setCancelStep("idle")}
+                      className="px-4 py-2 rounded-xl border border-ink-200 text-ink-600 font-heading font-semibold text-[13px]">חזרה</button>
+                  </div>
+                ) : (
+                  <button type="button" className="cm-sheet__row cm-sheet__row--btn" onClick={() => setCancelStep("confirm")}>
+                    <span className="cm-sheet__ic"><Icon name="rotate-ccw" size={18} /></span>
+                    <div className="cm-sheet__txt"><b>ביטול מנוי</b><small>ביטול בכל עת · החזר מלא תוך 15 יום</small></div>
+                    <Icon name="arrow-left" size={18} />
+                  </button>
+                )}
                 <button type="button" className="cm-sheet__row cm-sheet__row--btn cm-sheet__row--danger" onClick={onLogout}>
                   <span className="cm-sheet__ic"><Icon name="log-out" size={18} /></span>
                   <div className="cm-sheet__txt"><b>התנתקות</b></div>
