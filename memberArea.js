@@ -2113,20 +2113,35 @@
     const [step, setStep] = useState("form"); // form | otp
     const [otp, setOtp] = useState({ email: "", phoneHint: "", code: "" });
     const [resent, setResent] = useState(false);
-    const [onbDone, setOnbDone] = useState(false); // האם סיימו את שאלון האבחון (הרשמה)
+    const [onbDone, setOnbDone] = useState(false); // האם סיימו את שאלון האבחון
     const [onbSummary, setOnbSummary] = useState(""); // תשובות האבחון לשמירה בכרטיס
-    const [postRegQuiz, setPostRegQuiz] = useState(false); // שאלון היכרות אחרי ההרשמה (סגנון Curable)
+    const [postRegQuiz, setPostRegQuiz] = useState(false); // (deprecated) שאלון אחרי הרשמה
+    // סגנון Curable/Tony: שאלון קצר *לפני* ההרשמה, שמסתיים בהמלצת מסלול מותאם.
+    const [preQuiz, setPreQuiz] = useState(true);
+    const [recPlan, setRecPlan] = useState(null); // המסלול המומלץ לפי תשובות השאלון
 
     function update(field, value) {
       setForm((f) => ({...f, [field]: value }));
       if (status === "error") setStatus("idle");
     }
 
+    // ממפה את תשובות השאלון להמלצת מסלול (הסבר קצר ללקוח לפני ההרשמה).
+    function recommendFromSummary(summary) {
+      const s = String(summary || "");
+      if (/ביקורת עצמית|פרפקציוניזם|ספק עצמי|חוסר שקט/.test(s))
+        return { name: "מומלץ · ₪197", why: "תהליך מלא לחיזוק דימוי עצמי, ביטחון ושקט פנימי" };
+      if (/עומס|הצפה|תקיעות/.test(s))
+        return { name: "מומלץ · ₪197", why: "כל המודולים + מעקב וניתוח דפוסים לוויסות ולחוסן" };
+      if (/חרדת ביצוע|כישלון|דחיינות/.test(s))
+        return { name: "בסיסי · ₪97", why: "התחלה עדינה: צ'אט, מודולים ראשונים ועוגן לרגעי לחץ" };
+      return { name: "מומלץ · ₪197", why: "המסלול המאוזן — תהליך מלא בקצב שלך" };
+    }
+
     function finishAuth(data) {
       setAuth(data.token, data.fullName);
-      // סגנון Curable: אחרי הרשמה חדשה — קודם השאלון האישי, ואז כניסה למערכת.
-      // בהתחברות של משתמש קיים — נכנסים ישר.
-      if (mode === "register") setPostRegQuiz(true);
+      // השאלון רץ עכשיו *לפני* ההרשמה (preQuiz), אז נכנסים ישר למערכת.
+      // גיבוי: אם משום מה לא נעשה שאלון — עדיין נציג אותו אחרי ההרשמה.
+      if (mode === "register" && !onbDone) setPostRegQuiz(true);
       else onAuthed();
     }
 
@@ -2180,7 +2195,25 @@
 
     const isReg = mode === "register";
 
-    // ── שאלון היכרות — אחרי יצירת החשבון (סגנון Curable: קודם הרשמה, ואז השאלון) ──
+    // ── שאלון קצר *לפני* ההרשמה (סגנון Curable/Tony) — מסתיים בהמלצת מסלול, ואז הטופס ──
+    if (isReg && preQuiz && !onbDone) {
+      return (
+        <div className="au-overlay">
+          <OnboardingQuiz
+            onExit={() => { setPreQuiz(false); setOnbDone(true); }}
+            onComplete={(summary, name) => {
+              setOnbSummary(summary || "");
+              if (name) update("fullName", name);
+              setRecPlan(recommendFromSummary(summary));
+              setOnbDone(true);
+              setPreQuiz(false);
+            }}
+          />
+        </div>
+      );
+    }
+
+    // ── (גיבוי) שאלון אחרי יצירת החשבון — אם השאלון המקדים דולג ──
     if (postRegQuiz) {
       return (
         <div className="au-overlay">
@@ -2266,6 +2299,16 @@
                   : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
               </p>
             </div>
+
+            {isReg && recPlan && (
+              <div style={{ background: "#f7ecd5", border: "1px solid #e4cfa0", borderRadius: 14, padding: "12px 14px", margin: "0 0 14px", textAlign: "right" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
+                  <Icon name="sparkles" size={16} className="text-gold-600" />
+                  <b style={{ color: "#8a6a1e", fontSize: 14 }}>המסלול שמתאים לך: {recPlan.name}</b>
+                </div>
+                <p style={{ fontSize: 12.5, color: "#6b5726", margin: 0, lineHeight: 1.5 }}>{recPlan.why} · מתחילים ב-3 ימי התנסות חינם.</p>
+              </div>
+            )}
 
             <form onSubmit={submit} className="au-form">
               {isReg && (

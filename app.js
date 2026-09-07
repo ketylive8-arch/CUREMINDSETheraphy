@@ -419,8 +419,8 @@ function Hero() {
           <p className="text-ink-600 text-[20px] sm:text-[24px] font-medium leading-relaxed max-w-[620px] mx-auto mb-4">
             {CONTENT.hero.subhead}
           </p>
-          <p className="text-ink-500 text-[15.5px] sm:text-[16.5px] font-medium max-w-[600px] mx-auto mb-9">
-            חרדה · לחץ ועומס · דימוי עצמי נמוך · דחיינות · ניתוק מהמסכים — לך, או לבן/בת שלך.
+          <p className="text-ink-500 text-[15.5px] sm:text-[16.5px] font-medium max-w-[620px] mx-auto mb-9">
+            חרדה · לחץ ועומס · דחיינות · דימוי עצמי נמוך — בדרך לחוסן, ביטחון ושקט פנימי. לך, או לבן/בת שלך.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-3">
