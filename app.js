@@ -829,6 +829,22 @@ function Organizations() {
             הרצאות וסדנאות מותאמות אישית לארגונים, חברות הייטק, מוסדות חינוך ומכינות — כלים מעשיים להתמודדות עם לחץ ושחיקה.
           </p>
         </Reveal>
+
+        <Reveal className="mb-10">
+          <p className="font-heading text-[13px] font-semibold tracking-[0.14em] uppercase text-gold-600 mb-5">כבר העברתי סדנאות והרצאות ב־</p>
+          <div className="flex flex-wrap items-center justify-center gap-3.5">
+            {["מרכז הצעירים · קריית מוצקין", "עמותת יסמין", "מרכז תכלת"].map((name) => (
+              <span key={name} className="inline-flex items-center gap-2 rounded-full bg-[#FAF8F4] border border-gold-200/80 px-5 py-2.5 text-ink-700 font-heading font-semibold text-[14.5px] shadow-softer">
+                <Icon name="shield-check" size={16} className="text-gold-500 shrink-0" />
+                {name}
+              </span>
+            ))}
+          </div>
+          <p className="text-ink-500 text-[14px] mt-5">
+            פורמט טיפוסי: מפגש בן 60–90 דקות, לקבוצות של עד 30 משתתפים — מותאם לצוות, למורים/יועצות או לבני נוער.
+          </p>
+        </Reveal>
+
         <Reveal>
           <Button as="a" href={BOOKING_LINKS.calendar || waLink("היי קטי! אשמח לפרטים על סדנה לארגון")} target="_blank" rel="noopener noreferrer" variant="secondary" size="md">
             לקביעת שיחת היכרות לארגון
