@@ -137,6 +137,7 @@ const CONTENT = {
         id: "basic",
         badge: "בסיסי",
         price: "₪97/חודש",
+        audience: "מבוגר/ת שרוצה להתחיל בקצב שלו/ה",
         features: ["צ'אט AI", "מודולים 1-3", "צ'ק-אין יומי", "עוגן SOS"],
         highlight: false,
         cta: "להתחיל ניסיון חינם",
@@ -145,6 +146,7 @@ const CONTENT = {
         id: "plus",
         badge: "מומלץ",
         price: "₪197/חודש",
+        audience: "מבוגר/ת או הורה שרוצה תהליך מלא",
         features: [
           "כל מה בבסיסי",
           "כל המודולים",
@@ -159,6 +161,7 @@ const CONTENT = {
         id: "premium",
         badge: "פרימיום",
         price: "₪397/חודש",
+        audience: "מי שרוצה גם ליווי חי — מפגש זום אישי",
         features: [
           "כל מה באמצע",
           "סדנה חודשית",
@@ -413,8 +416,11 @@ function Hero() {
           <h1 className="font-heading font-extrabold text-ink-800 leading-[1.12] tracking-tight text-[38px] sm:text-[54px] lg:text-[64px] mb-6">
             {CONTENT.hero.headline}
           </h1>
-          <p className="text-ink-600 text-[20px] sm:text-[24px] font-medium leading-relaxed max-w-[620px] mx-auto mb-9">
+          <p className="text-ink-600 text-[20px] sm:text-[24px] font-medium leading-relaxed max-w-[620px] mx-auto mb-4">
             {CONTENT.hero.subhead}
+          </p>
+          <p className="text-ink-500 text-[15.5px] sm:text-[16.5px] font-medium max-w-[600px] mx-auto mb-9">
+            חרדה · לחץ ועומס · דימוי עצמי נמוך · דחיינות · ניתוק מהמסכים — לך, או לבן/בת שלך.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-3">
@@ -704,6 +710,9 @@ function CureTeens() {
           <Button as="a" href={BOOKING_LINKS.calendar || waLink(CURE_TEENS_CTA_TEXT)} target="_blank" rel="noopener noreferrer" className="bg-[#10B981] hover:bg-[#0E7C63] text-white border-0">
             {CURE_TEENS_CTA_TEXT}
           </Button>
+          <p className="text-white/60 text-[13.5px] leading-relaxed mt-4 max-w-[560px] mx-auto">
+            CURE Teens הוא מסלול ליווי אישי לבני נוער (13+) והורים — מתחילים בשיחת אבחון חינם וללא התחייבות, ובה נקבע יחד המסלול והקצב המתאימים. נפרד מתוכניות האפליקציה החודשיות שלמטה.
+          </p>
         </Reveal>
       </div>
     </section>
@@ -736,11 +745,16 @@ function PlanCard({ plan, idx, onEnterApp }) {
             {plan.badge}
           </span>
         )}
-        <div className="mt-2 mb-6">
+        <div className="mt-2 mb-3">
           <span className="font-heading font-extrabold text-ink-800 text-[36px] sm:text-[42px] leading-none">
             {plan.price}
           </span>
         </div>
+        {plan.audience && (
+          <p className="mb-5 text-[13px] text-ink-500 leading-snug">
+            <span className="font-semibold text-ink-700">מתאים ל: </span>{plan.audience}
+          </p>
+        )}
 
         <ul className="flex flex-col gap-3 mb-8">
           {plan.features.map((f, i) => (
