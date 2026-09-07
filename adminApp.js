@@ -279,7 +279,7 @@
         ) : st ? (
           <div>
             <span className="inline-block text-[13px] font-heading font-bold" style={{ color: tint }}>
-              {ok ? "🟢 GPT-4o-mini פעיל — עונה עם המתודה המלאה" : st.configured ? "🟡 מפתח מוגדר אך לא עובד" : "🟡 מצב מקומי (בלי GPT)"}
+              {ok ? "מנוע ה-AI המתקדם פעיל — עונה עם המתודה המלאה" : st.configured ? "המפתח מוגדר אך אינו עובד — יש לבדוק אותו" : "מצב מקומי (המנוע המתקדם אינו פעיל)"}
             </span>
             {!ok && st.reason ? <p className="text-[12.5px] text-ink-600 mt-1.5 leading-relaxed">{st.reason}</p> : null}
             {!ok ? <p className="text-[11.5px] text-ink-400 mt-1.5">הלקוחות עדיין מקבלים תשובות מהמנוע המקומי (עובד, אך פשוט יותר). כדי להפעיל את מנוע ה-AI המתקדם — יש להשלים את הגדרת המנוע בהגדרות האירוח.</p> : null}
@@ -767,7 +767,7 @@
           ) : null}
 
           {profile.moodLogs && profile.moodLogs.length > 0 ? (() => {
-            const MOOD_LABELS = { calm: "😌 רגוע", positive: "🙂 טוב", neutral: "😐 ניטרלי", anxious: "😟 חרד", overwhelmed: "😰 מוצף" };
+            const MOOD_LABELS = { calm: "רגוע", positive: "טוב", neutral: "ניטרלי", anxious: "חרד", overwhelmed: "מוצף" };
             const last = profile.moodLogs[profile.moodLogs.length - 1];
             return (
               <div className="mb-7">

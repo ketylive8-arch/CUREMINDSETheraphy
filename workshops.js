@@ -174,7 +174,7 @@
   ];
 
   function waLink(title) {
-    const txt = `היי קטי! אשמח לפרטים על הסדנה "${title}" 🌿`;
+    const txt = `היי קטי! אשמח לפרטים על הסדנה "${title}"`;
     return `https://wa.me/${WA}?text=${encodeURIComponent(txt)}`;
   }
 
