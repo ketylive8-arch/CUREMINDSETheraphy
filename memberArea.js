@@ -193,7 +193,7 @@
       <div className="cm-slide-up-in rounded-3xl border border-gold-200 bg-white px-5 py-5 space-y-3">
         <p className="font-heading font-bold text-[15px] text-ink-800">אהבת? שתפי את זה הלאה </p>
         <p className="text-[13px] text-ink-600 leading-relaxed">
-          כל מי שיצטרפ/ה דרך הקישור האישי שלך יתחיל/תתחיל את המסע — ואת עוזרת להם לצמוח.
+          כל מי שיצטרפ/ה דרך הקישור האישי שלך יתחיל/תתחיל את התהליך — ואת עוזרת להם לצמוח.
         </p>
         <a
           href={waHref} target="_blank" rel="noopener noreferrer"
@@ -429,7 +429,7 @@
       </div>
     );
 
-    // ── מסך "המסע שלך רק התחיל" — מעבר טבעי ורגשי לתשלום (לא וואטסאפ) ──
+    // ── מסך "התהליך שלך רק התחיל" — מעבר טבעי ורגשי לתשלום (לא וואטסאפ) ──
     if (expired) {
       return (
         <div className="absolute inset-0 z-50 overflow-y-auto" style={{ background: "linear-gradient(180deg,#ffffff 0%,#FBF6EC 100%)" }} dir="rtl">
@@ -437,12 +437,12 @@
             <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: "linear-gradient(135deg,#c2974a,#a9791f)" }}>
               <Icon name="sparkles" size={28} className="text-white" />
             </div>
-            <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName? `${firstName}, `: ""}המסע שלך רק התחיל </h2>
+            <h2 className="font-heading font-extrabold text-[24px] text-ink-800 mb-2">{firstName? `${firstName}, `: ""}התהליך שלך רק התחיל </h2>
             <p className="text-[14.5px] text-ink-500 leading-relaxed mb-6">3 הימים הראשונים היו רק הפתיחה. המודולים, התרגילים והמלווה שמכיר אותך — כולם ממשיכים איתך. בואי נמשיך יחד את הדרך.</p>
 
             <div className="w-full space-y-2.5 mb-7 text-right">
               {[
-                "המשך המסע המלא — כל 14 המודולים והתרגילים",
+                "המשך התהליך המלא — כל 14 המודולים והתרגילים",
                 "המלווה החכם שמכיר אותך, זמין 24/7",
                 "מעקב רגשי יומי והחומרים האישיים שלך",
               ].map((t) => (
@@ -455,7 +455,7 @@
 
             <a href={PAY_LINK} target="_blank" rel="noopener noreferrer"
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
-              להמשיך את המסע →
+              להמשיך את התהליך →
             </a>
             <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[12.5px] text-gold-700 font-semibold">
               <Icon name="shield-check" size={15} className="text-gold-600" />
@@ -478,7 +478,7 @@
             </div>
 
             <div className="mt-6 flex flex-col items-center gap-2">
-              <button type="button" onClick={onShowSummary} className="text-[13px] text-ink-500 underline">הסיכום שלי מהמסע </button>
+              <button type="button" onClick={onShowSummary} className="text-[13px] text-ink-500 underline">הסיכום שלי מהתהליך </button>
               <a href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%20%F0%9F%8C%BF" target="_blank" rel="noopener noreferrer" className="text-[12.5px] text-ink-400 underline">שאלה לפני שממשיכים? כתבי לי</a>
             </div>
           </div>
@@ -517,21 +517,21 @@
     if (!data) {
       return (
         <div className="absolute inset-0 z-50 bg-white flex items-center justify-center" dir="rtl">
-          <p className="text-[13px] text-ink-400">אוספת את המסע שלך...</p>
+          <p className="text-[13px] text-ink-400">אוספת את התהליך שלך...</p>
         </div>
       );
     }
 
     const s = data.stats;
     const statItems = [
-      { value: data.journeyDay, label: "ימים במסע" },
+      { value: data.journeyDay, label: "ימים בתהליך" },
       { value: s.checkins, label: "שיחות צ'ק-אין" },
       { value: s.groundingSessions, label: "תרגילי קרקוע" },
       { value: s.tasksDone, label: "משימות שהושלמו" },
-    ].filter((it) => it.value > 0 || it.label === "ימים במסע");
+    ].filter((it) => it.value > 0 || it.label === "ימים בתהליך");
 
     const emailBody = [
-      `סיכום המסע שלי ב-CureMindset · ${data.journeyDay} ימים`,
+      `סיכום התהליך שלי ב-CureMindset · ${data.journeyDay} ימים`,
       "",
       `שיחות צ'ק-אין: ${s.checkins}`,
       `תרגילי קרקוע: ${s.groundingSessions}${s.avgRelief? ` (ירידה ממוצעת של ${s.avgRelief}% בעומס)`: ""}`,
@@ -542,7 +542,7 @@
       "",
       "CureMindset · שיטת קטי שגב",
     ].join("\n");
-    const mailtoHref = `mailto:?subject=${encodeURIComponent("סיכום המסע שלי ב-CureMindset")}&body=${encodeURIComponent(emailBody)}`;
+    const mailtoHref = `mailto:?subject=${encodeURIComponent("סיכום התהליך שלי ב-CureMindset")}&body=${encodeURIComponent(emailBody)}`;
 
     return (
       <div className="absolute inset-0 z-50 bg-white overflow-y-auto" dir="rtl">
@@ -551,7 +551,7 @@
             <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-3">
               <Icon name="sparkles" size={26} className="text-gold-600" />
             </div>
-            <p className="font-heading font-extrabold text-[22px] text-ink-800">המסע שלך עד כאן</p>
+            <p className="font-heading font-extrabold text-[22px] text-ink-800">התהליך שלך עד כאן</p>
             <p className="text-[13.5px] text-ink-500 mt-1">תראי כמה עשית — כל אחד מהמספרים האלה הוא בחירה שלך בעצמך.</p>
           </div>
 
@@ -603,7 +603,7 @@
           )}
 
           <div className="rounded-2xl bg-gold-50 border border-gold-200 px-5 py-5 text-center">
-            <p className="font-heading font-bold text-[16px] text-ink-800">זה רק השער הראשון של המסע</p>
+            <p className="font-heading font-bold text-[16px] text-ink-800">זה רק השער הראשון של התהליך</p>
             <p className="text-[13px] text-ink-600 mt-1.5 leading-relaxed">
               העבודה האמיתית על הדפוס שזיהינו מתחילה עכשיו. בליווי הדיגיטלי נמשיך יחד — יום אחר יום, בקצב שלך.
             </p>
@@ -612,7 +612,7 @@
               onClick={onExit}
               className="w-full mt-4 py-3.5 rounded-full bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors"
             >
-              להמשך המסע — למסלולים
+              להמשך התהליך — למסלולים
             </button>
             <a href={mailtoHref} className="block w-full mt-2.5 py-3 rounded-full border border-gold-300 text-gold-700 font-heading font-semibold text-[13.5px] hover:bg-gold-100 transition-colors">
               שליחת הסיכום למייל שלי
@@ -634,7 +634,7 @@
     return (
       <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
         <span className="text-[12.5px] text-gold-700 font-medium">
-           המסע שלך פתוח — {daysLeft === 1? "יום אחרון בהתנסות": `נותרו ${daysLeft} ימי התנסות`}
+           התהליך שלך פתוח — {daysLeft === 1? "יום אחרון בהתנסות": `נותרו ${daysLeft} ימי התנסות`}
         </span>
       </div>
     );
@@ -652,7 +652,7 @@
     { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
     { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
-    { id: 8, icon: "graduation-cap", title: "התוכנית שלי", subtitle: "מסע CURE MINDSET · 14 יום במודולים", alwaysUnlocked: true },
+    { id: 8, icon: "graduation-cap", title: "התוכנית שלי", subtitle: "תהליך CURE MINDSET · 14 יום במודולים", alwaysUnlocked: true },
     { id: 9, icon: "video", title: "המפגש שלי", subtitle: "מפגש זום אישי וחי עם קטי", alwaysUnlocked: true },
   ];
 
@@ -1163,7 +1163,7 @@
             <Icon name="heart-handshake" size={26} />
           </div>
           <h3 className="font-heading font-extrabold text-[20px] text-ink-800">{name? `היי ${name}, ככה זה עובד`: "איך זה עובד?"}</h3>
-          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name? `שלושה צעדים פשוטים למסע האישי שלך, ${name}.`: "שלושה צעדים פשוטים למסע שלך עם CureMindset."}</p>
+          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name? `שלושה צעדים פשוטים לתהליך האישי שלך, ${name}.`: "שלושה צעדים פשוטים לתהליך שלך עם CureMindset."}</p>
           <div className="space-y-3 text-right">
             {steps.map(([n, t, d]) => (
               <div key={n} className="flex gap-3 items-start">
@@ -1814,7 +1814,7 @@
   }
 
   // שלבי הפרוטוקול הישן (עוגן / גבול ההבחנה / קרקוע) אינם חלק ממערכת CureMindset
-  // ואינם מוצגים למשתמש — נשארים בקוד לתאימות, אך מחוץ למסע.
+  // ואינם מוצגים למשתמש — נשארים בקוד לתאימות, אך מחוץ לתהליך.
   const LEGACY_STAGE_IDS = [1, 2, 3];
 
   function StageNav({ stages, progress, current, onSelect }) {
@@ -2371,7 +2371,7 @@
             <div className="au-brand__logo"><Icon name="heart-handshake" size={26} /></div>
             <h2>{isReg? "ברוכה הבאה ל־CureMindset": "המרחב האישי שלך מחכה לך"}</h2>
             <p className="au-brand__sub">
-              האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולמסע הפנימי, בליווי מבוסס השיטה של קטי שגב.
+              האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולתהליך הפנימי, בליווי מבוסס השיטה של קטי שגב.
             </p>
             <ul className="au-benefits">
               <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>3 ימי התנסות חינם — מרחב להתנסות ולצמיחה, בלי התחייבות</li>
@@ -2655,7 +2655,7 @@
       <div className="space-y-3 mb-2">
         <div>
           <h2 className="font-heading font-bold text-[20px] text-ink-800">המודולים המודרכים</h2>
-          <p className="text-[13px] text-ink-500 mt-0.5">מסע צעד-אחר-צעד: בכל מודול ללמוד · לכתוב · להירגע. אפשר גם להאזין.</p>
+          <p className="text-[13px] text-ink-500 mt-0.5">תהליך צעד-אחר-צעד: בכל מודול ללמוד · לכתוב · להירגע. אפשר גם להאזין.</p>
         </div>
         {GUIDED_MODULES.map((mod, idx) => (
           <GuidedModuleItem key={mod.id} mod={mod} idx={idx} open={openId === mod.id}
@@ -2671,7 +2671,7 @@
         <div className="flex items-baseline gap-2 mb-1">
           <h2 className="font-heading font-bold text-[20px] text-ink-800">ספריית התרגילים</h2>
         </div>
-        <p className="text-[13px] text-ink-500 mb-5 leading-relaxed">12 תרגילים מעשיים, מסודרים ל-3 שלבי המסע. בחרי תרגיל — ובקשי מה-AI ללוות אותך דרכו.</p>
+        <p className="text-[13px] text-ink-500 mb-5 leading-relaxed">12 תרגילים מעשיים, מסודרים ל-3 שלבי התהליך. בחרי תרגיל — ובקשי מה-AI ללוות אותך דרכו.</p>
         <div className="space-y-6">
           {CUREMINDSET_STAGES.map((st) => (
             <div key={st.key}>
@@ -2898,12 +2898,12 @@
           <span className="shrink-0 w-11 h-11 rounded-full bg-white/25 flex items-center justify-center"><Icon name="sparkles" size={22} /></span>
           <div className="min-w-0">
             <p className="font-heading font-extrabold text-[16px]">{firstName? `היי ${firstName}, `: ""}יום {currentDay} שלך מחכה </p>
-            <p className="text-[12.5px] opacity-90 truncate">{todayTitle? `היום: ${todayTitle}`: "מוכנה להמשיך את המסע?"}</p>
+            <p className="text-[12.5px] opacity-90 truncate">{todayTitle? `היום: ${todayTitle}`: "מוכנה להמשיך את התהליך?"}</p>
           </div>
         </div>
         <div>
           <p className="font-heading font-semibold text-[12px] tracking-[0.18em] text-gold-600 mb-1">CURE MINDSET</p>
-          <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · מסע 14 יום</h2>
+          <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · תהליך 14 יום</h2>
           <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">כל יום נפתח מודול חדש. תרגול קצר ושיחת AI ממוקדת — בקצב שלך.</p>
           <div className="mt-4">
             <div className="flex items-center justify-between text-[12px] text-ink-500 mb-1.5">
@@ -2993,8 +2993,8 @@
       { icon: "heart-handshake", title: "ברוכה הבאה ", text: "הגעת למקום הנכון. כאן נלווה אותך צעד אחר צעד — בעדינות, ובקצב שלך." },
       { icon: "wind", title: "מה שאת מרגישה — זו לא חולשה", text: "חרדה, עומס, ביקורת עצמית — הם אזעקה של המערכת העצבית שמנסה להגן עלייך. ואפשר לכוון אותה מחדש." },
       { icon: "sparkles", title: "השיטה: לחווט מחדש את המוח", text: "CureMindset משלבת NLP ונוירופלסטיות — ומלמדת את המוח מסלול חדש, רגוע ובטוח. זה מדע, לא קסם." },
-      { icon: "users", title: "ואת לא לבד בזה", text: "מעל 500 אנשים כבר עשו את המסע הזה והחזירו לעצמם את השליטה בחיים. עכשיו תורך." },
-      { icon: "compass", title: "מוכנה? בואי נכיר", text: "כמה שאלות קצרות, ואבנה לך את המסע האישי שלך. בלי לחץ — רק את ואני." },
+      { icon: "users", title: "ואת לא לבד בזה", text: "מעל 500 אנשים כבר עשו את התהליך הזה והחזירו לעצמם את השליטה בחיים. עכשיו תורך." },
+      { icon: "compass", title: "מוכנה? בואי נכיר", text: "כמה שאלות קצרות, ואבנה לך את התהליך האישי שלך. בלי לחץ — רק את ואני." },
     ];
     const [i, setI] = useState(0);
     const last = i === SCREENS.length - 1;
@@ -3041,7 +3041,7 @@
             {firstName ? `${firstName}, ` : ""}מפגש חי עם קטי — לא רק צ'אט
           </h2>
           <p className="text-[14.5px] text-white/90 leading-relaxed mt-2">
-            פעם בחודש את/ה יושב/ת מול קטי בשיחת וידאו אישית: לוקחים את מה שעלה בצ'אט ובמסע, מעמיקים יחד ובונים את הצעד הבא — בליווי אנושי אמיתי.
+            פעם בחודש את/ה יושב/ת מול קטי בשיחת וידאו אישית: לוקחים את מה שעלה בצ'אט ובתהליך, מעמיקים יחד ובונים את הצעד הבא — בליווי אנושי אמיתי.
           </p>
         </div>
 

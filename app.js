@@ -116,6 +116,10 @@ const CONTENT = {
       { icon: "refresh-cw", title: "חשיבה מחודשת", text: "משנים את הדפוס מבפנים והשינוי מחזיק." },
       { icon: "trending-up", title: "העצמה", text: "יוצאים עם כלים מעשיים לחיים." },
     ],
+    approachTitle: "איך זה עובד באמת — מתחת לפני השטח",
+    approachLead: "השיטה עובדת דרך תת-המודע, אבל לא באמצעות מילים או שכנוע. אנחנו עובדים ברמה החושית והתת-חושית — שם באמת נשמרים הדפוסים.",
+    approachBody: "המחקר מראה שיש ארבע דרכים בסיסיות שבהן אנשים מגיבים לחוויות חושיות. כשאנחנו יוצרים תהליך מדויק בדמיון המודרך, אנחנו פותחים בדיוק את מסלולי התגובה האלה — ודרך ארבעת הדפוסים האלה אפשר לייצר מחדש תחושות של רוגע, הנאה, ביטחון והתלהבות, ובאותה דרך ממש לשחרר התנהגויות ותגובות שכבר לא משרתות אותך.",
+    approachClose: "זו לא תיאוריה ולא חשיבה חיובית — זו עבודה עדינה ומדויקת עם השפה הפנימית של מערכת העצבים.",
   },
   workshops: {
     eyebrow: "סדנאות",
@@ -575,6 +579,23 @@ function Vision() {
             </Reveal>
           ))}
         </div>
+
+        <Reveal className="mt-14 max-w-[860px] mx-auto">
+          <div className="bg-[#FAF8F4] border border-gold-200/70 rounded-2xl p-8 sm:p-10 shadow-softer">
+            <h3 className="font-heading font-extrabold text-ink-800 text-[22px] sm:text-[26px] mb-4">
+              {CONTENT.method.approachTitle}
+            </h3>
+            <p className="text-ink-700 text-[17px] leading-relaxed mb-4 font-medium">
+              {CONTENT.method.approachLead}
+            </p>
+            <p className="text-ink-600 text-[16.5px] leading-relaxed mb-4">
+              {CONTENT.method.approachBody}
+            </p>
+            <p className="text-ink-500 text-[15.5px] leading-relaxed border-r-2 border-gold-300 pr-4">
+              {CONTENT.method.approachClose}
+            </p>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -706,12 +727,29 @@ function CureTeens() {
           ))}
         </div>
 
+        <Reveal className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12 max-w-[820px] mx-auto">
+          {[
+            { icon: "calendar", label: "6 מפגשים", sub: "תהליך מלא ומובנה" },
+            { icon: "clock", label: "50 דקות", sub: "כל מפגש אישי" },
+            { icon: "user-round", label: "1:1 · פרונטלי או זום", sub: "ליווי אישי צמוד" },
+            { icon: "users", label: "מפגשי הדרכה להורים", sub: "שינוי שמחזיק גם בבית" },
+          ].map((f, i) => (
+            <div key={i} className="rounded-2xl bg-white/[0.05] border border-white/10 p-5 text-center backdrop-blur-sm">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3" style={{ background: "rgba(52,211,153,.12)", color: "#6EE7B7" }}>
+                <Icon name={f.icon} size={19} />
+              </span>
+              <p className="font-heading font-bold text-[15px] text-white leading-tight">{f.label}</p>
+              <p className="text-white/55 text-[12.5px] mt-1">{f.sub}</p>
+            </div>
+          ))}
+        </Reveal>
+
         <Reveal className="text-center">
           <Button as="a" href={BOOKING_LINKS.calendar || waLink(CURE_TEENS_CTA_TEXT)} target="_blank" rel="noopener noreferrer" className="bg-[#10B981] hover:bg-[#0E7C63] text-white border-0">
             {CURE_TEENS_CTA_TEXT}
           </Button>
           <p className="text-white/60 text-[13.5px] leading-relaxed mt-4 max-w-[560px] mx-auto">
-            CURE Teens הוא מסלול ליווי אישי לבני נוער (13+) והורים — מתחילים בשיחת אבחון חינם וללא התחייבות, ובה נקבע יחד המסלול והקצב המתאימים. נפרד מתוכניות האפליקציה החודשיות שלמטה.
+            מתחילים בשיחת אבחון של 20 דקות — ללא עלות וללא התחייבות. בשיחה נכיר את המתבגר/ת, נזהה את הדפוס ונבנה יחד את המסלול והקצב המתאימים. CURE Teens הוא מסלול ליווי אישי לנוער (13+) והורים, נפרד מתוכניות האפליקציה החודשיות שלמטה.
           </p>
         </Reveal>
       </div>
