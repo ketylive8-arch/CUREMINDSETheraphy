@@ -37,6 +37,24 @@ function buildHtml(subject, fields) {
   );
 }
 
+// ── 0) Webhook (n8n / Make / Zapier) — הכי גמיש. דורש משתנה אחד: LEAD_WEBHOOK_URL ──
+// שולח את הליד כ-JSON לכתובת ה-Webhook, ושם n8n מטפל בשליחת המייל (חיבור Gmail
+// רגיל ב-n8n, בלי App Password). מקבל גם 'to' כדי ש-n8n יוכל לנתב לנמען הנכון.
+async function sendViaWebhook(to, subject, fields) {
+  const url = process.env.LEAD_WEBHOOK_URL;
+  if (!url) return null; // לא מוגדר — ננסה דרך אחרת
+  try {
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to, subject, ...fields }),
+    });
+    return resp.ok ? { sent: true, via: "webhook" } : { sent: false, error: `Webhook ${resp.status}` };
+  } catch (e) {
+    return { sent: false, error: `Webhook ${String((e && e.message) || e).slice(0, 160)}` };
+  }
+}
+
 // ── 1) Gmail ישיר דרך Nodemailer ──
 async function sendViaGmail(to, subject, fields) {
   const user = process.env.GMAIL_USER;
@@ -97,7 +115,7 @@ async function sendViaFormSubmit(to, subject, fields) {
 
 // שולח מייל ליעד כלשהו דרך Gmail → Resend → FormSubmit. לעולם לא זורק.
 async function notifyEmail(to, subject, fields) {
-  for (const send of [sendViaGmail, sendViaResend, sendViaFormSubmit]) {
+  for (const send of [sendViaWebhook, sendViaGmail, sendViaResend, sendViaFormSubmit]) {
     const r = await send(to, subject, fields);
     if (r === null) continue; // ספק לא מוגדר — לנסות את הבא
     if (r.sent) return r; // הצלחה
