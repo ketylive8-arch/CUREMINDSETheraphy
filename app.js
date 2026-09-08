@@ -75,6 +75,7 @@ const CONTENT = {
       { label: "CURE Teens", href: "#cure-teens" },
       { label: "לארגונים", href: "#organizations" },
       { label: "סיפורי שינוי", href: "#results" },
+      { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "כניסה למערכת",
     cta: "להתחיל ניסיון חינם",
@@ -194,6 +195,20 @@ const CONTENT = {
         who: "יועצת חינוכית",
       },
     ],
+  },
+  faq: {
+    eyebrow: "שאלות נפוצות",
+    title: "כל מה שחשוב לדעת לפני שמתחילים",
+    items: [
+      { q: "למי השירות מתאים?", a: "למבוגרים, להורים ולבני נוער (13+) שמתמודדים עם חרדה, עומס, דחיינות, דימוי עצמי נמוך או תקיעות רגשית — ורוצים כלים מעשיים לחוסן וביטחון. יש מסלולים נפרדים למבוגרים, להורים ולנוער." },
+      { q: "כמה זמן זה לוקח ביום?", a: "מעט. כל יום צעד קטן אחד — שיחה קצרה, שיעור של כמה דקות או תרגול. בנוי כך שייכנס לחיים העמוסים ביותר, לא יעמיס עליהם." },
+      { q: "מה כולל הניסיון החינם?", a: "3 ימי התנסות מלאים — בלי כרטיס אשראי ובלי התחייבות. מתנסים בשיחה, בכלים ובתרגולים, ורק בסוף מחליטים אם ממשיכים." },
+      { q: "מה לגבי פרטיות?", a: "כל מה שאת/ה משתף/ת נשמר מוצפן ופרטי. איננו מוכרים מידע. אפשר למחוק את החשבון והנתונים בכל עת." },
+      { q: "ה-AI — זה מטפל?", a: "לא. \"קטי הדיגיטלית\" היא כלי לאימון, למידה ותרגול המבוסס על השיטה של קטי. היא אינה נותנת אבחנה, אינה תחליף לטיפול רפואי או נפשי, ואינה מיועדת למצבי חירום." },
+      { q: "אני הורה — איך זה עובד עם בן/בת נוער?", a: "לנוער יש מסלול ייעודי (CURE Teens) עם ליווי אישי והדרכת הורים. מתחילים בשיחת אבחון קצרה ללא עלות, שבה נתאים יחד את המסלול והקצב." },
+      { q: "אפשר לבטל?", a: "כן, בכל עת. הביטול עוצר את החיוב מהמחזור הבא, בלי קנסות ובלי שיחות שכנוע." },
+    ],
+    disclaimer: "CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — קו סיוע נפשי (ער\"ן) 1201, מד\"א 101, או פנייה לרופא/ה או למטפל/ת.",
   },
   finalCta: {
     title: "השינוי מתחיל בשיחה אחת",
@@ -1108,6 +1123,61 @@ function LeadSection() {
 }
 
 /* ---------------------------------------------------------------- */
+/* FAQ (accessible accordion) + responsibility disclaimer           */
+/* ---------------------------------------------------------------- */
+
+function Faq() {
+  const [open, setOpen] = React.useState(0);
+  return (
+    <section id="faq" className="py-20 sm:py-28 bg-white border-t border-gold-200/50">
+      <div className="max-w-[780px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center mb-12">
+          <Eyebrow>{CONTENT.faq.eyebrow}</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[38px]">
+            {CONTENT.faq.title}
+          </h2>
+        </Reveal>
+
+        <Reveal className="flex flex-col gap-3">
+          {CONTENT.faq.items.map((it, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={i} className="bg-[#FAF8F4] border border-gold-200/70 rounded-2xl overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? -1 : i)}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-center justify-between gap-4 text-right font-heading font-bold text-ink-800 text-[17px] transition-colors"
+                  style={{ padding: "18px 22px", background: "transparent" }}
+                >
+                  <span>{it.q}</span>
+                  <Icon name={isOpen ? "chevron-up" : "chevron-down"} size={20} className="text-gold-600 shrink-0" />
+                </button>
+                {isOpen && (
+                  <div style={{ padding: "0 22px 20px" }}>
+                    <p className="text-ink-600 text-[16px] leading-relaxed">{it.a}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </Reveal>
+
+        <Reveal className="mt-8">
+          <div
+            className="rounded-2xl p-6 flex gap-3 items-start"
+            style={{ background: "rgba(184,212,227,0.18)", border: "1px solid rgba(184,212,227,0.5)" }}
+          >
+            <Icon name="shield-check" size={20} className="text-ink-500 shrink-0" />
+            <p className="text-ink-600 text-[14px] leading-relaxed">{CONTENT.faq.disclaimer}</p>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /* Final CTA                                                        */
 /* ---------------------------------------------------------------- */
 
@@ -1252,6 +1322,7 @@ function Home({ onEnterApp }) {
         <LeadSection />
         <Organizations />
         <Testimonials />
+        <Faq />
         <FinalCta />
       </main>
       <Footer />
