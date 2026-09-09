@@ -15,6 +15,13 @@
     { "source": "/cure-teens", "destination": "/cure-teens.html" },
     { "source": "/parents", "destination": "/parents.html" },
     { "source": "/method", "destination": "/method.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/responsibility", "destination": "/responsibility.html" },
+    { "source": "/accessibility", "destination": "/accessibility.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

@@ -1369,7 +1369,20 @@ function Footer() {
             ))}
           </div>
         </div>
-        <p className="text-white/40 text-[13px] text-center pt-8">{CONTENT.footer.rights}</p>
+        <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 pt-8">
+          {[
+            { href: "/privacy", label: "פרטיות" },
+            { href: "/terms", label: "תנאי שימוש" },
+            { href: "/accessibility", label: "נגישות" },
+            { href: "/responsibility", label: "הבהרת אחריות" },
+            { href: "/contact", label: "יצירת קשר" },
+          ].map((l) => (
+            <a key={l.href} href={l.href} className="text-white/50 text-[13px] hover:text-gold-400 transition-colors">
+              {l.label}
+            </a>
+          ))}
+        </div>
+        <p className="text-white/40 text-[13px] text-center pt-5">{CONTENT.footer.rights}</p>
       </div>
     </footer>
   );

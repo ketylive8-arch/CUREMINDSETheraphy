@@ -152,20 +152,20 @@ function template(p) {
     <div class="eyebrow">${esc(p.eyebrow || "CureMindset · קטי שגב")}</div>
     <h1>${esc(p.h1)}</h1>
     <p class="lead">${p.lead}</p>
-    <a class="btn primary" href="${BRAND.calendly}" target="_blank" rel="noopener">${esc(p.heroCta || "לשיחת היכרות ללא עלות")}</a>
+    ${p.heroCta === false ? "" : `<a class="btn primary" href="${BRAND.calendly}" target="_blank" rel="noopener">${esc(p.heroCta || "לשיחת היכרות ללא עלות")}</a>`}
   </div>
 
   ${sections}
   ${signs}
   ${tools}
 
-  <section class="blk"><h2>התהליך עם קטי — ומה קורה בשיחת ההיכרות</h2><p>${p.process}</p></section>
+  ${p.process ? `<section class="blk"><h2>התהליך עם קטי — ומה קורה בשיחת ההיכרות</h2><p>${p.process}</p></section>` : ""}
 
-  <div class="disclaimer">${esc(p.notFor || "CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער\"ן 1201, מד\"א 101.")}</div>
+  ${p.hideDisclaimer ? "" : `<div class="disclaimer">${esc(p.notFor || "CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער\"ן 1201, מד\"א 101.")}</div>`}
 
   ${faq}
 
-  <div class="ctaband">
+  ${p.plain ? "" : `<div class="ctaband">
     <h2>${esc(p.ctaTitle || "השינוי מתחיל בשיחה אחת")}</h2>
     <p>${esc(p.ctaText || "אין צורך להגיע עם תשובות. משאירים פרטים ובודקים יחד אם זה מתאים לך.")}</p>
     <div class="btnrow">
@@ -173,13 +173,14 @@ function template(p) {
       <a class="btn ghost" href="${BRAND.calendly}" target="_blank" rel="noopener">קביעת שיחת היכרות</a>
     </div>
     <div class="note">3 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת</div>
-  </div>
+  </div>`}
 
   ${related}
 </main>
 
 <footer class="site"><div class="wrap">
-  <a href="/">דף הבית</a> · <a href="/method">השיטה</a> · <a href="${BRAND.wa}" target="_blank" rel="noopener">וואטסאפ</a> · <a href="${BRAND.calendly}" target="_blank" rel="noopener">קביעת שיחה</a>
+  <a href="/">דף הבית</a> · <a href="/method">השיטה</a> · <a href="/faq">שאלות נפוצות</a> · <a href="/contact">יצירת קשר</a> · <a href="${BRAND.wa}" target="_blank" rel="noopener">וואטסאפ</a>
+  <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© ${new Date().getFullYear()} CureMindset · קטי שגב</div>
 </div></footer>
 </body>
@@ -187,7 +188,7 @@ function template(p) {
 }
 
 // ---- התוכן (קופי פרימיום, מקורי) ----
-const PAGES = require("./seo-content.js");
+const PAGES = [...require("./seo-content.js"), ...require("./seo-content-info.js")];
 
 let count = 0;
 for (const p of PAGES) {
