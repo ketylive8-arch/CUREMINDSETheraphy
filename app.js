@@ -1351,6 +1351,24 @@ function Footer() {
             </ul>
           </div>
         </div>
+        <div className="pt-8 pb-6 border-b border-white/10">
+          <p className="font-heading font-semibold text-white/70 mb-3 text-[13.5px]">נושאים</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {[
+              { href: "/method", label: "השיטה" },
+              { href: "/emotional-coaching", label: "אימון רגשי" },
+              { href: "/anxiety-and-stress", label: "חרדה ולחץ" },
+              { href: "/self-confidence", label: "ביטחון עצמי" },
+              { href: "/procrastination", label: "דחיינות" },
+              { href: "/cure-teens", label: "ליווי לנוער" },
+              { href: "/parents", label: "הדרכת הורים" },
+            ].map((l) => (
+              <a key={l.href} href={l.href} className="text-white/55 text-[14px] hover:text-gold-400 transition-colors">
+                {l.label}
+              </a>
+            ))}
+          </div>
+        </div>
         <p className="text-white/40 text-[13px] text-center pt-8">{CONTENT.footer.rights}</p>
       </div>
     </footer>
