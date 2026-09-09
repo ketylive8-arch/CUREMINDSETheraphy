@@ -387,32 +387,31 @@
   /* ---------------------------------------------------------------- */
   const INTAKE_KEY = "cm_intake";
 
-  function IntakeChat({ onDone }) {
+  function IntakeChat({ onDone, firstName }) {
     const [msgs, setMsgs] = useState([]);
     const [step, setStep] = useState(-1);      // -1 = פתיחה, אחר כך אינדקס שאלה
     const [typing, setTyping] = useState(false);
-    const [answers, setAnswers] = useState({ audience: "", topics: [], goal: "", time: "", format: "", mood: 0 });
-    const [multi, setMulti] = useState([]);     // בחירה מרובה זמנית (נושאים)
+    const [answers, setAnswers] = useState({ audience: "", time: "", format: "", mood: 0 });
+    const [multi, setMulti] = useState([]);     // (שמור לתאימות; לא בשימוש בזרימה הנוכחית)
     const [goalText, setGoalText] = useState("");
     const scrollRef = useRef(null);
 
-    // רצף השאלות. type: single | multi | text | scale | done
+    // רצף קצר וממשיך — בלי לחזור על מה שכבר נאסף בשיחת ההיכרות שלפני ההרשמה
+    // (שם, אתגר, השפעה, מטרה). כאן רק ההשלמות להתאמת ה"היום שלי".
     const STEPS = [
-      { key: "audience", type: "single", q: "קודם כול — מי מתחיל/ה את התהליך?",
+      { key: "audience", type: "single", q: "רק כדי לכוון נכון — מי מתחיל/ה את התהליך?",
         opts: [{ v: "adult", l: "מבוגר/ת" }, { v: "parent", l: "הורה" }, { v: "youth", l: "נער/ה" }, { v: "org", l: "ארגון" }] },
-      { key: "topics", type: "multi", q: "מה הכי מעיק עלייך עכשיו? אפשר לבחור כמה — אין נכון או לא נכון.",
-        opts: [{ v: "anxiety", l: "חרדה" }, { v: "overload", l: "עומס" }, { v: "selfimage", l: "דימוי עצמי" }, { v: "procrast", l: "דחיינות" }, { v: "confidence", l: "ביטחון" }, { v: "communication", l: "תקשורת" }, { v: "parenting", l: "הורות" }, { v: "screens", l: "מסכים" }] },
-      { key: "goal", type: "text", q: "ואם היה לך מקום לבקש — מה היית רוצה שיקרה ב-3 הימים הקרובים?", placeholder: "כמה מילים משלך… (אפשר גם לדלג)" },
       { key: "time", type: "single", q: "כמה זמן ביום נוח לך להשקיע? נתאים את הקצב אלייך.",
         opts: [{ v: "5", l: "5 דקות" }, { v: "10", l: "10 דקות" }, { v: "15", l: "15+ דקות" }] },
-      { key: "format", type: "single", q: "איך הכי נוח לך ללמוד ולתרגל?",
+      { key: "format", type: "single", q: "ואיך הכי נוח לך ללמוד ולתרגל?",
         opts: [{ v: "text", l: "טקסט" }, { v: "audio", l: "אודיו" }, { v: "practice", l: "תרגול קצר" }, { v: "mix", l: "שילוב" }] },
-      { key: "mood", type: "scale", q: "ואיך את/ה מרגיש/ה ממש עכשיו, מ-1 (קשה) עד 10 (רגוע/ה)? זה רק בשבילנו, בלי שיפוט." },
+      { key: "mood", type: "scale", q: "אחרונה — איך את/ה מרגיש/ה ממש עכשיו, מ-1 (קשה) עד 10 (רגוע/ה)? זה רק בשבילנו, בלי שיפוט." },
     ];
 
     useEffect(() => {
-      // פתיחה חמה, ואז השאלה הראשונה.
-      pushKety("היי, אני קטי הדיגיטלית 🤍 לפני שנתחיל — רק כמה שאלות קצרות כדי שאתאים לך את הכול. אין תשובות נכונות, ואפשר לדלג על מה שלא מרגיש נכון.", () => setStep(0));
+      // פתיחה עם המשכיות — מכירים במה שכבר שותף, ומבטיחים שלא נחזור על עצמנו.
+      const hi = firstName ? `היי ${firstName}, טוב שאת כאן.` : "טוב שאת כאן.";
+      pushKety(`${hi} כבר סיפרת לי על מה שמעיק ומה המטרה שלך — לא נחזור על זה. יש לי רק עוד שלוש שאלות קצרות כדי לדייק לך את "היום שלי".`, () => setStep(0));
     }, []);
 
     useEffect(() => {
@@ -3485,7 +3484,7 @@
           />
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
-        {!expired && showOnboarding && <IntakeChat onDone={() => { setShowOnboarding(false); setCurrent(0); }} />}
+        {!expired && showOnboarding && <IntakeChat firstName={(userName || "").split(" ")[0]} onDone={() => { setShowOnboarding(false); setCurrent(0); }} />}
         {showOnboarding &&!expired? (
           <div className="flex-1" />
         ): current === 0? (
