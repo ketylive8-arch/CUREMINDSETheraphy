@@ -8,6 +8,13 @@
     { "source": "/workshops", "destination": "/index.html" },
     { "source": "/dashboard", "destination": "/index.html" },
     { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/emotional-coaching", "destination": "/emotional-coaching.html" },
+    { "source": "/anxiety-and-stress", "destination": "/anxiety-and-stress.html" },
+    { "source": "/self-confidence", "destination": "/self-confidence.html" },
+    { "source": "/procrastination", "destination": "/procrastination.html" },
+    { "source": "/cure-teens", "destination": "/cure-teens.html" },
+    { "source": "/parents", "destination": "/parents.html" },
+    { "source": "/method", "destination": "/method.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
