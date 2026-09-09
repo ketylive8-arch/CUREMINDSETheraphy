@@ -645,7 +645,8 @@
   /* ---------------------------------------------------------------- */
 
   const STAGES = [
-    { id: 1, icon: "anchor", title: "עוגן", subtitle: "יצירת יציבות ראשונית ועוגן רגשי" },
+    { id: 0, icon: "home", title: "היום שלי", subtitle: "הצעד הבא שלך להיום", alwaysUnlocked: true },
+    { id: 1, icon: "anchor", title: "עוגן", subtitle: "יצירת יציבות ראשונית ועוגן רגשי", alwaysUnlocked: true },
     { id: 2, icon: "compass", title: "גבול ההבחנה", subtitle: "הפרדה בין רגש, מחשבה ומציאות" },
     { id: 3, icon: "footprints", title: "קרקוע", subtitle: "חזרה לגוף ולכאן ועכשיו" },
     { id: 4, icon: "sparkles", title: "מדד חוסן", subtitle: "השיקוף האישי שלך", alwaysUnlocked: true },
@@ -658,6 +659,78 @@
 
   // קישור קביעת מפגש (Calendly של קטי) — המפגש הווירטואלי החי.
   const CALENDAR_LINK = "https://calendly.com/ketysegev/meet-with-me";
+
+  /* ---------------------------------------------------------------- */
+  /* TodayStage — "היום שלי": מסך תרגול יומי (אפיון §17.4 / §18.3).    */
+  /* פעולה אחת, עד 3 המלצות, SOS גלוי ו"אני צריכה אדם" נגישים תמיד.    */
+  /* ---------------------------------------------------------------- */
+  function TodayStage({ firstName, onNavigateStage, onNeedHuman }) {
+    // עד 3 המלצות — כל אחת עם duration, נושא וסיבה (למה הוצעה).
+    const recs = [
+      { icon: "message-circle", label: "הצעד הבא שלך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
+        reason: "כדי שנדע מאיפה להמשיך היום.", stage: 5 },
+      { icon: "footprints", label: "אם יש לך 5 דקות", title: "תרגול קרקוע קצר", time: "5 דק'",
+        reason: "מחזיר את הגוף לכאן ועכשיו כשיש עומס.", stage: 3 },
+      { icon: "graduation-cap", label: "אם יש לך יותר זמן", title: "המשך התוכנית שלך", time: "10–15 דק'",
+        reason: "צעד אחד קדימה במסלול המודרך.", stage: 8 },
+    ];
+    return (
+      <div className="space-y-5">
+        <div>
+          <p className="font-heading font-extrabold text-[22px] text-ink-800">
+            {firstName ? `היי ${firstName}, טוב שחזרת` : "טוב שחזרת"}
+          </p>
+          <p className="text-[13.5px] text-ink-500 mt-1">מה שחשוב עכשיו — צעד אחד קטן. בלי עומס.</p>
+        </div>
+
+        {recs.map((r, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onNavigateStage(r.stage)}
+            className="w-full text-right bg-white rounded-2xl border border-ink-100 shadow-sm p-5 flex items-start gap-4 hover:border-gold-300 transition-colors"
+          >
+            <span className="w-11 h-11 rounded-xl bg-gold-100 text-gold-600 flex items-center justify-center shrink-0">
+              <Icon name={r.icon} size={20} />
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[12px] font-heading font-semibold text-gold-600 mb-0.5">{r.label} · {r.time}</span>
+              <span className="block font-heading font-bold text-[16.5px] text-ink-800">{r.title}</span>
+              <span className="block text-[13px] text-ink-500 mt-1 leading-relaxed">{r.reason}</span>
+            </span>
+            <Icon name="arrow-left" size={18} className="text-ink-300 shrink-0 mt-1" />
+          </button>
+        ))}
+
+        {/* פעולות נגישות תמיד — SOS ו"אני צריכה אדם" (אפיון §18.11) */}
+        <div className="grid grid-cols-2 gap-3 pt-1">
+          <button
+            type="button"
+            onClick={() => onNavigateStage(1)}
+            className="rounded-2xl p-4 flex flex-col items-center gap-1.5 text-center"
+            style={{ background: "rgba(184,212,227,0.22)", border: "1px solid rgba(184,212,227,0.55)" }}
+          >
+            <Icon name="heart" size={20} className="text-ink-600" />
+            <span className="font-heading font-bold text-[14px] text-ink-800">עוגן SOS</span>
+            <span className="text-[11.5px] text-ink-500 leading-snug">רגע של הצפה? הרגעה מהירה</span>
+          </button>
+          <button
+            type="button"
+            onClick={onNeedHuman}
+            className="rounded-2xl p-4 flex flex-col items-center gap-1.5 text-center bg-gold-50 border border-gold-200"
+          >
+            <Icon name="heart-handshake" size={20} className="text-gold-600" />
+            <span className="font-heading font-bold text-[14px] text-ink-800">אני צריכה אדם</span>
+            <span className="text-[11.5px] text-ink-500 leading-snug">לתיאום שיחה אישית עם קטי</span>
+          </button>
+        </div>
+
+        <p className="text-[11.5px] text-ink-400 text-center leading-relaxed pt-1">
+          CureMindset הוא כלי לאימון ותרגול, לא תחליף לטיפול. במצוקה מיידית: ער"ן 1201 · מד"א 101.
+        </p>
+      </div>
+    );
+  }
 
   /* ---------------------------------------------------------------- */
   /* Shared bits */
@@ -3098,9 +3171,8 @@
   function MemberArea({ onExit }) {
     const [loggedIn, setLoggedIn] = useState(() =>!!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
-    // Open on the AI check-in (stage 5, "צ'ק-אין") so a client who registers
-    // immediately meets the AI that asks questions — not the anchor exercise.
-    const [current, setCurrent] = useState(5);
+    // Open on "היום שלי" (stage 0) — מסך תרגול יומי לפי האפיון: צעד אחד, SOS גלוי.
+    const [current, setCurrent] = useState(0);
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() =>!localStorage.getItem(AGE_GROUP_KEY));
@@ -3211,6 +3283,14 @@
         {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
         {showOnboarding &&!expired? (
           <div className="flex-1" />
+        ): current === 0? (
+          <div className="flex-1 overflow-y-auto px-5 py-6 bg-ink-50">
+            <TodayStage
+              firstName={(userName || "").split(" ")[0]}
+              onNavigateStage={navigateToStage}
+              onNeedHuman={() => window.open(CALENDAR_LINK, "_blank", "noopener")}
+            />
+          </div>
         ): current === 8? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
             <ProgramStage onNavigateStage={navigateToStage} />
