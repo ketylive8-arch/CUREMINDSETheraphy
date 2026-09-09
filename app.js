@@ -75,6 +75,7 @@ const CONTENT = {
       { label: "CURE Teens", href: "#cure-teens" },
       { label: "לארגונים", href: "#organizations" },
       { label: "סיפורי שינוי", href: "#results" },
+      { label: "מאמרים", href: "#articles" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "כניסה למערכת",
@@ -1123,6 +1124,73 @@ function LeadSection() {
 }
 
 /* ---------------------------------------------------------------- */
+/* Articles — ספריית הידע (מושכת מ-/api/articles, בלוג קטי)           */
+/* הוחזר אחרי שהוסר בטעות בריעצוב (commit 5c18476). ראה IMPLEMENTATION_AUDIT.md */
+/* ---------------------------------------------------------------- */
+
+function ArticlesSection() {
+  const [items, setItems] = useState(null);
+
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/articles")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((rows) => { if (alive) setItems(Array.isArray(rows) ? rows : []); })
+      .catch(() => { if (alive) setItems([]); });
+    return () => { alive = false; };
+  }, []);
+
+  // נפילה: מאמרים מקוריים המקשרים לבלוג — כדי שהסקשן לעולם לא יהיה ריק.
+  const fallback = [
+    { title: "חרדה אצל בני נוער — מה קורה במוח ואיך מרגיעים אותו", link: MEDIA_LINKS.article1 || "https://ketysegev.blogspot.com/", description: "חרדה אינה חולשה — היא מערכת התראה שלמדה לירות מוקדם מדי. עובדים עם ויסות מערכת העצבים לצד מסגור מחדש של המחשבה." },
+    { title: "דימוי עצמי נמוך: איך בונים ביטחון פנימי שמחזיק", link: "https://ketysegev.blogspot.com/", description: "ביטחון אמיתי נבנה מ'עוגן בית' פנימי — ערך עצמי וכבוד — ולא ממחמאות מבחוץ. מזהים את הקול המבקר ומפרידים אותו מהעובדות." },
+    { title: "חוסן רגשי בתקופה לא יציבה — שלושה כלים מעשיים", link: "https://ketysegev.blogspot.com/", description: "חוסן הוא מיומנות נלמדת: נשימת קופסה לוויסות מיידי, עוגן SOS לרגעי הצפה, ומיקרו-צעד אחד שמחזיר תנועה קדימה." },
+  ];
+
+  const cards = items && items.length
+    ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
+    : fallback.map((a) => ({ title: a.title, link: a.link, desc: a.description }));
+
+  return (
+    <section id="articles" className="py-20 sm:py-28 bg-white border-t border-gold-200/50">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-16">
+          <Eyebrow>מהבלוג של קטי</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
+            מאמרים וכלים תודעתיים
+          </h2>
+        </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+          {cards.map((a, i) => (
+            <Reveal
+              key={i}
+              style={{ transitionDelay: `${i * 90}ms` }}
+              className="bg-[#FAF8F4] rounded-2xl p-8 border border-gold-200/60 shadow-softer flex flex-col gap-4"
+            >
+              <span className="font-heading font-semibold text-[12.5px] tracking-wide text-gold-600">מאמר</span>
+              <h3 className="font-heading font-bold text-ink-800 text-[20px] leading-tight flex-1">{a.title}</h3>
+              {a.desc ? <p className="text-ink-600 text-[15px] leading-relaxed">{a.desc}</p> : null}
+              {a.link ? (
+                <a
+                  href={a.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 self-start text-gold-700 font-heading font-semibold text-[15px]"
+                >
+                  לקריאת המאמר המלא
+                  <Icon name="arrow-left" size={17} />
+                </a>
+              ) : null}
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
 /* FAQ (accessible accordion) + responsibility disclaimer           */
 /* ---------------------------------------------------------------- */
 
@@ -1322,6 +1390,7 @@ function Home({ onEnterApp }) {
         <LeadSection />
         <Organizations />
         <Testimonials />
+        <ArticlesSection />
         <Faq />
         <FinalCta />
       </main>
