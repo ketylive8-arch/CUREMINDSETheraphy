@@ -93,7 +93,7 @@ function template(p) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script type="application/ld+json">${breadcrumbJsonLd(p)}</script>
-<script type="application/ld+json">${faqJsonLd(p.faq || [])}</script>
+${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)}</script>` : ""}
 <style>
   :root{--gold:${BRAND.gold};--gold-deep:${BRAND.goldDeep};--gold-soft:${BRAND.goldSoft};--cream:${BRAND.cream};--ink:${BRAND.ink};--ink-500:${BRAND.ink500}}
   *{box-sizing:border-box}
