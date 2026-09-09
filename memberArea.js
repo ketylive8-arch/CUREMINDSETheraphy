@@ -382,6 +382,211 @@
   }
 
   /* ---------------------------------------------------------------- */
+  /* IntakeChat — אינטייק כשיחה (לא טופס). קטי הדיגיטלית שואלת שאלה     */
+  /* אחת בכל פעם, המשתמש עונה ב-chips/טקסט. אפיון §2, §5.2, §18.3.      */
+  /* ---------------------------------------------------------------- */
+  const INTAKE_KEY = "cm_intake";
+
+  function IntakeChat({ onDone }) {
+    const [msgs, setMsgs] = useState([]);
+    const [step, setStep] = useState(-1);      // -1 = פתיחה, אחר כך אינדקס שאלה
+    const [typing, setTyping] = useState(false);
+    const [answers, setAnswers] = useState({ audience: "", topics: [], goal: "", time: "", format: "", mood: 0 });
+    const [multi, setMulti] = useState([]);     // בחירה מרובה זמנית (נושאים)
+    const [goalText, setGoalText] = useState("");
+    const scrollRef = useRef(null);
+
+    // רצף השאלות. type: single | multi | text | scale | done
+    const STEPS = [
+      { key: "audience", type: "single", q: "קודם כול — מי מתחיל/ה את התהליך?",
+        opts: [{ v: "adult", l: "מבוגר/ת" }, { v: "parent", l: "הורה" }, { v: "youth", l: "נער/ה" }, { v: "org", l: "ארגון" }] },
+      { key: "topics", type: "multi", q: "מה הכי מעיק עלייך עכשיו? אפשר לבחור כמה — אין נכון או לא נכון.",
+        opts: [{ v: "anxiety", l: "חרדה" }, { v: "overload", l: "עומס" }, { v: "selfimage", l: "דימוי עצמי" }, { v: "procrast", l: "דחיינות" }, { v: "confidence", l: "ביטחון" }, { v: "communication", l: "תקשורת" }, { v: "parenting", l: "הורות" }, { v: "screens", l: "מסכים" }] },
+      { key: "goal", type: "text", q: "ואם היה לך מקום לבקש — מה היית רוצה שיקרה ב-3 הימים הקרובים?", placeholder: "כמה מילים משלך… (אפשר גם לדלג)" },
+      { key: "time", type: "single", q: "כמה זמן ביום נוח לך להשקיע? נתאים את הקצב אלייך.",
+        opts: [{ v: "5", l: "5 דקות" }, { v: "10", l: "10 דקות" }, { v: "15", l: "15+ דקות" }] },
+      { key: "format", type: "single", q: "איך הכי נוח לך ללמוד ולתרגל?",
+        opts: [{ v: "text", l: "טקסט" }, { v: "audio", l: "אודיו" }, { v: "practice", l: "תרגול קצר" }, { v: "mix", l: "שילוב" }] },
+      { key: "mood", type: "scale", q: "ואיך את/ה מרגיש/ה ממש עכשיו, מ-1 (קשה) עד 10 (רגוע/ה)? זה רק בשבילנו, בלי שיפוט." },
+    ];
+
+    useEffect(() => {
+      // פתיחה חמה, ואז השאלה הראשונה.
+      pushKety("היי, אני קטי הדיגיטלית 🤍 לפני שנתחיל — רק כמה שאלות קצרות כדי שאתאים לך את הכול. אין תשובות נכונות, ואפשר לדלג על מה שלא מרגיש נכון.", () => setStep(0));
+    }, []);
+
+    useEffect(() => {
+      if (step >= 0 && step < STEPS.length) pushKety(STEPS[step].q);
+    }, [step]);
+
+    useEffect(() => {
+      const el = scrollRef.current; if (el) el.scrollTop = el.scrollHeight;
+    }, [msgs, typing]);
+
+    function pushKety(text, after) {
+      setTyping(true);
+      const delay = Math.min(1400, 500 + text.length * 12);
+      setTimeout(() => {
+        setTyping(false);
+        setMsgs((m) => [...m, { role: "kety", text }]);
+        if (after) setTimeout(after, 300);
+      }, delay);
+    }
+    function pushUser(text) { setMsgs((m) => [...m, { role: "user", text }]); }
+
+    function answerSingle(opt) {
+      pushUser(opt.l);
+      const cur = STEPS[step];
+      setAnswers((a) => ({ ...a, [cur.key]: opt.v }));
+      advance();
+    }
+    function toggleMulti(opt) {
+      setMulti((prev) => prev.includes(opt.v) ? prev.filter((x) => x !== opt.v) : [...prev, opt.v]);
+    }
+    function confirmMulti() {
+      const cur = STEPS[step];
+      const labels = cur.opts.filter((o) => multi.includes(o.v)).map((o) => o.l);
+      pushUser(labels.length ? labels.join(" · ") : "אני עוד לא בטוח/ה");
+      setAnswers((a) => ({ ...a, topics: multi }));
+      advance();
+    }
+    function confirmGoal(skip) {
+      pushUser(skip || !goalText.trim() ? "בוא/י פשוט נתחיל" : goalText.trim());
+      setAnswers((a) => ({ ...a, goal: skip ? "" : goalText.trim() }));
+      advance();
+    }
+    function answerScale(n) {
+      pushUser(`${n} מתוך 10`);
+      setAnswers((a) => ({ ...a, mood: n }));
+      advance();
+    }
+    function advance() {
+      if (step + 1 < STEPS.length) { setStep(step + 1); }
+      else { finish(); }
+    }
+    function finish() {
+      setStep(STEPS.length); // מצב סיום
+      pushKety("תודה ששיתפת אותי — זה עוזר לי להתאים לך בדיוק את מה שצריך. בניתי לך התחלה קטנה ומדויקת. נתחיל בצעד אחד.", () => {
+        // שמירה: פרופיל + אונבורדינג + מקומי (לקריאת "היום שלי")
+        const ageGroup = answers.audience === "youth" ? "youth" : "adult";
+        try { localStorage.setItem(INTAKE_KEY, JSON.stringify(answers)); localStorage.setItem(AGE_GROUP_KEY, "1"); } catch (e) {}
+        fetch("/api/profile", { method: "PUT", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ ageGroup }) }).catch(() => {});
+        fetch("/api/onboarding", { method: "POST", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify(answers) }).catch(() => {});
+      });
+    }
+
+    const cur = step >= 0 && step < STEPS.length ? STEPS[step] : null;
+    const showInput = cur && !typing;
+    const totalSteps = STEPS.length;
+    const progress = step < 0 ? 0 : Math.min(step, totalSteps) / totalSteps;
+
+    return (
+      <div className="absolute inset-0 z-[70] bg-ink-50 flex flex-col" dir="rtl">
+        {/* פס התקדמות עדין */}
+        <div className="h-1 bg-ink-100 shrink-0">
+          <div className="h-full bg-gold-500 transition-all duration-500" style={{ width: `${progress * 100}%` }} />
+        </div>
+
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-5 space-y-3.5">
+          {msgs.map((m, i) => (
+            m.role === "user" ? (
+              <div key={i} className="flex justify-start cm-fade-in-soft">
+                <div className="max-w-[82%] rounded-3xl rounded-br-lg bg-gold-500 text-white px-4 py-2.5 shadow-soft">
+                  <p className="text-[14.5px] leading-relaxed whitespace-pre-wrap">{m.text}</p>
+                </div>
+              </div>
+            ) : (
+              <div key={i} className="flex justify-end cm-fade-in-soft">
+                <div className="max-w-[86%]">
+                  <div className="flex items-center gap-2 mb-1.5 justify-end pe-1">
+                    <span className="text-[11px] font-heading font-semibold text-gold-500">קטי · מלווה דיגיטלית</span>
+                    <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center shrink-0"><Icon name="sparkles" size={13} /></span>
+                  </div>
+                  <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3 shadow-softer">
+                    <p className="text-[14.5px] leading-relaxed text-ink-700 whitespace-pre-wrap">{m.text}</p>
+                  </div>
+                </div>
+              </div>
+            )
+          ))}
+          {typing && (
+            <div className="flex justify-end">
+              <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3.5 shadow-softer"><TypingDots /></div>
+            </div>
+          )}
+        </div>
+
+        {/* אזור התשובה — chips / טקסט / סקאלה */}
+        {showInput && (
+          <div className="shrink-0 border-t border-ink-100 bg-white px-4 py-3.5">
+            {cur.type === "single" && (
+              <div className="flex flex-wrap gap-2">
+                {cur.opts.map((o) => (
+                  <button key={o.v} type="button" onClick={() => answerSingle(o)}
+                    className="px-4 py-2.5 rounded-full border border-gold-300 bg-gold-50 text-ink-700 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors">
+                    {o.l}
+                  </button>
+                ))}
+              </div>
+            )}
+            {cur.type === "multi" && (
+              <div>
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {cur.opts.map((o) => {
+                    const on = multi.includes(o.v);
+                    return (
+                      <button key={o.v} type="button" onClick={() => toggleMulti(o)}
+                        className={`px-4 py-2.5 rounded-full border font-heading font-semibold text-[14px] transition-colors ${on ? "bg-gold-500 text-white border-gold-500" : "border-gold-300 bg-gold-50 text-ink-700 hover:bg-gold-100"}`}>
+                        {on ? "✓ " : ""}{o.l}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button type="button" onClick={confirmMulti}
+                  className="w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors">
+                  המשך
+                </button>
+              </div>
+            )}
+            {cur.type === "text" && (
+              <div className="flex flex-col gap-2.5">
+                <textarea value={goalText} onChange={(e) => setGoalText(e.target.value)} rows={2} placeholder={cur.placeholder}
+                  className="w-full rounded-2xl border border-ink-200 px-4 py-3 text-[14.5px] text-ink-700 resize-none focus:border-gold-400 focus:outline-none" />
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => confirmGoal(false)}
+                    className="flex-1 py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors">שליחה</button>
+                  <button type="button" onClick={() => confirmGoal(true)}
+                    className="px-5 py-3 rounded-2xl border border-ink-200 text-ink-500 font-heading font-semibold text-[14px] hover:bg-ink-50 transition-colors">דילוג</button>
+                </div>
+              </div>
+            )}
+            {cur.type === "scale" && (
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[1,2,3,4,5,6,7,8,9,10].map((n) => (
+                  <button key={n} type="button" onClick={() => answerScale(n)}
+                    className="w-10 h-10 rounded-full border border-gold-300 bg-gold-50 text-ink-700 font-heading font-bold text-[15px] hover:bg-gold-500 hover:text-white transition-colors">
+                    {n}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* כפתור התחלה בסיום */}
+        {step >= STEPS.length && !typing && (
+          <div className="shrink-0 border-t border-ink-100 bg-white px-4 py-4">
+            <button type="button" onClick={() => onDone(answers)}
+              className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors">
+              מתחילים את הצעד הראשון →
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  /* ---------------------------------------------------------------- */
   /* Access gate — 3-day (72h) trial + personal access code */
   /* ---------------------------------------------------------------- */
 
@@ -3280,7 +3485,7 @@
           />
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
-        {!expired && showOnboarding && <AgeGroupOnboarding onDone={() => setShowOnboarding(false)} />}
+        {!expired && showOnboarding && <IntakeChat onDone={() => { setShowOnboarding(false); setCurrent(0); }} />}
         {showOnboarding &&!expired? (
           <div className="flex-1" />
         ): current === 0? (
