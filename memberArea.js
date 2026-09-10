@@ -3406,8 +3406,9 @@
   function MemberArea({ onExit }) {
     const [loggedIn, setLoggedIn] = useState(() =>!!getAuthToken());
     const [progress, setProgress] = useState(loadProgress);
-    // Open on "היום שלי" (stage 0) — מסך תרגול יומי לפי האפיון: צעד אחד, SOS גלוי.
-    const [current, setCurrent] = useState(0);
+    // נפתח על הבוט (צ'ק-אין, שלב 5) — קטי הדיגיטלית היא ליבת המוצר, פוגשים אותה מיד.
+    // "היום שלי" (שלב 0) נשאר נגיש כטאב ראשון.
+    const [current, setCurrent] = useState(5);
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() =>!localStorage.getItem(AGE_GROUP_KEY));
@@ -3515,7 +3516,7 @@
           />
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
-        {!expired && showOnboarding && <IntakeChat firstName={(userName || "").split(" ")[0]} onDone={() => { setShowOnboarding(false); setCurrent(0); }} />}
+        {!expired && showOnboarding && <IntakeChat firstName={(userName || "").split(" ")[0]} onDone={() => { setShowOnboarding(false); setCurrent(5); }} />}
         {showOnboarding &&!expired? (
           <div className="flex-1" />
         ): current === 0? (
