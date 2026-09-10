@@ -869,22 +869,41 @@
   /* פעולה אחת, עד 3 המלצות, SOS גלוי ו"אני צריכה אדם" נגישים תמיד.    */
   /* ---------------------------------------------------------------- */
   function TodayStage({ firstName, onNavigateStage, onNeedHuman }) {
-    // עד 3 המלצות — כל אחת עם duration, נושא וסיבה (למה הוצעה).
-    const recs = [
-      { icon: "message-circle", label: "הצעד הבא שלך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
-        reason: "כדי שנדע מאיפה להמשיך היום.", stage: 5 },
-      { icon: "footprints", label: "אם יש לך 5 דקות", title: "תרגול קרקוע קצר", time: "5 דק'",
-        reason: "מחזיר את הגוף לכאן ועכשיו כשיש עומס.", stage: 3 },
-      { icon: "graduation-cap", label: "אם יש לך יותר זמן", title: "המשך התוכנית שלך", time: "10–15 דק'",
-        reason: "צעד אחד קדימה במסלול המודרך.", stage: 8 },
-    ];
+    // התאמה אישית מתוך האינטייק: מצב (1–10), זמן פנוי והעדפת פורמט.
+    const intake = (() => { try { return JSON.parse(localStorage.getItem(INTAKE_KEY)) || {}; } catch (e) { return {}; } })();
+    const mood = Number(intake.mood) || 0;
+    const lowMood = mood > 0 && mood <= 4;
+    const wantsAudio = intake.format === "audio";
+    const shortTime = intake.time === "5";
+
+    // עד 3 המלצות — כל אחת עם duration, נושא וסיבה שקופה (למה הוצעה).
+    // כשהמצב נמוך — פותחים ברוגע. אחרת — צ'ק-אין קודם.
+    const recs = lowMood
+      ? [
+          { icon: "heart", label: "נתחיל ברוגע", title: "עוגן SOS — הרגעה מהירה", time: "2 דק'",
+            reason: `כי סימנת ${mood}/10 — קודם מורידים עוצמה, אחר כך מדברים.`, stage: 1 },
+          { icon: "message-circle", label: "אחר כך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
+            reason: "לשתף מה עובר עלייך עכשיו, בקצב שלך.", stage: 5 },
+          { icon: "footprints", label: "אם מתאים", title: "תרגול קרקוע", time: "5 דק'",
+            reason: "מחזיר את הגוף לכאן ועכשיו.", stage: 3 },
+        ]
+      : [
+          { icon: "message-circle", label: "הצעד הבא שלך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
+            reason: mood ? `סימנת ${mood}/10 היום — נתחיל מזה.` : "כדי שנדע מאיפה להמשיך היום.", stage: 5 },
+          { icon: "footprints", label: "אם יש לך 5 דקות", title: wantsAudio ? "תרגול קרקוע מודרך (אודיו)" : "תרגול קרקוע קצר", time: "5 דק'",
+            reason: wantsAudio ? "בחרת פורמט אודיו — נלווה אותך בהקשבה." : "מחזיר את הגוף לכאן ועכשיו כשיש עומס.", stage: 3 },
+          { icon: "graduation-cap", label: shortTime ? "כשיהיה לך עוד רגע" : "אם יש לך יותר זמן", title: "המשך התוכנית שלך", time: "10–15 דק'",
+            reason: "צעד אחד קדימה במסלול המודרך.", stage: 8 },
+        ];
     return (
       <div className="space-y-5">
         <div>
           <p className="font-heading font-extrabold text-[22px] text-ink-800">
             {firstName ? `היי ${firstName}, טוב שחזרת` : "טוב שחזרת"}
           </p>
-          <p className="text-[13.5px] text-ink-500 mt-1">מה שחשוב עכשיו — צעד אחד קטן. בלי עומס.</p>
+          <p className="text-[13.5px] text-ink-500 mt-1">
+            {lowMood ? "אני כאן איתך. נתחיל בעדינות, צעד אחד קטן." : "מה שחשוב עכשיו — צעד אחד קטן. בלי עומס."}
+          </p>
         </div>
 
         {recs.map((r, i) => (
