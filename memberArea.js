@@ -1877,13 +1877,25 @@
   function PhoneFrame({ children }) {
     // מעטפת אפליקציה נקייה: מסך מלא במובייל; בדסקטופ עמודת אפליקציה ממורכזת על רקע
     // קרם רך עם צל — בלי מסגרת טלפון שחורה ובלי פסים אפורים.
+    // maxWidth/shadow/border כ-inline styles — ה-classes של Tailwind עם sm:
+    // וערכים שרירותיים לא נכללו ב-CSS המהודר, ולכן במחשב האתר נמתח על כל הרוחב.
     return (
       <div
         className="fixed inset-0 z-50 flex justify-center overflow-hidden"
         dir="rtl"
         style={{ background: "linear-gradient(160deg,#fdfbf7 0%,#f4ecdd 100%)" }}
       >
-        <div className="relative w-full h-full sm:max-w-[480px] bg-ink-50 overflow-hidden flex flex-col sm:shadow-[0_40px_100px_-45px_rgba(120,90,30,0.55)] sm:border-x sm:border-gold-100">
+        <div
+          className="relative bg-ink-50 overflow-hidden flex flex-col"
+          style={{
+            width: "100%",
+            maxWidth: 480,
+            height: "100%",
+            boxShadow: "0 40px 100px -45px rgba(120,90,30,0.55)",
+            borderLeft: "1px solid #f0e6d2",
+            borderRight: "1px solid #f0e6d2",
+          }}
+        >
           {children}
         </div>
       </div>
@@ -3265,7 +3277,7 @@
   // משימה 1.1 — Carousel פתיחה (5 מסכים) לפני הצ'אט. בונה אמון והבנה, בסגנון Curable.
   // צבעי מותג: קרם #FAF7F2 · זהב #DCCAA4 · דיו #2D2A26.
   function OpeningCarousel({ onDone }) {
-    const CREAM = "#FAF7F2", GOLD = "#DCCAA4", INK = "#2D2A26";
+    const CREAM = "#FAF7F2", GOLD = "#DCCAA4", INK = "#2D2A26", CTA = "#c2974a";
     const SCREENS = [
       { icon: "heart-handshake", title: "ברוכה הבאה ", text: "הגעת למקום הנכון. כאן נלווה אותך צעד אחר צעד — בעדינות, ובקצב שלך." },
       { icon: "wind", title: "מה שאת מרגישה — זו לא חולשה", text: "חרדה, עומס, ביקורת עצמית — הם אזעקה של המערכת העצבית שמנסה להגן עלייך. ואפשר לכוון אותה מחדש." },
@@ -3295,7 +3307,7 @@
         </div>
         <div style={{ padding: "0 28px 34px" }}>
           <button type="button" onClick={() => (last? onDone(): setI(i + 1))}
-            style={{ width: "100%", padding: 16, borderRadius: 18, border: "none", cursor: "pointer", background: INK, color: CREAM, fontFamily: '"Rubik",sans-serif', fontWeight: 800, fontSize: 16.5 }}>
+            style={{ width: "100%", padding: 16, borderRadius: 18, border: "none", cursor: "pointer", background: CTA, color: "#fff", fontFamily: '"Rubik",sans-serif', fontWeight: 800, fontSize: 16.5 }}>
             {last? "בואי נתחיל ": "המשך"}
           </button>
         </div>
