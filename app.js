@@ -635,7 +635,7 @@ function About() {
   return (
     <section id="about" className="py-16 sm:py-24 bg-[#FAF8F4] border-t border-gold-200/50">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <div className="grid grid-cols-1 lg:grid-cols-[.8fr_1.2fr] gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[.85fr_1.15fr] gap-10 items-center">
           <Reveal className="flex justify-center">
             <div className="w-full max-w-[340px] aspect-[4/5] rounded-2xl overflow-hidden shadow-soft ring-1 ring-gold-200/70 bg-white p-2">
               <img
