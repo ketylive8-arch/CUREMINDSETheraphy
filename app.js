@@ -450,7 +450,7 @@ function Hero() {
               target="_blank"
               rel="noopener noreferrer"
               size="lg"
-              className="w-full sm:w-auto px-10 py-4 text-[18px] shadow-lg"
+              className="px-10 py-4 text-[18px] shadow-lg"
             >
               {CONTENT.hero.ctaPrimary}
             </Button>
