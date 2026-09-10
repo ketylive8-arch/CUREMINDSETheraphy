@@ -741,7 +741,7 @@ function CureTeens() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
           {[
             { letter: "C", title: "Clarity · בהירות", text: "פיצוח הזהות האישית מעבר למסכים וזיהוי ערכי הליבה." },
-            { letter: "U", title: "Understand · הבנה", text: "הבנת מנגנון המוח והשחרור מתקיעות רגשית ודחיינות." },
+            { letter: "U", title: "Unblock · שחרור חסמים", text: "שחרור העומס הרגשי, פירוק דפוסים מעכבים והפגת דריכות היתר במערכת העצבים." },
             { letter: "R", title: "Rewire · חיווט מחדש", text: "שינוי תגובות אוטומטיות ללחץ ובניית חוסן רגשי." },
             { letter: "E", title: "Empower · העצמה", text: "הנדסת הרגלים, עצמאות רגשית ותקשורת מקרבת." },
           ].map((p, i) => (
