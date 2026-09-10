@@ -135,47 +135,57 @@ const CONTENT = {
     cta: "לבדוק זמינות לסדנה הקרובה",
   },
   plans: {
-    eyebrow: "תוכניות",
+    eyebrow: "תוכניות ומסלולים",
     title: "בחרי את המסלול שמתאים לך",
-    subtitle: "3 ימים חינם · בלי כרטיס אשראי · ביטול בכל עת",
+    subtitle: "מתחילים ב-3 ימי התנסות חינם באזור הדיגיטלי · ליווי אישי בתיאום · תשלום מאובטח",
     items: [
       {
         id: "basic",
-        badge: "בסיסי",
-        price: "₪97/חודש",
-        audience: "מבוגר/ת שרוצה להתחיל בקצב שלו/ה",
-        features: ["צ'אט AI", "מודולים 1-3", "צ'ק-אין יומי", "עוגן SOS"],
+        badge: "בסיסי · דיגיטלי",
+        price: "₪570",
+        priceNote: "גישה מלאה לאזור הדיגיטלי",
+        audience: "מי שרוצה להתחיל עצמאית, בקצב שלו/ה, עם הכלים הדיגיטליים",
+        features: [
+          "צ'אט עם קטי הדיגיטלית — 24/7",
+          "כל הכלים והתרגולים",
+          "צ'ק-אין יומי ומעקב אישי",
+          "מודולים מודרכים לפי השיטה",
+          "עוגן SOS לרגעי הצפה",
+        ],
         highlight: false,
-        cta: "להתחיל ניסיון חינם",
+        cta: "להתחיל 3 ימי התנסות חינם",
       },
       {
-        id: "plus",
-        badge: "מומלץ",
-        price: "₪197/חודש",
-        audience: "מבוגר/ת או הורה שרוצה תהליך מלא",
+        id: "combined",
+        badge: "שילוב · מומלץ",
+        price: "₪2,580",
+        priceNote: "דיגיטלי + מפגשי זום אישיים",
+        audience: "השילוב האפקטיבי ביותר — הכלים הדיגיטליים יחד עם ליווי חי של קטי",
         features: [
-          "כל מה בבסיסי",
-          "כל המודולים",
-          "אודיו מודרך",
-          "מעקב מתקדם",
-          "ניתוח דפוסים",
+          "כל האזור הדיגיטלי המלא",
+          "מפגשי זום אישיים עם קטי",
+          "התאמת תהליך אישי לצרכים שלך",
+          "ליווי בין המפגשים בצ'אט",
+          "מעקב והתאמות שוטפות",
         ],
         highlight: true,
-        cta: "להתחיל ניסיון חינם",
+        cta: "לתיאום שיחת היכרות",
       },
       {
         id: "premium",
-        badge: "פרימיום",
-        price: "₪397/חודש",
-        audience: "מי שרוצה גם ליווי חי — מפגש זום אישי",
+        badge: "CURE Teens · פרימיום",
+        price: "₪3,500",
+        priceNote: "ליווי אישי מלא לנוער",
+        audience: "ליווי אישי עמוק לנוער (13+) ולהורים — התהליך המלא עם קטי",
         features: [
-          "כל מה באמצע",
-          "סדנה חודשית",
-          "קהילה פרטית",
-          "מפגש זום חודשי",
+          "6 מפגשים אישיים עם קטי (50 דק')",
+          "1:1 — פרונטלי או בזום",
+          "מפגשי הדרכה להורים",
+          "כל הכלים הדיגיטליים באתר",
+          "מתחילים בשיחת אבחון 20 דק' ללא עלות",
         ],
         highlight: false,
-        cta: "להתחיל ניסיון חינם",
+        cta: "לשיחת אבחון ללא עלות",
       },
     ],
   },
@@ -799,11 +809,14 @@ function PlanCard({ plan, idx, onEnterApp }) {
             {plan.badge}
           </span>
         )}
-        <div className="mt-2 mb-3">
+        <div className="mt-2 mb-1">
           <span className="font-heading font-extrabold text-ink-800 text-[36px] sm:text-[42px] leading-none">
             {plan.price}
           </span>
         </div>
+        {plan.priceNote && (
+          <p className="mb-3 text-[13px] font-semibold text-gold-700">{plan.priceNote}</p>
+        )}
         {plan.audience && (
           <p className="mb-5 text-[13px] text-ink-500 leading-snug">
             <span className="font-semibold text-ink-700">מתאים ל: </span>{plan.audience}
@@ -826,8 +839,11 @@ function PlanCard({ plan, idx, onEnterApp }) {
         onClick={() => {
           if (PAYMENT_LINKS[plan.id]) {
             window.open(PAYMENT_LINKS[plan.id], "_blank");
+          } else if (plan.id === "basic") {
+            onEnterApp ? onEnterApp() : window.open(waLink("היי קטי! אשמח להתחיל בהתנסות הדיגיטלית"), "_blank");
           } else {
-            onEnterApp ? onEnterApp() : window.open(waLink(`היי קטי! אשמח להתחיל במסלול ${plan.badge}`), "_blank");
+            // מסלולי ליווי אישי — לתיאום שיחה ביומן של קטי
+            window.open(BOOKING_LINKS.calendar || waLink(`היי קטי! אשמח לפרטים על מסלול ${plan.badge}`), "_blank", "noopener");
           }
         }}
         variant={isPlus ? "primary" : "secondary"}
