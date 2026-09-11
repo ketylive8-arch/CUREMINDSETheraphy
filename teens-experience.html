@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CureMindset לנוער — חוויה אינטראקטיבית</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Assistant:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --sage:#7BA98A; --sage-lt:#A9CBB2; --sage-soft:#E4EFE6;
+    --lav:#9B87C4; --lav-lt:#C9BCE6; --lav-soft:#EFEAF8;
+    --ink:#3B3A44; --ink-500:#6E6C7A; --paper:#F6F5FB; --white:#fff;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:linear-gradient(150deg,#E9F1EA 0%,#EFEAF8 55%,#E6EEF5 100%)}
+  h1,h2,h3,.rubik{font-family:Rubik,sans-serif}
+
+  /* ---- phone frame ---- */
+  .phone{position:relative;width:390px;max-width:100%;height:780px;max-height:92vh;
+    background:var(--paper);border-radius:42px;overflow:hidden;
+    box-shadow:0 40px 90px -30px rgba(90,80,130,.5),0 0 0 10px #fff,0 0 0 12px #e7e2f0;
+    display:flex;flex-direction:column}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;
+    background:#fff;border-radius:0 0 18px 18px;z-index:40}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:44px 22px 22px;
+    opacity:0;transform:translateY(14px);pointer-events:none;
+    transition:opacity .5s ease,transform .5s ease;overflow-y:auto}
+  .screen.on{opacity:1;transform:none;pointer-events:auto}
+
+  .brandbar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+  .brandbar .dot{width:26px;height:26px;border-radius:50%;
+    background:linear-gradient(135deg,var(--sage),var(--lav))}
+  .brandbar b{font-family:Rubik;font-weight:800;font-size:15px;color:var(--ink)}
+  .eyebrow{font-family:Rubik;font-weight:600;font-size:12px;letter-spacing:.1em;color:var(--sage);text-align:center}
+
+  .btn{font-family:Rubik;font-weight:700;font-size:16px;border:none;border-radius:20px;
+    padding:15px 20px;cursor:pointer;transition:transform .2s,box-shadow .2s;width:100%}
+  .btn-primary{background:linear-gradient(135deg,var(--sage),var(--lav));color:#fff;
+    box-shadow:0 14px 30px -12px rgba(123,169,138,.8)}
+  .btn-primary:active{transform:scale(.97)}
+  .btn-soft{background:#fff;color:var(--ink);border:1.5px solid var(--lav-lt)}
+
+  /* ---- welcome ---- */
+  #s-welcome{align-items:center;justify-content:center;text-align:center}
+  .breath-hero{width:150px;height:150px;border-radius:50%;margin:0 auto 30px;
+    background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--sage));
+    box-shadow:0 20px 50px -14px rgba(123,169,138,.7);animation:floaty 5s ease-in-out infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.04)}}
+  #s-welcome h1{font-size:27px;line-height:1.3;margin:0 0 12px}
+  #s-welcome p{font-size:16px;color:var(--ink-500);line-height:1.7;margin:0 0 30px;max-width:280px}
+
+  /* ---- mood ---- */
+  .scr-title{font-size:22px;font-weight:800;text-align:center;margin:6px 0 6px}
+  .scr-sub{font-size:14px;color:var(--ink-500);text-align:center;margin:0 0 22px}
+  .moods{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .mood{background:#fff;border:1.5px solid #eee7f4;border-radius:22px;padding:20px 12px;
+    text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+  .mood:active{transform:scale(.96)}
+  .mood:hover{border-color:var(--lav-lt);box-shadow:0 12px 26px -16px rgba(155,135,196,.6)}
+  .mood .ic{width:46px;height:46px;margin:0 auto 10px;border-radius:16px;display:grid;place-items:center}
+  .mood .lbl{font-family:Rubik;font-weight:700;font-size:15px}
+  .mood .sub{font-size:11.5px;color:var(--ink-500);margin-top:2px}
+
+  /* ---- chat ---- */
+  .chat-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #eee7f4;margin-bottom:12px}
+  .chat-head .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--lav));display:grid;place-items:center;color:#fff;font-family:Rubik;font-weight:800}
+  .chat-head b{font-family:Rubik;font-size:14px}
+  .chat-head span{display:block;font-size:11px;color:var(--sage)}
+  .msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px}
+  .bub{max-width:82%;padding:12px 15px;border-radius:20px;font-size:14.5px;line-height:1.6;animation:pop .35s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .bub.bot{align-self:flex-start;background:#fff;border:1px solid #eee7f4;border-top-right-radius:6px}
+  .bub.me{align-self:flex-end;background:linear-gradient(135deg,var(--sage),var(--lav));color:#fff;border-top-left-radius:6px}
+  .replies{display:flex;flex-direction:column;gap:8px;padding-top:12px}
+  .reply{background:var(--lav-soft);border:1.5px solid var(--lav-lt);color:var(--ink);
+    border-radius:16px;padding:12px 14px;font-family:Rubik;font-weight:600;font-size:14px;cursor:pointer;text-align:right;transition:transform .15s,background .2s}
+  .reply:active{transform:scale(.98)}
+  .reply:hover{background:#fff}
+  .typing{align-self:flex-start;display:flex;gap:5px;padding:12px 15px;background:#fff;border:1px solid #eee7f4;border-radius:20px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--lav-lt);animation:bd 1s infinite}
+  .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes bd{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+  /* ---- breathing ---- */
+  #s-breath{align-items:center;justify-content:center;text-align:center}
+  .breath-wrap{position:relative;width:250px;height:250px;display:grid;place-items:center;margin:10px 0 24px}
+  .breath-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--sage-lt);opacity:.5}
+  .breath{width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--lav));
+    display:grid;place-items:center;color:#fff;font-family:Rubik;font-weight:700;font-size:19px;
+    box-shadow:0 16px 40px -12px rgba(155,135,196,.7);
+    transition:transform 4s cubic-bezier(.4,0,.4,1),background 4s ease}
+  .breath.inhale{transform:scale(1.75);background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--sage))}
+  .breath.exhale{transform:scale(1);background:radial-gradient(circle at 35% 30%,var(--lav-lt),var(--lav))}
+  #breathCount{font-size:15px;color:var(--ink-500);margin-top:2px}
+
+  /* ---- SOS floating + modal ---- */
+  .sos-fab{position:absolute;bottom:20px;left:20px;z-index:30;
+    background:#E8746A;color:#fff;border:none;border-radius:18px;padding:12px 16px;
+    font-family:Rubik;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:7px;
+    box-shadow:0 12px 26px -8px rgba(232,116,106,.75);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 12px 26px -8px rgba(232,116,106,.6)}50%{box-shadow:0 12px 34px -6px rgba(232,116,106,.95)}}
+  .sos-overlay{position:absolute;inset:0;z-index:50;background:rgba(40,36,50,.55);
+    backdrop-filter:blur(3px);display:none;align-items:flex-end}
+  .sos-overlay.on{display:flex}
+  .sos-card{background:#fff;width:100%;border-radius:28px 28px 0 0;padding:24px 22px 30px;animation:up .35s ease}
+  @keyframes up{from{transform:translateY(100%)}to{transform:none}}
+  .sos-card h3{font-size:20px;margin:0 0 4px;color:#c9564c}
+  .sos-card p{font-size:13.5px;color:var(--ink-500);margin:0 0 16px;line-height:1.6}
+  .sos-call{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:var(--sage-soft);border-radius:16px;padding:14px 16px;margin-bottom:10px;text-decoration:none;color:var(--ink)}
+  .sos-call b{font-family:Rubik;font-size:15px}.sos-call span{font-size:12px;color:var(--ink-500)}
+  .sos-call .go{background:var(--sage);color:#fff;border-radius:12px;padding:8px 14px;font-family:Rubik;font-weight:700;font-size:13px}
+  .sos-close{background:none;border:none;color:var(--ink-500);font-family:Rubik;font-weight:600;font-size:14px;width:100%;padding:12px;cursor:pointer;margin-top:4px}
+
+  .backlink{position:fixed;top:16px;right:20px;font-family:Rubik;font-size:13px;color:#7a72a0;text-decoration:none;background:#fff;padding:8px 14px;border-radius:999px;box-shadow:0 6px 16px -8px rgba(0,0,0,.25)}
+  .caption{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-family:Rubik;font-size:12px;color:#8b83ab}
+</style>
+</head>
+<body>
+<a class="backlink" href="/cure-teens">← חזרה לעמוד CURE Teens</a>
+
+<div class="phone" id="phone">
+  <div class="notch"></div>
+
+  <!-- WELCOME -->
+  <section class="screen on" id="s-welcome">
+    <div class="breath-hero"></div>
+    <div class="brandbar"><span class="dot"></span><b>CureMindset · לנוער</b></div>
+    <h1>הגעת למקום שבו<br/>מותר פשוט להיות.</h1>
+    <p>בלי לחץ, בלי שיפוט. רק את/ה, קצב שלך, וכמה כלים שבאמת עובדים.</p>
+    <button class="btn btn-primary" onclick="go('mood')">בוא/י נתחיל</button>
+  </section>
+
+  <!-- MOOD -->
+  <section class="screen" id="s-mood">
+    <div class="eyebrow">רגע אחד</div>
+    <h2 class="scr-title">מה עובר עלייך עכשיו?</h2>
+    <p class="scr-sub">רק תלחצ/י — בלי להקליד כלום.</p>
+    <div class="moods">
+      <div class="mood" onclick="pickMood('anxiety')">
+        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#9B87C4" stroke-width="2" stroke-linecap="round"><path d="M4 14c2-4 6-4 8 0s6 4 8 0"/><path d="M4 8c2-3 6-3 8 0"/></svg></div>
+        <div class="lbl">חרדה / הצפה</div><div class="sub">הכל יותר מדי</div>
+      </div>
+      <div class="mood" onclick="pickMood('sad')">
+        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#7BA98A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 15c1.5-1.5 6.5-1.5 8 0"/><path d="M9 9h.01M15 9h.01"/></svg></div>
+        <div class="lbl">עצב / ריקנות</div><div class="sub">כבד לי</div>
+      </div>
+      <div class="mood" onclick="pickMood('stress')">
+        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#9B87C4" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div class="lbl">לחץ ועומס</div><div class="sub">אין לי רגע</div>
+      </div>
+      <div class="mood" onclick="pickMood('anger')">
+        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#7BA98A" stroke-width="2" stroke-linecap="round"><path d="M4 7l16-3M4 10l16-3"/><path d="M7 14c1.5 1.5 8.5 1.5 10 0"/></svg></div>
+        <div class="lbl">כעס / תסכול</div><div class="sub">רותח/ת</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAT -->
+  <section class="screen" id="s-chat">
+    <div class="chat-head"><div class="av">ק</div><div><b>קטי הדיגיטלית</b><span>כאן איתך, ברגע הזה</span></div></div>
+    <div class="msgs" id="msgs"></div>
+    <div class="replies" id="replies"></div>
+  </section>
+
+  <!-- BREATHING -->
+  <section class="screen" id="s-breath">
+    <div class="eyebrow">נשימת בועה</div>
+    <h2 class="scr-title" id="breathTitle">בוא/י ננשום יחד</h2>
+    <div class="breath-wrap">
+      <div class="breath-ring"></div>
+      <div class="breath" id="bubble">מוכן/ה?</div>
+    </div>
+    <div id="breathCount">3 סבבים · פחות מדקה</div>
+    <div style="height:16px"></div>
+    <button class="btn btn-primary" id="breathBtn" onclick="startBreath()">מתחילים</button>
+    <div style="height:10px"></div>
+    <button class="btn btn-soft" onclick="go('mood')">חזרה למצב הרוח</button>
+  </section>
+
+  <!-- SOS -->
+  <button class="sos-fab" onclick="sos(true)">
+    <svg width="17" height="17" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M8.5 2.5 1.5 15h14z"/><path d="M8.5 7v3.5M8.5 12.8v.01"/></svg>
+    עזרה דחופה
+  </button>
+  <div class="sos-overlay" id="sosOverlay">
+    <div class="sos-card">
+      <h3>אני כאן איתך.</h3>
+      <p>אם קשה לך עכשיו או שאת/ה בסכנה — לא צריך להתמודד לבד. לחיצה אחת, ומישהו עונה.</p>
+      <a class="sos-call" href="tel:1201"><span><b>ער"ן</b> · עזרה ראשונה נפשית</span><span class="go">1201</span></a>
+      <a class="sos-call" href="https://www.safe.org.il/" target="_blank" rel="noopener"><span><b>סה"ר</b> · תמיכה בצ'אט</span><span class="go">צ'אט</span></a>
+      <a class="sos-call" href="tel:105"><span><b>105</b> · מוקד הגנה לילדים ונוער</span><span class="go">105</span></a>
+      <a class="sos-call" href="tel:101"><span><b>מד"א</b> · חירום רפואי</span><span class="go">101</span></a>
+      <button class="sos-close" onclick="sos(false)">אני בסדר עכשיו, סגור/י</button>
+    </div>
+  </div>
+</div>
+
+<div class="caption">אב-טיפוס חוויית הנוער · CureMindset — לבדיקת כיוון</div>
+
+<script>
+  function go(id){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+    document.getElementById('s-'+id).classList.add('on');
+  }
+  function sos(open){ document.getElementById('sosOverlay').classList.toggle('on', open); }
+
+  /* ---- guided chat, branches by mood ---- */
+  var FLOWS = {
+    anxiety:{ open:"שמעתי — כשהכל מרגיש יותר מדי, זה לא כי משהו לא בסדר בך. זו המערכת שלך שמנסה להגן. נתחיל בלהוריד קצת עוצמה?",
+      r1:["כן, בוא/י ננסה","קודם ספר/י לי למה זה קורה"],
+      a1:{0:"מעולה. הכי מהיר שיש — נשימה. אני איתך שם.", 1:"החרדה היא אזעקה שלמדה לירות מוקדם מדי. אפשר ללמד אותה מחדש — צעד אחד קטן בכל פעם. ננסה כלי?"},
+      cta:"לתרגול נשימה" },
+    sad:{ open:"תודה ששיתפת. כובד כזה זה לא חולשה — זה סימן שמשהו בפנים מבקש תשומת לב. מותר לך פשוט להיות בזה רגע.",
+      r1:["קשה לי להתחיל","אני רוצה שיהיה לי קל יותר"],
+      a1:{0:"אז לא נתחיל בגדול. רק נשימה אחת יחד. בלי לתקן כלום.", 1:"נתקדם לאט, בקצב שלך. הצעד הראשון הכי קטן שיש — לנשום. בא/ה?"},
+      cta:"לנשימה עדינה" },
+    stress:{ open:"אין רגע, הכל דוחף. כשהמערכת בעומס, קשה לחשוב בכלל. בוא/י ניצור חמש שניות של שקט — ומשם קל יותר.",
+      r1:["חמש שניות זה כל מה שיש לי","אני רוצה כלי לפעם הבאה"],
+      a1:{0:"מושלם. חמש שניות זה מספיק בשביל להתחיל. ננשום.", 1:"יופי. הכלי הכי פשוט לרגעי עומס הוא נשימת קופסה — ניקח אותו יחד עכשיו."},
+      cta:"לנשימת קופסה" },
+    anger:{ open:"רותח/ת — וזה בסדר גמור. כעס הוא אנרגיה, לא אויב. במקום להילחם בו, ניתן לו מקום לזוז החוצה בבטחה.",
+      r1:["אני רק רוצה להירגע","למה אני מתפוצץ/ת על כלום?"],
+      a1:{0:"אז ננמיך הילוך יחד — נשימה איטית מורידה את הרתיחה תוך פחות מדקה.", 1:"בדרך כלל הכעס הקטן שומר על משהו גדול יותר מבפנים. נתחיל בלהרגיע את הגוף, ואז נבין."},
+      cta:"להרגעה מהירה" },
+  };
+  var cur=null;
+  function pickMood(m){ cur=FLOWS[m]; go('chat');
+    document.getElementById('msgs').innerHTML=''; document.getElementById('replies').innerHTML='';
+    botSay(cur.open, function(){ showReplies(cur.r1, onFirst); });
+  }
+  function onFirst(i){ meSay(cur.r1[i]); clearReplies();
+    botSay(cur.a1[i], function(){ showReplies([cur.cta], function(){ meSay(cur.cta); clearReplies(); setTimeout(function(){ go('breath'); },400); }); });
+  }
+  function botSay(t, done){ var m=document.getElementById('msgs');
+    var tp=document.createElement('div'); tp.className='typing'; tp.innerHTML='<i></i><i></i><i></i>'; m.appendChild(tp); m.scrollTop=m.scrollHeight;
+    setTimeout(function(){ tp.remove(); var b=document.createElement('div'); b.className='bub bot'; b.textContent=t; m.appendChild(b); m.scrollTop=m.scrollHeight; if(done)setTimeout(done,350); }, Math.min(1300,600+t.length*11));
+  }
+  function meSay(t){ var m=document.getElementById('msgs'); var b=document.createElement('div'); b.className='bub me'; b.textContent=t; m.appendChild(b); m.scrollTop=m.scrollHeight; }
+  function showReplies(arr, cb){ var r=document.getElementById('replies'); r.innerHTML='';
+    arr.forEach(function(t,i){ var el=document.createElement('button'); el.className='reply'; el.textContent=t; el.onclick=function(){ cb(i); }; r.appendChild(el); });
+  }
+  function clearReplies(){ document.getElementById('replies').innerHTML=''; }
+
+  /* ---- breathing bubble ---- */
+  var breathing=false;
+  function startBreath(){
+    if(breathing) return; breathing=true;
+    var bubble=document.getElementById('bubble'), btn=document.getElementById('breathBtn'), count=document.getElementById('breathCount');
+    btn.style.display='none';
+    var cycles=3, c=0;
+    function phase(name,cls,txt,ms,next){ bubble.className='breath '+cls; bubble.textContent=txt; count.textContent='סבב '+(c+1)+' מתוך '+cycles;
+      var t=Math.round(ms/1000), iv=setInterval(function(){ t--; if(t>0) bubble.textContent=txt+' · '+t; },1000);
+      setTimeout(function(){ clearInterval(iv); next(); }, ms);
+    }
+    function cycle(){
+      phase('inhale','inhale','שאיפה',4000,function(){
+        phase('hold','','להחזיק',3000,function(){
+          phase('exhale','exhale','נשיפה איטית',5000,function(){
+            c++; if(c<cycles) cycle(); else finish();
+          });
+        });
+      });
+    }
+    function finish(){ bubble.className='breath'; bubble.textContent='כל הכבוד 🤍'; count.textContent='עשית את זה. איך הגוף מרגיש עכשיו?';
+      btn.style.display=''; btn.textContent='עוד סבב'; breathing=false;
+      document.getElementById('breathTitle').textContent='נשמת. יפה.';
+    }
+    cycle();
+  }
+</script>
+</body>
+</html>
