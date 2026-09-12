@@ -10,20 +10,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Assistant:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --sage:#7BA98A; --sage-lt:#A9CBB2; --sage-soft:#E4EFE6;
-    --lav:#9B87C4; --lav-lt:#C9BCE6; --lav-soft:#EFEAF8;
-    --ink:#3B3A44; --ink-500:#6E6C7A; --paper:#F6F5FB; --white:#fff;
+    /* פלטת המותג — זהב/קרם (במקום ירוק/לבנדר) */
+    --sage:#C2974A; --sage-lt:#DCC49A; --sage-soft:#F1E6CF;
+    --lav:#A9791F; --lav-lt:#E0CBA0; --lav-soft:#F5EEDE;
+    --ink:#2D2A26; --ink-500:#6B6560; --paper:#FBF7EF; --white:#fff;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);
     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
-    background:linear-gradient(150deg,#E9F1EA 0%,#EFEAF8 55%,#E6EEF5 100%)}
+    background:linear-gradient(150deg,#FBF6EC 0%,#F4E9D2 55%,#F7EFE0 100%)}
   h1,h2,h3,.rubik{font-family:Rubik,sans-serif}
 
   /* ---- phone frame ---- */
   .phone{position:relative;width:390px;max-width:100%;height:780px;max-height:92vh;
     background:var(--paper);border-radius:42px;overflow:hidden;
-    box-shadow:0 40px 90px -30px rgba(90,80,130,.5),0 0 0 10px #fff,0 0 0 12px #e7e2f0;
+    box-shadow:0 40px 90px -30px rgba(120,90,30,.45),0 0 0 10px #fff,0 0 0 12px #efe6d6;
     display:flex;flex-direction:column}
   .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:130px;height:26px;
     background:#fff;border-radius:0 0 18px 18px;z-index:40}
@@ -41,7 +42,7 @@
   .btn{font-family:Rubik;font-weight:700;font-size:16px;border:none;border-radius:20px;
     padding:15px 20px;cursor:pointer;transition:transform .2s,box-shadow .2s;width:100%}
   .btn-primary{background:linear-gradient(135deg,var(--sage),var(--lav));color:#fff;
-    box-shadow:0 14px 30px -12px rgba(123,169,138,.8)}
+    box-shadow:0 14px 30px -12px rgba(194,151,74,.8)}
   .btn-primary:active{transform:scale(.97)}
   .btn-soft{background:#fff;color:var(--ink);border:1.5px solid var(--lav-lt)}
 
@@ -49,7 +50,7 @@
   #s-welcome{align-items:center;justify-content:center;text-align:center}
   .breath-hero{width:150px;height:150px;border-radius:50%;margin:0 auto 30px;
     background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--sage));
-    box-shadow:0 20px 50px -14px rgba(123,169,138,.7);animation:floaty 5s ease-in-out infinite}
+    box-shadow:0 20px 50px -14px rgba(194,151,74,.7);animation:floaty 5s ease-in-out infinite}
   @keyframes floaty{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.04)}}
   #s-welcome h1{font-size:27px;line-height:1.3;margin:0 0 12px}
   #s-welcome p{font-size:16px;color:var(--ink-500);line-height:1.7;margin:0 0 30px;max-width:280px}
@@ -58,30 +59,30 @@
   .scr-title{font-size:22px;font-weight:800;text-align:center;margin:6px 0 6px}
   .scr-sub{font-size:14px;color:var(--ink-500);text-align:center;margin:0 0 22px}
   .moods{display:grid;grid-template-columns:1fr 1fr;gap:13px}
-  .mood{background:#fff;border:1.5px solid #eee7f4;border-radius:22px;padding:20px 12px;
+  .mood{background:#fff;border:1.5px solid #efe6d6;border-radius:22px;padding:20px 12px;
     text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
   .mood:active{transform:scale(.96)}
-  .mood:hover{border-color:var(--lav-lt);box-shadow:0 12px 26px -16px rgba(155,135,196,.6)}
+  .mood:hover{border-color:var(--lav-lt);box-shadow:0 12px 26px -16px rgba(169,121,31,.6)}
   .mood .ic{width:46px;height:46px;margin:0 auto 10px;border-radius:16px;display:grid;place-items:center}
   .mood .lbl{font-family:Rubik;font-weight:700;font-size:15px}
   .mood .sub{font-size:11.5px;color:var(--ink-500);margin-top:2px}
 
   /* ---- chat ---- */
-  .chat-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #eee7f4;margin-bottom:12px}
+  .chat-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid #efe6d6;margin-bottom:12px}
   .chat-head .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sage),var(--lav));display:grid;place-items:center;color:#fff;font-family:Rubik;font-weight:800}
   .chat-head b{font-family:Rubik;font-size:14px}
   .chat-head span{display:block;font-size:11px;color:var(--sage)}
   .msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 2px}
   .bub{max-width:82%;padding:12px 15px;border-radius:20px;font-size:14.5px;line-height:1.6;animation:pop .35s ease}
   @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .bub.bot{align-self:flex-start;background:#fff;border:1px solid #eee7f4;border-top-right-radius:6px}
+  .bub.bot{align-self:flex-start;background:#fff;border:1px solid #efe6d6;border-top-right-radius:6px}
   .bub.me{align-self:flex-end;background:linear-gradient(135deg,var(--sage),var(--lav));color:#fff;border-top-left-radius:6px}
   .replies{display:flex;flex-direction:column;gap:8px;padding-top:12px}
   .reply{background:var(--lav-soft);border:1.5px solid var(--lav-lt);color:var(--ink);
     border-radius:16px;padding:12px 14px;font-family:Rubik;font-weight:600;font-size:14px;cursor:pointer;text-align:right;transition:transform .15s,background .2s}
   .reply:active{transform:scale(.98)}
   .reply:hover{background:#fff}
-  .typing{align-self:flex-start;display:flex;gap:5px;padding:12px 15px;background:#fff;border:1px solid #eee7f4;border-radius:20px}
+  .typing{align-self:flex-start;display:flex;gap:5px;padding:12px 15px;background:#fff;border:1px solid #efe6d6;border-radius:20px}
   .typing i{width:7px;height:7px;border-radius:50%;background:var(--lav-lt);animation:bd 1s infinite}
   .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
   @keyframes bd{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
@@ -93,7 +94,7 @@
   .breath{width:120px;height:120px;border-radius:50%;
     background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--lav));
     display:grid;place-items:center;color:#fff;font-family:Rubik;font-weight:700;font-size:19px;
-    box-shadow:0 16px 40px -12px rgba(155,135,196,.7);
+    box-shadow:0 16px 40px -12px rgba(169,121,31,.7);
     transition:transform 4s cubic-bezier(.4,0,.4,1),background 4s ease}
   .breath.inhale{transform:scale(1.75);background:radial-gradient(circle at 35% 30%,var(--sage-lt),var(--sage))}
   .breath.exhale{transform:scale(1);background:radial-gradient(circle at 35% 30%,var(--lav-lt),var(--lav))}
@@ -144,19 +145,19 @@
     <p class="scr-sub">רק תלחצ/י — בלי להקליד כלום.</p>
     <div class="moods">
       <div class="mood" onclick="pickMood('anxiety')">
-        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#9B87C4" stroke-width="2" stroke-linecap="round"><path d="M4 14c2-4 6-4 8 0s6 4 8 0"/><path d="M4 8c2-3 6-3 8 0"/></svg></div>
+        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#C2974A" stroke-width="2" stroke-linecap="round"><path d="M4 14c2-4 6-4 8 0s6 4 8 0"/><path d="M4 8c2-3 6-3 8 0"/></svg></div>
         <div class="lbl">חרדה / הצפה</div><div class="sub">הכל יותר מדי</div>
       </div>
       <div class="mood" onclick="pickMood('sad')">
-        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#7BA98A" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 15c1.5-1.5 6.5-1.5 8 0"/><path d="M9 9h.01M15 9h.01"/></svg></div>
+        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#A9791F" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 15c1.5-1.5 6.5-1.5 8 0"/><path d="M9 9h.01M15 9h.01"/></svg></div>
         <div class="lbl">עצב / ריקנות</div><div class="sub">כבד לי</div>
       </div>
       <div class="mood" onclick="pickMood('stress')">
-        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#9B87C4" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div class="ic" style="background:var(--lav-soft)"><svg width="24" height="24" fill="none" stroke="#C2974A" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div>
         <div class="lbl">לחץ ועומס</div><div class="sub">אין לי רגע</div>
       </div>
       <div class="mood" onclick="pickMood('anger')">
-        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#7BA98A" stroke-width="2" stroke-linecap="round"><path d="M4 7l16-3M4 10l16-3"/><path d="M7 14c1.5 1.5 8.5 1.5 10 0"/></svg></div>
+        <div class="ic" style="background:var(--sage-soft)"><svg width="24" height="24" fill="none" stroke="#A9791F" stroke-width="2" stroke-linecap="round"><path d="M4 7l16-3M4 10l16-3"/><path d="M7 14c1.5 1.5 8.5 1.5 10 0"/></svg></div>
         <div class="lbl">כעס / תסכול</div><div class="sub">רותח/ת</div>
       </div>
     </div>
