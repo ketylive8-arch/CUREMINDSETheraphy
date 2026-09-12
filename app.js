@@ -126,11 +126,11 @@ const CONTENT = {
   workshops: {
     eyebrow: "סדנאות",
     title: "סדנאות ותוכניות CureMindset",
-    subtitle: "מפגשים ממוקדים בקבוצות קטנות ובאווירה תומכת",
+    subtitle: "כל סדנה בנפרד — עם התוכן, המחיר והמסגרת שלה",
     items: [
-      { icon: "compass", title: "המצפן הפנימי — מנהיגות ורווחה", meta: "3 מפגשים · עד 8 משתתפים", text: "פיצוח קוד העוצמה האישית, ניהול רגשות תחת לחץ ובניית חוסן רגשי לעתיד." },
-      { icon: "user-round", title: "שינוי רמת זהות", meta: "10 שלבים · מבוגרים / נוער", text: "עבודה עמוקה ברמת הזהות: מיפוי אמונות מגבילות, פירוק הטעינה הרגשית ובניית זהות חדשה." },
-      { icon: "sparkles", title: "Future Pacing — עיגון העתיד", meta: "8 שלבים · סדנה ממוקדת", text: "בניית זיכרון עתידי עשיר, עיגון גופני וחזרה מנטלית מדורגת תחת לחץ." },
+      { icon: "compass", title: "המצפן הפנימי", meta: "3 מפגשים · עד 8 · ₪1,190", text: "סדנת חוויה קבוצתית בשיטת CURE: לפגוש חרדה, לשחרר חסמים ולחווט מחדש את הדרך שאתה מגיב.", href: "/workshop-inner-compass" },
+      { icon: "user-round", title: "CURE Teens", meta: "6 מפגשים אישיים · ₪3,500", text: "ליווי פרימיום אישי לנוער 13–18: ביטחון, הרגעת חרדה וכלים אמיתיים — בשפה שלהם, עם ליווי הורי.", href: "/workshop-cure-teens" },
+      { icon: "sparkles", title: "סדנה לארגונים", meta: "מותאם · צוותים ובתי ספר", text: "סדנת חוסן שמצמצמת שחיקה ומחזירה לצוות כלים מעשיים לוויסות לחץ — לא הרצאה שמתאדה למחרת.", href: "/workshop-organizations" },
     ],
     cta: "לבדוק זמינות לסדנה הקרובה",
   },
@@ -700,6 +700,11 @@ function Workshops() {
               <span className="text-[13px] font-semibold text-gold-600 tracking-wide">{it.meta}</span>
               <h3 className="font-heading font-bold text-ink-800 text-[20px]">{it.title}</h3>
               <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{it.text}</p>
+              {it.href && (
+                <a href={it.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-1">
+                  לפרטים מלאים ←
+                </a>
+              )}
             </Reveal>
           ))}
         </div>
@@ -1433,6 +1438,7 @@ function Home({ onEnterApp }) {
         <Vision />
         <About />
         <CureTeens />
+        <Workshops />
         <Plans onEnterApp={onEnterApp} />
         <LeadSection />
         <Organizations />

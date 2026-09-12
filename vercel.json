@@ -23,6 +23,9 @@
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/teens-app", "destination": "/teens-experience.html" },
+    { "source": "/workshop-inner-compass", "destination": "/workshop-inner-compass.html" },
+    { "source": "/workshop-cure-teens", "destination": "/workshop-cure-teens.html" },
+    { "source": "/workshop-organizations", "destination": "/workshop-organizations.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
