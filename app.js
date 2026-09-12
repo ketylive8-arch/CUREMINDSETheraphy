@@ -73,6 +73,7 @@ const CONTENT = {
       { label: "השיטה", href: "#vision" },
       { label: "תוכניות", href: "#plans" },
       { label: "CURE Teens", href: "#cure-teens" },
+      { label: "סדנאות", href: "#workshops" },
       { label: "לארגונים", href: "#organizations" },
       { label: "סיפורי שינוי", href: "#results" },
       { label: "מאמרים", href: "#articles" },

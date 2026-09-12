@@ -344,7 +344,7 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
 </div>
 
 <footer class="site"><div class="wrap">
-  <a href="/">דף הבית</a> · <a href="/workshops">כל הסדנאות</a> · <a href="/method">השיטה</a> · <a href="/faq">שאלות נפוצות</a> · <a href="/contact">יצירת קשר</a>
+  <a href="/">דף הבית</a> · <a href="/#workshops">כל הסדנאות</a> · <a href="/method">השיטה</a> · <a href="/faq">שאלות נפוצות</a> · <a href="/contact">יצירת קשר</a>
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© ${new Date().getFullYear()} CureMindset · קטי שגב</div>
 </div></footer>
