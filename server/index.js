@@ -14,6 +14,7 @@ const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
+const { detectCrisis, safetyResponse } = require("./safety");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
@@ -665,6 +666,28 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
 
   try {
     const ageGroup = getAgeGroup(req.deviceToken);
+
+    // ── שכבת בטיחות קשיחה: סימני פגיעה עצמית / חירום ──
+    // עוצרים לפני כל מנוע AI, לא שומרים ניתוח רגיל, ומחזירים הודעת בטיחות עם מספרי חירום.
+    if (detectCrisis(text).crisis) {
+      try {
+        db.prepare(
+          "INSERT INTO audit_logs (actor_user_id, action, target_type, target_id, meta) VALUES (?, ?, ?, ?, ?)"
+        ).run(req.accountId || null, "safety_crisis_detected", "checkin", req.deviceToken, "{}");
+      } catch (e) { /* אסור שכשל לוג יחסום את הודעת הבטיחות */ }
+
+      const safe = safetyResponse(ageGroup);
+      let dashboard = null;
+      try {
+        const pr = db.prepare("SELECT unlocked, completed FROM protocol_progress WHERE device_token = ?").get(req.deviceToken);
+        const sessions = db.prepare("SELECT score, date FROM grounding_sessions WHERE device_token = ? ORDER BY date ASC").all(req.deviceToken);
+        const rows = db.prepare("SELECT triggers, patterns, balance_alerts, wins FROM checkins WHERE device_token = ? ORDER BY created_at DESC").all(req.deviceToken);
+        dashboard = buildDashboardData({ unlocked: pr.unlocked, completed: JSON.parse(pr.completed) }, sessions, rows);
+      } catch (e) { /* דשבורד לא חובה בתרחיש בטיחות */ }
+
+      return res.json({ reply: safe.reply, dailyTask: null, safety: safe.safety, dashboard });
+    }
+
     // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI
     const retrieved = retrieveKnowledge(text.trim());
     // פרופיל אישי מהאבחון בהרשמה — מחבר את התוכן למה שהמשתמש/ת הזינ/ה (דינמי, לא סטטי).
