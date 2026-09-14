@@ -8,7 +8,8 @@
     "test": "node --test test/*.test.js",
     "seed": "node server/seed.js",
     "gen:seo": "node scripts/gen-seo.js",
-    "gen:workshops": "node scripts/gen-workshops.js"
+    "gen:workshops": "node scripts/gen-workshops.js",
+    "gen:content": "node scripts/gen-content-json.js"
   },
   "keywords": [],
   "author": "",
