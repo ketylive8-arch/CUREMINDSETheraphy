@@ -6,7 +6,9 @@ const multer = require("multer");
 
 const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotifications,
   listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
-  getActiveEnrollment, growGateStatus, applyPaymentWebhook, cancelSubscription } = require("./db");
+  getActiveEnrollment, growGateStatus, applyPaymentWebhook, cancelSubscription,
+  CONSENT_TYPES, REQUIRED_CONSENTS, recordConsent, currentConsents,
+  exportUserData, deleteUserAccount } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -580,6 +582,63 @@ app.get("/api/articles", async (req, res) => {
 const api = express.Router();
 api.use(deviceTokenMiddleware);
 
+// ── ConsentRecord (הסכמה גרנולרית — 9 סוגים) ──────────────────────────────
+// מצב נוכחי + רשימת הסוגים והחובה, כדי שה-UI יציג מסך הסכמה מלא.
+api.get("/consent", (req, res) => {
+  res.json({
+    types: CONSENT_TYPES,
+    required: REQUIRED_CONSENTS,
+    current: currentConsents(req.deviceToken),
+  });
+});
+
+// עדכון הסכמה: גוף { consents: { type: boolean, ... } } או { consentType, granted }.
+api.post("/consent", rateLimit("consent", 60), (req, res) => {
+  const body = req.body || {};
+  const updates = body.consents && typeof body.consents === "object"
+    ? body.consents
+    : (body.consentType ? { [body.consentType]: !!body.granted } : null);
+  if (!updates) return res.status(400).json({ error: "נדרש consents או consentType" });
+
+  const results = [];
+  for (const [type, granted] of Object.entries(updates)) {
+    const r = recordConsent(req.deviceToken, type, !!granted, { source: "app", ip: req.ip });
+    if (r.error) return res.status(r.status).json({ error: `סוג הסכמה לא תקין: ${type}` });
+    results.push(r);
+  }
+  const current = currentConsents(req.deviceToken);
+  const missingRequired = REQUIRED_CONSENTS.filter((t) => !current[t]);
+  res.json({ ok: true, current, missingRequired, canProceed: missingRequired.length === 0 });
+});
+
+// ── Safety Check (שלב עצמאי לפני הצעת מסלול) ──────────────────────────────
+// לא מאבחן — בודק אם נדרשת עזרה מיידית/אנושית. תשובה אחידה עם /api/checkin.
+api.post("/safety/check", rateLimit("safety", 40), (req, res) => {
+  const { text } = req.body || {};
+  if (typeof text !== "string") return res.status(400).json({ error: "text is required" });
+  if (detectCrisis(text).crisis) {
+    auditLog(req.accountId || null, "safety_crisis_detected", "safety_check", req.deviceToken, null);
+    const safe = safetyResponse(getAgeGroup(req.deviceToken));
+    return res.json({ safe: false, ...safe });
+  }
+  res.json({ safe: true, safety: { safetyLevel: "none", needsHumanSupport: false } });
+});
+
+// ── פרטיות: ייצוא ומחיקה של נתוני המשתמשת ─────────────────────────────────
+api.get("/account/export", (req, res) => {
+  res.setHeader("Content-Disposition", 'attachment; filename="curemindset-my-data.json"');
+  res.json(exportUserData(req.deviceToken));
+});
+
+api.post("/account/delete", (req, res) => {
+  // מחיקה בלתי-הפיכה. דורש אישור מפורש בגוף הבקשה כדי למנוע מחיקה בטעות.
+  if (!req.body || req.body.confirm !== true) {
+    return res.status(400).json({ error: "נדרש אישור מפורש (confirm=true) למחיקת החשבון" });
+  }
+  const r = deleteUserAccount(req.deviceToken);
+  res.json({ ok: true, ...r, message: "החשבון והנתונים נמחקו לצמיתות." });
+});
+
 api.get("/progress", (req, res) => {
   const row = db.prepare("SELECT unlocked, completed FROM protocol_progress WHERE device_token = ?").get(req.deviceToken);
   res.json({ unlocked: row.unlocked, completed: JSON.parse(row.completed) });
@@ -670,11 +729,9 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
     // ── שכבת בטיחות קשיחה: סימני פגיעה עצמית / חירום ──
     // עוצרים לפני כל מנוע AI, לא שומרים ניתוח רגיל, ומחזירים הודעת בטיחות עם מספרי חירום.
     if (detectCrisis(text).crisis) {
-      try {
-        db.prepare(
-          "INSERT INTO audit_logs (actor_user_id, action, target_type, target_id, meta) VALUES (?, ?, ?, ?, ?)"
-        ).run(req.accountId || null, "safety_crisis_detected", "checkin", req.deviceToken, "{}");
-      } catch (e) { /* אסור שכשל לוג יחסום את הודעת הבטיחות */ }
+      // תיעוד ל-AuditLog דרך ה-helper (עמודות נכונות, redaction, לעולם לא זורק).
+      // לא שומרים את תוכן ההודעה — מינימום מידע נדרש (policy בטיחות/פרטיות).
+      auditLog(req.accountId || null, "safety_crisis_detected", "checkin", req.deviceToken, null);
 
       const safe = safetyResponse(ageGroup);
       let dashboard = null;

@@ -301,6 +301,22 @@ db.exec(`
     provider TEXT NOT NULL DEFAULT 'grow',
     processed_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- ConsentRecord: הסכמה גרנולרית לכל סוג (9 סוגים), עם גרסה וחותמות זמן.
+  -- שורה חדשה לכל שינוי מצב (grant/revoke) — היסטוריה מלאה, לא עדכון-במקום.
+  CREATE TABLE IF NOT EXISTS consent_records (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    consent_type TEXT NOT NULL,
+    version TEXT NOT NULL DEFAULT '1.0',
+    granted INTEGER NOT NULL DEFAULT 1,
+    granted_at TEXT,
+    revoked_at TEXT,
+    source TEXT,
+    ip TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_consent_records_user ON consent_records (user_id, consent_type);
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -429,6 +445,85 @@ function auditLog(actorUserId, action, entityType, entityId, metadata) {
   } catch (e) { /* audit must never break a request */ }
 }
 
+// ── ConsentRecord (הסכמה גרנולרית) ─────────────────────────────────────────
+// 9 סוגי ההסכמה מהאפיון. שמות יציבים — ה-UI והבדיקות נשענים עליהם.
+const CONSENT_TYPES = [
+  "platform_use",              // 1. שימוש בפלטפורמה
+  "intake_storage",            // 2. שמירת תשובות intake
+  "ai_use",                    // 3. שימוש ב-AI
+  "ai_conversation_storage",   // 4. שמירת שיחות AI
+  "personalization",           // 5. התאמה אישית
+  "notifications",             // 6. notifications
+  "professional_share",        // 7. שיתוף עם איש מקצוע
+  "guardian_share",            // 8. שיתוף עם הורה/אפוטרופוס
+  "terms_privacy",             // 9. תנאי שימוש ופרטיות
+];
+
+// ההסכמות שהן חובה כדי להשתמש בפלטפורמה (השאר אופציונליות).
+const REQUIRED_CONSENTS = ["platform_use", "terms_privacy"];
+
+function recordConsent(userId, consentType, granted, { version = "1.0", source = "app", ip = null } = {}) {
+  if (!userId || !CONSENT_TYPES.includes(consentType)) {
+    return { error: "invalid consent type", status: 400 };
+  }
+  const now = new Date().toISOString();
+  db.prepare(
+    `INSERT INTO consent_records (user_id, consent_type, version, granted, granted_at, revoked_at, source, ip)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(userId, consentType, version, granted ? 1 : 0, granted ? now : null, granted ? null : now, source, ip ? String(ip).slice(0, 60) : null);
+  auditLog(userId, granted ? "consent_granted" : "consent_revoked", "consent", consentType, { version });
+  return { ok: true, consentType, granted: !!granted, at: now };
+}
+
+// המצב הנוכחי לכל סוג = הרשומה האחרונה. מחזיר מפה { type: boolean }.
+function currentConsents(userId) {
+  const rows = db.prepare(
+    `SELECT consent_type, granted FROM consent_records
+     WHERE user_id = ? AND id IN (
+       SELECT MAX(id) FROM consent_records WHERE user_id = ? GROUP BY consent_type
+     )`
+  ).all(userId, userId);
+  const map = {};
+  for (const t of CONSENT_TYPES) map[t] = false;
+  for (const r of rows) map[r.consent_type] = !!r.granted;
+  return map;
+}
+
+function hasConsent(userId, consentType) {
+  return currentConsents(userId)[consentType] === true;
+}
+
+// ── ייצוא ומחיקה של נתוני משתמשת (זכות פרטיות) ──────────────────────────────
+function exportUserData(userId) {
+  const out = { exportedAt: new Date().toISOString(), userId };
+  const safeAll = (sql, ...args) => { try { return db.prepare(sql).all(...args); } catch { return []; } };
+  const safeGet = (sql, ...args) => { try { return db.prepare(sql).get(...args) || null; } catch { return null; } };
+  out.account = safeGet("SELECT id, email, full_name, phone, created_at FROM accounts WHERE id = ?", userId);
+  out.profile = safeGet("SELECT * FROM patient_profile WHERE device_token = ?", userId);
+  out.consents = safeAll("SELECT consent_type, granted, granted_at, revoked_at, version FROM consent_records WHERE user_id = ? ORDER BY id", userId);
+  out.checkins = safeAll("SELECT text, created_at FROM checkins WHERE device_token = ? ORDER BY created_at", userId);
+  out.conversations = safeAll("SELECT role, text, created_at FROM conversations WHERE device_token = ? ORDER BY created_at", userId);
+  out.moodLogs = safeAll("SELECT * FROM mood_logs WHERE device_token = ? ORDER BY created_at", userId);
+  return out;
+}
+
+function deleteUserAccount(userId) {
+  const tables = [
+    ["checkins", "device_token"], ["conversations", "device_token"], ["mood_logs", "device_token"],
+    ["grounding_sessions", "device_token"], ["daily_tasks", "device_token"], ["module_progress", "device_token"],
+    ["protocol_progress", "device_token"], ["recommendations", "device_token"], ["patient_profile", "device_token"],
+    ["patients", "device_token"], ["enrollments", "user_id"], ["subscriptions", "user_id"],
+    ["consent_records", "user_id"], ["consent_log", "account_id"], ["auth_sessions", "account_id"],
+    ["accounts", "id"],
+  ];
+  let removed = 0;
+  for (const [t, col] of tables) {
+    try { const r = db.prepare(`DELETE FROM ${t} WHERE ${col} = ?`).run(userId); removed += (r.changes || 0); } catch { /* טבלה/עמודה לא קיימת */ }
+  }
+  auditLog(userId, "account_deleted", "account", userId, { rows: removed });
+  return { ok: true, rowsRemoved: removed };
+}
+
 function listPrograms() {
   return db.prepare("SELECT * FROM programs WHERE status = 'published' ORDER BY rowid").all();
 }
@@ -544,4 +639,7 @@ module.exports = {
   TRIAL_HOURS, listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
   // תשלום:
   getActiveEnrollment, growGateStatus, applyPaymentWebhook,
+  // הסכמות + פרטיות:
+  CONSENT_TYPES, REQUIRED_CONSENTS, recordConsent, currentConsents, hasConsent,
+  exportUserData, deleteUserAccount,
 };
