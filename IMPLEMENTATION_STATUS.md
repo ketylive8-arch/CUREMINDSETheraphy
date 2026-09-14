@@ -72,7 +72,18 @@
 
 ---
 
-## הושלם בפועל עד כה (COMPLETE, מאומת ב-24 בדיקות עוברות)
+## שלב אודיו — תור אישור הקלטות קטי
+
+| דרישה | קבצים | Backend | Frontend | בדיקות | סטטוס |
+|---|---|---|---|---|---|
+| סריקת אודיו מ-Drive של קטי | (Google Drive MCP) | ✅ | — | — | COMPLETE — נמצאו ~10 הקלטות טיפוליות עצמיות |
+| מיפוי אודיו→יחידות + תור אישור | server/audioSeed.js, db.js | ✅ | ❌ | ✅ | PARTIAL — Backend+API+בדיקות COMPLETE; חסר UI אישור לקטי |
+| API אדמין: list/approve/reject | server/index.js | ✅ | ❌ | ✅ | PARTIAL — API COMPLETE |
+| ניגון בפועל באתר | — | ❌ | ❌ | — | BLOCKED — קבצי Drive דורשים אירוח/שיתוף לניגון (view_url אינו נגן) |
+| Spotify (CureMindset) | — | ❌ | — | — | BLOCKED — אין connector; נדרש URL ציבורי או חיבור |
+| SoundCloud (ketysegev) | — | ❌ | — | — | BLOCKED — אין connector; נדרש URL ציבורי או חיבור |
+
+## הושלם בפועל עד כה (COMPLETE, מאומת ב-40 בדיקות עוברות)
 - שכבת בטיחות AI (server/safety.js) — short-circuit + מספרי חירום, בצ׳אט וב-safety-check.
 - ConsentRecord גרנולרי (9 סוגים) + API + היסטוריה.
 - ייצוא + מחיקת חשבון (זכות פרטיות) + API.

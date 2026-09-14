@@ -9,7 +9,8 @@ const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotif
   getActiveEnrollment, growGateStatus, applyPaymentWebhook, cancelSubscription,
   CONSENT_TYPES, REQUIRED_CONSENTS, recordConsent, currentConsents,
   exportUserData, deleteUserAccount,
-  listContentModules, getContentModule, listContentModuleTopics } = require("./db");
+  listContentModules, getContentModule, listContentModuleTopics,
+  listAudioCandidates, approveAudioCandidate, rejectAudioCandidate } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -1244,6 +1245,21 @@ admin.get("/knowledge", (req, res) => {
   res.json({ files, test });
 });
 
+// ── תור אישור אודיו (לקטי) — סקירה ואישור הקלטות שהותאמו ליחידות ──
+admin.get("/audio-candidates", (req, res) => {
+  res.json({ candidates: listAudioCandidates(req.query.status || null) });
+});
+admin.post("/audio-candidates/:id/approve", (req, res) => {
+  const r = approveAudioCandidate(req.params.id, "kety");
+  if (r.error) return res.status(r.status).json({ error: r.error });
+  res.json(r);
+});
+admin.post("/audio-candidates/:id/reject", (req, res) => {
+  const r = rejectAudioCandidate(req.params.id, "kety");
+  if (r.error) return res.status(r.status).json({ error: r.error });
+  res.json(r);
+});
+
 // סטטוס ה-AI — האם GPT מלא פעיל, או שהמערכת רצה במנוע המקומי (ולמה).
 admin.get("/ai-status", async (req, res) => {
   try {
@@ -1386,6 +1402,9 @@ try {
   const { seedContent } = require("./contentSeed");
   const c = seedContent();
   console.log(`Content seed: +${c.modules}/${c.totalModules} modules, +${c.sources}/${c.totalSources} sources`);
+  const { seedAudioCandidates } = require("./audioSeed");
+  const a = seedAudioCandidates();
+  console.log(`Audio candidates: +${a.inserted}/${a.total} pending review`);
 } catch (e) {
   console.error("content seed failed:", e.message);
 }

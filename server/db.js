@@ -360,6 +360,25 @@ db.exec(`
     needs_content_review INTEGER DEFAULT 1 -- 1 = ממתין לתוכן/אישור של קטי (TODO)
   );
   CREATE INDEX IF NOT EXISTS idx_content_modules_topic ON content_modules (topic, audience);
+
+  -- תור אישור אודיו: הקלטות של קטי (Drive/Spotify/SoundCloud) שהותאמו ליחידות תוכן.
+  -- pending עד שקטי מאשרת (מאזינה ומוודאת התאמה) — לא מתפרסם אוטומטית.
+  CREATE TABLE IF NOT EXISTS audio_candidates (
+    id TEXT PRIMARY KEY,
+    provider TEXT NOT NULL,        -- drive / spotify / soundcloud
+    external_id TEXT,              -- Drive fileId / track id
+    title TEXT NOT NULL,
+    view_url TEXT,
+    mime TEXT,
+    suggested_slug TEXT,          -- היחידה המומלצת
+    topic TEXT,
+    match_note TEXT,              -- למה הותאם
+    rights_status TEXT DEFAULT 'owned',
+    status TEXT NOT NULL DEFAULT 'pending', -- pending / approved / rejected
+    approved_by TEXT,
+    approved_at TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -607,6 +626,34 @@ function listContentModuleTopics() {
   return db.prepare("SELECT DISTINCT topic FROM content_modules WHERE status = 'published' ORDER BY topic").all().map((r) => r.topic);
 }
 
+// ── תור אישור אודיו ─────────────────────────────────────────────────────────
+function listAudioCandidates(status) {
+  const rows = status
+    ? db.prepare("SELECT * FROM audio_candidates WHERE status = ? ORDER BY topic, title").all(status)
+    : db.prepare("SELECT * FROM audio_candidates ORDER BY status, topic, title").all();
+  return rows;
+}
+
+// אישור מועמד → משייך את האודיו ליחידה (audio_url) ומעדכן פורמט. לא מוחק את הטקסט.
+function approveAudioCandidate(id, approvedBy = "kety") {
+  const c = db.prepare("SELECT * FROM audio_candidates WHERE id = ?").get(id);
+  if (!c) return { error: "not found", status: 404 };
+  db.prepare("UPDATE audio_candidates SET status = 'approved', approved_by = ?, approved_at = ? WHERE id = ?")
+    .run(approvedBy, new Date().toISOString(), id);
+  if (c.suggested_slug) {
+    // מסמנים את היחידה כ'audio זמין'; ה-view_url הוא מועמד — הנגשה לנגן בפועל דורשת אירוח (ראו הערה).
+    db.prepare("UPDATE content_modules SET audio_url = ?, format = 'mixed' WHERE slug = ?").run(c.view_url || "", c.suggested_slug);
+  }
+  auditLog(approvedBy, "audio_approved", "audio_candidate", id, { slug: c.suggested_slug });
+  return { ok: true, slug: c.suggested_slug };
+}
+
+function rejectAudioCandidate(id, by = "kety") {
+  const r = db.prepare("UPDATE audio_candidates SET status = 'rejected', approved_by = ?, approved_at = ? WHERE id = ?")
+    .run(by, new Date().toISOString(), id);
+  return r.changes ? { ok: true } : { error: "not found", status: 404 };
+}
+
 function listPrograms() {
   return db.prepare("SELECT * FROM programs WHERE status = 'published' ORDER BY rowid").all();
 }
@@ -727,4 +774,6 @@ module.exports = {
   exportUserData, deleteUserAccount,
   // קטלוג תוכן:
   listContentModules, getContentModule, listContentModuleTopics,
+  // תור אישור אודיו:
+  listAudioCandidates, approveAudioCandidate, rejectAudioCandidate,
 };
