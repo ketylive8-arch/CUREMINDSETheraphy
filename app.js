@@ -72,6 +72,7 @@ const CONTENT = {
       { label: "איך זה עובד", href: "#how-it-works" },
       { label: "השיטה", href: "#vision" },
       { label: "תוכניות", href: "#plans" },
+      { label: "שיחה עם קטי", href: "/talk" },
       { label: "התוכנית", href: "/program" },
       { label: "CURE Teens", href: "#cure-teens" },
       { label: "סדנאות", href: "#workshops" },

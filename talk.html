@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>שיחה עם קטי הדיגיטלית | CureMindset</title>
+<meta name="description" content="קטי הדיגיטלית — מלווה לתרגול מבוסס שיטת CureMindset. שיחה, כלי מעשי אחד, וצעד קטן להיום." />
+<meta name="robots" content="noindex, follow" />
+<meta name="theme-color" content="#c2974a" />
+<link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#2D2A26;--ink-500:#6B6560;--green:#16A34A}
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:var(--cream);display:flex;flex-direction:column;height:100dvh}
+  header.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:rgba(251,247,239,.96);border-bottom:1px solid var(--gold-soft);backdrop-filter:blur(8px)}
+  .who{display:flex;align-items:center;gap:10px}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Rubik,sans-serif;font-weight:800}
+  .who b{font-family:Rubik,sans-serif;font-size:16px;color:var(--ink);display:block;line-height:1.1}
+  .who span{font-size:12px;color:var(--ink-500)}
+  header.bar a{color:var(--gold-deep);text-decoration:none;font-weight:700;font-size:14px}
+  .disc{font-size:12px;color:var(--ink-500);background:#f3eee3;padding:8px 16px;text-align:center}
+  .stream{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:82%;padding:12px 15px;border-radius:16px;font-size:15.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+  .msg.kety{align-self:flex-start;background:#fff;border:1px solid var(--gold-soft);border-bottom-right-radius:5px}
+  .msg.me{align-self:flex-end;background:var(--gold);color:#fff;border-bottom-left-radius:5px}
+  .cite{align-self:flex-start;font-size:12px;color:var(--gold-deep);background:var(--gold-soft);padding:4px 10px;border-radius:999px;font-weight:600;margin-top:-6px}
+  .ctl{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px;margin-top:-4px}
+  .ctl button, .starter{font-family:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--gold);color:var(--gold-deep);background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer}
+  .ctl button.human{border-color:var(--green);color:var(--green)}
+  .typing{align-self:flex-start;color:var(--ink-500);font-size:14px;padding:4px 6px}
+  .starters{display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px 0}
+  .composer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gold-soft);background:var(--cream)}
+  .composer input{flex:1;font-family:inherit;font-size:16px;padding:12px 15px;border:1px solid var(--gold-soft);border-radius:999px;background:#fff}
+  .composer button{border:0;background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:700;border-radius:999px;padding:0 20px;cursor:pointer;font-size:15px}
+  .human-card{align-self:flex-start;max-width:82%;background:#f1f7f1;border:1px solid #cfe6cf;border-radius:14px;padding:14px 16px;font-size:14.5px}
+  .human-card a{display:inline-block;margin-top:8px;color:#fff;background:var(--green);text-decoration:none;font-weight:700;border-radius:999px;padding:8px 15px;font-size:14px}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="who"><div class="avatar">ק</div><div><b>קטי הדיגיטלית</b><span>מלווה לתרגול · לא מטפלת</span></div></div>
+  <a href="/program">התוכנית שלי</a>
+</header>
+<div class="disc" id="disc">קטי הדיגיטלית היא מלווה לתרגול — לא מטפלת, לא מאבחנת, ולא שירות חירום. במצוקה מיידית: ער"ן 1201 · מד"א 101.</div>
+<div class="starters" id="starters"></div>
+<div class="stream" id="stream" aria-live="polite"></div>
+<form class="composer" id="composer">
+  <input id="input" type="text" placeholder="מה עובר עלייך עכשיו?" autocomplete="off" aria-label="הודעה" />
+  <button type="submit">שליחה</button>
+</form>
+
+<script>
+var TOKEN = (function(){ try{ var t=localStorage.getItem('cm_device_token'); if(!t){ t='cm-'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('cm_device_token',t);} return t; }catch(e){ return 'cm-'+Math.random().toString(36).slice(2); } })();
+var HISTORY = [];
+var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+var stream = document.getElementById('stream');
+function scroll(){ stream.scrollTop = stream.scrollHeight; }
+
+function bubble(role, text){
+  var d = document.createElement('div'); d.className='msg '+(role==='me'?'me':'kety'); d.textContent=text; stream.appendChild(d); scroll(); return d;
+}
+function citation(c){ if(!c) return; var d=document.createElement('div'); d.className='cite'; d.textContent='📎 '+(c.label||c.source); stream.appendChild(d); scroll(); }
+function controls(list){
+  if(!list||!list.length) return;
+  var wrap=document.createElement('div'); wrap.className='ctl';
+  list.forEach(function(c){
+    var b=document.createElement('button'); b.textContent=c.label; if(c.action==='human_support') b.className='human';
+    b.onclick=function(){ if(c.action==='human_support') humanSupport(); else send('לא מתאים לי, אפשר משהו אחר?'); };
+    wrap.appendChild(b);
+  });
+  stream.appendChild(wrap); scroll();
+}
+function humanSupport(){
+  var d=document.createElement('div'); d.className='human-card';
+  d.innerHTML='את לא צריכה להתמודד לבד. אפשר לדבר עם קטי (אדם) ישירות:<br>'
+    +'<a href="https://wa.me/972543032349" target="_blank" rel="noopener">וואטסאפ עם קטי</a> '
+    +'<a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קביעת שיחה</a><br>'
+    +'<span style="font-size:12.5px;color:#6B6560">במצוקה מיידית: ער"ן 1201 · מד"א 101</span>';
+  stream.appendChild(d); scroll();
+}
+
+function send(text){
+  if(!text || !text.trim()) return;
+  bubble('me', text); HISTORY.push({role:'user', text:text});
+  var typing=document.createElement('div'); typing.className='typing'; typing.textContent='קטי מקלידה…'; stream.appendChild(typing); scroll();
+  fetch('/api/checkin', { method:'POST', headers:{'Content-Type':'application/json','X-Device-Token':TOKEN}, body:JSON.stringify({text:text, history:HISTORY.slice(-8)}) })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
+    .then(function(res){
+      typing.remove();
+      var j=res.j||{};
+      if(res.status===402){ bubble('kety', j.error||'תקופת ההתנסות הסתיימה.'); return; }
+      var reply = j.reply || 'אני כאן איתך. ספרי לי עוד קצת?';
+      bubble('kety', reply); HISTORY.push({role:'kety', text:reply});
+      if(j.safety){ /* בטיחות — התשובה כבר כוללת מספרי חירום; מוסיפים כפתור אדם */ controls([{label:'אני צריכה אדם עכשיו',action:'human_support'}]); return; }
+      citation(j.citation);
+      controls(j.controls);
+    })
+    .catch(function(){ typing.remove(); bubble('kety','קרתה תקלה רגעית בחיבור. ננסה שוב בעוד רגע 🌿'); });
+}
+
+document.getElementById('composer').addEventListener('submit', function(e){ e.preventDefault(); var i=document.getElementById('input'); var v=i.value; i.value=''; send(v); });
+
+// כפתורי פתיחה + disclaimer מה-API (עם נפילה לברירת מחדל).
+fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
+  .then(function(r){ return r.json(); })
+  .then(function(cfg){
+    if(cfg.disclaimer) document.getElementById('disc').textContent = cfg.disclaimer;
+    var s=document.getElementById('starters');
+    (cfg.starters||[]).forEach(function(st){
+      var b=document.createElement('button'); b.className='starter'; b.textContent=st.label;
+      b.onclick=function(){ send(st.label); s.style.display='none'; };
+      s.appendChild(b);
+    });
+  })
+  .catch(function(){});
+
+// הודעת פתיחה של קטי.
+bubble('kety','היי, אני קטי הדיגיטלית. אני כאן כדי ללוות אותך בתרגול — צעד אחד קטן בכל פעם. מה עובר עלייך עכשיו?');
+</script>
+</body>
+</html>
