@@ -42,10 +42,11 @@
 | AI server-side + RAG ממקורות מאושרים | server/openai.js | ✅ | ✅ | 🟡 | 🟡 | PARTIAL — OpenAI REQUIRES_APPROVAL (מפתח); נפילה למנוע מקומי עובדת |
 | מבנה תשובה (שיקוף→כלי→פעולה→שאלה→קישור) | server/openai.js (prompt) | ✅ | 🟡 | — | ❌ | PARTIAL |
 | no-source fallback | server/openai.js | 🟡 | 🟡 | — | ❌ | PARTIAL |
-| citation גלוי בצ׳אט | — | 🟡 | ❌ | — | ❌ | PARTIAL — RAG פנימי קיים; תצוגה MISSING |
-| quick replies / "לא מתאים לי" / "אני צריכה אדם" | — | ❌ | ❌ | — | ❌ | MISSING |
-| delete conversation / disable memory | — | 🟡 | ❌ | — | ❌ | PARTIAL — consent קיים; פעולות UI MISSING |
-| בדיקות prompt-injection / cross-user / no-source | — | ❌ | — | — | ❌ | MISSING |
+| citation גלוי בצ׳אט | server/chatConfig.js, index.js | ✅ | ❌ | 🟡 | ✅ | PARTIAL — citation ב-API response; חסר רינדור UI |
+| quick replies / "לא מתאים לי" / "אני צריכה אדם" | server/chatConfig.js, `/api/chat/config` | ✅ | ❌ | 🟡 | ✅ | PARTIAL — API COMPLETE (5 starters+2 controls); חסר UI |
+| no-source fallback (לא ממציאים מקור) | server/chatConfig.js citationFor | ✅ | 🟡 | — | ✅ | COMPLETE (backend) — סף score, null כשאין מקור |
+| delete conversation / disable memory | consent + `/api/account/delete` | 🟡 | ❌ | — | 🟡 | PARTIAL — consent+מחיקה קיימים; פעולת UI MISSING |
+| בדיקות prompt-injection / cross-user / no-source | test/chat.test.js | ✅ | — | — | ✅ | COMPLETE — 3 בדיקות עוברות |
 
 ## שלב 5–8 — personalization, rewards, notifications, entitlements, care-ops, נוער
 

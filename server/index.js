@@ -18,6 +18,7 @@ const { computeStatus, touchPatientActivity } = require("./crm");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
 const { detectCrisis, safetyResponse } = require("./safety");
+const { STARTERS, CONTROLS, DISCLAIMER, citationFor } = require("./chatConfig");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
@@ -645,6 +646,11 @@ api.get("/progress", (req, res) => {
   res.json({ unlocked: row.unlocked, completed: JSON.parse(row.completed) });
 });
 
+// ── תצורת הבוט: כפתורי פתיחה, כפתורי שליטה, disclaimer ─────────────────────
+api.get("/chat/config", (req, res) => {
+  res.json({ starters: STARTERS, controls: CONTROLS, disclaimer: DISCLAIMER });
+});
+
 // ── קטלוג תוכן (ContentModule) ─────────────────────────────────────────────
 // רשימת יחידות, מסוננת אוטומטית לפי קבוצת הגיל של המשתמשת (youth רואה youth+all).
 api.get("/content/modules", (req, res) => {
@@ -815,7 +821,15 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
       .prepare("SELECT triggers, patterns, balance_alerts, wins FROM checkins WHERE device_token = ? ORDER BY created_at DESC")
       .all(req.deviceToken);
 
-    res.json({ reply: result.reply, dailyTask: savedTask, dashboard: buildDashboardData(progress, sessions, checkinRows) });
+    // ציטוט מקור גלוי (citation) — או null אם אין מקור שעובר סף (no-source, לא ממציאים).
+    const citation = citationFor(retrieved);
+    res.json({
+      reply: result.reply,
+      dailyTask: savedTask,
+      citation,                 // { label: "מבוסס על: פרוטוקול חרדה", ... } או null
+      controls: CONTROLS,       // "לא מתאים לי" / "אני צריכה אדם" — תמיד זמינים
+      dashboard: buildDashboardData(progress, sessions, checkinRows),
+    });
   } catch (err) {
     // הגענו לכאן רק על תקלה אמיתית (למשל DB) — לא על כשל AI (שכבר טופל ע"י המנוע המקומי).
     console.error("checkin failed (non-AI):", err);
