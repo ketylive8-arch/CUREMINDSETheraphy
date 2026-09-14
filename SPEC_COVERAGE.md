@@ -127,9 +127,9 @@
 ## K. בדיקות ו-QA
 | אפיון | סטטוס | ראיה |
 |---|---|---|
-| **README** (setup/env/seed/run) | ❌ | חסר |
-| **בדיקות** unit/integration (auth/onboarding/הרשאות/safety) | ❌ | אין test runner |
-| בדיקת unauthorized access | ❌ | חסר |
+| **README** (setup/env/seed/run) | ✅ | `README.md` — **נבנה עכשיו** |
+| **בדיקות** unit/integration (auth/onboarding/הרשאות/safety) | ✅ | `test/` — 16 בדיקות עוברות (`npm test`), בלי תלויות (node:test) |
+| בדיקת unauthorized access | ✅ | `test/integration.test.js` — checkin בלי טוקן → 400 |
 | DECISIONS.md | ✅ | קיים |
 | .env.example | ✅ | קיים |
 
@@ -141,12 +141,18 @@
 ---
 
 ## סיכום — מה באמת חסר (❌), לפי עדיפות
-1. **בדיקות + README** (K) — הכי בולט בסריקות.
+1. ~~**בדיקות + README** (K)~~ — ✅ **בוצע** (16 בדיקות עוברות + README).
 2. **CMS לתוכן** (G) — CRUD ל-Track/Module/Lesson + סטטוסים.
 3. **כפתורי פתיחה ל-AI + "לא מתאים לי" + סיכום שבועי** (H).
 4. **seed מובנה 6×3×2 + סימוני TODO** (J).
 5. **4 עמודים נפרדים**: how-it-works, plans, organizations, stories (A).
 6. מסך `/app/preferences` מלא + citation גלוי בצ׳אט (E/H).
+
+### התקדמות הבנייה (עדכני)
+- ✅ שלב 1: Audit + DECISIONS + .env.example
+- ✅ שלב 2: שכבת בטיחות AI (server/safety.js)
+- ✅ שלב 3: בדיקות (16) + README
+- ⏭️ הבא: seed מובנה 6×3×2 → כפתורי AI + סיכום שבועי → 4 עמודים → CMS
 
 ## מה שכבר בוצע ומאומת (✅) — לא לבנות מחדש
 אתר ציבורי, הרשמה+OTP+איפוס+OAuth, אונבורדינג, אזור אישי (היום/מסלול/צ׳אט/צ׳ק-אין), RAG AI server-side, **שכבת בטיחות**, disclaimer, המלצות עם reason, מיתוג נעול, DECISIONS+.env.example.
