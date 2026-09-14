@@ -30,8 +30,9 @@
 | /app/today (≤3 המלצות, reason, SOS) | memberArea.js | 🟡 | ✅ | 🟡 | ❌ | PARTIAL |
 | /app/track, /tools, /lesson, /check-in, /profile | memberArea.js | 🟡 | ✅ | 🟡 | ❌ | PARTIAL — קיימים כ-stages, לא deep-link routes |
 | /app/preferences, /support, /appointments | — | ❌ | ❌ | ❌ | ❌ | MISSING |
-| **ContentSource + ContentModule (טבלאות)** | — | ❌ | ❌ | ❌ | ❌ | MISSING — הבא בתור |
-| **seed תוכן אמיתי (10 נושאים)** | — | ❌ | ❌ | — | ❌ | MISSING |
+| **ContentSource + ContentModule (טבלאות)** | server/db.js, contentSeed.js | ✅ | ❌ | 🟡 | ✅ | PARTIAL — Backend+API+בדיקות COMPLETE; חסר UI שיעור/קטלוג |
+| **seed תוכן אמיתי (10 נושאים × 2)** | server/contentSeed.js | ✅ | ❌ | — | ✅ | PARTIAL — 20 יחידות מקוריות; needs_content_review=1 (קטי מעשירה/מאשרת + אודיו) |
+| **API קטלוג** GET /api/content/modules[/:slug] + citations | server/index.js | ✅ | ❌ | 🟡 | ✅ | PARTIAL — API COMPLETE; חסר חיבור UI |
 | progress + resume מהנקודה האחרונה | protocol_progress, index.js | ✅ | ✅ | 🟡 | ❌ | PARTIAL |
 
 ## שלב 4 — AI, sources, citations

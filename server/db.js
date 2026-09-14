@@ -317,6 +317,49 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
   CREATE INDEX IF NOT EXISTS idx_consent_records_user ON consent_records (user_id, consent_type);
+
+  -- ContentSource: מקור תוכן מאושר (בסיס ה-RAG והציטוטים). לא מפרסמים בלי אישור אנושי.
+  CREATE TABLE IF NOT EXISTS content_sources (
+    source_id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    creator TEXT,
+    url_path TEXT,
+    source_type TEXT,           -- method / lesson / audio / article
+    rights_status TEXT,         -- owned / licensed / public-principle
+    topic TEXT,
+    audience TEXT,
+    sensitivity TEXT,           -- low / medium / high
+    approved_by TEXT,
+    approved_at TEXT,
+    version TEXT DEFAULT '1.0',
+    status TEXT DEFAULT 'draft' -- draft / review / published / archived
+  );
+
+  -- ContentModule: יחידת תוכן שהמשתמשת חווה. מקושרת למקורות מאושרים.
+  CREATE TABLE IF NOT EXISTS content_modules (
+    slug TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    audience TEXT,              -- adult / parent / youth / all
+    topic TEXT,
+    objective TEXT,
+    duration_min INTEGER,
+    format TEXT,                -- text / audio / practice / mixed
+    explanation TEXT,
+    exercise TEXT,
+    audio_url TEXT,
+    transcript TEXT,           -- חלופת טקסט מלאה לאודיו (נגישות)
+    reflection TEXT,
+    reward TEXT,
+    safety_note TEXT,
+    next_step TEXT,
+    source_ids TEXT,           -- JSON array של source_id
+    sensitivity TEXT DEFAULT 'low',
+    version TEXT DEFAULT '1.0',
+    status TEXT DEFAULT 'published',
+    sort_order INTEGER DEFAULT 0,
+    needs_content_review INTEGER DEFAULT 1 -- 1 = ממתין לתוכן/אישור של קטי (TODO)
+  );
+  CREATE INDEX IF NOT EXISTS idx_content_modules_topic ON content_modules (topic, audience);
 `);
 
 // patients table predates the CRM columns; existing on-disk DBs won't have them yet and
@@ -524,6 +567,46 @@ function deleteUserAccount(userId) {
   return { ok: true, rowsRemoved: removed };
 }
 
+// ── ContentModule (קטלוג תוכן) ──────────────────────────────────────────────
+function mapModuleRow(r) {
+  if (!r) return null;
+  let sourceIds = [];
+  try { sourceIds = JSON.parse(r.source_ids || "[]"); } catch { sourceIds = []; }
+  return {
+    slug: r.slug, title: r.title, audience: r.audience, topic: r.topic,
+    objective: r.objective, durationMin: r.duration_min, format: r.format,
+    explanation: r.explanation, exercise: r.exercise,
+    audioUrl: r.audio_url || null, transcript: r.transcript,
+    reflection: r.reflection, reward: r.reward, safetyNote: r.safety_note,
+    nextStep: r.next_step, sourceIds, sensitivity: r.sensitivity,
+    version: r.version, status: r.status, needsContentReview: !!r.needs_content_review,
+  };
+}
+
+// רשימת יחידות מפורסמות, סינון אופציונלי לפי audience/topic.
+// audience "all" תמיד נכלל; youth רואה youth+all, וכן הלאה.
+function listContentModules({ audience, topic } = {}) {
+  let rows = db.prepare("SELECT * FROM content_modules WHERE status = 'published' ORDER BY topic, sort_order").all();
+  if (audience) rows = rows.filter((r) => r.audience === audience || r.audience === "all");
+  if (topic) rows = rows.filter((r) => r.topic === topic);
+  return rows.map(mapModuleRow);
+}
+
+// יחידה בודדת + ציטוטי המקור (לתצוגת citation בצ׳אט/שיעור).
+function getContentModule(slug) {
+  const mod = mapModuleRow(db.prepare("SELECT * FROM content_modules WHERE slug = ?").get(slug));
+  if (!mod) return null;
+  mod.sources = (mod.sourceIds || []).map((id) => {
+    const s = db.prepare("SELECT source_id, title, source_type, rights_status, status FROM content_sources WHERE source_id = ?").get(id);
+    return s ? { id: s.source_id, title: s.title, type: s.source_type, rightsStatus: s.rights_status, status: s.status } : { id, title: id };
+  });
+  return mod;
+}
+
+function listContentModuleTopics() {
+  return db.prepare("SELECT DISTINCT topic FROM content_modules WHERE status = 'published' ORDER BY topic").all().map((r) => r.topic);
+}
+
 function listPrograms() {
   return db.prepare("SELECT * FROM programs WHERE status = 'published' ORDER BY rowid").all();
 }
@@ -642,4 +725,6 @@ module.exports = {
   // הסכמות + פרטיות:
   CONSENT_TYPES, REQUIRED_CONSENTS, recordConsent, currentConsents, hasConsent,
   exportUserData, deleteUserAccount,
+  // קטלוג תוכן:
+  listContentModules, getContentModule, listContentModuleTopics,
 };

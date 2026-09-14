@@ -8,7 +8,8 @@ const { db, getAgeGroup, getAccessStatus, getJourneyDay, scheduleEngagementNotif
   listPrograms, getProgram, enrollUser, getEnrollments, enrollmentTrialStatus, auditLog,
   getActiveEnrollment, growGateStatus, applyPaymentWebhook, cancelSubscription,
   CONSENT_TYPES, REQUIRED_CONSENTS, recordConsent, currentConsents,
-  exportUserData, deleteUserAccount } = require("./db");
+  exportUserData, deleteUserAccount,
+  listContentModules, getContentModule, listContentModuleTopics } = require("./db");
 const { deviceTokenMiddleware } = require("./deviceToken");
 const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
@@ -642,6 +643,23 @@ api.post("/account/delete", (req, res) => {
 api.get("/progress", (req, res) => {
   const row = db.prepare("SELECT unlocked, completed FROM protocol_progress WHERE device_token = ?").get(req.deviceToken);
   res.json({ unlocked: row.unlocked, completed: JSON.parse(row.completed) });
+});
+
+// ── קטלוג תוכן (ContentModule) ─────────────────────────────────────────────
+// רשימת יחידות, מסוננת אוטומטית לפי קבוצת הגיל של המשתמשת (youth רואה youth+all).
+api.get("/content/modules", (req, res) => {
+  const ageGroup = getAgeGroup(req.deviceToken); // "adult" / "youth"
+  const audience = req.query.audience || ageGroup;
+  const topic = req.query.topic || null;
+  const modules = listContentModules({ audience, topic });
+  res.json({ topics: listContentModuleTopics(), count: modules.length, modules });
+});
+
+// יחידה בודדת + ציטוטי מקור (citation).
+api.get("/content/modules/:slug", (req, res) => {
+  const mod = getContentModule(req.params.slug);
+  if (!mod) return res.status(404).json({ error: "היחידה לא נמצאה" });
+  res.json(mod);
 });
 
 api.put("/progress", (req, res) => {
@@ -1347,6 +1365,15 @@ try {
   console.log(r.already ? `Demo user already exists: ${r.email}` : `Seeded demo user: ${r.email} / ${r.password}`);
 } catch (e) {
   console.error("demo seed failed:", e.message);
+}
+
+// זריעת קטלוג התוכן (ContentSource + ContentModule) — אידמפוטנטי (INSERT OR IGNORE).
+try {
+  const { seedContent } = require("./contentSeed");
+  const c = seedContent();
+  console.log(`Content seed: +${c.modules}/${c.totalModules} modules, +${c.sources}/${c.totalSources} sources`);
+} catch (e) {
+  console.error("content seed failed:", e.message);
 }
 
 // Clean deep-link routes. The public site is one clean marketing app served
