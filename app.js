@@ -69,16 +69,11 @@ function spotifyEmbed(url) {
 const CONTENT = {
   nav: {
     links: [
-      { label: "איך זה עובד", href: "#how-it-works" },
-      { label: "השיטה", href: "#vision" },
-      { label: "תוכניות", href: "#plans" },
+      { label: "מה זו השיטה", href: "/method" },
+      { label: "למי מתאים", href: "#audiences" },
+      { label: "ליווי אישי", href: "#personal" },
       { label: "המערכת הדיגיטלית", href: "#digital" },
       { label: "שיחה עם קטי", href: "/talk" },
-      { label: "CURE Teens", href: "#cure-teens" },
-      { label: "סדנאות", href: "#workshops" },
-      { label: "לארגונים", href: "#organizations" },
-      { label: "סיפורי שינוי", href: "#results" },
-      { label: "מאמרים", href: "#articles" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "כניסה למערכת",
@@ -1474,26 +1469,308 @@ function WhatsAppFloat() {
 /* Main Home Component                                              */
 /* ---------------------------------------------------------------- */
 
+/* ================================================================ */
+/* עמוד הבית לפי HOMEPAGE_BLUEPRINT.md (קופי של Elara — לא לשכתב)   */
+/* 10 סקשנים בסדר מחייב. עיצוב לפי DESIGN_TOKENS. RTL, מובייל-first. */
+/* ================================================================ */
+
+const HB_WA = () => waLink("היי קטי! הגעתי מהאתר ואשמח לשיחת היכרות");
+
+/* SECTION 1 — HERO */
+function HbHero() {
+  return (
+    <section id="top" className="relative isolate overflow-hidden bg-[#FAF8F4] pt-[130px] pb-16 sm:pt-[160px] sm:pb-24 text-center">
+      <div className="max-w-[860px] mx-auto px-5 sm:px-7">
+        <Reveal>
+          <span className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border border-gold-200/80 font-heading text-[13px] font-semibold text-gold-700 shadow-softer">
+            <span className="w-2 h-2 rounded-full bg-gold-500 animate-pulse" aria-hidden="true" />
+            CureMindset · קטי שגב
+          </span>
+          <h1 className="font-heading font-extrabold text-ink-800 leading-[1.14] tracking-tight text-[34px] sm:text-[50px] lg:text-[58px] mb-6">
+            החרדה שלך לא צריכה ניצחון. היא צריכה הקשבה.
+          </h1>
+          <p className="text-ink-600 text-[19px] sm:text-[22px] font-medium leading-relaxed max-w-[680px] mx-auto mb-9">
+            שיטת CureMindset של קטי שגב לא נלחמת בתסמינים — היא משחררת אותם מהשורש, בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Button as="a" href="#lead" size="lg" className="px-9 py-4 text-[17px] shadow-lg">לשיחת היכרות בלי התחייבות</Button>
+            <a href="/method" className="font-heading font-bold text-[16px] text-gold-700 hover:text-gold-800 px-4 py-2">מה זו השיטה? →</a>
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-12 sm:mt-16 flex justify-center">
+          <div className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-soft bg-white p-2.5 ring-1 ring-gold-200/60">
+            <picture>
+              <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 360px, 420px" />
+              <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 360px, 420px"
+                alt="קטי שגב — מאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async"
+                className="w-full h-full object-cover rounded-[1.5rem]" />
+            </picture>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 2 — אולי זה מה שקורה לך */
+function HbRecognize() {
+  const items = [
+    "המחשבות לא מפסיקות — במיוחד בלילה.",
+    "את/ה יודע/ת מה “נכון לעשות” — אבל ברגע האמת הגוף מגיב אחרת.",
+    "תגובות רגשיות שחוזרות על עצמן, גם אחרי שנים של “עבודה על זה”.",
+    "מתבגר/ת בבית שנסגר/ת או מתפרץ/ת — ואתם לא יודעים איך להיכנס.",
+    "תחושה של תקיעות: החיים זזים, אתם עומדים במקום.",
+  ];
+  return (
+    <section id="recognize" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[820px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center mb-10">
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">זה מוכר?</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 gap-3">
+          {items.map((t, i) => (
+            <Reveal key={i} style={{ transitionDelay: `${i * 60}ms` }}
+              className="flex items-start gap-3 bg-[#FAF8F4] border border-ink-100 rounded-xl px-5 py-4">
+              <span className="mt-1 text-gold-600 shrink-0"><Icon name="check-circle-2" size={20} /></span>
+              <p className="text-ink-800 text-[16.5px] leading-snug">{t}</p>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="text-center mt-9">
+          <p className="font-heading font-bold text-ink-800 text-[20px] sm:text-[23px] leading-snug">זו לא תקלה באופי שלך. זו הגנה ישנה — ואפשר לשחרר אותה.</p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 3 — הפתרון: מהי CureMindset */
+function HbSolution() {
+  const chips = ["פרוטוקול CURE בן 4 שלבים", "NLP ועבודת תת-מודע", "דמיון מודרך ו-Spatial Submodalities", "הטמעה לילית ובניית חוסן"];
+  return (
+    <section id="solution" className="py-20 sm:py-28 bg-[#FAF8F4]">
+      <div className="max-w-[820px] mx-auto px-5 sm:px-7 text-center">
+        <Reveal>
+          <Eyebrow>הפתרון</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">שיטה, לא משפטי השראה</h2>
+          <p className="text-ink-600 text-[17.5px] leading-relaxed">
+            CureMindset היא שיטת עבודה מובנית שפיתחה קטי שגב. ההנחה שלה פשוטה ולא שגרתית: התסמינים שלך — החרדה, הלחץ, התקיעות — הם לא אויב. הם “שומרי ראש” מיושנים שהתת-מודע גייס פעם כדי להגן עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
+          </p>
+        </Reveal>
+        <Reveal className="mt-8">
+          <p className="text-ink-500 text-[14px] font-semibold mb-3">מה עומד מאחורי השיטה?</p>
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {chips.map((c) => (
+              <a key={c} href="/method" className="bg-white border border-gold-200 text-gold-800 rounded-full px-4 py-2 text-[14px] font-medium hover:border-gold-400 transition-colors">{c}</a>
+            ))}
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 4 — למי זה מתאים? */
+function HbAudiences() {
+  const cards = [
+    { icon: "user-round", title: "מבוגרים", problem: "לחץ, חרדה, ביקורת עצמית, תקיעות.", solution: "ליווי אישי בשיטת CURE או המצפן הפנימי.", cta: "לשיחת היכרות", href: "#lead" },
+    { icon: "sparkles", title: "בני נוער (13–18)", problem: "חרדת מבחנים, דימוי עצמי, הצפה.", solution: "CURE Teens — ליווי אישי בשפה שלהם.", cta: "לתוכנית", href: "/cure-teens" },
+    { icon: "heart", title: "הורים", problem: "“לא יודעים איך לעזור”.", solution: "ליווי הורי מובנה בתוך התהליך + המערכת הדיגיטלית.", cta: "לשיחת היכרות", href: "#lead" },
+    { icon: "users", title: "ארגונים וצוותים", problem: "מתח, שחיקה, שיתוף פעולה.", solution: "המצפן — סדנת חוסן ארגונית.", cta: "לתיאום שיחה", href: "#lead" },
+  ];
+  return (
+    <section id="audiences" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[640px] mx-auto mb-14">
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">איפה את/ה נמצא/ת?</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {cards.map((c, i) => (
+            <Reveal key={c.title} style={{ transitionDelay: `${i * 80}ms` }}
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 hover:border-gold-300 transition-all">
+              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
+              <h3 className="font-heading font-bold text-ink-800 text-[21px]">{c.title}</h3>
+              <p className="text-ink-500 text-[15px]">{c.problem}</p>
+              <p className="text-ink-700 text-[15.5px] flex-1"><b className="text-gold-700 font-semibold">הפתרון:</b> {c.solution}</p>
+              <a href={c.href} className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800 mt-1">{c.cta} ←</a>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 5 — איך זה עובד? (פרוטוקול CURE) */
+function HbHow() {
+  const stages = [
+    { k: "C", name: "Clarity", text: "פוגשים את “שומר הראש” ומבינים מפני מה הוא שם." },
+    { k: "U", name: "Unblock", text: "משחררים את העומס שהצטבר במערכת העצבים." },
+    { k: "R", name: "Rewire", text: "המוח כותב מחדש את פרוטוקול הביטחון שלו." },
+    { k: "E", name: "Empower", text: "יוצאים עם מערכת הפעלה פנימית שמחזיקה." },
+  ];
+  return (
+    <section id="how" className="py-20 sm:py-28 bg-[#FAF8F4]">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
+          <Eyebrow>איך זה עובד</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">ארבעה שלבים — לא לוח זמנים, מסע</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {stages.map((s, i) => (
+            <Reveal key={s.k} style={{ transitionDelay: `${i * 80}ms` }}
+              className="bg-white border border-ink-100 rounded-2xl p-7 text-center shadow-softer">
+              <div className="w-14 h-14 rounded-full bg-gold-500 text-white font-heading font-extrabold text-[24px] flex items-center justify-center mx-auto mb-4">{s.k}</div>
+              <h3 className="font-heading font-bold text-ink-800 text-[19px] mb-1.5">{s.name}</h3>
+              <p className="text-ink-600 text-[15px] leading-relaxed">{s.text}</p>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="text-center mt-9">
+          <a href="/method" className="font-heading font-bold text-[16px] text-gold-700 hover:text-gold-800">הפרוטוקול המלא → /method</a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 6 — ליווי אישי עם קטי */
+function HbPersonal() {
+  return (
+    <section id="personal" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
+        <Reveal>
+          <Eyebrow>ליווי אישי</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">תהליך אישי — עומק, לא רשימת טיפים</h2>
+          <p className="text-ink-600 text-[17.5px] leading-relaxed mb-8">
+            הליווי מתחיל בשיחת היכרות בלי עלות: מזהים יחד את הדפוס ומה הוא בא להגן, ובונים כיוון וקצב שמתאימים לך. מפגשים משלבים שיחה, דמיון מודרך וכלים לתרגול יומי. מתאים למבוגרים, לנוער ולהורים.
+          </p>
+          <Button as="a" href="#lead" size="lg" className="px-9 py-4 text-[17px]">קביעת שיחת היכרות</Button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 7 — המערכת הדיגיטלית + קטי הדיגיטלית */
+function HbDigital() {
+  return (
+    <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-12">
+          <Eyebrow>המערכת הדיגיטלית</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">השיטה לא נגמרת במפגש</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <Reveal className="bg-white border border-ink-100 rounded-2xl p-8 flex flex-col gap-3 shadow-softer">
+            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name="compass" size={20} /></span>
+            <h3 className="font-heading font-bold text-ink-800 text-[21px]">CureMindset Digital</h3>
+            <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1">בין מפגש למפגש: תרגול יומי מודרך, 20 יחידות תוכן קצרות, מעקב התקדמות.</p>
+            <a href="/program" className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800">לתוכנית הדיגיטלית →</a>
+          </Reveal>
+          <Reveal style={{ transitionDelay: "90ms" }} className="bg-white border border-ink-100 rounded-2xl p-8 flex flex-col gap-3 shadow-softer">
+            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name="message-circle" size={20} /></span>
+            <h3 className="font-heading font-bold text-ink-800 text-[21px]">קטי הדיגיטלית</h3>
+            <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1">המאמנת הדיגיטלית שלך, זמינה 24/7, בקיאה בשיטה ומותאמת אליך. לא פה במקום אדם — פה בין המפגשים, ברגע שצריך.</p>
+            <a href="/talk" className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800">לשיחה עם קטי הדיגיטלית →</a>
+          </Reveal>
+        </div>
+        <Reveal className="text-center mt-9">
+          <Button as="a" href="/program" size="lg" className="px-9 py-4 text-[17px]">התחלה ב-3 ימי התנסות</Button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 8 — למה קטי? */
+function HbWhyKety() {
+  return (
+    <section id="why-kety" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
+        <Reveal>
+          <Eyebrow>למה קטי</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">הידיים שמאחורי השיטה</h2>
+          <p className="text-ink-600 text-[17.5px] leading-relaxed">
+            קטי שגב פיתחה את CureMindset אחרי מאות תהליכים שליוותה — כשהבינה שלהילחם בתסמינים זה הפסד, ולהקשיב להם זה שחרור. השיטה משלבת NLP, עבודה עם תת-המודע וכלים סומטיים, והיא עובדת עם נוער, הורים ומבוגרים בכל הארץ.
+          </p>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 9 — שאלות נפוצות */
+const HB_FAQ = [
+  { q: "למי התהליך מתאים?", a: "לכל מי שחווה חרדה, לחץ, תקיעות או ביקורת עצמית חוזרת — מתבגרים, הורים ומבוגרים." },
+  { q: "מה ההבדל בין ליווי אישי למערכת הדיגיטלית?", a: "הליווי הוא עומק רגשי מותאם; המערכת היא תרגול יומי שמחזיק את השינוי בין המפגשים. רבים משלבים." },
+  { q: "מה קורה בשיחת ההיכרות?", a: "מזהים יחד את הדפוס ובודקים אם ומה מתאים לך. בלי עלות ובלי התחייבות." },
+  { q: "זה טיפול פסיכולוגי?", a: "לא. זהו ליווי רגשי ואימון בשיטת NLP, ואינו תחליף לטיפול רפואי או נפשי. במצוקה מיידית — ער”ן 1201, מד”א 101." },
+  { q: "צריך להאמין בזה כדי שיעבוד?", a: "לא. העבודה מבוססת על תהליכים של מערכת העצבים והדמיון המודרך. מתרגלים — וחווים." },
+  { q: "כמה זמן לוקח לראות שינוי?", a: "כלי הוויסות פועלים מהמפגש הראשון; שחרור דפוס עמוק הוא תהליך מדורג, בקצב שלך." },
+];
+function HbFaq() {
+  return (
+    <section id="faq" className="py-20 sm:py-28 bg-[#FAF8F4]">
+      <div className="max-w-[760px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center mb-12">
+          <Eyebrow>שאלות נפוצות</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">שאלות נפוצות</h2>
+        </Reveal>
+        <div className="flex flex-col gap-3">
+          {HB_FAQ.map((f, i) => (
+            <Reveal key={i} style={{ transitionDelay: `${i * 50}ms` }}>
+              <details className="group bg-white border border-ink-100 rounded-xl px-5 open:border-gold-300">
+                <summary className="flex items-center justify-between gap-3 cursor-pointer list-none py-4 font-heading font-bold text-ink-800 text-[16.5px]">
+                  {f.q}
+                  <span className="text-gold-600 shrink-0 transition-transform group-open:rotate-45"><Icon name="plus" size={20} /></span>
+                </summary>
+                <p className="text-ink-600 text-[15.5px] leading-relaxed pb-4 -mt-1">{f.a}</p>
+              </details>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION 10 — CTA סופי (עם טופס הליד) */
+function HbFinalCta() {
+  return (
+    <section id="lead" className="py-20 sm:py-28 bg-white border-t border-ink-100">
+      <div className="max-w-[720px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center mb-9">
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] mb-3">השינוי מתחיל בשיחה אחת</h2>
+          <p className="text-ink-600 text-[17.5px] leading-relaxed">אין צורך להגיע עם תשובות. משאירים פרטים ובודקים יחד אם זה מתאים לך.</p>
+        </Reveal>
+        <Reveal><LeadForm /></Reveal>
+        <Reveal className="text-center mt-6">
+          <a href={HB_WA()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-heading font-bold text-[15.5px] text-gold-700 hover:text-gold-800">
+            <Icon name="whatsapp" size={18} /> או בוואטסאפ ישיר
+          </a>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function Home({ onEnterApp }) {
   return (
     <>
       <Nav onEnterApp={onEnterApp} />
       <main>
-        <Hero />
-        <FreeTrialBanner />
-        <HowItWorks />
-        <Vision />
-        <About />
-        <DigitalPlatform />
-        <CureTeens />
-        <Workshops />
-        <Plans onEnterApp={onEnterApp} />
-        <LeadSection />
-        <Organizations />
-        <Testimonials />
-        <ArticlesSection />
-        <Faq />
-        <FinalCta />
+        <HbHero />
+        <HbRecognize />
+        <HbSolution />
+        <HbAudiences />
+        <HbHow />
+        <HbPersonal />
+        <HbDigital />
+        <HbWhyKety />
+        <HbFaq />
+        <HbFinalCta />
       </main>
       <Footer />
       <WhatsAppFloat />
