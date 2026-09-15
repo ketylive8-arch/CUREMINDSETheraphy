@@ -120,6 +120,15 @@ function template(p) {
         )}</h3><p>${esc(a.d)}</p></div></div>`
     )
     .join("");
+  const methodStages = (p.method_link && p.method_link.stages)
+    ? p.method_link.stages
+        .map(
+          (m) =>
+            `<div class="step"><div class="step-n">${esc(m.k)}</div><div><h3>${esc(m.name)}</h3><p>${esc(m.text)}</p></div></div>`
+        )
+        .join("")
+    : "";
+
   const includes = p.includes
     .map((t) => `<li>${esc(t)}</li>`)
     .join("");
@@ -301,6 +310,12 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
 
   <section class="blk"><h2>איך הסדנה בנויה</h2>
     <div class="steps">${agenda}</div>
+  </section>
+
+  <section class="blk" id="method"><h2>השיטה שמאחורי הסדנה — פרוטוקול CURE בארבעה שלבים</h2>
+    <p style="margin:0 0 14px">${esc(p.method_link.intro)}</p>
+    <div class="steps">${methodStages}</div>
+    <p style="margin:14px 0 0;color:var(--ink-500)"><a href="/method">לקרוא על השיטה המלאה ←</a></p>
   </section>
 
   <section class="blk"><h2>מה כלול</h2>
