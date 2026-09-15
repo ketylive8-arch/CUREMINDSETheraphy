@@ -72,8 +72,8 @@ const CONTENT = {
       { label: "איך זה עובד", href: "#how-it-works" },
       { label: "השיטה", href: "#vision" },
       { label: "תוכניות", href: "#plans" },
+      { label: "המערכת הדיגיטלית", href: "#digital" },
       { label: "שיחה עם קטי", href: "/talk" },
-      { label: "התוכנית", href: "/program" },
       { label: "CURE Teens", href: "#cure-teens" },
       { label: "סדנאות", href: "#workshops" },
       { label: "לארגונים", href: "#organizations" },
@@ -671,6 +671,50 @@ function About() {
             </div>
           </Reveal>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- */
+/* Digital Platform + AI Coach (מציג את המערכת שנבנתה)              */
+/* ---------------------------------------------------------------- */
+
+function DigitalPlatform() {
+  const cards = [
+    { icon: "message-circle", title: "שיחה עם קטי הדיגיטלית", text: "מלווה לתרגול, זמינה תמיד. מספרת מה עובר עלייך — ומקבלת כלי אחד מעשי וצעד קטן להיום.", href: "/talk", cta: "לפתוח שיחה" },
+    { icon: "compass", title: "התוכנית שלי", text: "יחידות תרגול קצרות לחוסן, חרדה, ביטחון ועוד — כל אחת: להבין, לתרגל, ולהרגיש.", href: "/program", cta: "לראות את היחידות" },
+    { icon: "home", title: "היום שלי", text: "מסך הבית האישי: הצעד הבא להיום, כלי הרגעה, וכפתור עזרה דחופה תמיד בהישג יד.", href: "/today", cta: "להיכנס" },
+  ];
+  return (
+    <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
+          <Eyebrow>המערכת הדיגיטלית</Eyebrow>
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
+          <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
+        </Reveal>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {cards.map((c, i) => (
+            <Reveal key={c.title} style={{ transitionDelay: `${i * 90}ms` }}
+              className="bg-white border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 shadow-softer hover:border-gold-300 transition-all">
+              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
+              <h3 className="font-heading font-bold text-ink-800 text-[20px]">{c.title}</h3>
+              <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{c.text}</p>
+              <a href={c.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-1">{c.cta} ←</a>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-8 bg-white border border-ink-100 rounded-2xl p-7 sm:p-9 shadow-softer">
+          <h3 className="font-heading font-bold text-ink-800 text-[21px] mb-2">מה קטי הדיגיטלית כן — ומה לא</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-[15px]">
+            <p className="text-ink-600"><b className="text-gold-700">כן:</b> מקשיבה, משקפת, ומציעה כלי מעשי אחד וצעד קטן — מבוסס על מקורות השיטה של קטי.</p>
+            <p className="text-ink-600"><b className="text-ink-800">לא:</b> אינה מאבחנת, אינה מבטיחה תוצאה, ואינה תחליף לטיפול מקצועי או לשירות חירום.</p>
+          </div>
+          <p className="text-ink-500 text-[13.5px] mt-4">כשצריך אדם — יש כפתור "אני צריכה אדם", ובמצוקה מיידית מוצגים מיד ער"ן 1201 ומד"א 101.</p>
+        </Reveal>
       </div>
     </section>
   );
@@ -1440,6 +1484,7 @@ function Home({ onEnterApp }) {
         <HowItWorks />
         <Vision />
         <About />
+        <DigitalPlatform />
         <CureTeens />
         <Workshops />
         <Plans onEnterApp={onEnterApp} />
