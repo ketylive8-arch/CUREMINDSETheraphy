@@ -118,3 +118,22 @@
   font-weight:700;font-size:12.5px;
 }
 @media (prefers-reduced-motion:reduce){.ws-card:hover{transform:none}}
+
+/* ── תמונת "המערכת הדיגיטלית" — פורטרט קטי משתמשת באפליקציה ── */
+.digital-figure{
+  position:relative;
+  width:100%;
+  max-width:300px;
+  background:#fff;
+  padding:8px;
+  border-radius:1.5rem;
+  box-shadow:0 24px 56px -22px rgba(52,42,22,.32);
+  border:1px solid rgba(201,169,110,.18);
+}
+.digital-figure img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  border-radius:1.15rem;
+}

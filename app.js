@@ -708,11 +708,25 @@ function DigitalPlatform() {
   return (
     <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="max-w-[680px] mb-14">
-          <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
-          <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
-        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_.85fr] gap-10 lg:gap-14 items-center mb-14">
+          <Reveal className="max-w-[680px]">
+            <Eyebrow>המערכת הדיגיטלית</Eyebrow>
+            <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
+            <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
+          </Reveal>
+          <Reveal className="hidden lg:flex justify-end">
+            <div className="digital-figure">
+              <img
+                src="images/kety-digital.jpg"
+                alt="קטי שגב משתמשת באפליקציית CureMindset הדיגיטלית"
+                width={800}
+                height={1000}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </Reveal>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {cards.map((c, i) => (
