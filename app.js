@@ -1475,36 +1475,29 @@ function WhatsAppFloat() {
 
 const HB_WA = () => waLink("היי קטי! הגעתי מהאתר ואשמח לשיחת היכרות");
 
-/* SECTION 1 — HERO */
+/* SECTION 1 — HERO (עיצוב אדיטוריאלי, Good Inside × The Soke; קופי של Elara) */
 function HbHero() {
   return (
-    <section id="top" className="relative isolate overflow-hidden bg-[#FAF8F4] pt-[130px] pb-16 sm:pt-[160px] sm:pb-24 text-center">
-      <div className="max-w-[860px] mx-auto px-5 sm:px-7">
-        <Reveal>
-          <span className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border border-gold-200/80 font-heading text-[13px] font-semibold text-gold-700 shadow-softer">
-            <span className="w-2 h-2 rounded-full bg-gold-500 animate-pulse" aria-hidden="true" />
-            CureMindset · קטי שגב
-          </span>
-          <h1 className="font-heading font-extrabold text-ink-800 leading-[1.14] tracking-tight text-[34px] sm:text-[50px] lg:text-[58px] mb-6">
-            החרדה שלך לא צריכה ניצחון. היא צריכה הקשבה.
-          </h1>
-          <p className="text-ink-600 text-[19px] sm:text-[22px] font-medium leading-relaxed max-w-[680px] mx-auto mb-9">
-            שיטת CureMindset של קטי שגב לא נלחמת בתסמינים — היא משחררת אותם מהשורש, בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Button as="a" href="#lead" size="lg" className="px-9 py-4 text-[17px] shadow-lg">לשיחת היכרות בלי התחייבות</Button>
-            <a href="/method" className="font-heading font-bold text-[16px] text-gold-700 hover:text-gold-800 px-4 py-2">מה זו השיטה? →</a>
+    <section id="top" className="hb-hero">
+      <div className="hb-hero__inner">
+        <Reveal className="hb-hero__media">
+          <div className="hb-hero__frame">
+            <picture>
+              <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
+              <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 440px, 520px"
+                alt="קטי שגב — מאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
+            </picture>
           </div>
+          <div className="hb-hero__badge"><b>שיטת CURE</b>ליווי אישי · סדנאות · מערכת דיגיטלית</div>
         </Reveal>
 
-        <Reveal className="mt-12 sm:mt-16 flex justify-center">
-          <div className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-soft bg-white p-2.5 ring-1 ring-gold-200/60">
-            <picture>
-              <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 360px, 420px" />
-              <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 360px, 420px"
-                alt="קטי שגב — מאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async"
-                className="w-full h-full object-cover rounded-[1.5rem]" />
-            </picture>
+        <Reveal className="hb-hero__text">
+          <div className="hb-hero__eyebrow">CureMindset · קטי שגב</div>
+          <h1 className="hb-hero__title">החרדה שלך לא צריכה ניצחון. היא צריכה הקשבה.</h1>
+          <p className="hb-hero__sub">שיטת CureMindset של קטי שגב לא נלחמת בתסמינים — היא משחררת אותם מהשורש, בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.</p>
+          <div className="hb-hero__cta">
+            <a href="#lead" className="hb-hero__btn">לשיחת היכרות בלי התחייבות</a>
+            <a href="/method" className="hb-hero__link">מה זו השיטה? <span aria-hidden="true">→</span></a>
           </div>
         </Reveal>
       </div>

@@ -21,3 +21,71 @@
   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .lg\:flex-row { flex-direction: row; }
 }
+
+/* ============================================================
+ * עיצוב Hero אדיטוריאלי — בהשראת DESIGN_STRATEGY (Good Inside × The Soke)
+ * מיתוג זהב-קרם נשמר. RTL, מובייל-first. inline ב-patch כי styles.css מהודר וישן.
+ * ============================================================ */
+.hb-hero{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(60% 55% at 82% 12%, rgba(220,233,238,.55) 0%, rgba(220,233,238,0) 60%),
+    radial-gradient(50% 45% at 12% 88%, rgba(247,235,207,.6) 0%, rgba(247,235,207,0) 60%),
+    linear-gradient(180deg,#FBF9F5 0%, #F6F1E9 100%);
+  padding:clamp(96px,12vw,148px) clamp(20px,5vw,64px) clamp(56px,7vw,96px);
+}
+.hb-hero__inner{
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr; gap:clamp(32px,5vw,68px); align-items:center;
+}
+.hb-hero__text{ text-align:start; }
+.hb-hero__eyebrow{
+  font-family:"Cormorant Garamond",Rubik,serif; font-weight:600; font-size:clamp(15px,1.4vw,18px);
+  letter-spacing:.14em; color:#8A6A2F; display:inline-flex; align-items:center; gap:10px; margin-bottom:18px;
+}
+.hb-hero__eyebrow::before{ content:""; width:34px; height:1.5px; background:#C2974A; display:inline-block; }
+.hb-hero__title{
+  font-family:Rubik,sans-serif; font-weight:800; color:#221F1A;
+  font-size:clamp(2.35rem,5.2vw,4.15rem); line-height:1.08; letter-spacing:-.01em;
+  margin:0 0 22px; text-wrap:balance;
+}
+.hb-hero__sub{
+  font-family:Assistant,sans-serif; color:#5B554D; font-weight:500;
+  font-size:clamp(17px,1.7vw,21px); line-height:1.72; max-width:52ch; margin:0 0 34px;
+}
+.hb-hero__cta{ display:flex; flex-wrap:wrap; align-items:center; gap:18px; }
+.hb-hero__btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#C2974A; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:17px;
+  padding:16px 32px; border-radius:999px; text-decoration:none; border:0; cursor:pointer;
+  box-shadow:0 16px 38px -14px rgba(194,151,74,.65); transition:transform .25s, box-shadow .25s, background .25s;
+}
+.hb-hero__btn:hover{ background:#B0843C; transform:translateY(-2px); box-shadow:0 22px 48px -16px rgba(194,151,74,.8); }
+.hb-hero__link{
+  font-family:Rubik,sans-serif; font-weight:700; font-size:16px; color:#8A6A2F; text-decoration:none;
+  display:inline-flex; align-items:center; gap:8px; padding:6px 4px; transition:color .2s, gap .2s;
+}
+.hb-hero__link:hover{ color:#6E521F; gap:12px; }
+.hb-hero__media{ position:relative; justify-self:center; width:100%; max-width:460px; }
+.hb-hero__media::before{
+  content:""; position:absolute; inset:-9% -7% -7% -9%; border-radius:36px; z-index:0;
+  background:linear-gradient(150deg, rgba(247,235,207,.9), rgba(220,233,238,.75)); filter:blur(2px);
+}
+.hb-hero__frame{
+  position:relative; z-index:1; aspect-ratio:4/5; border-radius:28px; overflow:hidden;
+  background:#fff; padding:10px; box-shadow:0 40px 80px -34px rgba(45,42,38,.45); ring:1px;
+  border:1px solid rgba(194,151,74,.28);
+}
+.hb-hero__frame img{ width:100%; height:100%; object-fit:cover; border-radius:20px; display:block; }
+.hb-hero__badge{
+  position:absolute; z-index:2; inset-inline-start:-14px; bottom:26px;
+  background:#fff; border:1px solid rgba(194,151,74,.3); border-radius:16px; padding:12px 16px;
+  box-shadow:0 18px 40px -18px rgba(45,42,38,.35); font-family:Rubik,sans-serif; font-size:13px; color:#332F28; max-width:210px;
+}
+.hb-hero__badge b{ color:#8A6A2F; display:block; font-size:14px; margin-bottom:2px; }
+
+@media (min-width:1024px){
+  .hb-hero__inner{ grid-template-columns:0.92fr 1.08fr; }
+  .hb-hero__media{ order:-1; max-width:100%; }   /* בתמונה מימין־שמאל: מדיה ראשונה = צד שמאל ב-RTL */
+}
+@media (prefers-reduced-motion:reduce){ .hb-hero__btn,.hb-hero__link{ transition:none; } }
