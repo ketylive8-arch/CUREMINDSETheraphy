@@ -1488,7 +1488,6 @@ function HbHero() {
                 alt="קטי שגב — מאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
             </picture>
           </div>
-          <div className="hb-hero__badge"><b>שיטת CURE</b>ליווי אישי · סדנאות · מערכת דיגיטלית</div>
         </Reveal>
 
         <Reveal className="hb-hero__text">
