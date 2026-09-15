@@ -89,3 +89,32 @@
 @media (prefers-reduced-motion:reduce){
   .hero-badge,.hero-figure{transition:none}
 }
+
+/* ── כרטיסי סדנאות v2 — כרטיס מגזין עם פס מדיה ── */
+.ws-card{transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease}
+.ws-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px -22px rgba(52,42,22,.28)}
+.ws-card-media{
+  height:120px;
+  background:
+    radial-gradient(120% 130% at 20% 0%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 45%),
+    linear-gradient(150deg, #efe3cc 0%, #e4cd9c 55%, #d3b271 100%);
+  display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid rgba(201,169,110,.25);
+}
+.ws-card-medallion{
+  width:56px;height:56px;border-radius:50%;
+  background:#fff;
+  color:#8a6a2f;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 24px -10px rgba(52,42,22,.35);
+  border:1px solid rgba(201,169,110,.35);
+}
+.ws-card-meta{
+  display:inline-flex;align-self:flex-start;
+  background:#FAF8F4;border:1px solid rgba(201,169,110,.3);
+  color:#8a6a2f;
+  border-radius:999px;padding:5px 12px;
+  font-family:Rubik,Assistant,sans-serif;
+  font-weight:700;font-size:12.5px;
+}
+@media (prefers-reduced-motion:reduce){.ws-card:hover{transform:none}}

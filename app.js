@@ -758,19 +758,23 @@ function Workshops() {
             <Reveal
               key={it.title}
               style={{ transitionDelay: `${i * 90}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 shadow-softer hover:border-gold-300 transition-all"
+              className="ws-card bg-white border border-ink-100 rounded-2xl overflow-hidden flex flex-col shadow-softer hover:border-gold-300 transition-all"
             >
-              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700">
-                <Icon name={it.icon} size={20} />
-              </span>
-              <span className="text-[13px] font-semibold text-gold-600 tracking-wide">{it.meta}</span>
-              <h3 className="font-heading font-bold text-ink-800 text-[20px]">{it.title}</h3>
-              <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{it.text}</p>
-              {it.href && (
-                <a href={it.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-600 mt-1">
-                  לפרטים מלאים ←
-                </a>
-              )}
+              <div className="ws-card-media" aria-hidden="true">
+                <span className="ws-card-medallion">
+                  <Icon name={it.icon} size={26} />
+                </span>
+              </div>
+              <div className="p-7 pt-6 flex flex-col gap-3 flex-1">
+                <span className="ws-card-meta">{it.meta}</span>
+                <h3 className="font-heading font-bold text-ink-800 text-[20px]">{it.title}</h3>
+                <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{it.text}</p>
+                {it.href && (
+                  <a href={it.href} className="ws-card-link font-heading font-bold text-[14px] text-gold-700 hover:text-gold-600 mt-1">
+                    לפרטים מלאים <span aria-hidden="true">←</span>
+                  </a>
+                )}
+              </div>
             </Reveal>
           ))}
         </div>
