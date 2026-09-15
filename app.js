@@ -374,7 +374,7 @@ function Nav({ onEnterApp }) {
             <Icon name="lock" size={16} />
             {CONTENT.nav.login}
           </button>
-          <Button as="a" href={waLink("היי קטי! אשמח להתחיל ניסיון חינם בשיטת CureMindset")} target="_blank" rel="noopener noreferrer" size="md">
+          <Button as="button" type="button" onClick={onEnterApp} size="md">
             {CONTENT.nav.cta}
           </Button>
         </div>
@@ -417,7 +417,7 @@ function Nav({ onEnterApp }) {
               <Icon name="lock" size={16} />
               {CONTENT.nav.login}
             </button>
-            <Button as="a" href={waLink("היי קטי! אשמח להתחיל ניסיון חינם")} target="_blank" rel="noopener noreferrer" className="w-full">
+            <Button as="button" type="button" onClick={() => { closeAndGo(); onEnterApp(); }} className="w-full">
               {CONTENT.nav.cta}
             </Button>
           </div>

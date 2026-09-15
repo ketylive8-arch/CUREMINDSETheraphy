@@ -104,7 +104,7 @@
 <body>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
-  <a class="cta-top" href="#lead">לקבלת הצעה לארגון</a>
+  <a class="cta-top" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לקבלת הצעה לארגון</a>
 </div></header>
 
 <section class="hero"><div class="wrap">
@@ -114,8 +114,8 @@
   <div class="chips"><span class="chip">📅 מפגש בודד או סדרה — לפי הצורך</span><span class="chip">⏱️ גמיש — משעה וחצי ועד יום עיון מלא</span><span class="chip">📍 במשרדי הארגון · או בזום לצוותים מבוזרים</span><span class="chip">👥 מותאם — מקבוצה קטנה ועד מליאה</span></div>
   <div class="price-badge"><b>הצעת מחיר מותאמת</b><span>נבנית לפי היקף, מספר משתתפים ומיקום · כולל אפיון מקדים ללא עלות</span></div>
   <div class="btnrow">
-    <a class="btn primary" href="#lead">לקבלת הצעה לארגון →</a>
-    <a class="btn ghost" href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%22%D7%94%D7%9E%D7%A6%D7%A4%D7%9F%20%E2%80%94%20%D7%A1%D7%93%D7%A0%D7%AA%20%D7%97%D7%95%D7%A1%D7%9F%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%A0%D7%99%D7%9D%20%D7%95%D7%A6%D7%95%D7%95%D7%AA%D7%99%D7%9D%22" target="_blank" rel="noopener">לשיחה עם קטי</a>
+    <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לקבלת הצעה לארגון →</a>
+    <a class="btn ghost" href="#lead">להשאיר פרטים ונחזור אליך</a>
   </div>
 </div></section>
 
@@ -176,8 +176,8 @@
 </main>
 
 <div class="stickybar">
-  <a class="btn primary" href="#lead">לקבלת הצעה לארגון</a>
-  <a class="btn ghost" href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%22%D7%94%D7%9E%D7%A6%D7%A4%D7%9F%20%E2%80%94%20%D7%A1%D7%93%D7%A0%D7%AA%20%D7%97%D7%95%D7%A1%D7%9F%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%A0%D7%99%D7%9D%20%D7%95%D7%A6%D7%95%D7%95%D7%AA%D7%99%D7%9D%22" target="_blank" rel="noopener">וואטסאפ</a>
+  <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לקבלת הצעה לארגון</a>
+  <a class="btn ghost" href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%22%D7%94%D7%9E%D7%A6%D7%A4%D7%9F%20%E2%80%94%20%D7%A1%D7%93%D7%A0%D7%AA%20%D7%97%D7%95%D7%A1%D7%9F%20%D7%9C%D7%90%D7%A8%D7%92%D7%95%D7%A0%D7%99%D7%9D%20%D7%95%D7%A6%D7%95%D7%95%D7%AA%D7%99%D7%9D%22" target="_blank" rel="noopener">שאלה ב-וואטסאפ</a>
 </div>
 
 <footer class="site"><div class="wrap">
@@ -192,12 +192,20 @@
     var btn=document.getElementById('leadBtn');
     var ok=document.getElementById('leadOk');
     if(!form)return;
-    form.addEventListener('submit',function(e){
+    const PROGRAM="המצפן — סדנת חוסן לארגונים וצוותים";
+    form.addEventListener('submit',async function(e){
       e.preventDefault();
-      const data=Object.fromEntries(new FormData(form).entries());
-      const msg=encodeURIComponent('היי קטי, אשמח לפרטים על "'+"המצפן — סדנת חוסן לארגונים וצוותים"+'". שם: '+(data.name||'')+', טלפון: '+(data.phone||'')+(data.note?', '+data.note:''));
-      window.open("https://wa.me/972543032349"+'?text='+msg,'_blank');
-      form.hidden=true;ok.hidden=false;
+      const d=Object.fromEntries(new FormData(form).entries());
+      btn.disabled=true;btn.textContent='שולח…';
+      try{
+        const res=await fetch('/api/send-lead',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({fullName:d.name||'',phone:d.phone||'',onboarding:PROGRAM+(d.note?' — '+d.note:''),source:'workshop:'+location.pathname})});
+        if(!res.ok) throw 0;
+        form.hidden=true;ok.hidden=false;
+      }catch(err){
+        btn.disabled=false;btn.textContent='שליחה ←';
+        alert('קרתה תקלה רגעית בשליחה. אפשר לנסות שוב, או לכתוב לנו בוואטסאפ (בהמשך הדף).');
+      }
     });
   })();
 </script>

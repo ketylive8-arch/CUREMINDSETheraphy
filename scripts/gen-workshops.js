@@ -7,6 +7,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const ROOT = path.join(__dirname, "..");
 
+// יעד אמיתי לקביעת שיחה/שריון מקום (לא וואטסאפ). ניתן להחלפה מ-env בעתיד.
+const CALENDLY = "https://calendly.com/ketysegev/meet-with-me";
+
 const BRAND = {
   gold: "#c2974a",
   goldDeep: "#8a6a2f",
@@ -147,33 +150,22 @@ function template(p) {
         .join("")}</div></section>`
     : "";
 
-  const webhookJs = p.crm_webhook_url
-    ? `
-    const WEBHOOK=${JSON.stringify(p.crm_webhook_url)};
+  // הטופס נשלח לשרת (/api/send-lead → אימייל לקטי). לא פותח וואטסאפ כברירת מחדל.
+  const webhookJs = `
+    const PROGRAM=${JSON.stringify(p.program_name)};
     form.addEventListener('submit',async function(e){
       e.preventDefault();
-      const data=Object.fromEntries(new FormData(form).entries());
-      data.program=${JSON.stringify(p.program_name)};
-      data.source=location.href;
+      const d=Object.fromEntries(new FormData(form).entries());
       btn.disabled=true;btn.textContent='שולח…';
       try{
-        await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+        const res=await fetch('/api/send-lead',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({fullName:d.name||'',phone:d.phone||'',onboarding:PROGRAM+(d.note?' — '+d.note:''),source:'workshop:'+location.pathname})});
+        if(!res.ok) throw 0;
         form.hidden=true;ok.hidden=false;
       }catch(err){
-        // נפילה לוואטסאפ אם ה-webhook נכשל
-        const msg=encodeURIComponent('היי קטי, אשמח לפרטים על "'+data.program+'". שם: '+(data.name||'')+', טלפון: '+(data.phone||''));
-        location.href=${JSON.stringify(waBase)}+'?text='+msg;
+        btn.disabled=false;btn.textContent='שליחה ←';
+        alert('קרתה תקלה רגעית בשליחה. אפשר לנסות שוב, או לכתוב לנו בוואטסאפ (בהמשך הדף).');
       }
-    });`
-    : `
-    form.addEventListener('submit',function(e){
-      e.preventDefault();
-      const data=Object.fromEntries(new FormData(form).entries());
-      const msg=encodeURIComponent('היי קטי, אשמח לפרטים על "'+${JSON.stringify(
-        p.program_name
-      )}+'". שם: '+(data.name||'')+', טלפון: '+(data.phone||'')+(data.note?', '+data.note:''));
-      window.open(${JSON.stringify(waBase)}+'?text='+msg,'_blank');
-      form.hidden=true;ok.hidden=false;
     });`;
 
   return `<!DOCTYPE html>
@@ -282,7 +274,7 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
 <body>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
-  <a class="cta-top" href="#lead">${esc(p.cta_primary)}</a>
+  <a class="cta-top" href="${CALENDLY}" target="_blank" rel="noopener">${esc(p.cta_primary)}</a>
 </div></header>
 
 <section class="hero"><div class="wrap">
@@ -292,8 +284,8 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
   <div class="chips">${chips}</div>
   <div class="price-badge"><b>${esc(p.price)}</b><span>${esc(p.price_note || "")}</span></div>
   <div class="btnrow">
-    <a class="btn primary" href="#lead">${esc(p.cta_primary)} →</a>
-    <a class="btn ghost" href="${waBase}?text=${waMsg}" target="_blank" rel="noopener">${esc(p.cta_secondary)}</a>
+    <a class="btn primary" href="${CALENDLY}" target="_blank" rel="noopener">${esc(p.cta_primary)} →</a>
+    <a class="btn ghost" href="#lead">להשאיר פרטים ונחזור אליך</a>
   </div>
 </div></section>
 
@@ -354,8 +346,8 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
 </main>
 
 <div class="stickybar">
-  <a class="btn primary" href="#lead">${esc(p.cta_primary)}</a>
-  <a class="btn ghost" href="${waBase}?text=${waMsg}" target="_blank" rel="noopener">וואטסאפ</a>
+  <a class="btn primary" href="${CALENDLY}" target="_blank" rel="noopener">${esc(p.cta_primary)}</a>
+  <a class="btn ghost" href="${waBase}?text=${waMsg}" target="_blank" rel="noopener">שאלה ב-וואטסאפ</a>
 </div>
 
 <footer class="site"><div class="wrap">
