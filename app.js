@@ -73,7 +73,6 @@ const CONTENT = {
       { label: "למי מתאים", href: "#audiences" },
       { label: "ליווי אישי", href: "#personal" },
       { label: "המערכת הדיגיטלית", href: "#digital" },
-      { label: "שיחה עם קטי", href: "/talk" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "כניסה למערכת",
@@ -1653,30 +1652,15 @@ function HbPersonal() {
   );
 }
 
-/* SECTION 7 — המערכת הדיגיטלית + קטי הדיגיטלית */
+/* SECTION 7 — המערכת הדיגיטלית */
 function HbDigital() {
   return (
     <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
-      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-12">
+      <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
+        <Reveal>
           <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">השיטה לא נגמרת במפגש</h2>
-        </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <Reveal className="bg-white border border-ink-100 rounded-2xl p-8 flex flex-col gap-3 shadow-softer">
-            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name="compass" size={20} /></span>
-            <h3 className="font-heading font-bold text-ink-800 text-[21px]">CureMindset Digital</h3>
-            <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1">בין מפגש למפגש: תרגול יומי מודרך, 20 יחידות תוכן קצרות, מעקב התקדמות.</p>
-            <a href="/program" className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800">לתוכנית הדיגיטלית →</a>
-          </Reveal>
-          <Reveal style={{ transitionDelay: "90ms" }} className="bg-white border border-ink-100 rounded-2xl p-8 flex flex-col gap-3 shadow-softer">
-            <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name="message-circle" size={20} /></span>
-            <h3 className="font-heading font-bold text-ink-800 text-[21px]">קטי הדיגיטלית</h3>
-            <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1">המאמנת הדיגיטלית שלך, זמינה 24/7, בקיאה בשיטה ומותאמת אליך. לא פה במקום אדם — פה בין המפגשים, ברגע שצריך.</p>
-            <a href="/talk" className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800">לשיחה עם קטי הדיגיטלית →</a>
-          </Reveal>
-        </div>
-        <Reveal className="text-center mt-9">
+          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">השיטה לא נגמרת במפגש</h2>
+          <p className="text-ink-600 text-[17.5px] leading-relaxed mb-8">בין מפגש למפגש: <b className="text-gold-700 font-semibold">CureMindset Digital</b> — תרגול יומי מודרך, 20 יחידות תוכן קצרות, מעקב התקדמות.</p>
           <Button as="a" href="/program" size="lg" className="px-9 py-4 text-[17px]">התחלה ב-3 ימי התנסות</Button>
         </Reveal>
       </div>
