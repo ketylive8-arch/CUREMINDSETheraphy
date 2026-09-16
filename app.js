@@ -433,58 +433,77 @@ function Nav({ onEnterApp }) {
 
 function Hero() {
   return (
-    <section id="top" className="relative isolate overflow-hidden bg-[#FAF8F4] pt-[130px] pb-16 sm:pt-[160px] sm:pb-24 text-center">
-      <div className="max-w-[840px] mx-auto px-5 sm:px-7">
-        <Reveal>
-          <span className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border border-gold-200/80 font-heading text-[13px] font-semibold text-gold-700 shadow-softer">
-            <span className="w-2 h-2 rounded-full bg-gold-500 animate-pulse" aria-hidden="true" />
-            {CONTENT.hero.kicker}
-          </span>
-          <h1 className="font-heading font-extrabold text-ink-800 leading-[1.12] tracking-tight text-[38px] sm:text-[54px] lg:text-[64px] mb-6">
-            {CONTENT.hero.headline}
-          </h1>
-          <p className="text-ink-600 text-[20px] sm:text-[24px] font-medium leading-relaxed max-w-[620px] mx-auto mb-4">
-            {CONTENT.hero.subhead}
-          </p>
-          <p className="text-ink-500 text-[15.5px] sm:text-[16.5px] font-medium max-w-[620px] mx-auto mb-9">
-            שיטת CureMindset עובדת עם תת-המודע — ברמה שבה הדפוסים באמת נשמרים — ומשחררת אותם מבפנים. לך, או לבן/בת שלך.
-          </p>
+    <section id="top" className="relative isolate overflow-hidden hero-v2 pt-[120px] pb-16 sm:pt-[150px] sm:pb-24">
+      <div className="max-w-[1180px] mx-auto px-5 sm:px-7">
+        <div className="grid lg:grid-hero gap-10 lg:gap-14 items-center">
+          {/* ── טור טקסט ── */}
+          <Reveal>
+            <span className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white border border-gold-200/80 font-heading text-[13px] font-semibold text-gold-700 shadow-softer">
+              <span className="w-2 h-2 rounded-full bg-gold-500" aria-hidden="true" />
+              {CONTENT.hero.kicker}
+            </span>
+            <h1 className="font-heading font-extrabold text-ink-800 leading-[1.14] tracking-tight text-[34px] sm:text-[46px] lg:text-[54px] mb-5">
+              {CONTENT.hero.headline}
+            </h1>
+            <p className="text-ink-600 text-[19px] sm:text-[22px] font-medium leading-relaxed max-w-[560px] mb-4">
+              {CONTENT.hero.subhead}
+            </p>
+            <p className="text-ink-500 text-[15.5px] sm:text-[16.5px] font-medium leading-relaxed max-w-[560px] mb-9">
+              שיטת CureMindset עובדת עם תת-המודע — ברמה שבה הדפוסים באמת נשמרים — ומשחררת אותם מבפנים. לך, או לבן/בת שלך.
+            </p>
 
-          <div className="flex flex-col items-center justify-center gap-3">
-            <Button
-              as="a"
-              href={waLink("היי קטי! אשמח להתחיל ניסיון חינם")}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="lg"
-              className="px-10 py-4 text-[18px] shadow-lg"
-            >
-              {CONTENT.hero.ctaPrimary}
-            </Button>
-            <p className="text-[14px] font-medium text-ink-500 mt-1">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-7">
+              <Button
+                as="a"
+                href={waLink("היי קטי! אשמח להתחיל ניסיון חינם")}
+                target="_blank"
+                rel="noopener noreferrer"
+                size="lg"
+              >
+                {CONTENT.hero.ctaPrimary}
+              </Button>
+              <a
+                href="/method"
+                className="inline-flex items-center gap-2 font-heading font-semibold text-gold-700 hover:text-gold-600 px-2 py-3"
+              >
+                מה זו השיטה? <span aria-hidden="true">←</span>
+              </a>
+            </div>
+            <p className="text-[14px] font-medium text-ink-500">
               {CONTENT.hero.ctaNote}
             </p>
-          </div>
-        </Reveal>
+          </Reveal>
 
-        <Reveal className="mt-12 sm:mt-16 flex justify-center">
-          <div className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[4/5] rounded-[2rem] overflow-hidden shadow-soft bg-white p-2.5 ring-1 ring-gold-200/60">
-            <picture>
-              <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 360px, 420px" />
-              <img
-                src="images/kety-640.jpg"
-                srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w"
-                sizes="(max-width:1024px) 360px, 420px"
-                alt={CONTENT.hero.imgAlt}
-                width={920}
-                height={1150}
-                loading="eager"
-                decoding="async"
-                className="w-full h-full object-cover rounded-[1.5rem]"
-              />
-            </picture>
-          </div>
-        </Reveal>
+          {/* ── טור תמונה ── */}
+          <Reveal className="relative">
+            <div className="hero-arch" aria-hidden="true" />
+            <div className="relative w-full max-w-[400px] mx-auto lg:max-w-none">
+              <div className="hero-figure">
+                <picture>
+                  <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 360px, 420px" />
+                  <img
+                    src="images/kety-640.jpg"
+                    srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w"
+                    sizes="(max-width:1024px) 360px, 420px"
+                    alt={CONTENT.hero.imgAlt}
+                    width={920}
+                    height={1150}
+                    loading="eager"
+                    decoding="async"
+                  />
+                </picture>
+              </div>
+              <div className="hero-badge hero-badge-a">
+                <span className="hero-badge-dot" aria-hidden="true" />
+                שיטת CURE · ארבעה שלבים
+              </div>
+              <div className="hero-badge hero-badge-b">
+                <span className="hero-badge-dot" aria-hidden="true" />
+                3 ימי התנסות בחינם
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
@@ -511,7 +530,7 @@ function Problem() {
   return (
     <section id="problem" className="py-20 sm:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
+        <Reveal className="max-w-[680px] mb-14">
           <Eyebrow>{CONTENT.problem.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
             {CONTENT.problem.title}
@@ -549,7 +568,7 @@ function HowItWorks() {
   return (
     <section id="how-it-works" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-16">
+        <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>{CONTENT.howItWorks.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
             {CONTENT.howItWorks.title}
@@ -580,7 +599,7 @@ function Vision() {
   return (
     <section id="vision" className="py-20 sm:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[760px] mx-auto mb-16">
+        <Reveal className="max-w-[760px] mb-16">
           <Eyebrow>{CONTENT.method.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[40px] leading-tight">
             {CONTENT.method.title}
@@ -683,11 +702,25 @@ function DigitalPlatform() {
   return (
     <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
-          <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
-          <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
-        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_.85fr] gap-10 lg:gap-14 items-center mb-14">
+          <Reveal className="max-w-[680px]">
+            <Eyebrow>המערכת הדיגיטלית</Eyebrow>
+            <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
+            <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
+          </Reveal>
+          <Reveal className="hidden lg:flex justify-end">
+            <div className="digital-figure">
+              <img
+                src="images/kety-digital.jpg"
+                alt="קטי שגב משתמשת באפליקציית CureMindset הדיגיטלית"
+                width={800}
+                height={1000}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </Reveal>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {cards.map((c, i) => (
@@ -696,7 +729,7 @@ function DigitalPlatform() {
               <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
               <h3 className="font-heading font-bold text-ink-800 text-[20px]">{c.title}</h3>
               <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{c.text}</p>
-              <a href={c.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-1">{c.cta} ←</a>
+              <a href={c.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-600 mt-1">{c.cta} ←</a>
             </Reveal>
           ))}
         </div>
@@ -722,7 +755,7 @@ function Workshops() {
   return (
     <section id="workshops" className="py-20 sm:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-14">
+        <Reveal className="max-w-[680px] mb-14">
           <Eyebrow>{CONTENT.workshops.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">{CONTENT.workshops.title}</h2>
           <p className="text-ink-500 text-[17px] mt-2">{CONTENT.workshops.subtitle}</p>
@@ -733,19 +766,23 @@ function Workshops() {
             <Reveal
               key={it.title}
               style={{ transitionDelay: `${i * 90}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 shadow-softer hover:border-gold-300 transition-all"
+              className="ws-card bg-white border border-ink-100 rounded-2xl overflow-hidden flex flex-col shadow-softer hover:border-gold-300 transition-all"
             >
-              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700">
-                <Icon name={it.icon} size={20} />
-              </span>
-              <span className="text-[13px] font-semibold text-gold-600 tracking-wide">{it.meta}</span>
-              <h3 className="font-heading font-bold text-ink-800 text-[20px]">{it.title}</h3>
-              <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{it.text}</p>
-              {it.href && (
-                <a href={it.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-1">
-                  לפרטים מלאים ←
-                </a>
-              )}
+              <div className="ws-card-media" aria-hidden="true">
+                <span className="ws-card-medallion">
+                  <Icon name={it.icon} size={26} />
+                </span>
+              </div>
+              <div className="p-7 pt-6 flex flex-col gap-3 flex-1">
+                <span className="ws-card-meta">{it.meta}</span>
+                <h3 className="font-heading font-bold text-ink-800 text-[20px]">{it.title}</h3>
+                <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{it.text}</p>
+                {it.href && (
+                  <a href={it.href} className="ws-card-link font-heading font-bold text-[14px] text-gold-700 hover:text-gold-600 mt-1">
+                    לפרטים מלאים <span aria-hidden="true">←</span>
+                  </a>
+                )}
+              </div>
             </Reveal>
           ))}
         </div>
@@ -771,7 +808,7 @@ function CureTeens() {
   return (
     <section id="cure-teens" className="py-20 sm:py-28 relative overflow-hidden" style={{ background: CURE_TEENS_NAVY }}>
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7 relative">
-        <Reveal className="text-center max-w-[800px] mx-auto mb-14">
+        <Reveal className="max-w-[800px] mb-14">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border font-heading text-[13px] font-semibold mb-6" style={{ borderColor: "rgba(52,211,153,.4)", color: "#6EE7B7" }}>
             <Icon name="graduation-cap" size={15} />
             CURE Teens · תהליך מאיץ למתבגרים
@@ -906,13 +943,13 @@ function Plans({ onEnterApp }) {
   return (
     <section id="plans" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[640px] mx-auto mb-4">
+        <Reveal className="max-w-[640px] mb-4">
           <Eyebrow>{CONTENT.plans.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
             {CONTENT.plans.title}
           </h2>
         </Reveal>
-        <Reveal className="text-center mb-14">
+        <Reveal className="mb-14">
           <p className="text-ink-600 text-[17px] font-medium">
             {CONTENT.plans.subtitle}
           </p>
@@ -979,7 +1016,7 @@ function Testimonials() {
   return (
     <section id="results" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-16">
+        <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>{CONTENT.testimonials.eyebrow}</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
             {CONTENT.testimonials.title}
@@ -1216,7 +1253,7 @@ function ArticlesSection() {
   return (
     <section id="articles" className="py-20 sm:py-28 bg-white border-t border-gold-200/50">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
-        <Reveal className="text-center max-w-[680px] mx-auto mb-16">
+        <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>מהבלוג של קטי</Eyebrow>
           <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
             מאמרים וכלים תודעתיים
