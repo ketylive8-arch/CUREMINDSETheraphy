@@ -65,31 +65,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// ── SEO: robots.txt + sitemap.xml (public, dynamic) ──
-// SITE_URL should be the canonical public address once the domain is live.
+// ── SEO: robots.txt + sitemap.xml ──
+// חשוב: robots.txt ו-sitemap.xml מוגשים כקבצים סטטיים (השורש מכיל את הקבצים
+// המלאים עם כל 20 העמודים). בעבר היה כאן route דינמי שהחזיר sitemap עם דף הבית
+// בלבד ודרס את הקובץ הסטטי — כך שגוגל לא ראה את עמודי ה-SEO. הוסר (P0 SEO fix).
 const SITE_URL = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
-app.get("/robots.txt", (req, res) => {
-  res
-    .type("text/plain")
-    .send(`User-agent: *\nAllow: /\nDisallow: /admin.html\nDisallow: /api/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
-});
-app.get("/sitemap.xml", (req, res) => {
-  const today = new Date().toISOString().slice(0, 10);
-  // Single-page app: the canonical entry is "/". The blog lives on a separate host.
-  const urls = [{ loc: "/", pri: "1.0" }];
-  const body =
-    `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls
-      .map(
-        (u) =>
-          `  <url><loc>${SITE_URL}${u.loc}</loc><lastmod>${today}</lastmod>` +
-          `<changefreq>weekly</changefreq><priority>${u.pri}</priority></url>`
-      )
-      .join("\n") +
-    `\n</urlset>\n`;
-  res.type("application/xml").send(body);
-});
 
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(STATIC_DIR));
