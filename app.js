@@ -1697,18 +1697,47 @@ function HbDigital() {
   );
 }
 
-/* SECTION 8 — למה קטי? */
+/* SECTION 8 — הסיפור שמאחורי השיטה (סיפור אישי של קטי, בגוף ראשון) */
 function HbWhyKety() {
   return (
     <section id="why-kety" className="py-20 sm:py-28 bg-white">
-      <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
-        <Reveal>
-          <Eyebrow>למה קטי</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">הידיים שמאחורי השיטה</h2>
-          <p className="text-ink-600 text-[17.5px] leading-relaxed">
-            קטי שגב פיתחה את CureMindset אחרי מאות תהליכים שליוותה — כשהבינה שלהילחם בתסמינים זה הפסד, ולהקשיב להם זה שחרור. השיטה משלבת NLP, עבודה עם תת-המודע וכלים סומטיים, והיא עובדת עם נוער, הורים ומבוגרים בכל הארץ.
-          </p>
-        </Reveal>
+      <div className="max-w-[1040px] mx-auto px-5 sm:px-7">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <Reveal>
+            <div className="relative">
+              <img
+                src="images/kety-about.jpg"
+                alt="קטי שגב — מייסדת שיטת CureMindset"
+                className="w-full rounded-2xl object-cover shadow-[0_28px_60px_-30px_rgba(45,42,38,0.45)]"
+                style={{ aspectRatio: "4 / 5" }}
+                loading="lazy" decoding="async"
+              />
+            </div>
+          </Reveal>
+          <Reveal style={{ transitionDelay: "80ms" }}>
+            <Eyebrow>הסיפור שמאחורי השיטה</Eyebrow>
+            <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[32px] leading-tight mb-6">
+              אני מלמדת את מה שהוציא אותי החוצה
+            </h2>
+            <div className="text-ink-600 text-[17px] leading-relaxed space-y-4">
+              <p>
+                גדלתי בבית לא פשוט. כמו הרבה ילדים, למדתי מוקדם להסתדר לבד עם מה שמרגישים — ולא ידעתי שהגוף רושם הכול.
+              </p>
+              <p>
+                סבלתי ממיגרנות קשות כמעט 40 שנה. מה עושה מיגרנה? אי אפשר לראות אור, אי אפשר לשמוע קול. היא סוגרת את העולם ומכניסה אותך לחדר חשוך ושקט. כל החיים חיפשתי פתרון — בעיקר ברפואה הקונבנציונלית.
+              </p>
+              <blockquote className="border-r-2 border-gold-400 pr-4 my-6 text-ink-800 font-heading font-medium text-[19px] leading-snug">
+                40 שנה של חושך ושקט — עד שהבנתי שהמיגרנה לא באה נגדי. היא באה לשמור עליי.
+              </blockquote>
+              <p>
+                רק אחרי שנים הבנתי משהו ששינה לי את המבט: המיגרנה עשתה לי <span className="text-gold-700 font-semibold">Shutdown</span>. היא הייתה הדרך של הגוף לכבות את הרעש ולשמור עליי — כשלא הייתה לו דרך אחרת.
+              </p>
+              <p>
+                מהרגע הזה הפסקתי להילחם בתסמין והתחלתי להקשיב לו. זה מה שהוציא אותי החוצה — וזו השיטה שאני מלמדת היום: לא להילחם במה שמרגישים, אלא לשחרר אותו מהשורש.
+              </p>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
