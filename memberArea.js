@@ -661,6 +661,7 @@
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
               להמשיך את התהליך →
             </a>
+            <p className="mt-2 text-[12.5px] text-ink-500">מנוי חודשי · ₪297 בחיוב חודשי · ניתן לבטל בכל עת</p>
             <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[12.5px] text-gold-700 font-semibold">
               <Icon name="shield-check" size={15} className="text-gold-600" />
               החזר כספי מלא תוך 15 יום — בלי שאלות
@@ -838,7 +839,7 @@
     return (
       <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gold-50 border-b border-gold-200">
         <span className="text-[12.5px] text-gold-700 font-medium">
-           התהליך שלך פתוח — {daysLeft === 1? "יום אחרון בהתנסות": `נותרו ${daysLeft} ימי התנסות`}
+           התהליך שלך פתוח — {daysLeft === 1? "יום אחרון בהתנסות · אחר כך תוכלי להמשיך לתוכנית המלאה": `נותרו ${daysLeft} ימי התנסות`}
         </span>
       </div>
     );
@@ -3431,10 +3432,11 @@
 
     useEffect(() => {
       if (!loggedIn) return;
-      fetch("/api/access", { headers: authHeaders() })
-        .then((res) => (res.ok? res.json(): { status: "trial", daysLeft: 14 }))
-        .then(setAccess)
-        .catch(() => setAccess({ status: "trial", daysLeft: 14 }));
+      const loadAccess = () => fetch("/api/access", { headers: authHeaders() }).then((res) => (res.ok? res.json(): Promise.reject(new Error("access_" + res.status))));
+      // שרת הוא מקור האמת לגבי ההתנסות: בכשל רוחב פעם אחת, ורק אז נחסום (בעבר זויף ניסיון של 14 יום)
+      loadAccess().then(setAccess)
+        .catch(() => loadAccess().then(setAccess))
+        .catch(() => setAccess({ status: "expired", daysLeft: 0 }));
     }, [loggedIn]);
 
     useEffect(() => {
