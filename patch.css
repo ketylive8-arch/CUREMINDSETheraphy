@@ -22,242 +22,56 @@
   .lg\:flex-row { flex-direction: row; }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Hero v2 — עימוד דו-טורי אסימטרי (Elara, 2026-09-15)
-   טקסט מיושר לפינה, תמונה בטור נפרד, תגים צפים על התמונה.
-   ───────────────────────────────────────────────────────────── */
-.hero-v2{
-  background:
-    radial-gradient(70% 55% at 88% 6%, rgba(201,169,110,.14) 0%, rgba(201,169,110,0) 62%),
-    #FAF8F4;
+/* ============================================================
+ * עיצוב Hero אדיטוריאלי — בהשראת DESIGN_STRATEGY (Good Inside × The Soke)
+ * מיתוג זהב-קרם נשמר. RTL, מובייל-first. inline ב-patch כי styles.css מהודר וישן.
+ * ============================================================ */
+.hb-hero{
+  position:relative; overflow:hidden;
+  background:linear-gradient(180deg,#FCFAF6 0%, #F8F4EC 100%);
+  padding:clamp(104px,12vw,150px) clamp(20px,5vw,64px) clamp(64px,7vw,100px);
 }
-.grid{display:grid}
-.lg\:grid-hero{grid-template-columns:1fr}
+.hb-hero__inner{
+  max-width:1180px; margin:0 auto;
+  display:grid; grid-template-columns:1fr; gap:clamp(36px,5vw,72px); align-items:center;
+}
+.hb-hero__text{ text-align:start; }
+.hb-hero__eyebrow{
+  font-family:Rubik,sans-serif; font-weight:600; font-size:12.5px; text-transform:uppercase;
+  letter-spacing:.2em; color:#8A6A2F; display:inline-flex; align-items:center; gap:12px; margin-bottom:22px;
+}
+.hb-hero__eyebrow::before{ content:""; width:28px; height:1px; background:#C2974A; display:inline-block; }
+.hb-hero__title{
+  font-family:Rubik,sans-serif; font-weight:600; color:#221F1A;
+  font-size:clamp(1.9rem,3.2vw,2.9rem); line-height:1.22; letter-spacing:-.005em;
+  margin:0 0 20px; max-width:20ch; text-wrap:balance;
+}
+.hb-hero__sub{
+  font-family:Assistant,sans-serif; color:#5B554D; font-weight:400;
+  font-size:clamp(16px,1.4vw,18.5px); line-height:1.75; max-width:48ch; margin:0 0 34px;
+}
+.hb-hero__cta{ display:flex; flex-wrap:wrap; align-items:center; gap:18px; }
+.hb-hero__btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  background:#C2974A; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:17px;
+  padding:16px 32px; border-radius:999px; text-decoration:none; border:0; cursor:pointer;
+  box-shadow:0 16px 38px -14px rgba(194,151,74,.65); transition:transform .25s, box-shadow .25s, background .25s;
+}
+.hb-hero__btn:hover{ background:#B0843C; transform:translateY(-2px); box-shadow:0 22px 48px -16px rgba(194,151,74,.8); }
+.hb-hero__link{
+  font-family:Rubik,sans-serif; font-weight:700; font-size:16px; color:#8A6A2F; text-decoration:none;
+  display:inline-flex; align-items:center; gap:8px; padding:6px 4px; transition:color .2s, gap .2s;
+}
+.hb-hero__link:hover{ color:#6E521F; gap:12px; }
+.hb-hero__media{ position:relative; justify-self:center; width:100%; max-width:480px; }
+.hb-hero__frame{
+  position:relative; aspect-ratio:4/5; border-radius:20px; overflow:hidden;
+  background:#fff; box-shadow:0 34px 70px -32px rgba(45,42,38,.4);
+}
+.hb-hero__frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+
 @media (min-width:1024px){
-  .lg\:grid-hero{grid-template-columns:1.05fr .9fr}
-  .lg\:gap-14{gap:3.5rem}
+  .hb-hero__inner{ grid-template-columns:0.9fr 1.1fr; }
+  .hb-hero__media{ order:-1; max-width:100%; }   /* מדיה ראשונה = צד שמאל ב-RTL */
 }
-.hero-arch{
-  position:absolute;
-  inset-inline-end:6%;
-  top:-34px;
-  width:230px;height:230px;
-  border-radius:50%;
-  background:linear-gradient(160deg,#efe3cc 0%,#dcc18d 100%);
-  opacity:.45;
-  pointer-events:none;
-}
-.hero-figure{
-  position:relative;
-  background:#fff;
-  padding:10px;
-  border-radius:2rem;
-  box-shadow:0 30px 70px -28px rgba(52,42,22,.35);
-  border:1px solid rgba(201,169,110,.18);
-}
-.hero-figure img{
-  display:block;
-  width:100%;
-  aspect-ratio:4/5;
-  object-fit:cover;
-  border-radius:1.55rem;
-}
-.hero-badge{
-  position:absolute;
-  z-index:2;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:rgba(255,255,255,.96);
-  border:1px solid rgba(201,169,110,.28);
-  border-radius:999px;
-  padding:9px 16px;
-  font-family:Rubik,Assistant,sans-serif;
-  font-weight:700;
-  font-size:13.5px;
-  color:#2D2A26;
-  box-shadow:0 12px 32px -14px rgba(52,42,22,.30);
-  white-space:nowrap;
-}
-.hero-badge-dot{width:8px;height:8px;border-radius:50%;background:#c2974a;flex:none}
-.hero-badge-a{inset-inline-start:-14px;bottom:52px}
-.hero-badge-b{inset-inline-end:-10px;top:26px}
-@media (max-width:1023px){
-  .hero-badge-a{inset-inline-start:10px}
-  .hero-badge-b{inset-inline-end:10px}
-}
-@media (prefers-reduced-motion:reduce){
-  .hero-badge,.hero-figure{transition:none}
-}
-
-/* ── כרטיסי סדנאות v2 — כרטיס מגזין עם פס מדיה ── */
-.ws-card{transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease}
-.ws-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px -22px rgba(52,42,22,.28)}
-.ws-card-media{
-  height:120px;
-  background:
-    radial-gradient(120% 130% at 20% 0%, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 45%),
-    linear-gradient(150deg, #efe3cc 0%, #e4cd9c 55%, #d3b271 100%);
-  display:flex;align-items:center;justify-content:center;
-  border-bottom:1px solid rgba(201,169,110,.25);
-}
-.ws-card-medallion{
-  width:56px;height:56px;border-radius:50%;
-  background:#fff;
-  color:#8a6a2f;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 10px 24px -10px rgba(52,42,22,.35);
-  border:1px solid rgba(201,169,110,.35);
-}
-.ws-card-meta{
-  display:inline-flex;align-self:flex-start;
-  background:#FAF8F4;border:1px solid rgba(201,169,110,.3);
-  color:#8a6a2f;
-  border-radius:999px;padding:5px 12px;
-  font-family:Rubik,Assistant,sans-serif;
-  font-weight:700;font-size:12.5px;
-}
-@media (prefers-reduced-motion:reduce){.ws-card:hover{transform:none}}
-
-/* ── תמונת "המערכת הדיגיטלית" — פורטרט קטי משתמשת באפליקציה ── */
-.digital-figure{
-  position:relative;
-  width:100%;
-  max-width:300px;
-  background:#fff;
-  padding:8px;
-  border-radius:1.5rem;
-  box-shadow:0 24px 56px -22px rgba(52,42,22,.32);
-  border:1px solid rgba(201,169,110,.18);
-}
-.digital-figure img{
-  display:block;
-  width:100%;
-  aspect-ratio:4/5;
-  object-fit:cover;
-  border-radius:1.15rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   UTILITY COMPLETENESS LAYER (Elara, 2026-09-16)
-   styles.css המהודר התיישן: ~160 מחלקות שהקוד (app.js, memberArea.js,
-   workshops.js, resilienceDashboard.js) משתמש בהן לא נכללו בו —
-   וזה שבר רספונסיביות ועימוד בכל המערכת הריאקטיבית (כולל ההרשמה).
-   כל החוקים כאן לפי סמנטיקת Tailwind v3.4 עם ערכי התמה הקיימים.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── רספונסיביות חסרה (השורש של הבאגים בדסקטופ/טאבלט) ── */
-@media (min-width: 640px) {
-  .sm\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .sm\:items-center { align-items: center; }
-  .sm\:p-9 { padding: 2.25rem; }
-  .sm\:text-\[16\.5px\] { font-size: 16.5px; }
-  .sm\:text-\[22px\] { font-size: 22px; }
-  .sm\:text-\[26px\] { font-size: 26px; }
-  .sm\:text-\[40px\] { font-size: 40px; }
-  .sm\:text-\[46px\] { font-size: 46px; }
-}
-@media (min-width: 1024px) {
-  .lg\:grid-cols-\[1\.15fr_\.85fr\] { grid-template-columns: 1.15fr .85fr; }
-  .lg\:max-w-none { max-width: none; }
-  .lg\:text-\[54px\] { font-size: 54px; }
-}
-
-/* ── מרווחים וגדלים ── */
-.gap-12 { gap: 3rem; }
-.gap-3\.5 { gap: .875rem; }
-.gap-x-5 { -moz-column-gap: 1.25rem; column-gap: 1.25rem; }
-.gap-x-8 { -moz-column-gap: 2rem; column-gap: 2rem; }
-.h-8 { height: 2rem; }
-.w-8 { width: 2rem; }
-.w-auto { width: auto; }
-.w-fit { width: -moz-fit-content; width: fit-content; }
-.min-h-0 { min-height: 0; }
-.max-h-32 { max-height: 8rem; }
-.max-w-\[400px\] { max-width: 400px; }
-.max-w-\[440px\] { max-width: 440px; }
-.max-w-\[520px\] { max-width: 520px; }
-.max-w-\[560px\] { max-width: 560px; }
-.max-w-\[780px\] { max-width: 780px; }
-.max-w-\[800px\] { max-width: 800px; }
-.max-w-\[820px\] { max-width: 820px; }
-.max-w-\[860px\] { max-width: 860px; }
-.max-w-\[1080px\] { max-width: 1080px; }
-.max-w-\[82\%\] { max-width: 82%; }
-.max-w-\[86\%\] { max-width: 86%; }
-.mt-8 { margin-top: 2rem; }
-.mt-14 { margin-top: 3.5rem; }
-.my-auto { margin-top: auto; margin-bottom: auto; }
-.inset-inline-end-5 { inset-inline-end: 1.25rem; }
-.p-3\.5 { padding: .875rem; }
-.pe-1 { padding-inline-end: .25rem; }
-.pr-4 { padding-right: 1rem; }
-.pt-5 { padding-top: 1.25rem; }
-.pt-8 { padding-top: 2rem; }
-.pt-16 { padding-top: 4rem; }
-.px-10 { padding-left: 2.5rem; padding-right: 2.5rem; }
-.space-y-2\.5 > :not([hidden]) ~ :not([hidden]) { --tw-space-y-reverse: 0; margin-top: calc(.625rem * (1 - var(--tw-space-y-reverse))); margin-bottom: calc(.625rem * var(--tw-space-y-reverse)); }
-.space-y-3\.5 > :not([hidden]) ~ :not([hidden]) { --tw-space-y-reverse: 0; margin-top: calc(.875rem * (1 - var(--tw-space-y-reverse))); margin-bottom: calc(.875rem * var(--tw-space-y-reverse)); }
-.space-y-7 > :not([hidden]) ~ :not([hidden]) { --tw-space-y-reverse: 0; margin-top: calc(1.75rem * (1 - var(--tw-space-y-reverse))); margin-bottom: calc(1.75rem * var(--tw-space-y-reverse)); }
-
-/* ── פלקס ומיקום ── */
-.align-middle { vertical-align: middle; }
-.inline-block { display: inline-block; }
-.items-baseline { align-items: baseline; }
-.justify-start { justify-content: flex-start; }
-.justify-end { justify-content: flex-end; }
-.overflow-x-auto { overflow-x: auto; }
-.z-30 { z-index: 30; }
-.z-\[70\] { z-index: 70; }
-.opacity-60 { opacity: .6; }
-.opacity-90 { opacity: .9; }
-.outline-none { outline: 2px solid transparent; outline-offset: 2px; }
-.appearance-none { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
-.backdrop-blur-sm { -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
-.line-through { text-decoration-line: line-through; }
-.transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(.4,0,.2,1); transition-duration: .3s; }
-@keyframes cmBounce { 0%,100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.8,0,1,1); } 50% { transform: none; animation-timing-function: cubic-bezier(0,0,.2,1); } }
-.animate-bounce { animation: cmBounce 1s infinite; }
-@media (prefers-reduced-motion: reduce) { .animate-bounce { animation: none; } }
-
-/* ── טיפוגרפיה ── */
-.font-black { font-weight: 900; }
-.text-sm { font-size: .875rem; line-height: 1.25rem; }
-.text-6xl { font-size: 3.75rem; line-height: 1; }
-.text-\[9px\] { font-size: 9px; }
-.text-\[16\.5px\] { font-size: 16.5px; }
-.text-\[21px\] { font-size: 21px; }
-.text-\[32px\] { font-size: 32px; }
-.text-\[36px\] { font-size: 36px; }
-.leading-\[1\.14\] { line-height: 1.14; }
-.tracking-\[0\.14em\] { letter-spacing: .14em; }
-.tracking-\[0\.16em\] { letter-spacing: .16em; }
-
-/* ── צבעי תמה (ערכים מהתמה הקיימת) ── */
-.text-gold-500 { color: rgb(194 151 74); }
-.text-gold-500\/80 { color: rgb(194 151 74 / .8); }
-.text-white\/65 { color: rgb(255 255 255 / .65); }
-.text-red-600 { --tw-text-opacity: 1; color: rgb(220 38 38 / var(--tw-text-opacity, 1)); }
-.bg-gold-50\/70 { background-color: rgb(251 244 230 / .7); }
-.bg-ink-50\/60 { background-color: rgb(250 249 247 / .6); }
-.bg-white\/20 { background-color: rgb(255 255 255 / .2); }
-.bg-white\/25 { background-color: rgb(255 255 255 / .25); }
-.bg-white\/\[0\.05\] { background-color: rgb(255 255 255 / .05); }
-.from-gold-400 { --tw-gradient-from: rgb(220 185 111); --tw-gradient-to: rgb(220 185 111 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
-
-/* ── מסגרות, רדיוסים וצל ── */
-.border-0 { border: 0; }
-.border-y { border-top-width: 1px; border-bottom-width: 1px; }
-.border-r-2 { border-right-width: 2px; }
-.border-gold-200\/50 { border-color: rgb(237 212 158 / .5); }
-.border-gold-200\/60 { border-color: rgb(237 212 158 / .6); }
-.border-gold-200\/70 { border-color: rgb(237 212 158 / .7); }
-.border-gold-200\/80 { border-color: rgb(237 212 158 / .8); }
-.border-ink-100\/70 { border-color: rgb(234 231 226 / .7); }
-.border-ink-100\/80 { border-color: rgb(234 231 226 / .8); }
-.border-red-200 { --tw-border-opacity: 1; border-color: rgb(254 202 202 / var(--tw-border-opacity, 1)); }
-.ring-gold-200\/70 { --tw-ring-color: rgb(237 212 158 / .7); }
-.rounded-lg { border-radius: .5rem; }
-.rounded-br-lg { border-bottom-right-radius: .5rem; }
-.rounded-tr-lg { border-top-right-radius: .5rem; }
-.shadow-sm { --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / .05); --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color); box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); }
+@media (prefers-reduced-motion:reduce){ .hb-hero__btn,.hb-hero__link{ transition:none; } }
