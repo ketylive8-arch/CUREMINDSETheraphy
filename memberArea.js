@@ -759,7 +759,7 @@
             <p className="text-[13.5px] text-ink-500 mt-1">תראי כמה עשית — כל אחד מהמספרים האלה הוא בחירה שלך בעצמך.</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {statItems.map((it) => (
               <div key={it.label} className="rounded-2xl bg-gold-50 border border-gold-200 py-4 text-center">
                 <p className="font-heading font-extrabold text-[28px] text-gold-600 leading-none">{it.value}</p>
