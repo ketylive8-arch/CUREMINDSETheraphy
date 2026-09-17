@@ -1529,8 +1529,8 @@ function HbHero() {
 
         <Reveal className="hb-hero__text">
           <div className="hb-hero__eyebrow">CureMindset · קטי שגב</div>
-          <h1 className="hb-hero__title">החרדה שלך לא צריכה ניצחון. היא צריכה הקשבה.</h1>
-          <p className="hb-hero__sub">שיטת CureMindset של קטי שגב לא נלחמת בתסמינים — היא משחררת אותם מהשורש, בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.</p>
+          <h1 className="hb-hero__title">הגוף שלך זוכר. הנפש שלך יכולה לשכוח.</h1>
+          <p className="hb-hero__sub">חרדה, לחץ, תקיעות או כאב שחוזרים על עצמם הם לא אויב — הם המגן של הגוף מפני רגש שלא עובד. שיטת CureMindset של קטי שגב עובדת עם השורש, לא עם התסמין — בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.</p>
           <div className="hb-hero__cta">
             <a href="#lead" className="hb-hero__btn">לשיחת היכרות בלי התחייבות</a>
             <a href="/method" className="hb-hero__link">מה זו השיטה? <span aria-hidden="true">→</span></a>
