@@ -16,6 +16,7 @@ const { buildDashboardData } = require("./resilience");
 const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
+const leadEngine = require("./leadEngine");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
 const { detectCrisis, safetyResponse } = require("./safety");
@@ -1382,6 +1383,43 @@ admin.delete("/materials/:id", (req, res) => {
   const filePath = path.join(UPLOADS_DIR, path.basename(material.url));
   fs.unlink(filePath, () => {});
   res.json({ ok: true });
+});
+
+// ── מנוע הפצה (Distribution CRM) — שלב 0: CRM + Pipeline בלבד.
+// אין חיפוש, אין שליחה, אין מדדים מומצאים. קטי מזינה ומקדמת ערוצים ידנית.
+admin.get("/dist/meta", (req, res) => res.json(leadEngine.meta()));
+admin.get("/dist/stats", (req, res) => res.json(leadEngine.pipelineStats()));
+
+admin.get("/dist/channels", (req, res) => {
+  res.json(leadEngine.listChannels({
+    status: req.query.status,
+    priority: req.query.priority,
+    kind: req.query.kind,
+  }));
+});
+
+admin.post("/dist/channels", (req, res) => {
+  const r = leadEngine.createChannel(req.body || {});
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.status(201).json(r);
+});
+
+admin.get("/dist/channels/:id", (req, res) => {
+  const c = leadEngine.getChannel(parseInt(req.params.id, 10));
+  if (!c) return res.status(404).json({ error: "not_found" });
+  res.json(c);
+});
+
+admin.patch("/dist/channels/:id", (req, res) => {
+  const r = leadEngine.updateChannel(parseInt(req.params.id, 10), req.body || {});
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.json(r);
+});
+
+admin.delete("/dist/channels/:id", (req, res) => {
+  const r = leadEngine.deleteChannel(parseInt(req.params.id, 10));
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.json(r);
 });
 
 app.use("/api/admin", admin);
