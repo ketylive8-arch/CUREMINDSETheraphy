@@ -1,0 +1,23 @@
+/* site-nav.css — תפריט עליון אחיד לכל הדפים הסטטיים.
+ * נטען אחרי ה-style הפנימי של כל דף. משתמש במשתני ה-CSS
+ * (--ink, --gold-deep) שכבר מוגדרים ב-:root של כל דף.
+ * מובייל: התפריט מוסתר (נשאר לוגו + כפתור); דסקטופ (≥860px): תפריט מלא. */
+.site-nav { display: none; }
+@media (min-width: 860px) {
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 auto;
+  }
+  .site-nav a {
+    font-family: Rubik, sans-serif;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--ink, #2D2A26);
+    text-decoration: none;
+    transition: color .2s;
+    white-space: nowrap;
+  }
+  .site-nav a:hover { color: var(--gold-deep, #8a6a2f); }
+}

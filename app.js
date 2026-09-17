@@ -1697,6 +1697,36 @@ function HbDigital() {
   );
 }
 
+/* SECTION 7.5 — סדנאות */
+function HbWorkshops() {
+  const list = [
+    { title: "המצפן הפנימי", sub: "Unleash Your Mindset", text: "סדנת הדגל לשחרור דפוסים ובניית מיינדסט — למבוגרים.", href: "/workshop-inner-compass" },
+    { title: "CURE Teens", sub: "מסע החוסן למתבגרים", text: "חוסן, ביטחון ותקשורת בשפה של גיל ההתבגרות.", href: "/workshop-cure-teens" },
+    { title: "המצפן לארגונים", sub: "חוסן לצוותים", text: "יום חוסן ותקשורת לצוותים, מנהלים וארגונים.", href: "/workshop-organizations" },
+  ];
+  return (
+    <section id="workshops" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[640px] mx-auto mb-14">
+          <Eyebrow>סדנאות</Eyebrow>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">חוויה קבוצתית — יום אחד ששובר דפוס</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {list.map((w, i) => (
+            <Reveal key={w.title} style={{ transitionDelay: `${i * 80}ms` }}
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-2 hover:border-gold-300 transition-all">
+              <h3 className="font-heading font-bold text-ink-800 text-[20px]">{w.title}</h3>
+              <p className="text-gold-700 text-[13.5px] font-semibold">{w.sub}</p>
+              <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1 mt-1">{w.text}</p>
+              <a href={w.href} className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800 mt-2">לפרטי הסדנה ←</a>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* SECTION 8 — הסיפור שמאחורי השיטה (סיפור אישי של קטי, בגוף ראשון) */
 function HbWhyKety() {
   return (
@@ -1810,6 +1840,7 @@ function Home({ onEnterApp }) {
         <HbHow />
         <HbPersonal />
         <HbDigital />
+        <HbWorkshops />
         <HbWhyKety />
         <HbFaq />
         <HbFinalCta />
