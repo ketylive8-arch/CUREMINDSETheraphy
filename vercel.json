@@ -24,6 +24,7 @@
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/teens-app", "destination": "/teens-experience.html" },
     { "source": "/program", "destination": "/program.html" },
+    { "source": "/programs", "destination": "/programs.html" },
     { "source": "/talk", "destination": "/talk.html" },
     { "source": "/today", "destination": "/app-today.html" },
     { "source": "/workshop-inner-compass", "destination": "/workshop-inner-compass.html" },

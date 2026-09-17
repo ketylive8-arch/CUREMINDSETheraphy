@@ -70,7 +70,7 @@ const CONTENT = {
   nav: {
     links: [
       { label: "מה זו השיטה", href: "/method" },
-      { label: "למי מתאים", href: "#audiences" },
+      { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
       { label: "המערכת הדיגיטלית", href: "#digital" },
       { label: "שאלות נפוצות", href: "#faq" },
