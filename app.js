@@ -1554,7 +1554,7 @@ function HbRecognize() {
     <section id="recognize" className="py-20 sm:py-28 bg-white">
       <div className="max-w-[820px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center mb-10">
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">זה מוכר?</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">זה מוכר?</h2>
         </Reveal>
         <div className="grid grid-cols-1 gap-3">
           {items.map((t, i) => (
@@ -1581,7 +1581,7 @@ function HbSolution() {
       <div className="max-w-[820px] mx-auto px-5 sm:px-7 text-center">
         <Reveal>
           <Eyebrow>הפתרון</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">שיטה, לא משפטי השראה</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">שיטה, לא משפטי השראה</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed">
             CureMindset היא שיטת עבודה מובנית שפיתחה קטי שגב. ההנחה שלה פשוטה ולא שגרתית: התסמינים שלך — החרדה, הלחץ, התקיעות — הם לא אויב. הם “שומרי ראש” מיושנים שהתת-מודע גייס פעם כדי להגן עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
           </p>
@@ -1611,7 +1611,7 @@ function HbAudiences() {
     <section id="audiences" className="py-20 sm:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[640px] mx-auto mb-14">
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">איפה את/ה נמצא/ת?</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">איפה את/ה נמצא/ת?</h2>
         </Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {cards.map((c, i) => (
@@ -1643,7 +1643,7 @@ function HbHow() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[680px] mx-auto mb-14">
           <Eyebrow>איך זה עובד</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">ארבעה שלבים — לא לוח זמנים, מסע</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">ארבעה שלבים — לא לוח זמנים, מסע</h2>
         </Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {stages.map((s, i) => (
@@ -1670,7 +1670,7 @@ function HbPersonal() {
       <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
         <Reveal>
           <Eyebrow>ליווי אישי</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">תהליך אישי — עומק, לא רשימת טיפים</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">תהליך אישי — עומק, לא רשימת טיפים</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed mb-8">
             הליווי מתחיל בשיחת היכרות בלי עלות: מזהים יחד את הדפוס ומה הוא בא להגן, ובונים כיוון וקצב שמתאימים לך. מפגשים משלבים שיחה, דמיון מודרך וכלים לתרגול יומי. מתאים למבוגרים, לנוער ולהורים.
           </p>
@@ -1688,7 +1688,7 @@ function HbDigital() {
       <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
         <Reveal>
           <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px] mb-5">השיטה לא נגמרת במפגש</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">השיטה לא נגמרת במפגש</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed mb-8">בין מפגש למפגש: <b className="text-gold-700 font-semibold">CureMindset Digital</b> — תרגול יומי מודרך, 20 יחידות תוכן קצרות, מעקב התקדמות.</p>
           <Button as="a" href="/program" size="lg" className="px-9 py-4 text-[17px]">התחלה ב-3 ימי התנסות</Button>
         </Reveal>
@@ -1758,7 +1758,7 @@ function HbFaq() {
       <div className="max-w-[760px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center mb-12">
           <Eyebrow>שאלות נפוצות</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">שאלות נפוצות</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">שאלות נפוצות</h2>
         </Reveal>
         <div className="flex flex-col gap-3">
           {HB_FAQ.map((f, i) => (
@@ -1784,7 +1784,7 @@ function HbFinalCta() {
     <section id="lead" className="py-20 sm:py-28 bg-white border-t border-ink-100">
       <div className="max-w-[720px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center mb-9">
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] mb-3">השינוי מתחיל בשיחה אחת</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-3">השינוי מתחיל בשיחה אחת</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed">אין צורך להגיע עם תשובות. משאירים פרטים ובודקים יחד אם זה מתאים לך.</p>
         </Reveal>
         <Reveal><LeadForm /></Reveal>
