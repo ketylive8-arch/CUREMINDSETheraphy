@@ -67,7 +67,7 @@
 <body>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
-  <a class="cta-top" href="/#plans">להתחיל</a>
+  <a class="cta-top" href="/#lead">להתחיל ניסיון חינם</a>
 </div></header>
 
 <section class="hero"><div class="wrap">
@@ -131,7 +131,7 @@ function openSheet(m){
     + (m.reward ? '<div class="sec reward"><h4>יפה שהגעת עד לכאן</h4><p>'+esc(m.reward)+'</p></div>' : '')
     + (m.safetyNote ? '<div class="sec safety">'+esc(m.safetyNote)+'</div>' : '')
     + '<div class="closebar"><button class="btn ghost" id="closeS">סגירה</button>'
-    + '<a class="btn primary" href="/#plans">להתחיל את התוכנית המלאה</a></div>';
+    + '<a class="btn primary" href="/program">להתחיל את התוכנית המלאה</a></div>';
   var d = document.getElementById('sheet');
   if (d.showModal) d.showModal(); else d.setAttribute('open','');
   document.getElementById('closeS').onclick = function(){ d.close ? d.close() : d.removeAttribute('open'); };
