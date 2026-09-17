@@ -72,7 +72,6 @@ const CONTENT = {
       { label: "מה זו השיטה", href: "/method" },
       { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
-      { label: "המערכת הדיגיטלית", href: "#digital" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "כניסה למערכת",
@@ -1528,9 +1527,9 @@ function HbHero() {
         </Reveal>
 
         <Reveal className="hb-hero__text">
-          <div className="hb-hero__eyebrow">CureMindset · קטי שגב</div>
-          <h1 className="hb-hero__title">הגוף שלך זוכר. הנפש שלך יכולה לשכוח.</h1>
-          <p className="hb-hero__sub">חרדה, לחץ, תקיעות או כאב שחוזרים על עצמם הם לא אויב — הם המגן של הגוף מפני רגש שלא עובד. שיטת CureMindset של קטי שגב עובדת עם השורש, לא עם התסמין — בליווי אישי, בסדנאות ובמערכת דיגיטלית שנמצאת איתך כל יום.</p>
+          <div className="hb-hero__eyebrow">שיטה שפיתחה קטי שגב</div>
+          <h1 className="hb-hero__title">CureMindset — להוביל את התודעה לריקוד, לחופש ולשליטה.</h1>
+          <p className="hb-hero__sub">רוב האנשים מנסים להילחם בחרדה בתוך עצמם — ולכן מפסידים. שיטת CureMindset עושה את זה אחרת: ליווי רגשי שעובד עם התסמינים ומגיע לשורש הבעיה, ומלמד שליטה ברגשות — שינוי שנשאר לאורך זמן. תהליך שממוקד תוצאות: מגדירים מטרה, ומודדים את התוצאות.</p>
           <div className="hb-hero__cta">
             <a href="#lead" className="hb-hero__btn">לשיחת היכרות בלי התחייבות</a>
             <a href="/method" className="hb-hero__link">מה זו השיטה? <span aria-hidden="true">→</span></a>
@@ -1686,12 +1685,7 @@ function HbDigital() {
   return (
     <section id="digital" className="py-20 sm:py-28 bg-[#FAF8F4]">
       <div className="max-w-[760px] mx-auto px-5 sm:px-7 text-center">
-        <Reveal>
-          <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">השיטה לא נגמרת במפגש</h2>
-          <p className="text-ink-600 text-[17.5px] leading-relaxed mb-8">בין מפגש למפגש: <b className="text-gold-700 font-semibold">CureMindset Digital</b> — תרגול יומי מודרך, 20 יחידות תוכן קצרות, מעקב התקדמות.</p>
-          <Button as="a" href="/program" size="lg" className="px-9 py-4 text-[17px]">התחלה ב-3 ימי התנסות</Button>
-        </Reveal>
+        {/* כרטיס המערכת הדיגיטלית הוסר מדף הבית — לפי הוראת קטי, 2026-09-17 */}
       </div>
     </section>
   );
@@ -1839,14 +1833,13 @@ function Home({ onEnterApp }) {
         <HbAudiences />
         <HbHow />
         <HbPersonal />
-        <HbDigital />
         <HbWorkshops />
         <HbWhyKety />
         <HbFaq />
         <HbFinalCta />
       </main>
       <Footer />
-      <WhatsAppFloat />
+{/* WhatsAppFloat הוסר מהאתר — לפי הוראת קטי, 2026-09-17 */}
     </>
   );
 }
