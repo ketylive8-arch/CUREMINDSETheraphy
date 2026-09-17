@@ -1598,6 +1598,50 @@ function HbSolution() {
   );
 }
 
+/* SECTION — השירותים שלנו (Program-forward, בהשראת עזריה: גריד תוכניות מוקדם בעמוד) */
+function HbServices() {
+  const list = [
+    { title: "ליווי אישי 1:1", sub: "תהליך עומק עם קטי", text: "עבודה ממוקדת תוצאות על השורש: מגדירים מטרה, עובדים עם התסמינים ומודדים שינוי שנשאר.", href: "/emotional-coaching" },
+    { title: "CURE Teens", sub: "ליווי רגשי לנוער", text: "חוסן, ביטחון וכלים להתמודדות — בשפה של גיל ההתבגרות, בלי טיפול ובלי תוויות.", href: "/cure-teens" },
+    { title: "הדרכת הורים", sub: "כלים לשיחה בבית", text: "מה לומר ומה לא, איך מרגיעים מערכת הישרדותית ואיך בונים בית שנושם.", href: "/parents" },
+    { title: "סדנאות והרצאות", sub: "לארגונים ולקבוצות", text: "יום אחד, דפוס חדש: חוסן, תקשורת ומיינדסט לצוותים, מנהלים וקהלים.", href: "/workshops" },
+  ];
+  const media = [
+    { label: "רדיו חיפה", href: MEDIA_LINKS.radio },
+    { label: "פודקאסט", href: MEDIA_LINKS.spotify },
+    { label: "ערוץ היוטיוב", href: MEDIA_LINKS.youtubeChannel },
+    { label: "כל הקישורים", href: MEDIA_LINKS.linktree },
+  ];
+  return (
+    <section id="services" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[640px] mx-auto mb-14">
+          <Eyebrow>השירותים שלנו</Eyebrow>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">כל הדרכים לעבוד עם השיטה</h2>
+          <p className="text-ink-500 text-[16px] leading-relaxed mt-4">מהרגע הראשון ברור איפה נכנסים — בוחרים את הדרך שמתאימה לך.</p>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {list.map((w, i) => (
+            <Reveal key={w.title} style={{ transitionDelay: `${i * 80}ms` }}
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-6 flex flex-col gap-2 hover:border-gold-300 transition-all">
+              <h3 className="font-heading font-bold text-ink-800 text-[19px]">{w.title}</h3>
+              <p className="text-gold-700 text-[13px] font-semibold">{w.sub}</p>
+              <p className="text-ink-600 text-[14.5px] leading-relaxed flex-1 mt-1">{w.text}</p>
+              <a href={w.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-2">פרטים מכאן ←</a>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <span className="text-ink-400 text-[13.5px] font-semibold">אפשר להכיר את השיטה גם כאן:</span>
+          {media.map((m) => (
+            <a key={m.label} href={m.href} target="_blank" rel="noopener noreferrer" className="text-ink-500 text-[13.5px] font-medium hover:text-gold-700 transition-colors underline decoration-ink-100 underline-offset-4">{m.label}</a>
+          ))}
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 /* SECTION 4 — למי זה מתאים? */
 function HbAudiences() {
   const cards = [
@@ -1830,6 +1874,7 @@ function Home({ onEnterApp }) {
         <HbHero />
         <HbRecognize />
         <HbSolution />
+        <HbServices />
         <HbAudiences />
         <HbHow />
         <HbPersonal />
