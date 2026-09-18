@@ -261,9 +261,7 @@ function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
   return (
     <Tag
       ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-      } ${className}`}
+      className={`cm-reveal ${inView ? "cm-in" : ""} ${className}`}
       {...rest}
     >
       {children}
@@ -724,7 +722,7 @@ function DigitalPlatform() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {cards.map((c, i) => (
             <Reveal key={c.title} style={{ transitionDelay: `${i * 90}ms` }}
-              className="bg-white border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 shadow-softer hover:border-gold-300 transition-all">
+              className="bg-white border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 shadow-softer hover:border-gold-300 cm-lift">
               <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
               <h3 className="font-heading font-bold text-ink-800 text-[20px]">{c.title}</h3>
               <p className="text-ink-600 text-[15px] leading-relaxed flex-1">{c.text}</p>
@@ -765,7 +763,7 @@ function Workshops() {
             <Reveal
               key={it.title}
               style={{ transitionDelay: `${i * 90}ms` }}
-              className="ws-card bg-white border border-ink-100 rounded-2xl overflow-hidden flex flex-col shadow-softer hover:border-gold-300 transition-all"
+              className="ws-card bg-white border border-ink-100 rounded-2xl overflow-hidden flex flex-col shadow-softer hover:border-gold-300 cm-lift"
             >
               <div className="ws-card-media" aria-hidden="true">
                 <span className="ws-card-medallion">
@@ -1623,7 +1621,7 @@ function HbServices() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {list.map((w, i) => (
             <Reveal key={w.title} style={{ transitionDelay: `${i * 80}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-6 flex flex-col gap-2 hover:border-gold-300 transition-all">
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-6 flex flex-col gap-2 hover:border-gold-300 cm-lift">
               <h3 className="font-heading font-bold text-ink-800 text-[19px]">{w.title}</h3>
               <p className="text-gold-700 text-[13px] font-semibold">{w.sub}</p>
               <p className="text-ink-600 text-[14.5px] leading-relaxed flex-1 mt-1">{w.text}</p>
@@ -1659,7 +1657,7 @@ function HbAudiences() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {cards.map((c, i) => (
             <Reveal key={c.title} style={{ transitionDelay: `${i * 80}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 hover:border-gold-300 transition-all">
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 hover:border-gold-300 cm-lift">
               <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
               <h3 className="font-heading font-bold text-ink-800 text-[21px]">{c.title}</h3>
               <p className="text-ink-500 text-[15px]">{c.problem}</p>
@@ -1752,7 +1750,7 @@ function HbWorkshops() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {list.map((w, i) => (
             <Reveal key={w.title} style={{ transitionDelay: `${i * 80}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-2 hover:border-gold-300 transition-all">
+              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-2 hover:border-gold-300 cm-lift">
               <h3 className="font-heading font-bold text-ink-800 text-[20px]">{w.title}</h3>
               <p className="text-gold-700 text-[13.5px] font-semibold">{w.sub}</p>
               <p className="text-ink-600 text-[15.5px] leading-relaxed flex-1 mt-1">{w.text}</p>
