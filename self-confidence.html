@@ -66,7 +66,25 @@
   footer.site a{color:var(--gold-deep);text-decoration:none;margin:0 8px}
   @media(max-width:600px){h1{font-size:27px}.cards{grid-template-columns:1fr}.hero{padding:30px 0 4px}}
   a:focus-visible,summary:focus-visible,.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
-  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+  /* מעגל הביטחון — אנימציה */
+  .cycle{background:#fff;border:1px solid var(--gold-soft);border-radius:18px;padding:26px 20px;margin:18px 0}
+  .cycle-grid{display:grid;grid-template-columns:1fr;gap:20px;align-items:center}
+  @media(min-width:780px){.cycle-grid{grid-template-columns:minmax(0,420px) minmax(0,1fr)}}
+  .cycle-svg{width:100%;max-width:420px;margin:0 auto;display:block}
+  .cring{fill:none;stroke:var(--gold-soft);stroke-width:12}
+  .cnode-w{fill:#fff;stroke:var(--gold);stroke-width:2.5}
+  .cnode-t{fill:var(--ink);font-family:Rubik,sans-serif;font-weight:700;font-size:12.5px;text-anchor:middle}
+  .cnode-n{fill:var(--gold-deep);font-family:Rubik,sans-serif;font-weight:800;font-size:11px;text-anchor:middle}
+  .cctr{fill:var(--gold-deep);font-family:Rubik,sans-serif;font-weight:800;font-size:15px;text-anchor:middle}
+  .chalo{fill:var(--gold);opacity:0}
+  .cstep{margin:0 0 12px;padding-inline-start:34px;position:relative;color:var(--ink-500);font-size:15px}
+  .cstep b{display:block;color:var(--ink);font-family:Rubik,sans-serif;font-size:15.5px}
+  .cstep .cnum{position:absolute;inset-inline-start:0;top:1px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .cycle-note{background:var(--cream);border-inline-start:3px solid var(--gold);border-radius:10px;padding:12px 16px;margin-top:8px;font-weight:600;font-size:15.5px}
+  @keyframes cglow{0%{opacity:0}6%{opacity:.30}18%{opacity:0}100%{opacity:0}}
+  .chalo{animation:cglow 9s linear infinite}
+  .chalo.h2{animation-delay:1.5s}.chalo.h3{animation-delay:3s}.chalo.h4{animation-delay:4.5s}.chalo.h5{animation-delay:6s}.chalo.h6{animation-delay:7.5s}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}.chalo{animation:none;opacity:0}}
 </style>
   <link rel="stylesheet" href="/site-nav.css" />
 </head>
@@ -91,6 +109,46 @@
     <p class="lead">ביטחון עצמי אמיתי לא נבנה ממחמאות מבחוץ. הוא נבנה מ'עוגן בית' פנימי — תחושת ערך שאינה תלויה בתוצאה או באישור של אחרים. אפשר ללמוד לבנות אותו.</p>
     <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לשיחת היכרות ללא עלות</a>
   </div>
+
+  <section class="blk">
+    <h2>מעגל הביטחון — ביטחון עצמי הוא דרך, לא מתג</h2>
+    <p>ביטחון עצמי לא מגיע ברגע אחד. הוא נבנה בסיבובים: כל פעולה מזינה את הבאה, וכל סיבוב מעלה אותך שלב. ככה זה עובד בכל תהליך שינוי שאני עושה:</p>
+    <div class="cycle">
+      <div class="cycle-grid">
+        <div>
+          <svg class="cycle-svg" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-label="מעגל הביטחון: פעולה, מאמץ, מוטיבציה, הערכה, ביצועים, ביטחון — וחוזר חלילה">
+            <circle class="cring" cx="230" cy="230" r="150" />
+            <path id="loopPath" d="M230,80 A150,150 0 0,1 230,380 A150,150 0 0,1 230,80" fill="none" />
+            <text class="cctr" x="230" y="224">מעגל</text>
+            <text class="cctr" x="230" y="245">הביטחון</text>
+            <!-- nodes -->
+            <g><circle class="chalo h1" cx="230" cy="80" r="46"/><circle class="cnode-w" cx="230" cy="80" r="38"/><text class="cnode-n" x="230" y="70">1</text><text class="cnode-t" x="230" y="88">פעולה</text></g>
+            <g><circle class="chalo h2" cx="359.9" cy="155" r="46"/><circle class="cnode-w" cx="359.9" cy="155" r="38"/><text class="cnode-n" x="359.9" y="145">2</text><text class="cnode-t" x="359.9" y="163">מאמץ</text></g>
+            <g><circle class="chalo h3" cx="359.9" cy="305" r="46"/><circle class="cnode-w" cx="359.9" cy="305" r="38"/><text class="cnode-n" x="359.9" y="295">3</text><text class="cnode-t" x="359.9" y="313">מוטיבציה</text></g>
+            <g><circle class="chalo h4" cx="230" cy="380" r="46"/><circle class="cnode-w" cx="230" cy="380" r="38"/><text class="cnode-n" x="230" y="370">4</text><text class="cnode-t" x="230" y="388">הערכה</text></g>
+            <g><circle class="chalo h5" cx="100.1" cy="305" r="46"/><circle class="cnode-w" cx="100.1" cy="305" r="38"/><text class="cnode-n" x="100.1" y="295">5</text><text class="cnode-t" x="100.1" y="313">ביצועים</text></g>
+            <g><circle class="chalo h6" cx="100.1" cy="155" r="46"/><circle class="cnode-w" cx="100.1" cy="155" r="38"/><text class="cnode-n" x="100.1" y="145">6</text><text class="cnode-t" x="100.1" y="163">ביטחון</text></g>
+            <!-- moving comet -->
+            <g>
+              <circle r="8" fill="#c2974a" />
+              <polygon points="-4,-7 11,0 -4,7" fill="#8a6a2f" />
+              <animateMotion dur="9s" repeatCount="indefinite" rotate="auto"><mpath xlink:href="#loopPath" href="#loopPath" /></animateMotion>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <p class="cstep"><span class="cnum">1</span><b>פעולות אקטיביות</b>עושים — לא רק חושבים. יוצאים לפעולה גם בלי ביטחון מלא.</p>
+          <p class="cstep"><span class="cnum">2</span><b>מאמץ והתמדה</b>ממשיכים גם כשקשה, וגם כשעוד לא רואים תוצאה.</p>
+          <p class="cstep"><span class="cnum">3</span><b>המוטיבציה עולה</b>כל הצלחה קטנה מדליקה את הרצון להמשיך.</p>
+          <p class="cstep"><span class="cnum">4</span><b>הערכה עצמית</b>מתחילים להעריך את מה שעשינו — לא רק את מה שחסר.</p>
+          <p class="cstep"><span class="cnum">5</span><b>שיפור בביצועים</b>התוצאות משתפרות בפועל, במציאות.</p>
+          <p class="cstep"><span class="cnum">6</span><b>הביטחון העצמי עולה</b>ומזין פעולה חדשה — וחוזר חלילה, שלב אחד גבוה יותר.</p>
+          <div class="cycle-note">כל סיבוב מעלה אותך שלב — זו ספירלה שעולה, לא מעגל סגור.</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:18px">למה זה חשוב? מהצד אנחנו רואים אדם עם ביטחון — אבל לא רואים את <b>הדרך</b> שהוא עבר כדי להגיע לשם. לכל אחד יש דרך משלו. רוב האנשים רוצים את התוצאה — את הביטחון — אבל לא מבינים שזו דרך, לא מתג שמדליקים. <b>בדיוק שם אני נכנסת: אני מלמדת אותך את הדרך.</b> מגדירים יחד תוצאה רצויה, יוצאים לפעולה, ומודדים את השיפור — סיבוב אחרי סיבוב, עד שהביטחון הופך לחלק ממי שאת/ה.</p>
+  </section>
 
   <section class="blk"><h2>למה ביטחון שמבוסס על אישור חיצוני מתמוטט</h2><p>כשהערך העצמי תלוי בהצלחה, במראה או בתגובות של אחרים, כל כישלון קטן מרגיש כמו איום קיומי. הקול המבקר הפנימי מתחזק, וההימנעות גדלה — וכך נסגר מעגל שמחליש עוד יותר.</p><p>העבודה בשיטת CureMindset מפרידה בין הזהות ('מי אני') לבין הביצוע ('מה עשיתי'), ובונה עוגן פנימי של ערך וכבוד עצמי — בסיס יציב שממנו אפשר לפעול גם באי-ודאות.</p></section>
   <section class="blk"><h2>מתי העמוד הזה מדבר אלייך</h2><ul class="signs"><li>קול מבקר פנימי חזק שאף פעם לא מרוצה</li><li>פחד מכישלון או מביקורת שמוביל להימנעות</li><li>השוואה מתמדת לאחרים ותחושת 'לא מספיק'</li><li>קושי לקבל מחמאה או להציב גבול</li></ul></section>

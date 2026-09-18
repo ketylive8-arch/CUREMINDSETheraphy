@@ -1875,7 +1875,6 @@ function Home({ onEnterApp }) {
         <HbRecognize />
         <HbSolution />
         <HbServices />
-        <HbAudiences />
         <HbHow />
         <HbPersonal />
         <HbWorkshops />
