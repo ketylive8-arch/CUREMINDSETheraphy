@@ -1422,6 +1422,28 @@ admin.delete("/dist/channels/:id", (req, res) => {
   res.json(r);
 });
 
+// המנהל היומי — מה חשוב לעשות היום (1–3 פעולות). נתונים אמיתיים בלבד.
+admin.get("/dist/briefing", (req, res) => res.json(leadEngine.dailyBriefing()));
+
+// הכנת טיוטת פנייה (הסוכן מכין — קטי מאשרת ושולחת בעצמה).
+admin.post("/dist/channels/:id/draft", (req, res) => {
+  const r = leadEngine.generateDraft(parseInt(req.params.id, 10), { regenerate: !!(req.body && req.body.regenerate) });
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.json(r);
+});
+
+admin.get("/dist/channels/:id/drafts", (req, res) => {
+  res.json({ drafts: leadEngine.listDrafts(parseInt(req.params.id, 10)) });
+});
+
+// שינוי מצב טיוטה: draft → approved → sent (sent מקדם את הערוץ ל-CONTACTED).
+admin.patch("/dist/outreach/:id", (req, res) => {
+  const { state, editedText } = req.body || {};
+  const r = leadEngine.setDraftState(parseInt(req.params.id, 10), state, { editedText });
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.json(r);
+});
+
 app.use("/api/admin", admin);
 app.use("/api", api);
 

@@ -69,3 +69,33 @@ test("delete — הסרה מחזירה not_found לרשומה שלא קיימת"
   assert.ok(le.deleteChannel(c.channel.id).ok);
   assert.equal(le.deleteChannel(999999).error, "not_found");
 });
+
+test("draft — הסוכן מכין פנייה מותאמת ומקדם ל-AWAITING_APPROVAL", () => {
+  const c = le.createChannel({ name: "מרכז אופק", channelKind: "learning_center", oppType: "HOST", whyYes: "הרבה הורים בלחץ מבחנים", contactName: "דנה", status: "QUALIFIED", priority: "HIGH" });
+  const r = le.generateDraft(c.channel.id);
+  assert.ok(r.ok);
+  assert.equal(r.draft.state, "draft");
+  assert.match(r.draft.draftText, /שלום דנה/, "פנייה בשם איש הקשר");
+  assert.match(r.draft.draftText, /לחץ לימודי/, "נוסח מותאם למרכז למידה");
+  assert.equal(r.channel.status, "AWAITING_APPROVAL", "הערוץ עבר להמתנה לאישור");
+});
+
+test("draft — EVIDENCE אף פעם לא מקבל פנייה", () => {
+  const c = le.createChannel({ name: "פוסט בפורום", channelKind: "other", oppType: "EVIDENCE" });
+  assert.equal(le.generateDraft(c.channel.id).error, "evidence_not_lead");
+});
+
+test("draft — 'נשלח' מקדם את הערוץ ל-CONTACTED", () => {
+  const c = le.createChannel({ name: "מועדון ספורט הצפון", channelKind: "sports_club", oppType: "HOST", whyYes: "מאמנים רואים לחץ", contactName: "רון" });
+  const d = le.generateDraft(c.channel.id);
+  const s = le.setDraftState(d.draft.id, "sent");
+  assert.equal(s.draft.state, "sent");
+  assert.equal(le.getChannel(c.channel.id).status, "CONTACTED");
+});
+
+test("briefing — נתונים אמיתיים בלבד, מקסימום 3 פעולות", () => {
+  const empty = le.dailyBriefing();
+  assert.ok(Array.isArray(empty.actions));
+  assert.ok(empty.actions.length <= 3);
+  assert.ok(empty.summary.total === le.listChannels().length);
+});

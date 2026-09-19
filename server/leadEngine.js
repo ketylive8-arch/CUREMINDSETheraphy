@@ -402,8 +402,205 @@ function meta() {
   };
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   Outreach drafts — the agent PREPARES a message; Kety reviews, edits,
+   and sends it herself. Nothing is ever sent automatically. Drafts are
+   deterministic templates (no external AI needed), tailored to the body
+   type, in Kety's warm, non-spammy voice.
+   ═══════════════════════════════════════════════════════════════════ */
+
+function greeting(contactName) {
+  return contactName && contactName.trim() ? `שלום ${contactName.trim()}` : "שלום רב";
+}
+const SIGN = "\n\nבברכה,\nקטי שגב · CureMindset";
+const VALUE_LINE = (why) => (why && why.trim() ? `\n\nחשבתי עליכם במיוחד כי ${why.trim()}.` : "");
+
+// One template per body type. {g}=greeting, filled at build time.
+function draftTemplate(channel) {
+  const g = greeting(channel.contactName);
+  const intro =
+    "שמי קטי שגב, מאמנת מנטלית שעובדת עם בני נוער והורים בתחומי החוסן הרגשי, החרדה, הפחדים והביטחון העצמי.";
+  const byKind = {
+    employer:
+      `${g},\n\n${intro}\n\nחלק גדול מהעובדים אצלכם הם הורים למתבגרים — וגיל ההתבגרות מביא איתו לא מעט לחץ, גם לילד וגם להורה. אשמח להציע לכם פעילות קצרה או כלי דיגיטלי להורים כחלק מהטבת הרווחה לעובדים: משהו שנותן ערך אמיתי בבית, לא עוד הרצאה כללית.`,
+    learning_center:
+      `${g},\n\n${intro}\n\nהרבה מההורים שמגיעים אליכם מתמודדים עם לחץ לימודי, חרדת מבחנים וירידה בביטחון העצמי אצל הילד. אשמח להציע לכם כלי משלים להורים — קצר ופרקטי — שנותן להם דרך לתמוך בילד גם רגשית, לצד הלמידה.`,
+    sports_club:
+      `${g},\n\n${intro}\n\nהמאמנים אצלכם רואים מקרוב את ההתמודדות הרגשית של בני הנוער — לחץ, ביטחון עצמי, התמודדות עם כישלון. אשמח להציע פעילות קצרה או תוכן להורים שנותן להם כלים ללוות את הילד גם ברגעים האלה.`,
+    enrichment:
+      `${g},\n\n${intro}\n\nלקהל ההורים שמגיע אליכם יש עניין אמיתי בהתפתחות הרגשית של הילד, לא רק בחוג עצמו. אשמח להציע פעילות קצרה או כלי דיגיטלי להורים בנושא חוסן וביטחון עצמי אצל מתבגרים.`,
+    parent_community:
+      `${g},\n\n${intro}\n\nאשמח לתרום לקהילה תוכן שימושי או פעילות קצרה סביב נושאים שמעסיקים כל הורה למתבגר — חרדה, ביטחון עצמי, לחץ והתמודדות. בלי מכירה, פשוט ערך אמיתי לחברי הקהילה.`,
+    parenting_center:
+      `${g},\n\n${intro}\n\nאתם כבר מציעים להורים ליווי וסדנאות. אשמח להיות שותפה — כמרצה או עם פעילות/כלי בתחום החוסן הרגשי והביטחון העצמי של מתבגרים — משהו שתוכלו להציע ללקוחות שלכם.`,
+    loyalty_network:
+      `${g},\n\n${intro}\n\nאשמח להציע לחברי המועדון שלכם הטבה בעלת ערך: כלי דיגיטלי או פעילות קצרה להורים למתבגרים בנושא חרדה, ביטחון וחוסן רגשי. הטבה שנותנת ערך אמיתי בבית.`,
+    waiting_parent:
+      `${g},\n\n${intro}\n\nבזמן שהילד בפעילות אצלכם, ההורה ממתין — וזה זמן מצוין לתת לו ערך. אשמח להציע פעילות קצרה להורים (15–30 דק') בנושא חוסן וביטחון עצמי אצל מתבגרים.`,
+    mall_family:
+      `${g},\n\n${intro}\n\nאשמח להציע פעילות קצרה או תוכן למשפחות סביב מועדי מפתח (חזרה לבית הספר, תקופת מבחנים, מעבר לחטיבה/תיכון) — "מתנה להורה" שנותנת ערך אמיתי ומחברת את המשפחות אליכם.`,
+    other:
+      `${g},\n\n${intro}\n\nאשמח לבחון יחד דרך לשתף פעולה ולתת ערך לקהל ההורים שלכם בתחום החוסן הרגשי, החרדה והביטחון העצמי של מתבגרים.`,
+  };
+  // A direct parent who asked for help publicly gets a gentle, non-salesy note.
+  if (channel.oppType === "DIRECT_PARENT") {
+    return `${g},\n\nקראתי מה שכתבת, וזה נגע בי. שמי קטי שגב, אני מאמנת מנטלית שמלווה בני נוער והורים סביב חרדה, ביטחון עצמי והתמודדות רגשית.\n\nאם בא לך, אשמח פשוט לדבר — בלי התחייבות — ולראות אם יש כאן משהו שאני יכולה לעזור בו.${SIGN}`;
+  }
+  const base = byKind[channel.channelKind] || byKind.other;
+  const cta =
+    "\n\nאם זה מעניין, אשמח לתאם שיחה קצרה כדי להתאים את זה בדיוק לקהל שלכם.";
+  return base + VALUE_LINE(channel.whyYes) + cta + SIGN;
+}
+
+function mapDraftRow(r) {
+  if (!r) return null;
+  return {
+    id: r.id, channelId: r.channel_id, bodyType: r.body_type, offerModel: r.offer_model,
+    channelMedium: r.channel_medium, draftText: r.draft_text, state: r.state,
+    approvedBy: r.approved_by, approvedAt: r.approved_at, sentAt: r.sent_at,
+    replyAt: r.reply_at, createdAt: r.created_at,
+  };
+}
+
+// Prepare (or return the latest) draft for a channel. EVIDENCE is not a lead,
+// so it never gets an outreach draft.
+function generateDraft(channelId, { regenerate = false, medium = "email" } = {}) {
+  const channel = getChannel(channelId);
+  if (!channel) return { error: "not_found", status: 404 };
+  if (channel.oppType === "EVIDENCE") return { error: "evidence_not_lead", status: 400 };
+
+  if (!regenerate) {
+    const latest = db.prepare("SELECT * FROM dist_outreach WHERE channel_id = ? ORDER BY id DESC LIMIT 1").get(channelId);
+    if (latest && latest.state === "draft") return { ok: true, draft: mapDraftRow(latest), channel };
+  }
+
+  const text = draftTemplate(channel);
+  const info = db.prepare(
+    `INSERT INTO dist_outreach (channel_id, body_type, offer_model, channel_medium, draft_text, state)
+     VALUES (?,?,?,?,?, 'draft')`
+  ).run(channelId, channel.channelKind, channel.offerModel || null, medium, text);
+
+  // Move the channel to "waiting for Kety's approval" if it's earlier in the pipeline.
+  const order = PIPELINE.findIndex((s) => s.value === channel.status);
+  const awaitingIdx = PIPELINE.findIndex((s) => s.value === "AWAITING_APPROVAL");
+  if (order >= 0 && order < awaitingIdx) {
+    db.prepare("UPDATE dist_channels SET status = 'AWAITING_APPROVAL', updated_at = datetime('now') WHERE id = ?").run(channelId);
+  }
+  return { ok: true, draft: mapDraftRow(db.prepare("SELECT * FROM dist_outreach WHERE id = ?").get(info.lastInsertRowid)), channel: getChannel(channelId) };
+}
+
+function listDrafts(channelId) {
+  return db.prepare("SELECT * FROM dist_outreach WHERE channel_id = ? ORDER BY id DESC").all(channelId).map(mapDraftRow);
+}
+
+// State transitions Kety controls. 'sent' also advances the channel to CONTACTED
+// and stamps the time — she sends the message herself, then marks it here.
+function setDraftState(id, state, { editedText } = {}) {
+  if (!["draft", "approved", "sent"].includes(state)) return { error: "bad_state", status: 400 };
+  const row = db.prepare("SELECT * FROM dist_outreach WHERE id = ?").get(id);
+  if (!row) return { error: "not_found", status: 404 };
+  const now = new Date().toISOString().replace("T", " ").slice(0, 19);
+
+  if (typeof editedText === "string" && editedText.trim()) {
+    db.prepare("UPDATE dist_outreach SET draft_text = ? WHERE id = ?").run(editedText.trim().slice(0, 4000), id);
+  }
+  if (state === "approved") {
+    db.prepare("UPDATE dist_outreach SET state = 'approved', approved_by = 'kety', approved_at = ? WHERE id = ?").run(now, id);
+  } else if (state === "sent") {
+    db.prepare("UPDATE dist_outreach SET state = 'sent', sent_at = ? WHERE id = ?").run(now, id);
+    db.prepare("UPDATE dist_channels SET status = 'CONTACTED', updated_at = datetime('now') WHERE id = ?").run(row.channel_id);
+  } else {
+    db.prepare("UPDATE dist_outreach SET state = 'draft' WHERE id = ?").run(id);
+  }
+  return { ok: true, draft: mapDraftRow(db.prepare("SELECT * FROM dist_outreach WHERE id = ?").get(id)) };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Daily Manager — the agent reviews the CRM (Audit-first) and returns the
+   1–3 actions that move a lead forward TODAY. Real data only; an empty CRM
+   returns a single "add your channels" action, never invented opportunities.
+   ═══════════════════════════════════════════════════════════════════ */
+
+function channelsWithOpenDraft() {
+  const set = new Set();
+  for (const r of db.prepare("SELECT DISTINCT channel_id FROM dist_outreach WHERE state IN ('draft','approved')").all()) set.add(r.channel_id);
+  return set;
+}
+
+function dailyBriefing() {
+  const channels = listChannels();
+  const withDraft = channelsWithOpenDraft();
+  const actions = [];
+  const ref = (c) => ({ channelId: c.id, channelCode: c.channelCode, channelName: c.name });
+
+  const isActive = (c) => !["CLIENT", "LOST", "NOT_A_FIT", "EVIDENCE"].includes(c.status) && c.oppType !== "EVIDENCE";
+  const active = channels.filter(isActive);
+
+  // 1) Drafts waiting for Kety's approval — highest priority.
+  const awaiting = active.filter((c) => c.status === "AWAITING_APPROVAL" && withDraft.has(c.id));
+  if (awaiting.length) {
+    actions.push({
+      type: "approve",
+      text: awaiting.length === 1 ? "הכנתי פנייה אחת שמחכה לאישור שלך." : `הכנתי ${awaiting.length} פניות שמחכות לאישור שלך.`,
+      items: awaiting.slice(0, 3).map(ref),
+    });
+  }
+
+  // 2) Qualified, has a contact, no draft yet → ready for the agent to prepare.
+  const readyToDraft = active.filter(
+    (c) => ["QUALIFIED", "OFFER_READY", "DRAFT_READY"].includes(c.status) && c.contactName && !withDraft.has(c.id)
+  );
+  if (readyToDraft.length && actions.length < 3) {
+    actions.push({
+      type: "draft",
+      text: `${readyToDraft.length === 1 ? "גוף אחד מוכן" : `${readyToDraft.length} גופים מוכנים`} להכנת פנייה — יש להם איש קשר.`,
+      items: readyToDraft.slice(0, 3).map(ref),
+    });
+  }
+
+  // 3) High-priority opportunities still early in the pipeline → verify/qualify.
+  const toQualify = active.filter((c) => c.priority === "HIGH" && ["DISCOVERED", "VERIFIED"].includes(c.status));
+  if (toQualify.length && actions.length < 3) {
+    actions.push({
+      type: "qualify",
+      text: toQualify.length === 1 ? "הזדמנות אחת בעדיפות גבוהה ממתינה לאימות." : `${toQualify.length} הזדמנויות בעדיפות גבוהה ממתינות לאימות.`,
+      items: toQualify.slice(0, 3).map(ref),
+    });
+  }
+
+  // 4) Qualified but missing a contact → find one.
+  const needContact = active.filter((c) => ["QUALIFIED", "OFFER_READY"].includes(c.status) && !c.contactName);
+  if (needContact.length && actions.length < 3) {
+    actions.push({
+      type: "contact",
+      text: `${needContact.length === 1 ? "גוף אחד מתאים אבל חסר" : `${needContact.length} גופים מתאימים אבל חסר להם`} איש קשר.`,
+      items: needContact.slice(0, 3).map(ref),
+    });
+  }
+
+  if (!channels.length) {
+    actions.push({
+      type: "empty",
+      text: "המאגר עדיין ריק. הוסיפי את הגופים שכבר יש לך גישה אליהם — ומשם אתחיל לעבוד בשבילך.",
+      items: [],
+    });
+  } else if (!actions.length) {
+    actions.push({ type: "idle", text: "אין פעולה דחופה כרגע. אפשר להוסיף גופים חדשים או להתקדם עם קיימים.", items: [] });
+  }
+
+  const summary = {
+    total: channels.length,
+    active: active.length,
+    awaitingApproval: awaiting.length,
+    readyToDraft: readyToDraft.length,
+    needContact: needContact.length,
+  };
+  return { generatedAt: new Date().toISOString(), summary, actions: actions.slice(0, 3) };
+}
+
 module.exports = {
   listChannels, getChannel, createChannel, updateChannel, deleteChannel,
   pipelineStats, meta,
+  generateDraft, listDrafts, setDraftState, dailyBriefing,
   CHANNEL_KINDS, OPP_TYPES, PIPELINE, PRIORITIES, OFFER_MODELS, METRIC_STATUS,
 };

@@ -1029,6 +1029,41 @@
     const [busy, setBusy] = useState(false);
     const set = (key, value) => setDraft((d) => ({ ...d, [key]: value }));
 
+    // Outreach draft ("פנייה") — separate from the field-edit draft above.
+    const [outreach, setOutreach] = useState(null);
+    const [outreachOpen, setOutreachOpen] = useState(false);
+    const [outreachBusy, setOutreachBusy] = useState(false);
+    const [copied, setCopied] = useState(false);
+
+    async function prepareOutreach(regenerate) {
+      setOutreachBusy(true);
+      try {
+        const res = await fetch(`/api/admin/dist/channels/${channel.id}/draft`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: authHeader },
+          body: JSON.stringify({ regenerate: !!regenerate }),
+        });
+        if (res.status === 401) return onLogout && onLogout();
+        const j = await res.json();
+        if (j.draft) { setOutreach(j.draft); setOutreachOpen(true); onChanged && onChanged(); }
+      } finally { setOutreachBusy(false); }
+    }
+    async function copyOutreach() {
+      try { await navigator.clipboard.writeText(outreach.draftText); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch {}
+    }
+    async function markSent() {
+      setOutreachBusy(true);
+      try {
+        const res = await fetch(`/api/admin/dist/outreach/${outreach.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", Authorization: authHeader },
+          body: JSON.stringify({ state: "sent", editedText: outreach.draftText }),
+        });
+        if (res.status === 401) return onLogout && onLogout();
+        setOutreachOpen(false); setOutreach(null); onChanged && onChanged();
+      } finally { setOutreachBusy(false); }
+    }
+
     async function patch(body) {
       setBusy(true);
       try {
@@ -1122,6 +1157,11 @@
             {(meta.priorities || []).map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
           </select>
           <div className="flex-1" />
+          {channel.oppType !== "EVIDENCE" ? (
+            <button type="button" onClick={() => (outreachOpen ? setOutreachOpen(false) : prepareOutreach(false))} disabled={outreachBusy} className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-gold-700 hover:text-gold-800 px-2 py-1 disabled:opacity-50">
+              <Icon name="message-circle" size={14} /> {outreachBusy ? "מכינה..." : outreachOpen ? "סגירה" : "הכנת פנייה"}
+            </button>
+          ) : null}
           <button type="button" onClick={() => setEditing(true)} className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-ink-600 hover:text-gold-700 px-2 py-1">
             <Icon name="sliders-horizontal" size={14} /> עריכה
           </button>
@@ -1129,6 +1169,31 @@
             <Icon name="trash-2" size={14} /> מחיקה
           </button>
         </div>
+
+        {outreachOpen && outreach ? (
+          <div className="mt-3 rounded-xl border border-gold-200 bg-gold-50/50 p-3.5">
+            <p className="text-[11.5px] font-heading font-semibold text-gold-700 mb-2">
+              טיוטת פנייה שהכין הסוכן — עברי, ערכי אם צריך, ואז שלחי בעצמך (וואטסאפ / מייל). שום דבר לא נשלח אוטומטית.
+            </p>
+            <textarea
+              value={outreach.draftText}
+              onChange={(e) => setOutreach((o) => ({ ...o, draftText: e.target.value }))}
+              rows={9}
+              className="w-full rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-[13px] text-ink-800 leading-relaxed focus:outline-none focus:border-gold-400"
+            />
+            <div className="flex flex-wrap items-center gap-2 mt-2.5">
+              <button type="button" onClick={copyOutreach} className="inline-flex items-center gap-1.5 rounded-full bg-ink-800 text-white text-[12.5px] font-heading font-semibold px-4 py-2 hover:bg-ink-700">
+                <Icon name="file-text" size={13} /> {copied ? "הועתק ✓" : "העתקה"}
+              </button>
+              <button type="button" onClick={markSent} disabled={outreachBusy} className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 text-white text-[12.5px] font-heading font-semibold px-4 py-2 hover:bg-emerald-600 disabled:opacity-60">
+                <Icon name="check-circle-2" size={13} /> שלחתי — סמני
+              </button>
+              <button type="button" onClick={() => prepareOutreach(true)} disabled={outreachBusy} className="inline-flex items-center gap-1.5 text-[12.5px] font-heading font-semibold text-ink-500 hover:text-ink-700 px-2 py-1">
+                <Icon name="rotate-ccw" size={13} /> יצירה מחדש
+              </button>
+            </div>
+          </div>
+        ) : null}
       </article>
     );
   }
@@ -1154,10 +1219,45 @@
     );
   }
 
+  const BRIEFING_ICON = { approve: "check-circle-2", draft: "file-text", qualify: "shield-check", contact: "user-round", empty: "arrow-up", idle: "heart-handshake" };
+
+  function DailyBriefing({ briefing }) {
+    if (!briefing) return null;
+    const actions = briefing.actions || [];
+    return (
+      <section className="rounded-2xl bg-ink-800 text-white p-5 shadow-softer">
+        <div className="flex items-center gap-2 mb-3">
+          <Icon name="heart-handshake" size={16} className="text-gold-400" />
+          <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-400">הסוכן · מה חשוב היום</span>
+        </div>
+        <div className="space-y-2.5">
+          {actions.map((a, i) => (
+            <div key={i} className="flex items-start gap-2.5">
+              <span className="mt-0.5 shrink-0 text-gold-300"><Icon name={BRIEFING_ICON[a.type] || "heart-handshake"} size={15} /></span>
+              <div className="min-w-0">
+                <p className="text-[14px] text-white/90 leading-relaxed">{a.text}</p>
+                {a.items && a.items.length ? (
+                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                    {a.items.map((it) => (
+                      <span key={it.channelId} className="text-[11px] text-gold-200 bg-white/[0.06] rounded-full px-2 py-0.5">
+                        <span className="font-mono">{it.channelCode}</span> · {it.channelName}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   function DistributionCRM({ authHeader, onBack, onLogout }) {
     const [meta, setMeta] = useState(null);
     const [channels, setChannels] = useState(null);
     const [stats, setStats] = useState(null);
+    const [briefing, setBriefing] = useState(null);
     const [error, setError] = useState(false);
     const [priorityFilter, setPriorityFilter] = useState("");
 
@@ -1166,8 +1266,9 @@
       Promise.all([
         fetch(`/api/admin/dist/channels${q}`, { headers: { Authorization: authHeader } }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
         fetch("/api/admin/dist/stats", { headers: { Authorization: authHeader } }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
+        fetch("/api/admin/dist/briefing", { headers: { Authorization: authHeader } }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))),
       ])
-        .then(([ch, st]) => { setChannels(ch); setStats(st); })
+        .then(([ch, st, br]) => { setChannels(ch); setStats(st); setBriefing(br); })
         .catch((s) => { if (s === 401) return onLogout(); setError(true); });
     }
 
@@ -1207,6 +1308,8 @@
               אין חיפוש אוטומטי, אין שליחה, ואין מדדים מומצאים — מספרים יופיעו רק כשיהיו נתונים אמיתיים.
             </p>
           </div>
+
+          <DailyBriefing briefing={briefing} />
 
           <DistStatsStrip stats={stats} />
 
