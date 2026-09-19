@@ -270,10 +270,19 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
   }
   @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
+  <link rel="stylesheet" href="/site-nav.css" />
 </head>
 <body>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
+  <nav class="site-nav">
+    <a href="/">דף הבית</a>
+    <a href="/method">השיטה</a>
+    <a href="/program">התוכנית</a>
+    <a href="/#workshops">סדנאות</a>
+    <a href="/faq">שאלות נפוצות</a>
+    <a href="/contact">יצירת קשר</a>
+  </nav>
   <a class="cta-top" href="${CALENDLY}" target="_blank" rel="noopener">${esc(p.cta_primary)}</a>
 </div></header>
 
