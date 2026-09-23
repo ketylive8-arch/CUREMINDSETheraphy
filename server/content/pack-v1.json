@@ -1,0 +1,587 @@
+{
+  "meta": {
+    "version": "1.0",
+    "generated": "2026-09-23",
+    "source_doc": "CureMindset — חבילת תוכן ומסמך דרישות ל-Claude Code (22.9.2026)",
+    "note": "כל הפריטים נטענים בסטטוס draft. קטי מאשרת ל-approved מפאנל הניהול. שום דבר לא מוצג ללקוחה לפני אישור.",
+    "disclaimer": "החוויה כאן היא היכרות עם שיטת CureMindset, למטרות רווחה והעצמה בלבד. היא אינה טיפול רפואי או נפשי, ואינה מחליפה ייעוץ של רופא/ה או איש/אשת מקצוע בתחום בריאות הנפש. אם את/ה במצוקה או בסכנה: ער\"ן 1201 · סה\"ר (צ'אט) sahar.org.il · מד\"א 101.",
+    "stages": {
+      "1": "חיבור ומיפוי",
+      "2": "ערעור ושחרור",
+      "3": "הטמעה ופעולה",
+      "4": "מימוש ומדידה",
+      "5": "עצמאות ומניעת נסיגה"
+    },
+    "method_principles": [
+      "אמונות הן לא עובדות, הן החלטות שהפכו להנחות עולם.",
+      "לכל אמונה יש כוונה חיובית. לא מערערים אותה בלי להכיר בכוונה.",
+      "אמונה חדשה נבנית רק אחרי שהישנה נחלשה. לעולם לא בסדר הפוך.",
+      "החלטה בלי פעולה היא רק משאלה."
+    ]
+  },
+
+  "units": [
+    {
+      "id": "U01", "slug": "belief-map", "title": "מפת האמונות",
+      "stage": 1, "type": "writing", "minutes": 15, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "לפני שמשנים משהו, צריך לראות אותו. האמונות שלנו לא מרגישות כמו אמונות. הן מרגישות כמו \"ככה זה\". היום נוציא אותן לאור, בלי לשפוט ובלי לתקן.",
+      "steps": [
+        "קראי כל תחום ברשימה, ועצרי רגע על כל אחד.",
+        "השלימי בכל תחום את המשפט \"אני מאמינה ש…\" או \"תמיד…\", \"אף פעם…\", \"אני לא מסוג האנשים ש…\".",
+        "כתבי מהר, בלי לחשוב יותר מדי. מה שעולה ראשון הוא הכי כן.",
+        "סמני בכוכבית את האמונה שהכי כואבת לך לקרוא."
+      ],
+      "fields": [
+        {"key": "self", "label": "עצמי", "private": true},
+        {"key": "people_world", "label": "אנשים ועולם", "private": true},
+        {"key": "relationship", "label": "זוגיות", "private": true},
+        {"key": "family", "label": "משפחה", "private": true},
+        {"key": "health_body", "label": "בריאות וגוף", "private": true},
+        {"key": "money_work", "label": "כסף ועבודה", "private": true},
+        {"key": "starred", "label": "האמונה המסומנת בכוכבית", "private": true}
+      ],
+      "anchor": "אמונה היא לא עובדה. היא החלטה ישנה שאפשר לבדוק מחדש.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "teen_variant": {
+        "fields": [
+          {"key": "me", "label": "אני", "private": true},
+          {"key": "friends", "label": "חברים", "private": true},
+          {"key": "home", "label": "בית", "private": true},
+          {"key": "school", "label": "לימודים", "private": true},
+          {"key": "body_looks", "label": "גוף ומראה", "private": true},
+          {"key": "future", "label": "העתיד", "private": true},
+          {"key": "starred", "label": "האמונה שהכי כואבת", "private": true}
+        ]
+      },
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U02", "slug": "belief-positive-intent", "title": "הכוונה הטובה של האמונה",
+      "stage": 2, "type": "writing", "minutes": 12, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "כל אמונה נולדה כדי לשמור עלייך. גם זו שהכי מפריעה לך היום. כשנלחמים בה, היא נאחזת חזק יותר. כשמבינים מה היא ניסתה לעשות, היא מתחילה להרפות.",
+      "steps": [
+        "קחי את האמונה שסימנת בכוכבית (U01).",
+        "שאלי אותה בשקט: \"ממה ניסית להגן עליי?\"",
+        "שאלי שוב: \"ומה זה נתן לי?\" חזרי על השאלה עד שמגיעה תשובה שמרגישה אמיתית.",
+        "כתבי לה משפט תודה אחד. לא כי היא צודקת, אלא כי היא ניסתה."
+      ],
+      "fields": [
+        {"key": "belief", "label": "האמונה", "private": true},
+        {"key": "protected_from", "label": "ממה היא הגנה עליי", "private": true},
+        {"key": "what_it_gave", "label": "מה היא נתנה לי", "private": true},
+        {"key": "thank_you", "label": "משפט התודה שלי", "private": true}
+      ],
+      "anchor": "היא ניסתה לשמור עליי. עכשיו אני יכולה לשמור על עצמי אחרת.",
+      "audio": null, "prerequisites": ["U01"], "sos": false,
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U03", "slug": "exceptions", "title": "מחפשים את היוצא מן הכלל",
+      "stage": 2, "type": "writing", "minutes": 10, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "אמונה היא הכללה. והכללה תמיד מפספסת משהו. המשימה היום: למצוא את הרגעים שבהם האמונה שלך לא הייתה נכונה.",
+      "steps": [
+        "כתבי את האמונה.",
+        "מצאי שלושה רגעים בחיים שבהם היא לא התקיימה. אפילו קטנים, אפילו פעם אחת.",
+        "ליד כל רגע כתבי: מה היה שונה אז?",
+        "קראי את שלושת הרגעים בקול."
+      ],
+      "fields": [
+        {"key": "belief", "label": "האמונה", "private": true},
+        {"key": "moment1", "label": "רגע 1", "private": true},
+        {"key": "moment2", "label": "רגע 2", "private": true},
+        {"key": "moment3", "label": "רגע 3", "private": true},
+        {"key": "what_differed", "label": "מה היה שונה", "private": true}
+      ],
+      "anchor": "אם זה קרה פעם אחת, זה אפשרי.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U04", "slug": "challenging-questions", "title": "שאלות שמערערות",
+      "stage": 2, "type": "guided-questions", "minutes": 15, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "השאלות האלה לא באות להוכיח שאת טועה. הן פותחות סדק קטן באמונה, ודרך הסדק הזה נכנס אור. עני בכתב, לאט, שאלה אחרי שאלה.",
+      "steps": [
+        "עד כמה את מאמינה בזה עכשיו, מ-1 עד 10?",
+        "מאיפה את יודעת שזה נכון? מה ההוכחה?",
+        "אם זה לא היה נכון, איך היית יודעת?",
+        "מתי החלטת את זה לראשונה? בת כמה היית?",
+        "מה בדיוק הקשר בין מה שקרה לבין המסקנה שהסקת?",
+        "מה היית עושה מחר בבוקר אילו זה לא היה נכון?",
+        "מה היית אומרת לחברה טובה שמאמינה בדיוק בזה?",
+        "ועכשיו, עד כמה את מאמינה בזה, מ-1 עד 10?"
+      ],
+      "fields": [
+        {"key": "score_before", "label": "אמון באמונה — לפני (1-10)", "private": false, "track": true},
+        {"key": "q_evidence", "label": "מאיפה אני יודעת שזה נכון", "private": true},
+        {"key": "q_how_would_know", "label": "איך הייתי יודעת אם זה לא נכון", "private": true},
+        {"key": "q_first_decided", "label": "מתי החלטתי את זה לראשונה", "private": true},
+        {"key": "q_link", "label": "הקשר בין מה שקרה למסקנה", "private": true},
+        {"key": "q_tomorrow", "label": "מה הייתי עושה מחר אם זה לא נכון", "private": true},
+        {"key": "q_to_friend", "label": "מה הייתי אומרת לחברה", "private": true},
+        {"key": "score_after", "label": "אמון באמונה — אחרי (1-10)", "private": false, "track": true}
+      ],
+      "anchor": "המספר ירד. זה אומר שהאמונה זזה.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "שמור את שני הציונים (score_before, score_after) כנתון מעקב. הצג ללקוחה את ההפרש.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U05", "slug": "new-belief-senses", "title": "אמונה חדשה, בכל החושים",
+      "stage": 3, "type": "writing+visualization", "minutes": 15, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "עכשיו, כשהישנה נחלשה, יש מקום לחדשה. אמונה חדשה צריכה להיות חיובית, בהווה, וכזו שמרגישה אפשרית. לא \"אני מושלמת\", אלא \"אני לומדת לסמוך על עצמי\".",
+      "steps": [
+        "נסחי את האמונה החדשה במשפט אחד, בהווה, בלי המילה \"לא\".",
+        "עצמי עיניים. דמייני את עצמך חיה אותה כבר היום.",
+        "מה את רואה? איך את עומדת, איך את נראית?",
+        "מה את שומעת, ומה את אומרת לעצמך?",
+        "איפה בגוף את מרגישה אותה? מה הצבע, מה הטמפרטורה?",
+        "דמייני שלושה מצבים בשבוע הקרוב שבהם את פועלת מתוכה."
+      ],
+      "fields": [
+        {"key": "new_belief", "label": "האמונה החדשה", "private": false},
+        {"key": "see", "label": "מה אני רואה", "private": true},
+        {"key": "hear", "label": "מה אני שומעת", "private": true},
+        {"key": "feel", "label": "מה אני מרגישה ואיפה", "private": true},
+        {"key": "situation1", "label": "מצב 1", "private": true},
+        {"key": "situation2", "label": "מצב 2", "private": true},
+        {"key": "situation3", "label": "מצב 3", "private": true}
+      ],
+      "anchor": "האמונה החדשה שלי — נסחי אותה, ואני אזכיר לך אותה כל בוקר.",
+      "audio": null, "prerequisites": ["U02", "U03", "U04"], "prerequisite_mode": "any", "sos": false,
+      "system_note": "התפס של יחידה זו הוא האמונה החדשה שהלקוחה כתבה. המערכת מציגה אותו ב\"היום שלי\" כל בוקר.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U06", "slug": "critic-to-friend", "title": "מהקול המבקר לקול חבר",
+      "stage": 2, "type": "guided", "minutes": 12, "topics": ["self_image", "anxiety"], "audience": ["adult", "teen"],
+      "intro": "לרובנו יש קול פנימי שמבקר. הוא נשמע כמו אמת, אבל לרוב הוא רק הד של משהו שמישהו אמר לנו פעם. היום נלמד לשנות את הטון שלו.",
+      "steps": [
+        "כתבי משפט אחד שהקול המבקר אומר לך.",
+        "הקשיבי לו: האם הוא חזק או חלש, מהיר או איטי? מאיפה הוא מגיע?",
+        "שאלי: של מי הקול הזה במקור? ממי למדת לדבר כך לעצמך?",
+        "שאלי אותו: \"מה אתה מנסה להשיג בשבילי?\"",
+        "חשבי על אדם שתמיד רוצה בטובתך. איך נשמע הקול שלו?",
+        "אמרי לעצמך את אותו מסר, אבל בטון של האדם הזה. שימי לב מה משתנה."
+      ],
+      "fields": [
+        {"key": "critic_sentence", "label": "המשפט המבקר", "private": true},
+        {"key": "whose_voice", "label": "של מי הקול", "private": true},
+        {"key": "trying_to_achieve", "label": "מה הוא מנסה להשיג", "private": true},
+        {"key": "friend_tone", "label": "אותו מסר בקול של חבר", "private": true}
+      ],
+      "anchor": "אני בוחרת באיזה טון לדבר אל עצמי.",
+      "audio": "A04", "prerequisites": [], "sos": false,
+      "teen_variant": {"title": "הקול שאומר לך שאת/ה לא מספיק/ה"},
+      "source": "CureMindset — מפת השיטה (קטי שגב) · NLP", "status": "draft"
+    },
+    {
+      "id": "U07", "slug": "circle-of-power", "title": "מעגל העוצמה",
+      "stage": 3, "type": "anchor", "minutes": 10, "topics": ["confidence", "anxiety", "procrastination"], "audience": ["adult", "teen"],
+      "intro": "כולנו כבר היינו חזקות, רגועות ובטוחות, לפחות לרגע. הרגע הזה עדיין שמור בגוף. היום נלמד לחזור אליו בכוונה.",
+      "steps": [
+        "היזכרי ברגע שבו הרגשת בשיא: בטוחה, מוכשרת, שלמה.",
+        "דמייני עיגול על הרצפה מולך, ותני לו צבע.",
+        "הכנסי לתוך הרגע: מה ראית, מה שמעת, מה הרגשת בגוף.",
+        "כשהתחושה בשיאה, צעדי לתוך העיגול ולחצי אגודל ואצבע יחד.",
+        "צאי מהעיגול ונערי את הגוף.",
+        "חזרי על זה שלוש פעמים.",
+        "חשבי על מצב מאתגר שמחכה לך, וצעדי לעיגול כשאת חושבת עליו."
+      ],
+      "fields": [
+        {"key": "peak_moment", "label": "רגע השיא שלי", "private": true},
+        {"key": "circle_color", "label": "הצבע של המעגל", "private": true},
+        {"key": "target_situation", "label": "המצב שאני לוקחת אליו", "private": true}
+      ],
+      "anchor": "אגודל ואצבע. הכוח כבר בתוכי.",
+      "audio": "A09", "prerequisites": [], "sos": false,
+      "teen_variant": {"title": "הכפתור הסודי שלך"},
+      "source": "CureMindset — מפת השיטה (קטי שגב) · NLP Anchor", "status": "draft"
+    },
+    {
+      "id": "U08", "slug": "decide-and-act", "title": "להחליט ולפעול",
+      "stage": 3, "type": "writing", "minutes": 10, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "שינוי קורה ברגע של החלטה אמיתית, כזו שאחריה באה פעולה. בלי פעולה, החלטה היא רק משאלה.",
+      "steps": [
+        "כתבי שתי החלטות שקיבלת בעבר ושינו את החיים שלך.",
+        "מה היה משותף לשתיהן? מה גרם לך באמת להחליט?",
+        "עכשיו כתבי החלטה אחת לגבי השינוי שאת רוצה.",
+        "כתבי שתי פעולות שתעשי בעקבותיה, אחת מהן היום.",
+        "קבעי מתי בדיוק תעשי כל אחת."
+      ],
+      "fields": [
+        {"key": "past_decision1", "label": "החלטה מהעבר 1", "private": true},
+        {"key": "past_decision2", "label": "החלטה מהעבר 2", "private": true},
+        {"key": "common", "label": "מה משותף", "private": true},
+        {"key": "my_decision", "label": "ההחלטה שלי עכשיו", "private": true},
+        {"key": "action_today", "label": "פעולה להיום (+שעה)", "private": true},
+        {"key": "action_week", "label": "פעולה לשבוע (+יום)", "private": true}
+      ],
+      "anchor": "החלטתי. ועשיתי צעד אחד.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "teen_variant": {"title": "צעד אחד השבוע"},
+      "system_note": "פעולה להיום (action_today) נוספת למשימות היומיות (daily_tasks) הקיימות.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U09", "slug": "three-conditions", "title": "שלושת תנאי השינוי",
+      "stage": 4, "type": "self-check", "minutes": 8, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "כדי ששינוי יקרה, צריך להאמין בשלושה דברים. כשאחד מהם חסר, נתקעים. הבדיקה הזו מראה איפה.",
+      "steps": [
+        "אני מאמינה שהמטרה שלי אפשרית. (כשזה נמוך: ייאוש)",
+        "אני מאמינה שיש בי את מה שצריך כדי להגיע אליה. (כשזה נמוך: חוסר אונים)",
+        "אני מאמינה שהפעולות שלי באמת יובילו לתוצאה. (כשזה נמוך: אין פעולה)"
+      ],
+      "fields": [
+        {"key": "c1", "label": "המטרה אפשרית (1-10)", "private": false, "track": true},
+        {"key": "c2", "label": "יש בי מה שצריך (1-10)", "private": false, "track": true},
+        {"key": "c3", "label": "הפעולות יובילו לתוצאה (1-10)", "private": false, "track": true}
+      ],
+      "anchor": "אני יודעת איפה אני תקועה, ולכן אני יודעת מה לעשות.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "משוב לפי הציון הנמוך ביותר: c1 נמוך → 'המטרה אולי גדולה מדי כרגע. בואי נפרק אותה לצעד שמרגיש אפשרי.' מציע U08. c2 נמוך → 'בואי ניזכר מתי כבר עשית משהו קשה.' מציע U03 ו-U07. c3 נמוך → 'בואי נבחר פעולה אחת קטנה ונראה מה היא עושה.' מציע U08.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U10", "slug": "what-stops-me", "title": "מה עוצר אותי",
+      "stage": 4, "type": "self-check", "minutes": 8, "topics": ["procrastination", "all"], "audience": ["adult", "teen"],
+      "intro": "כשמשהו לא זז, זה לרוב אחד משלושה דברים. אין כאן אשמה, רק מידע.",
+      "steps": [
+        "אני באמת רוצה את השינוי הזה, בכל הלב? (אם לא: חלק בי עוד לא מוכן)",
+        "אני יודעת מה הצעד הבא? (אם לא: חסרה דרך ברורה)",
+        "אני נותנת לעצמי מספיק זמן לראות תוצאות? (אם לא: אני מוותרת מוקדם מדי)"
+      ],
+      "fields": [
+        {"key": "q1", "label": "רוצה את השינוי בכל הלב", "private": false, "options": ["כן", "לא בטוחה", "לא"]},
+        {"key": "q2", "label": "יודעת מה הצעד הבא", "private": false, "options": ["כן", "לא בטוחה", "לא"]},
+        {"key": "q3", "label": "נותנת לעצמי מספיק זמן", "private": false, "options": ["כן", "לא בטוחה", "לא"]}
+      ],
+      "anchor": "אני לא עצלנית. יש משהו שעוצר אותי, ועכשיו אני יודעת מה.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "משוב: q1 לא → 'איזה חלק בך חושש מהשינוי? מה הוא מפחד לאבד?' מציע U02. q2 לא → 'בואי נגדיר צעד אחד, ברור וקטן.' מציע U08. q3 לא → 'שינוי בתת המודע לוקח כמה שבועות. תני לעצמך 21 יום לפני שאת שופטת.' מציע U17.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U11", "slug": "calming-breath", "title": "נשימה שמורידה את הדופק",
+      "stage": 1, "type": "practice", "minutes": 5, "topics": ["anxiety", "regulation"], "audience": ["adult", "teen"],
+      "intro": "כשהגוף בהצפה, אי אפשר לחשוב. קודם מרגיעים את הגוף, ואחר כך הראש מצטרף.",
+      "steps": [
+        "שבי או עמדי יציב, כפות רגליים על הרצפה.",
+        "שאיפה דרך האף, בספירה של 4.",
+        "החזקה, בספירה של 4.",
+        "נשיפה ארוכה דרך הפה, בספירה של 6.",
+        "חזרי על זה שש פעמים.",
+        "בסוף: מ-1 עד 10, כמה מתח יש בגוף עכשיו?"
+      ],
+      "fields": [
+        {"key": "tension_before", "label": "מתח לפני (1-10)", "private": false, "track": true},
+        {"key": "tension_after", "label": "מתח אחרי (1-10)", "private": false, "track": true}
+      ],
+      "anchor": "נשיפה ארוכה אומרת לגוף: אני בטוחה.",
+      "audio": "A08", "prerequisites": [], "sos": true,
+      "system_note": "כלי SOS זמין תמיד בכפתור בולט, גם בלי תהליך פעיל. שמור ציון לפני ואחרי.",
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U12", "slug": "inner-alarm", "title": "האזעקה שבתוכי",
+      "stage": 1, "type": "explainer+writing", "minutes": 10, "topics": ["anxiety"], "audience": ["adult", "teen"],
+      "intro": "חרדה היא מערכת אזעקה שעובדת טוב מדי. היא לא מקולקלת. היא פשוט רגישה מדי, ומצלצלת גם כשאין שריפה.",
+      "steps": [
+        "קראי את ההסבר הקצר על מודל האזעקה (עד 5 משפטים, נכתב מחדש מהקובץ הקיים).",
+        "כתבי: מה מפעיל אצלך את האזעקה? מצבים, אנשים, מחשבות.",
+        "איך את יודעת שהיא הופעלה? מה קורה בגוף?",
+        "מה היא מנסה להגן עלייך ממנו?",
+        "בפעם הבאה שהיא מצלצלת, אמרי לה: \"תודה, שמעתי. אני בודקת אם יש שריפה.\""
+      ],
+      "fields": [
+        {"key": "triggers", "label": "מה מפעיל", "private": true},
+        {"key": "body_signs", "label": "סימנים בגוף", "private": true},
+        {"key": "protects_from", "label": "ממה היא מגינה", "private": true}
+      ],
+      "anchor": "זו אזעקה, לא שריפה.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "source_file": "server/knowledge_base/14-alarm-model-day1.md",
+      "teen_variant": {"title": "למה הלב דופק לפני מבחן"},
+      "source": "CureMindset — מודל האזעקה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U13", "slug": "swish", "title": "סוויש: מחליפים תמונה",
+      "stage": 3, "type": "visualization", "minutes": 10, "topics": ["habits", "self_image", "anxiety"], "audience": ["adult", "teen"],
+      "intro": "המוח עובד בתמונות. כשהתמונה הישנה עולה, היא מושכת איתה את התחושה הישנה. היום נלמד את המוח לקפוץ ישר לתמונה החדשה.",
+      "steps": [
+        "דמייני את הרגע שלפני הדפוס הישן. מה את רואה רגע לפני?",
+        "עכשיו דמייני את עצמך כמו שאת רוצה להיות (מ-U05). שימי את התמונה הזו קטנה וחשוכה בפינה.",
+        "בבת אחת, תני לתמונה הישנה להתכווץ ולהתרחק, ולחדשה לגדול, להתבהר ולהתקרב.",
+        "פקחי עיניים, או הסתכלי על משהו אחר לרגע.",
+        "חזרי על זה חמש פעמים, כל פעם מהר יותר.",
+        "עכשיו חשבי על הרגע הישן. מה עולה?"
+      ],
+      "fields": [
+        {"key": "old_image", "label": "התמונה הישנה", "private": true},
+        {"key": "new_image", "label": "התמונה החדשה", "private": true}
+      ],
+      "anchor": "המוח שלי לומד מסלול חדש.",
+      "audio": "A13", "prerequisites": ["U05"], "sos": false,
+      "source": "CureMindset — מפת השיטה (קטי שגב) · NLP Swish", "status": "draft"
+    },
+    {
+      "id": "U14", "slug": "free-writing", "title": "כתיבה משחררת",
+      "stage": 2, "type": "writing", "minutes": 15, "topics": ["anxiety", "emotional_release"], "audience": ["adult", "teen"],
+      "intro": "מה שנשאר בפנים גדל. מה שיוצא לדף מתחיל להשתחרר. אף אחד לא יקרא את זה, רק את.",
+      "steps": [
+        "הקשיבי להקלטה של יום 2.",
+        "כתבי 10 דקות ברצף, בלי לעצור ובלי לתקן, על מה שמכביד עלייך.",
+        "בסוף, כתבי משפט אחד: \"מה שאני כבר לא צריכה לסחוב זה…\"",
+        "נשמי עמוק שלוש פעמים."
+      ],
+      "fields": [
+        {"key": "free_text", "label": "טקסט חופשי (פרטי, לא מוצג לקטי)", "private": true, "hidden_from_chat": true},
+        {"key": "summary_line", "label": "המשפט המסכם", "private": true}
+      ],
+      "anchor": "הוצאתי את זה. זה כבר לא רק בתוכי.",
+      "audio": "A02", "prerequisites": [], "sos": false,
+      "system_note": "הטקסט החופשי נשמר ביומן הפרטי. הצ'אט לא קורא אותו בלי הסכמה.",
+      "teen_variant": {"minutes": 5},
+      "source": "CureMindset — מפת השיטה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U15", "slug": "view-from-outside", "title": "להסתכל מהצד",
+      "stage": 2, "type": "visualization", "minutes": 10, "topics": ["anxiety", "regulation", "relationships"], "audience": ["adult", "teen"],
+      "intro": "כשאנחנו בתוך הסיטואציה, הכול גדול וקרוב. כשאנחנו מסתכלות מהצד, יש מקום לנשום ולראות את התמונה המלאה.",
+      "steps": [
+        "בחרי מצב שמעורר בך רגש חזק.",
+        "דמייני שאת יושבת באולם קולנוע, והמצב מוקרן על המסך.",
+        "הרחיקי את המסך, ועשי את התמונה שחור-לבן.",
+        "שימי לב לאישה על המסך. מה היית אומרת לה?",
+        "חזרי לעצמך. מה השתנה בתחושה, מ-1 עד 10?"
+      ],
+      "fields": [
+        {"key": "situation", "label": "המצב", "private": true},
+        {"key": "what_i_would_say", "label": "מה הייתי אומרת לה", "private": true},
+        {"key": "intensity_before", "label": "עוצמה לפני (1-10)", "private": false, "track": true},
+        {"key": "intensity_after", "label": "עוצמה אחרי (1-10)", "private": false, "track": true}
+      ],
+      "anchor": "אני יכולה לצאת רגע החוצה ולראות.",
+      "audio": "A06", "prerequisites": [], "sos": false,
+      "source": "CureMindset — מפת השיטה (קטי שגב) · NLP Dissociation", "status": "draft"
+    },
+    {
+      "id": "U16", "slug": "wheel-of-life", "title": "גלגל החיים",
+      "stage": 1, "type": "self-check", "minutes": 10, "topics": ["all", "coaching"], "audience": ["adult", "teen"],
+      "intro": "לפעמים תחום אחד בחיים מושך את כל השאר. הגלגל עוזר לראות איפה את עכשיו ומה הכי חשוב לחזק.",
+      "steps": [
+        "דרגי כל תחום מ-1 עד 10: בריאות · משפחה · זוגיות · חברים · עבודה/לימודים · כסף · צמיחה אישית · פנאי.",
+        "המערכת מציגה את הגלגל כתרשים.",
+        "איזה תחום, אם יעלה בנקודה אחת, ישפיע על כל השאר?",
+        "מה הצעד הראשון בתחום הזה?"
+      ],
+      "fields": [
+        {"key": "health", "label": "בריאות (1-10)", "private": false, "track": true},
+        {"key": "family", "label": "משפחה (1-10)", "private": false, "track": true},
+        {"key": "relationship", "label": "זוגיות (1-10)", "private": false, "track": true},
+        {"key": "friends", "label": "חברים (1-10)", "private": false, "track": true},
+        {"key": "work_study", "label": "עבודה/לימודים (1-10)", "private": false, "track": true},
+        {"key": "money", "label": "כסף (1-10)", "private": false, "track": true},
+        {"key": "growth", "label": "צמיחה אישית (1-10)", "private": false, "track": true},
+        {"key": "leisure", "label": "פנאי (1-10)", "private": false, "track": true},
+        {"key": "focus_area", "label": "התחום שאזיז", "private": true},
+        {"key": "first_step", "label": "הצעד הראשון", "private": true}
+      ],
+      "anchor": "נקודה אחת בתחום הנכון מזיזה את כל הגלגל.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "תרשים רדאר עם 8 צירים. שמור היסטוריה להשוואה.",
+      "source": "CureMindset — כלי אימון (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U17", "slug": "daily-routine", "title": "הנוהל היומי",
+      "stage": 4, "type": "routine", "minutes": 12, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "הנוהל הוא ההבדל בין חוויה נעימה לשינוי שנשאר. עשר דקות ביום, שישה ימים מתוך שבעה, וזה עובד.",
+      "steps": [
+        "בוקר: מעגל העוצמה (U07) — צעד אחד לתוך העיגול. לפני יום מאתגר, זה חובה.",
+        "בוקר: האמונה החדשה (U05) — להגיד אותה בקול פעם אחת.",
+        "בוקר: פעולה אחת קטנה להיום — לכתוב אותה.",
+        "במהלך היום: כשעולה קול מבקר — לעצור, לזהות \"זו האמונה הישנה\", ולשאול \"מאיפה אני יודעת שזה נכון?\"",
+        "במהלך היום: כשעולה חרדה — נשימה (U11).",
+        "ערב: הקלטה של קטי לפני השינה.",
+        "ערב: שורה אחת ביומן — מה עשיתי היום ששירת את השינוי?"
+      ],
+      "fields": [
+        {"key": "morning_circle", "label": "מעגל העוצמה", "private": false, "type": "checkbox"},
+        {"key": "morning_belief", "label": "אמרתי את האמונה החדשה", "private": false, "type": "checkbox"},
+        {"key": "morning_action", "label": "פעולה קטנה להיום", "private": true},
+        {"key": "day_critic", "label": "עצרתי קול מבקר", "private": false, "type": "checkbox"},
+        {"key": "day_breath", "label": "נשימה בחרדה", "private": false, "type": "checkbox"},
+        {"key": "evening_audio", "label": "הקלטה לפני שינה", "private": false, "type": "checkbox"},
+        {"key": "evening_journal", "label": "שורה ביומן", "private": true}
+      ],
+      "anchor": "שישה מתוך שבעה זו הצלחה.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "מסך צ'ק-ליסט יומי עם 7 פריטים. מעקב שבועי: 6/7 ימים = הצלחה, עם חגיגה עדינה. זה מחליף את הצ'ק-אין הנוכחי או משתלב בו.",
+      "source": "נוהל יומי להטמעה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U18", "slug": "quick-return", "title": "חזרה מהירה אחרי נסיגה",
+      "stage": 5, "type": "protocol", "minutes": 10, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "נסיגה היא לא כישלון. היא דפוס ישן שמנסה לחזור פעם אחרונה. מה שקובע הוא מה שעושים ב-48 השעות שאחריה.",
+      "steps": [
+        "לא להילחם. לשאול: \"מה האמונה הישנה מנסה לשמור עליי עכשיו?\"",
+        "לקרוא שוב רגע אחד מ-U03, או לכתוב רגע חדש.",
+        "מעגל העוצמה ופעולה אחת קטנה, עכשיו ולא מחר.",
+        "הקלטה אחת הערב.",
+        "אם אחרי 5 ימים עוד קשה: לקבוע שיחה עם קטי."
+      ],
+      "fields": [
+        {"key": "old_belief_protecting", "label": "מה האמונה הישנה מנסה לשמור", "private": true},
+        {"key": "small_action", "label": "פעולה קטנה עכשיו", "private": true}
+      ],
+      "signs": [
+        "הקול הישן חוזר: \"אני כזאת\", \"זה לא בשבילי\", \"כבר ניסיתי\".",
+        "דילגת על הנוהל שלושה ימים ברצף.",
+        "את נמנעת מהפעולה שהתחייבת אליה.",
+        "תחושה של \"אין טעם\"."
+      ],
+      "anchor": "נפלתי צעד. אני יודעת את הדרך חזרה.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "המערכת מציעה את U18 אוטומטית כשהלקוחה מדלגת על הנוהל 3 ימים ברצף, או כשהצ'אט מזהה אחד מהסימנים. שלב 5 שולח לקטי התראה 'כדאי ליצור קשר'.",
+      "source": "תוכנית מניעת נסיגה (קטי שגב)", "status": "draft"
+    },
+    {
+      "id": "U19", "slug": "measurement", "title": "מדידה: קדם, אמצע וסוף",
+      "stage": 1, "stages": [1, 4, 5], "type": "assessment", "minutes": 7, "topics": ["all"], "audience": ["adult", "teen"],
+      "intro": "אנחנו מודדים כי חשוב לנו לראות שינוי אמיתי, לא רק להרגיש אותו. אותן שאלות בהתחלה, באמצע ובסוף.",
+      "fields": [
+        {"key": "s_anxiety", "label": "כמה חרדה או לחץ ביום-יום (1-10)", "private": false, "track": true},
+        {"key": "s_pain", "label": "כמה כאב או תסמין גופני (1-10, אופציונלי)", "private": false, "track": true, "optional": true},
+        {"key": "s_confidence", "label": "כמה ביטחון עצמי (1-10)", "private": false, "track": true},
+        {"key": "s_self_worth", "label": "כמה את מעריכה את עצמך (1-10)", "private": false, "track": true},
+        {"key": "s_goal_possible", "label": "המטרה שלי אפשרית (1-10)", "private": false, "track": true},
+        {"key": "s_have_what_needed", "label": "יש בי את מה שצריך (1-10)", "private": false, "track": true},
+        {"key": "s_actions_work", "label": "הפעולות שלי יביאו תוצאה (1-10)", "private": false, "track": true},
+        {"key": "s_time_space", "label": "כמה זמן ומקום אני נותנת לעצמי (1-10)", "private": false, "track": true},
+        {"key": "open_change_one", "label": "אם היית משנה דבר אחד (קדם בלבד)", "private": true, "pre_only": true},
+        {"key": "open_what_stopped", "label": "מה עצר אותך עד היום (קדם בלבד)", "private": true, "pre_only": true},
+        {"key": "open_success_looks", "label": "איך תדעי שהצליח (קדם בלבד)", "private": true, "pre_only": true}
+      ],
+      "anchor": "מודדים כדי לראות שינוי אמיתי, לא רק להרגיש אותו.",
+      "audio": null, "prerequisites": [], "sos": false,
+      "system_note": "מדידת קדם לפני יום 1 של כל תהליך. אמצע ביום 4 (בתהליך של 7 ימים). סוף ביום האחרון. מציגים ללקוחה גרף השוואה. בכרטיס של קטי מוצגים המספרים והמגמה.",
+      "source": "שאלון מדידה קדם, אמצע ואחרי (קטי שגב)", "status": "draft"
+    }
+  ],
+
+  "audio": [
+    {"id": "A01", "title": "פתיחה: לפתח חוסן", "drive_file_id": "1y9K_v65dmIT_l4rH3StJt47z92ruzOnO", "drive_filename": "פיתוח חוסן פתיח.m4a", "topics": ["resilience"], "stage": 1, "usage": "יום 1 ב-P1 (לאשר עם קטי)", "transcript": null, "status": "draft"},
+    {"id": "A02", "title": "יום 2: כתיבה משחררת", "drive_file_id": "1BrRfdsQOSroxgMH79lg8I4Rllg_cGM3A", "drive_filename": "היום השני כתיבה משחרר.m4a", "topics": ["resilience", "anxiety"], "stage": 2, "usage": "יום 2 ב-P1, מלווה את U14", "transcript": null, "status": "draft"},
+    {"id": "A03", "title": "יום 3: מיקוד הפוקוס", "drive_file_id": "1Zk62oKX7Z8A8R1FcYUs0NQ2QEUVXOAcB", "drive_filename": "היום השלישי מיקוד הפוקוס.m4a", "topics": ["resilience", "procrastination"], "stage": 3, "usage": "יום 3 ב-P1", "transcript": null, "status": "draft"},
+    {"id": "A04", "title": "יום 4: תרגיל המראה", "drive_file_id": "13_ea5o8l6Qu8C7ShJI9YmAGs8LaR3QEW", "drive_filename": "יום רביעי, תרגיל המראה איך אני רואה את עצמי במראה.m4a", "topics": ["self_image"], "stage": 2, "usage": "יום 4 ב-P1, ב-P3", "transcript": null, "status": "draft"},
+    {"id": "A05", "title": "יום 5: לשחרר", "drive_file_id": "1FN55iIHjJoz0vOPonKDWp6GV7vum_S0v", "drive_filename": "היום החמישי תרגול שחרור שיטת סדונה.m4a", "topics": ["emotional_release"], "stage": 2, "usage": "יום 5 ב-P1", "transcript": null, "status": "draft"},
+    {"id": "A06", "title": "יום 6: להסתכל מהצד", "drive_file_id": "1gRxdoLHyTM10iOslBxf3fbuqJUO-fgck", "drive_filename": "היום השישי כצופה מצד.m4a", "topics": ["anxiety", "regulation"], "stage": 2, "usage": "יום 6 ב-P1, מלווה את U15", "transcript": null, "status": "draft"},
+    {"id": "A07", "title": "יום 7: לעצור את הסחרור", "drive_file_id": "1KvVtM_IOeFi4zqZhW0GatOAzGE1HBYtW", "drive_filename": "היום השביעי ספין.m4a", "topics": ["anxiety", "overwhelm"], "stage": 3, "usage": "יום 7 ב-P1, כלי SOS", "transcript": null, "status": "draft"},
+    {"id": "A08", "title": "ללמוד לנשום", "drive_file_id": "19RoHyfNDf_XUfiXlrhI4c9IsurasRJ6R", "drive_filename": "ללמוד לנשום.m4a", "topics": ["regulation"], "stage": 1, "usage": "כלי SOS, מלווה את U11", "transcript": null, "status": "draft"},
+    {"id": "A09", "title": "אימון להרגשת ביטחון", "drive_file_id": "1G7eG33ku6dHqK0fW6-UJEwXEHR44MD3Y", "drive_filename": "אימון להרגשת בטחון.m4a", "topics": ["confidence"], "stage": 3, "usage": "P3", "duplicate_of": "11GSEjz_zyYtz9rqMBDpSMR3VNsXZxkZy", "note": "כפילות: 11GSEjz_zyYtz9rqMBDpSMR3VNsXZxkZy באותו גודל, לטעון פעם אחת", "transcript": null, "status": "draft"},
+    {"id": "A10", "title": "להסכים להיות אני", "drive_file_id": "1XsVYgbqOo5ou4aX3zV8L83Q2pRY49zn0", "drive_filename": "תרגיל להסכים להיות אני.m4a", "topics": ["self_image"], "stage": 3, "usage": "P3", "transcript": null, "status": "draft"},
+    {"id": "A11", "title": "הפחד כדחף, האומץ לשנות", "drive_file_id": "1AnlWavmzbihNOaBUCFqusT1n9EG42wfV", "drive_filename": "פחד הוא דחף והאומץ לשנות.m4a", "topics": ["fear", "procrastination"], "stage": 2, "usage": "P2, P4 (הקלטה ארוכה, כ-27MB)", "transcript": null, "status": "draft"},
+    {"id": "A12", "title": "שאלות שחושפות את הפחד", "drive_file_id": "160s4pTqiyNDOKgSF9IqUfZpKcvG2YFJJ", "drive_filename": "שאלות חשיפה לפחד.m4a", "topics": ["fear"], "stage": 1, "usage": "P2", "transcript": null, "status": "draft"},
+    {"id": "A13", "title": "סוויש: תמונה חדשה", "drive_file_id": "16iKemxM--UbRULEuo8Gcm06IMWU21zuu", "drive_filename": "סוויש לשנה חדשה.m4a", "topics": ["beliefs", "habits"], "stage": 3, "usage": "מלווה את U13", "transcript": null, "status": "draft"},
+    {"id": "A14", "title": "מדיטציה לשחרור כאב", "drive_file_id": "1ZeKyggdeZ_Iy_R8gnca4shCl5k0S1WST", "drive_filename": "מדיטציה שחרור כאב.m4a", "topics": ["physical_pain"], "stage": 2, "usage": "כלי משלים. לא להציע במקום פנייה לרופא", "transcript": null, "status": "draft"},
+    {"id": "A15", "title": "שחרור (הודיה)", "drive_file_id": "1ZLGi1uuCkHOJX2SfZc89f2Yali-1vlSY", "drive_filename": "שחרור הודיה.amr", "topics": [], "stage": null, "usage": "טיוטה בלבד: שם אישי בכותרת, לבדיקת קטי", "transcript": null, "status": "draft", "hold": true},
+    {"id": "A16", "title": "(ללא שם)", "drive_file_id": "1HcsgEpm55t9lraVU34NBsvKWX4yBnfsA", "drive_filename": "20251127_085802.m4a", "topics": [], "stage": null, "usage": "טיוטה בלבד: לתמלל ולשאול את קטי מה זה", "transcript": null, "status": "draft", "hold": true},
+    {"id": "A17", "title": "מדריך למשתמש למוח", "drive_file_id": "16cVq_ec06-MqiGBDWZnT597q4es1wvrg", "drive_filename": "מדריך_למשתמש_למוח….m4a (תיקיית כאב כרוני)", "topics": [], "stage": null, "usage": "לא לטעון: נראה כסיכום אוטומטי של תוכן חיצוני. לשאול את קטי", "transcript": null, "status": "excluded", "hold": true}
+  ],
+
+  "processes": [
+    {
+      "id": "P1", "slug": "resilience-7", "title": "7 ימים לחוסן",
+      "audience": ["adult"], "topics": ["resilience", "anxiety", "general"], "trial": true,
+      "entry": "ברירת מחדל כשאין התאמה ברורה אחרת",
+      "goal": "להכיר את השיטה בשבוע אחד, עם הקלטה יומית בקולה של קטי.",
+      "days": [
+        {"day": 0, "stage": 1, "audio": null, "units": ["U19"], "label": "מדידת קדם"},
+        {"day": 1, "stage": 1, "audio": "A01", "units": ["U01"], "label": "אמונה היא לא עובדה"},
+        {"day": 2, "stage": 2, "audio": "A02", "units": ["U14"], "label": "הוצאתי את זה"},
+        {"day": 3, "stage": 3, "audio": "A03", "units": ["U08"], "label": "החלטתי. ועשיתי צעד"},
+        {"day": 4, "stage": 2, "audio": "A04", "units": ["U06", "U19"], "label": "אני בוחרת את הטון (+ מדידת אמצע)"},
+        {"day": 5, "stage": 2, "audio": "A05", "units": ["U02"], "label": "היא ניסתה לשמור עליי"},
+        {"day": 6, "stage": 2, "audio": "A06", "units": ["U15"], "label": "אני יכולה לראות מהצד"},
+        {"day": 7, "stage": 3, "audio": "A07", "units": ["U07", "U17", "U19"], "label": "הכוח כבר בתוכי (+ מדידת סוף)"}
+      ],
+      "after": "הצעה להמשיך לתהליך ממוקד (P2–P5) לפי מה שעלה בשיחות.",
+      "status": "draft"
+    },
+    {
+      "id": "P2", "slug": "anxiety-7", "title": "חרדה ולחץ",
+      "audience": ["adult"], "topics": ["anxiety", "stress", "fear"], "trial": false, "site_page": "/anxiety-and-stress",
+      "sos": {"units": ["U11"], "audio": ["A07"]},
+      "days": [
+        {"day": 0, "audio": null, "units": ["U19"], "label": "מדידת קדם"},
+        {"day": 1, "audio": "A08", "units": ["U12", "U11"]},
+        {"day": 2, "audio": "A12", "units": ["U01"], "label": "מיקוד בתחומים שמעוררים חרדה"},
+        {"day": 3, "audio": "A06", "units": ["U15"]},
+        {"day": 4, "audio": "A11", "units": ["U02", "U19"], "label": "+ מדידת אמצע"},
+        {"day": 5, "audio": null, "units": ["U04"]},
+        {"day": 6, "audio": "A13", "units": ["U05", "U13"]},
+        {"day": 7, "audio": "A07", "units": ["U07", "U17", "U19"], "label": "+ מדידת סוף"}
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "P3", "slug": "confidence-7", "title": "ביטחון עצמי ודימוי עצמי",
+      "audience": ["adult"], "topics": ["confidence", "self_image", "self_worth"], "trial": false, "site_page": "/self-confidence",
+      "days": [
+        {"day": 0, "audio": null, "units": ["U19", "U16"], "label": "מדידת קדם + גלגל החיים"},
+        {"day": 1, "audio": "A04", "units": ["U01"], "label": "מיקוד ב'עצמי'"},
+        {"day": 2, "audio": null, "units": ["U06"]},
+        {"day": 3, "audio": null, "units": ["U03"]},
+        {"day": 4, "audio": "A10", "units": ["U02", "U19"], "label": "+ מדידת אמצע"},
+        {"day": 5, "audio": null, "units": ["U05"]},
+        {"day": 6, "audio": "A09", "units": ["U07"]},
+        {"day": 7, "audio": "A13", "units": ["U13", "U17", "U19"], "label": "+ מדידת סוף"}
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "P4", "slug": "procrastination-5", "title": "דחיינות ותקיעות",
+      "audience": ["adult"], "topics": ["procrastination", "motivation", "stuck"], "trial": false, "site_page": "/procrastination",
+      "days": [
+        {"day": 0, "audio": null, "units": ["U19"], "label": "מדידת קדם"},
+        {"day": 1, "audio": null, "units": ["U10"]},
+        {"day": 2, "audio": "A11", "units": ["U02"], "label": "מה הדחיינות שומרת עליי"},
+        {"day": 3, "audio": "A03", "units": ["U09", "U19"], "label": "+ מדידת אמצע"},
+        {"day": 4, "audio": null, "units": ["U08"]},
+        {"day": 5, "audio": "A09", "units": ["U07", "U17", "U19"], "label": "+ מדידת סוף"}
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "P5", "slug": "teens-7", "title": "CURE Teens: 7 ימים לחוסן לנוער",
+      "audience": ["teen"], "topics": ["teens", "anxiety", "confidence", "exams"], "trial": false, "site_page": "/cure-teens",
+      "requires": "אישור הורה",
+      "style_note": "אותו מבנה כמו P1, בשפה מותאמת: פנייה ישירה, משפטים קצרים יותר, דוגמאות מבית ספר, חברים ורשתות. אסור מתנשא או 'מתייפייף'. תרגילי כתיבה קצרים יותר (5 דק'), ואפשרות לענות בהקלטה קולית במקום בכתיבה.",
+      "days": [
+        {"day": 0, "audio": null, "units": ["U19"], "label": "מדידה מקוצרת (שאלות 1,3,4,5)"},
+        {"day": 1, "audio": "A08", "units": ["U12"], "label": "האזעקה: למה הלב דופק לפני מבחן"},
+        {"day": 2, "audio": "A02", "units": ["U14"], "label": "5 דקות"},
+        {"day": 3, "audio": "A04", "units": ["U06"], "label": "הקול שאומר לך שאת/ה לא מספיק/ה"},
+        {"day": 4, "audio": null, "units": ["U03", "U19"], "label": "מתי כן הצלחת + מדידת אמצע"},
+        {"day": 5, "audio": "A09", "units": ["U07"], "label": "הכפתור הסודי שלך"},
+        {"day": 6, "audio": "A06", "units": ["U15"]},
+        {"day": 7, "audio": "A07", "units": ["U08", "U19"], "label": "צעד אחד השבוע + מדידת סוף"}
+      ],
+      "safety_note": "בנוער, הצ'אט לא נכנס לנושאי זוגיות, מיניות או משפחה עמוקה. אם עולים סימנים לפגיעה, בדיקת הבטיחות הקיימת מפעילה הפניה מיידית ומתריעה לקטי.",
+      "status": "draft"
+    },
+    {
+      "id": "P6", "slug": "maintenance", "title": "ערכת המשך",
+      "audience": ["all"], "topics": ["maintenance"], "trial": false,
+      "unlock": "אחרי סיום כל תהליך",
+      "type": "kit",
+      "contents": [
+        "U17 הנוהל היומי (צ'ק-ליסט)",
+        "U18 חזרה מהירה",
+        "כל ההקלטות שהלקוחה שמעה בתהליך",
+        "כל התפסים שאספה, במסך אחד: 'התפסים שלי'",
+        "מדידה חוזרת (U19) כל 30 יום, עם תזכורת"
+      ],
+      "status": "draft"
+    }
+  ]
+}

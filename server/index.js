@@ -1472,6 +1472,10 @@ try {
   const { seedAudioCandidates } = require("./audioSeed");
   const a = seedAudioCandidates();
   console.log(`Audio candidates: +${a.inserted}/${a.total} pending review`);
+  // חבילת התוכן v1 (יחידות + הקלטות + תהליכים) — נטענת כ-draft לאישור קטי.
+  const { seedContentPack } = require("./contentPack");
+  const cp = seedContentPack();
+  console.log(`Content pack v${cp.version}: +${cp.units} units, +${cp.audio} audio, +${cp.processes} processes (draft)`);
 } catch (e) {
   console.error("content seed failed:", e.message);
 }
