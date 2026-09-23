@@ -707,18 +707,32 @@
       );
     }
 
-    // ── מסך הזנת קוד (כשלוחצים "יש לי קוד" — לא חסימה) ──
+    // ── מסך שדרוג/הזנת קוד (כשלוחצים "יש לי קוד" או "להמשיך בתשלום" מתוך שער נעול — לא חסימה) ──
     return (
-      <div className="absolute inset-0 z-50 bg-white flex flex-col items-center justify-center gap-5 px-7 text-center" dir="rtl">
-        <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center">
-          <Icon name="shield-check" size={26} className="text-gold-600" />
+      <div className="absolute inset-0 z-50 overflow-y-auto bg-white" dir="rtl">
+        <div className="min-h-full flex flex-col items-center justify-center gap-5 px-7 py-10 text-center max-w-[440px] mx-auto w-full">
+          <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center">
+            <Icon name="shield-check" size={26} className="text-gold-600" />
+          </div>
+          <div>
+            <p className="font-heading font-bold text-[18px] text-ink-800">שדרוג למסלול המלא</p>
+            <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">שערים 2-4 פתוחים במנוי החודשי — כל 14 המודולים, התרגילים והמלווה הדיגיטלי, זמין 24/7.</p>
+          </div>
+          <a href={PAY_LINK} target="_blank" rel="noopener noreferrer"
+            className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
+            להמשיך בתשלום →
+          </a>
+          <p className="text-[12.5px] text-ink-500 -mt-2">מנוי חודשי · ₪297 בחיוב חודשי · ניתן לבטל בכל עת</p>
+          {showCode? (
+            <div className="w-full pt-2 border-t border-ink-100">
+              <p className="text-[12.5px] text-ink-500 mb-2 mt-4">קיבלת קוד אישי מקטי? הקלידי אותו כאן:</p>
+              {CodeBox}
+            </div>
+          ): (
+            <button type="button" onClick={() => setShowCode(true)} className="text-[13px] text-gold-700 underline font-semibold">כבר יש לך קוד גישה?</button>
+          )}
+          <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline">סגירה</button>
         </div>
-        <div>
-          <p className="font-heading font-bold text-[18px] text-ink-800">הפעלת קוד אישי</p>
-          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">קיבלת קוד אישי מקטי? הקלידי אותו כאן והגישה שלך תיפתח.</p>
-        </div>
-        {CodeBox}
-        <button type="button" onClick={onClose} className="text-[13px] text-ink-400 underline">סגירה</button>
       </div>
     );
   }
@@ -2731,6 +2745,7 @@
     {
       gate: "שער 1 · ימים 1–3",
       title: "חוסן רגשי ועוגן",
+      paidRequired: false,
       days: [
         { day: 1, title: "מד העומס הפנימי", focus: "לזהות איפה בגוף יושב הלחץ ומה עוצמתו.", practice: "שלוש נשימות עמוקות + יד על הלב — בוקר וערב." },
         { day: 2, title: "העוגן האישי שלך", focus: "לבחור מילה או תחושה שמחזירה רוגע ברגע קשה.", practice: "להפעיל את העוגן פעם אחת ביום קושי." },
@@ -2740,6 +2755,7 @@
     {
       gate: "שער 2 · ימים 4–7",
       title: "דימוי עצמי",
+      paidRequired: true,
       days: [
         { day: 4, title: "זיהוי האמונה המגבילה", focus: "לתפוס את המשפט הביקורתי שחוזר על עצמו.", practice: "לכתוב משפט אחד של ביקורת עצמית שעלה היום." },
         { day: 5, title: "מאיפה זה הגיע?", focus: "לחקור בעדינות מתי נולדה האמונה הזו.", practice: "לשאול את עצמך: מתי למדתי לחשוב ככה?" },
@@ -2750,6 +2766,7 @@
     {
       gate: "שער 3 · ימים 8–11",
       title: "שחרור חסמים וחמלה",
+      paidRequired: true,
       days: [
         { day: 8, title: "הפרדה מהדפוס", focus: "לראות את הקושי מבחוץ, כמו צופה בסרט.", practice: "לתאר את הקושי בגוף שלישי, במשפט אחד." },
         { day: 9, title: "חמלה עצמית", focus: "לדבר לעצמך כמו לחבר טוב, לא כמו שופט.", practice: "משפט חמלה אחד לעצמך היום." },
@@ -2760,6 +2777,7 @@
     {
       gate: "שער 4 · ימים 12–14",
       title: "עוגני עוצמה לחיים",
+      paidRequired: true,
       days: [
         { day: 12, title: "עוגן ניצחונות", focus: "לעגן בגוף זיכרון של הצלחה אמיתית.", practice: "להיזכר בהצלחה + מגע יד, ולהחזיק 30 שניות." },
         { day: 13, title: "חזון קדימה", focus: "לדמיין את הגרסה החזקה והשלווה שלך.", practice: "לכתוב משפט חזון אחד בהווה: \"אני...\"." },
@@ -3306,7 +3324,7 @@
     );
   }
 
-  function ProgramStage({ onNavigateStage }) {
+  function ProgramStage({ onNavigateStage, paid, onUpgrade }) {
     const [done, setDone] = useState(loadProgramDone);
     const [currentDay, setCurrentDay] = useState(1); // היום שנפתח לפי ימים מההרשמה
     const total = 14;
@@ -3350,7 +3368,7 @@
         <div>
           <p className="font-heading font-semibold text-[12px] tracking-[0.18em] text-gold-600 mb-1">CURE MINDSET</p>
           <h2 className="font-heading font-bold text-[22px] text-ink-800">התוכנית שלך · תהליך 14 יום</h2>
-          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">כל יום נפתח מודול חדש. תרגול קצר ושיחת AI ממוקדת — בקצב שלך.</p>
+          <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">3 הימים הראשונים (שער 1) פתוחים בהתנסות החינמית. מיום 4 ממשיכים במסלול המלא בתשלום — כל יום מודול חדש, תרגול קצר ושיחת AI ממוקדת.</p>
           <div className="mt-4">
             <div className="flex items-center justify-between text-[12px] text-ink-500 mb-1.5">
               <span>{completed} מתוך {total} ימים הושלמו</span>
@@ -3367,12 +3385,34 @@
             <div className="flex items-baseline gap-2 mb-3">
               <span className="font-heading font-semibold text-[12px] text-gold-600">{g.gate}</span>
               <span className="font-heading font-bold text-[15px] text-ink-800">· {g.title}</span>
+              <span className={`text-[10.5px] font-heading font-bold px-2 py-0.5 rounded-full ${g.paidRequired? "bg-ink-100 text-ink-500": "bg-gold-50 text-gold-700"}`}>
+                {g.paidRequired? "בתשלום": "חינם"}
+              </span>
             </div>
             <div className="space-y-3">
               {g.days.map((d) => {
                 const isDone = done.includes(d.day);
-                const locked = d.day > currentDay;
-                const isToday = d.day === currentDay;
+                const paywalled = g.paidRequired &&!paid;
+                const locked = d.day > currentDay || paywalled;
+                const isToday = d.day === currentDay &&!paywalled;
+                if (paywalled) {
+                  return (
+                    <button
+                      key={d.day}
+                      type="button"
+                      onClick={onUpgrade}
+                      className="w-full text-right rounded-2xl border border-gold-200 bg-gold-50/50 px-4 py-3.5 hover:border-gold-300 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="shrink-0 w-9 h-9 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center"><Icon name="lock" size={16} /></span>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-heading font-bold text-[14px] text-ink-700">יום {d.day} · {d.title}</p>
+                          <p className="text-[12px] text-gold-700 mt-0.5 font-semibold">בתשלום · להמשיך את התוכנית המלאה ←</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                }
                 if (locked) {
                   return (
                     <div key={d.day} className="rounded-2xl border border-ink-100 bg-ink-50/60 px-4 py-3.5 opacity-90">
@@ -3668,7 +3708,7 @@
           </div>
         ): current === 8? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
-            <ProgramStage onNavigateStage={navigateToStage} />
+            <ProgramStage onNavigateStage={navigateToStage} paid={paid} onUpgrade={() => setShowCodeEntry(true)} />
           </div>
         ): current === 9? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
