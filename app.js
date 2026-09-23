@@ -1524,11 +1524,11 @@ function HbHero() {
         </Reveal>
 
         <Reveal className="hb-hero__text">
-          <div className="hb-hero__eyebrow">שיטה שפיתחה קטי שגב</div>
-          <h1 className="hb-hero__title">חוסן רגשי מהשורש — שיטת CureMindset של קטי שגב.</h1>
-          <p className="hb-hero__sub">רוב האנשים מנסים להילחם בחרדה בתוך עצמם — ולכן מפסידים. שיטת CureMindset עושה את זה אחרת: פרוטוקול CURE שעובד עם התת-מודע, מגיע לשורש הבעיה ובונה חוסן רגשי ושליטה ברגשות — שינוי שנשאר לאורך זמן. לנוער ולמבוגרים.</p>
+          <div className="hb-hero__eyebrow">שיטת CureMindset · קטי שגב</div>
+          <h1 className="hb-hero__title">שינוי דפוסים. חיזוק החוסן. יותר בחירה בדרך שבה מגיבים.</h1>
+          <p className="hb-hero__sub">תהליך אישי ומובנה לליווי רגשי ולשינוי דפוסים שמנהלים את היום-יום. מתחילים במיפוי של המצב והמטרה, מזהים את הדפוס המרכזי, מתרגלים אפשרויות חדשות וממשיכים עם כלים שאפשר להשתמש בהם גם מחוץ למפגש. לנוער מגיל 13 ומעלה ולמבוגרים.</p>
           <div className="hb-hero__cta">
-            <a href="#lead" className="hb-hero__btn">לשיחת היכרות בלי התחייבות</a>
+            <a href="#lead" className="hb-hero__btn">בדיקת התאמה לתהליך</a>
             <a href="/method" className="hb-hero__link">מה זו השיטה? <span aria-hidden="true">→</span></a>
           </div>
         </Reveal>
