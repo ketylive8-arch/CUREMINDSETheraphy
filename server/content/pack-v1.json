@@ -284,7 +284,7 @@
     {
       "id": "U12", "slug": "inner-alarm", "title": "האזעקה שבתוכי",
       "stage": 1, "type": "explainer+writing", "minutes": 10, "topics": ["anxiety"], "audience": ["adult", "teen"],
-      "intro": "חרדה היא מערכת אזעקה שעובדת טוב מדי. היא לא מקולקלת. היא פשוט רגישה מדי, ומצלצלת גם כשאין שריפה.",
+      "intro": "חרדה היא מערכת אזעקה שעובדת טוב מדי. היא לא טעות. היא פשוט רגישה מדי, ומצלצלת גם כשאין שריפה.",
       "steps": [
         "קראי את ההסבר הקצר על מודל האזעקה (עד 5 משפטים, נכתב מחדש מהקובץ הקיים).",
         "כתבי: מה מפעיל אצלך את האזעקה? מצבים, אנשים, מחשבות.",
@@ -539,7 +539,7 @@
       "status": "draft"
     },
     {
-      "id": "P4", "slug": "procrastination-5", "title": "דחיינות ותקיעות",
+      "id": "P4", "slug": "procrastination-5", "title": "דחיינות ועמידה במקום",
       "audience": ["adult"], "topics": ["procrastination", "motivation", "stuck"], "trial": false, "site_page": "/procrastination",
       "days": [
         {"day": 0, "audio": null, "units": ["U19"], "label": "מדידת קדם"},

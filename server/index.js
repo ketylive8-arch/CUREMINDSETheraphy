@@ -1164,7 +1164,7 @@ const DEFAULT_TOOLS = [
   { id: "tool-box-breath", title: "נשימת קופסה", type: "exercise", url: null, notes: "שאיפה 4 שניות · החזקה 4 · נשיפה 4 · החזקה 4. חוזרים 3 פעמים. מרגיע את מערכת העצבים תוך פחות מדקה." },
   { id: "tool-sos-anchor", title: "עוגן SOS", type: "exercise", url: null, notes: "יד על הלב, נשימה עמוקה, ואומרים בשקט: \"אני כאן, אני בטוח/ה\". עוגן מהיר לרגעי הצפה." },
   { id: "tool-air-journal", title: "יומן רגעי אוויר", type: "exercise", url: null, notes: "כותבים בחופשיות 3 דקות — בלי לתקן, בלי לשפוט. פורק את העומס ומפנה מקום." },
-  { id: "tool-micro-step", title: "מיקרו-צעד", type: "exercise", url: null, notes: "בוחרים פעולה אחת קטנה שאפשר לעשות ב-2 דקות ומבצעים אותה עכשיו. תנועה קטנה שוברת תקיעות." },
+  { id: "tool-micro-step", title: "מיקרו-צעד", type: "exercise", url: null, notes: "בוחרים פעולה אחת קטנה שאפשר לעשות ב-2 דקות ומבצעים אותה עכשיו. תנועה קטנה מזיזה אותך ממקום של עמידה." },
   { id: "tool-home-anchor", title: "עוגן הבית (אודיו מודרך)", type: "audio", url: null, notes: "תרגול מונחה לבניית מרחב פנימי בטוח. האודיו יתווסף בקרוב." },
   { id: "tool-future-pacing", title: "Future Pacing (אודיו מודרך)", type: "audio", url: null, notes: "דמיון מודרך לתסריט עתידי מיטיב. האודיו יתווסף בקרוב." },
 ];
