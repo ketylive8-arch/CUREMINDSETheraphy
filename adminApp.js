@@ -350,6 +350,167 @@
     );
   }
 
+  /* ---------------------------------------------------------------- */
+  /* קטלוג תוכן — חבילת התוכן v1 (יחידות/אודיו/תהליכים) לאישור קטי.    */
+  /* מיפוי: כל תהליך (P1-P6) → ימים → יחידות + אודיו. שום דבר לא מוצג  */
+  /* ללקוחות עד שהסטטוס כאן הופך ל-"approved".                        */
+  /* ---------------------------------------------------------------- */
+
+  const STATUS_LABEL = { draft: "טיוטה", approved: "מאושר", archived: "בארכיון", excluded: "לא בשימוש" };
+  const STATUS_COLOR = { draft: "#9B958F", approved: "#4b8f5c", archived: "#b5432e", excluded: "#b5432e" };
+
+  function StatusPill({ status }) {
+    return (
+      <span className="text-[10.5px] font-heading font-bold px-2 py-0.5 rounded-full text-white" style={{ background: STATUS_COLOR[status] || "#9B958F" }}>
+        {STATUS_LABEL[status] || status}
+      </span>
+    );
+  }
+
+  function ContentCatalogPanel({ authHeader }) {
+    const [data, setData] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [busy, setBusy] = useState(null);
+
+    function load() {
+      fetch("/api/admin/content-pack", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then(setData)
+        .catch(() => {});
+    }
+    useEffect(load, []);
+
+    function setStatus(kind, id, status) {
+      setBusy(kind + id);
+      fetch(`/api/admin/content-pack/${kind}/${id}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: authHeader },
+        body: JSON.stringify({ status }),
+      })
+        .then(() => load())
+        .finally(() => setBusy(null));
+    }
+
+    function approveProcess(p) {
+      // מאשר את התהליך עצמו, ואת כל היחידות/ההקלטות שהוא משתמש בהן בימים שלו.
+      const unitIds = new Set();
+      const audioIds = new Set();
+      (p.days || []).forEach((d) => {
+        (d.units || []).forEach((u) => unitIds.add(u));
+        if (d.audio) audioIds.add(d.audio);
+      });
+      setBusy("proc" + p.id);
+      const calls = [
+        fetch(`/api/admin/content-pack/process/${p.id}/status`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: authHeader }, body: JSON.stringify({ status: "approved" }) }),
+        ...[...unitIds].map((id) => fetch(`/api/admin/content-pack/unit/${id}/status`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: authHeader }, body: JSON.stringify({ status: "approved" }) })),
+        ...[...audioIds].map((id) => fetch(`/api/admin/content-pack/audio/${id}/status`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: authHeader }, body: JSON.stringify({ status: "approved" }) })),
+      ];
+      Promise.all(calls).then(load).finally(() => setBusy(null));
+    }
+
+    const unitById = {}, audioById = {};
+    (data?.units || []).forEach((u) => { unitById[u.id] = u; });
+    (data?.audio || []).forEach((a) => { audioById[a.id] = a; });
+
+    const approvedUnits = (data?.units || []).filter((u) => u.status === "approved").length;
+    const approvedAudio = (data?.audio || []).filter((a) => a.status === "approved").length;
+
+    return (
+      <section className="bg-white rounded-2xl border border-ink-100 p-5">
+        <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Icon name="book-open" size={17} className="text-gold-600" />
+            <h2 className="font-heading font-bold text-[16px] text-ink-800">
+              קטלוג תוכן · חבילה v1
+              {data && (
+                <span className="mr-2 px-2 py-0.5 rounded-full bg-gold-50 border border-gold-200 text-gold-700 text-[12px] font-semibold">
+                  {approvedUnits}/{data.units.length} יחידות · {approvedAudio}/{data.audio.length} הקלטות מאושרות
+                </span>
+              )}
+            </h2>
+          </div>
+          <Icon name={open ? "chevron-up" : "chevron-down"} size={17} className="text-ink-400" />
+        </button>
+
+        {open && !data && <p className="mt-4 text-[13px] text-ink-400">טוענת...</p>}
+
+        {open && data && (
+          <div className="mt-4 space-y-5">
+            <p className="text-[12.5px] text-ink-500 leading-relaxed">
+              כלום מכאן לא נראה ללקוחות עד שמאשרים אותו. כל תהליך (P1-P6) בנוי מ-7-8 ימים, וכל יום מפנה ליחידה
+              אחת או יותר ולפעמים הקלטת אודיו. "אשר תהליך שלם" מאשר בבת אחת את כל היחידות וההקלטות שהתהליך צריך.
+            </p>
+
+            {(data.processes || []).map((p) => (
+              <div key={p.id} className="rounded-xl border border-ink-100 overflow-hidden">
+                <div className="flex items-center justify-between gap-2 px-4 py-3 bg-ink-50/60">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-heading font-bold text-[14px] text-ink-800">{p.id} · {p.title}</span>
+                      <StatusPill status={p.status} />
+                      {p.trial ? <span className="text-[10.5px] font-heading font-bold px-2 py-0.5 rounded-full bg-gold-50 text-gold-700">ברירת מחדל לניסיון</span> : null}
+                    </div>
+                    {p.goal ? <p className="text-[12px] text-ink-500 mt-0.5">{p.goal}</p> : null}
+                    {p.requires ? <p className="text-[12px] text-red-600 mt-0.5 font-semibold">דורש: {p.requires}</p> : null}
+                    {p.safetyNote ? <p className="text-[11.5px] text-ink-500 mt-0.5">{p.safetyNote}</p> : null}
+                  </div>
+                  <button type="button" disabled={busy === "proc" + p.id} onClick={() => approveProcess(p)}
+                    className="shrink-0 text-[12px] font-heading font-bold px-3 py-2 rounded-full bg-gold-500 text-white hover:bg-gold-600 disabled:opacity-40">
+                    {busy === "proc" + p.id ? "מאשרת..." : "אשר תהליך שלם"}
+                  </button>
+                </div>
+
+                {p.days && p.days.length > 0 ? (
+                  <div className="divide-y divide-ink-50">
+                    {p.days.map((d, i) => (
+                      <div key={i} className="px-4 py-2.5 flex items-start gap-3 text-[12.5px]">
+                        <span className="shrink-0 w-7 h-7 rounded-full bg-white border border-ink-100 flex items-center justify-center font-heading font-bold text-ink-600 text-[11.5px]">
+                          {d.day}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          {d.label ? <p className="text-ink-700 font-semibold">{d.label}</p> : null}
+                          <p className="text-ink-500">
+                            {(d.units || []).map((uid) => (unitById[uid] ? unitById[uid].title : uid)).join(" + ")}
+                            {d.audio ? ` · 🎧 ${audioById[d.audio] ? audioById[d.audio].title : d.audio}` : ""}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : p.contents ? (
+                  <ul className="px-4 py-3 text-[12.5px] text-ink-600 list-disc pr-5 space-y-0.5">
+                    {p.contents.map((c, i) => <li key={i}>{c}</li>)}
+                  </ul>
+                ) : null}
+              </div>
+            ))}
+
+            <div>
+              <p className="font-heading font-bold text-[13px] text-ink-700 mb-2">הקלטות שדורשות בדיקה שלך</p>
+              <div className="space-y-1.5">
+                {(data.audio || []).filter((a) => a.hold || !a.stage).map((a) => (
+                  <div key={a.id} className="flex items-center justify-between gap-2 rounded-lg border border-ink-100 px-3 py-2 text-[12.5px]">
+                    <div className="min-w-0">
+                      <span className="font-semibold text-ink-800">{a.id} · {a.title}</span>
+                      <p className="text-ink-500">{a.usage}</p>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <StatusPill status={a.status} />
+                      <button type="button" disabled={busy === "audio" + a.id} onClick={() => setStatus("audio", a.id, "approved")}
+                        className="text-[11px] font-heading font-bold px-2 py-1 rounded-full border border-gold-300 text-gold-700 hover:bg-gold-50">אשר</button>
+                      <button type="button" disabled={busy === "audio" + a.id} onClick={() => setStatus("audio", a.id, "excluded")}
+                        className="text-[11px] font-heading font-bold px-2 py-1 rounded-full border border-ink-200 text-ink-500 hover:bg-ink-50">לא לשימוש</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+    );
+  }
+
   function ClinicList({ authHeader, onOpenPatient, onLogout }) {
     const [patients, setPatients] = useState(null);
     const [error, setError] = useState(false);
@@ -388,6 +549,7 @@
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
           <AIStatusPanel authHeader={authHeader} />
+          <ContentCatalogPanel authHeader={authHeader} />
           <WorkshopSignupsPanel authHeader={authHeader} />
           <AccessCodesPanel authHeader={authHeader} />
           {error ? (

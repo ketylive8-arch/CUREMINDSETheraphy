@@ -1288,6 +1288,39 @@ admin.post("/audio-candidates/:id/reject", (req, res) => {
   res.json(r);
 });
 
+// ── קטלוג חבילת התוכן v1 (יחידות, אודיו, תהליכים) — לאישור קטי לפני שנחשף ללקוחות ──
+admin.get("/content-pack", (req, res) => {
+  try {
+    const { listUnits, listAudio, listProcesses, getProcess } = require("./contentPack");
+    const units = listUnits();
+    const audio = listAudio();
+    // לתהליכים מצרפים גם את מבנה הימים המלא (days: יחידה+אודיו+תווית ליום) מתוך הנתון הגולמי.
+    const processes = listProcesses().map((p) => {
+      const full = getProcess(p.id);
+      return { ...p, days: (full && full.days) || [], goal: full && full.goal, entry: full && full.entry,
+        after: full && full.after, sosContent: full && full.sos, requires: full && full.requires,
+        styleNote: full && full.style_note, safetyNote: full && full.safety_note,
+        unlock: full && full.unlock, contents: full && full.contents };
+    });
+    res.json({ units, audio, processes });
+  } catch (e) {
+    console.warn("[content-pack] list failed:", e.message);
+    res.status(500).json({ error: "טעינת קטלוג התוכן נכשלה" });
+  }
+});
+admin.post("/content-pack/:kind/:id/status", (req, res) => {
+  const { kind, id } = req.params;
+  const status = String(req.body?.status || "");
+  try {
+    const { setStatus } = require("./contentPack");
+    const r = setStatus(kind, id, status);
+    if (!r.changed) return res.status(404).json({ error: "פריט לא נמצא" });
+    res.json(r);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 // סטטוס ה-AI — האם GPT מלא פעיל, או שהמערכת רצה במנוע המקומי (ולמה).
 admin.get("/ai-status", async (req, res) => {
   try {
