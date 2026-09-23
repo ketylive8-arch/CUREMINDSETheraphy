@@ -1571,24 +1571,34 @@ function HbRecognize() {
 
 /* SECTION 3 — הפתרון: מהי CureMindset */
 function HbSolution() {
-  const chips = ["פרוטוקול CURE בן 4 שלבים", "NLP ועבודת תת-מודע", "דמיון מודרך ו-Spatial Submodalities", "הטמעה לילית ובניית חוסן"];
+  const pillars = [
+    { icon: "compass", title: "פרוטוקול CURE", text: "ארבעה שלבים מובנים — מהבנת הדפוס, דרך שחרורו, ועד העצמה יציבה." },
+    { icon: "wind", title: "עבודה עם התת-מודע", text: "שם חיים 95% מהדפוסים — וזו הרמה שבה השינוי באמת נבנה ומחזיק." },
+    { icon: "sparkles", title: "דמיון מודרך וסאבמודלים", text: "שינוי ברמה החושית והתת-חושית, לא רק בהיגיון — שם הדפוס חי." },
+    { icon: "heart", title: "הטמעה ובניית חוסן", text: "תרגול יומי מדוד שהופך את השינוי לחלק ממי שאת/ה, לאורך זמן." },
+  ];
   return (
     <section id="solution" className="py-20 sm:py-28 bg-[#FAF8F4]">
-      <div className="max-w-[820px] mx-auto px-5 sm:px-7 text-center">
-        <Reveal>
-          <Eyebrow>הפתרון</Eyebrow>
-          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">שיטה, לא משפטי השראה</h2>
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[720px] mx-auto mb-14">
+          <Eyebrow>השיטה</Eyebrow>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">שיטה מובנית — לא משפטי השראה</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed">
-            CureMindset היא שיטת עבודה מובנית שפיתחה קטי שגב. ההנחה שלה פשוטה ולא שגרתית: התסמינים שלך — החרדה, הלחץ, העמידה במקום — הם לא אויב. הם “שומרי ראש” מיושנים שהתת-מודע גייס פעם כדי להגן עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
+            CureMindset היא שיטת עבודה שפיתחה קטי שגב, על הנחה אחת לא־שגרתית: התסמינים שלך — החרדה, הלחץ, העומס — אינם אויב. הם מנגנוני הגנה שהתת-מודע גייס פעם כדי לשמור עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
           </p>
         </Reveal>
-        <Reveal className="mt-8">
-          <p className="text-ink-500 text-[14px] font-semibold mb-3">מה עומד מאחורי השיטה?</p>
-          <div className="flex flex-wrap justify-center gap-2.5">
-            {chips.map((c) => (
-              <a key={c} href="/method" className="bg-white border border-gold-200 text-gold-800 rounded-full px-4 py-2 text-[14px] font-medium hover:border-gold-400 transition-colors">{c}</a>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {pillars.map((p, i) => (
+            <Reveal key={p.title} style={{ transitionDelay: `${i * 80}ms` }}
+              className="bg-white border border-ink-100 rounded-2xl p-6 flex flex-col gap-3 hover:border-gold-300 cm-lift">
+              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={p.icon} size={20} /></span>
+              <h3 className="font-heading font-bold text-ink-800 text-[18px]">{p.title}</h3>
+              <p className="text-ink-600 text-[14.5px] leading-relaxed flex-1">{p.text}</p>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal className="text-center mt-10">
+          <a href="/method" className="font-heading font-bold text-[16px] text-gold-700 hover:text-gold-800">הפרוטוקול המלא של השיטה →</a>
         </Reveal>
       </div>
     </section>
