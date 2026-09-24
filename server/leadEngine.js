@@ -168,6 +168,18 @@ db.exec(`
     status TEXT NOT NULL DEFAULT 'planned', -- planned / running / done
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  -- Log of each daily-agent run (for "last run" + the dashboard). Real counts only.
+  CREATE TABLE IF NOT EXISTS dist_agent_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ran_at TEXT NOT NULL DEFAULT (datetime('now')),
+    queries TEXT,               -- JSON array of the queries run
+    found INTEGER NOT NULL DEFAULT 0,
+    added INTEGER NOT NULL DEFAULT 0,
+    duplicates INTEGER NOT NULL DEFAULT 0,
+    emailed INTEGER NOT NULL DEFAULT 0,   -- 0/1
+    note TEXT
+  );
 `);
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -598,9 +610,25 @@ function dailyBriefing() {
   return { generatedAt: new Date().toISOString(), summary, actions: actions.slice(0, 3) };
 }
 
+// ── Daily-agent run log ─────────────────────────────────────────────────────
+function recordAgentRun({ queries = [], found = 0, added = 0, duplicates = 0, emailed = false, note = null } = {}) {
+  const info = db.prepare(
+    "INSERT INTO dist_agent_runs (queries, found, added, duplicates, emailed, note) VALUES (?,?,?,?,?,?)"
+  ).run(JSON.stringify(queries), found, added, duplicates, emailed ? 1 : 0, note);
+  return info.lastInsertRowid;
+}
+
+function listAgentRuns(limit = 14) {
+  return db.prepare("SELECT * FROM dist_agent_runs ORDER BY id DESC LIMIT ?").all(limit).map((r) => ({
+    id: r.id, ranAt: r.ran_at, queries: JSON.parse(r.queries || "[]"),
+    found: r.found, added: r.added, duplicates: r.duplicates, emailed: !!r.emailed, note: r.note,
+  }));
+}
+
 module.exports = {
   listChannels, getChannel, createChannel, updateChannel, deleteChannel,
   pipelineStats, meta,
   generateDraft, listDrafts, setDraftState, dailyBriefing,
+  recordAgentRun, listAgentRuns,
   CHANNEL_KINDS, OPP_TYPES, PIPELINE, PRIORITIES, OFFER_MODELS, METRIC_STATUS,
 };

@@ -17,6 +17,7 @@ const { runBehavioralHealthCheck, NoApiKeyError } = require("./openai");
 const { adminAuthMiddleware } = require("./adminAuth");
 const { computeStatus, touchPatientActivity } = require("./crm");
 const leadEngine = require("./leadEngine");
+const leadAgent = require("./leadAgent");
 const { retrieveKnowledge, knowledgeStats } = require("./knowledgeBase");
 const { guidedReply } = require("./guidedReply");
 const { detectCrisis, safetyResponse } = require("./safety");
@@ -1443,6 +1444,17 @@ admin.patch("/dist/outreach/:id", (req, res) => {
   if (r.error) return res.status(r.status || 400).json(r);
   res.json(r);
 });
+
+// הסוכן היומי — הפעלה ידנית ("הרץ עכשיו") + היסטוריית ריצות.
+admin.post("/dist/agent/run", async (req, res) => {
+  try {
+    const r = await leadAgent.runDailyAgent();
+    res.json(r);
+  } catch (e) {
+    res.status(500).json({ ok: false, error: String((e && e.message) || e) });
+  }
+});
+admin.get("/dist/agent/runs", (req, res) => res.json({ runs: leadEngine.listAgentRuns(14) }));
 
 app.use("/api/admin", admin);
 app.use("/api", api);

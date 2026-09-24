@@ -1260,6 +1260,22 @@
     const [briefing, setBriefing] = useState(null);
     const [error, setError] = useState(false);
     const [priorityFilter, setPriorityFilter] = useState("");
+    const [agentRunning, setAgentRunning] = useState(false);
+    const [agentMsg, setAgentMsg] = useState("");
+
+    async function runAgent() {
+      setAgentRunning(true); setAgentMsg("");
+      try {
+        const res = await fetch("/api/admin/dist/agent/run", { method: "POST", headers: { Authorization: authHeader } });
+        if (res.status === 401) return onLogout();
+        const j = await res.json();
+        if (j.ok) setAgentMsg(`הסוכן רץ: ${j.added} חדשים · ${j.duplicates} כבר במאגר${j.emailed ? " · מייל נשלח 📩" : ""}`);
+        else if (j.reason === "no_search_key") setAgentMsg("כדי שהסוכן יחפש לבד צריך לחבר מפתח חיפוש (ראי הוראות למטה).");
+        else setAgentMsg("הריצה לא הצליחה כרגע. נסי שוב.");
+        reload();
+      } catch { setAgentMsg("שגיאה בהרצה."); }
+      finally { setAgentRunning(false); }
+    }
 
     function reload() {
       const q = priorityFilter ? `?priority=${priorityFilter}` : "";
@@ -1310,6 +1326,18 @@
           </div>
 
           <DailyBriefing briefing={briefing} />
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={runAgent}
+              disabled={agentRunning}
+              className="inline-flex items-center gap-2 rounded-full bg-gold-500 text-white text-[13px] font-heading font-semibold px-4 py-2.5 hover:bg-gold-600 disabled:opacity-60"
+            >
+              <Icon name="rotate-ccw" size={14} /> {agentRunning ? "הסוכן מחפש..." : "הרצת הסוכן עכשיו — חפש לידים"}
+            </button>
+            {agentMsg ? <span className="text-[12.5px] text-ink-600">{agentMsg}</span> : null}
+          </div>
 
           <DistStatsStrip stats={stats} />
 
