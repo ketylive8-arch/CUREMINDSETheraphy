@@ -232,6 +232,71 @@ function knowledgeContext(retrieved) {
 ${blocks}`;
 }
 
+// ── חיבור לקטלוג התוכן המאושר (content_pack) — כך שה-dailyTask שה-AI מציע/ה ──
+// נשען על תרגילים/הקלטות שקטי אישרה בפועל, לא על המצאה חופשית של המודל.
+// מילון מילות-מפתח בעברית → תגיות הנושא באנגלית שבחבילת התוכן (pack-v1.json).
+const TOPIC_KEYWORDS = {
+  anxiety: /חרדה|פחד|דאג|מתח|לחוץ|לחץ|נלחצ/,
+  self_image: /דימוי עצמי|ביקורת עצמית|לא מספיק|לא שווה|לא מוצלח/,
+  confidence: /ביטחון|עוצמה|בטוח בעצמ/,
+  procrastination: /דחיינות|דוח(ה|ה את)|עומד במקום|תקוע|תקיעות|לא מתקדם/,
+  regulation: /ויסות|להירגע|הרגעה|נשימה|נשימות/,
+  emotional_release: /לשחרר|שחרור|הצפה|מוצפת|מוצף/,
+  habits: /הרגל|הרגלים|התמכרות/,
+  relationships: /זוגיות|מערכת יחסים|קונפליקט|ריב|בן זוג|בת זוג/,
+  physical_pain: /כאב|מיגרנה|כאבי ראש|כאב גוף/,
+  overwhelm: /עומס|הצפה|קורס|לא מסתדר/,
+};
+
+function matchTopics(text) {
+  const t = String(text || "");
+  const hits = [];
+  for (const [topic, re] of Object.entries(TOPIC_KEYWORDS)) {
+    if (re.test(t)) hits.push(topic);
+  }
+  return hits;
+}
+
+function catalogContext(text) {
+  let approved;
+  try {
+    approved = require("./contentPack").approvedForClient();
+  } catch {
+    return ""; // אם המודול/הטבלה לא זמינים — לא חוסמים את השיחה, פשוט בלי הצעה מהקטלוג
+  }
+  const { units, audio } = approved;
+  if (!units || !units.length) return "";
+
+  const audioTitle = (id) => (audio.find((a) => a.id === id) || {}).title;
+  const topics = matchTopics(text);
+
+  // התאמה: קודם יחידות שהתגית שלהן חופפת לנושא שעלה בטקסט; ה-SOS תמיד מוצעות כאפשרות מיידית.
+  const scored = units
+    .map((u) => {
+      const uTopics = Array.isArray(u.topics) ? u.topics : [];
+      const overlap = topics.filter((t) => uTopics.includes(t)).length;
+      return { u, score: overlap + (u.sos ? 0.5 : 0) };
+    })
+    .filter((x) => x.score > 0 || x.u.sos)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4)
+    .map((x) => x.u);
+
+  if (!scored.length) return "";
+
+  const lines = scored.map((u) => {
+    const a = u.audio ? audioTitle(u.audio) : null;
+    return `- "${u.title}" (${u.type}, ${u.minutes} דק'${u.sos ? ", כלי SOS מיידי" : ""})${a ? ` — עם הקלטה: "${a}"` : ""}`;
+  });
+
+  return `
+
+## תרגילים מאושרים שרלוונטיים לשיחה הזו (קטלוג התוכן שקטי אישרה):
+כשמציעים משימה/תרגיל יומי (dailyTask), עדיפות ראשונה לתרגילים האלה — הם מהקטלוג הרשמי ורלוונטיים למה שהמשתמש/ת כתב/ה עכשיו:
+${lines.join("\n")}
+אם אף אחד מהם לא מתאים באמת לרגע הזה, אפשר להציע תרגיל אחר מהשיטה (מהמאגר למעלה) — אבל אלה עדיפים כשהם מתאימים.`;
+}
+
 // Maps a journey day (1-14+) to its gate so the model anchors the whole reply to it.
 function journeyContext(journeyDay) {
   if (!journeyDay) return "";
