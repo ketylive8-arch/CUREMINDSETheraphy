@@ -15,9 +15,17 @@
     setTimeout(function () { if (s && s.parentNode) s.parentNode.removeChild(s); }, 650);
   }
 
+  // כתובות שמטרתן היחידה היא לפתוח את האזור האישי ישר — כל כפתור "להתחיל ניסיון חינם"
+  // בדפים הסטטיים (programs.html, faq.html, contact.html, workshop-*.html וכו') מצביע
+  // ל-/program, שדרכו הם היחידה "להיכנס" לאפליקציה מחוץ לדף הבית עצמו.
+  const APP_ENTRY_PATHS = ["/program", "/dashboard"];
+
   function App() {
-    // אם המשתמש חזר זה עתה מהתחברות חברתית (Google/Facebook) — נפתח מחובר לאזור האישי.
-    const [view, setView] = useState(window.__cmOpenApp ? "app" : "home");
+    // אם המשתמש חזר זה עתה מהתחברות חברתית (Google/Facebook), או נחת ישירות על כתובת
+    // כניסה לאפליקציה — נפתח ישר לאזור האישי.
+    const [view, setView] = useState(
+      window.__cmOpenApp || APP_ENTRY_PATHS.includes(location.pathname) ? "app" : "home"
+    );
     useEffect(hideSplash, []);
     return (
       <React.Fragment>
