@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>סדנאות CureMindset — חוויה קבוצתית שמשנה דפוסים | קטי שגב</title>
-<meta name="description" content="סדנאות שיטת CureMindset: המצפן הפנימי למבוגרים, מסע החוסן למתבגרים, וסדנאות חוסן וניהול לחץ לארגונים וצוותים. יום אחד ששובר דפוס — בהנחיית קטי שגב." />
+<meta name="description" content="סדנאות שיטת CureMindset: המצפן הפנימי למבוגרים, מסע החוסן למתבגרים, והמצפן לארגונים וצוותים. יום עבודה מודרך שמשחרר דפוסים — בהנחיית קטי שגב." />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <meta name="theme-color" content="#c2974a" />
 <link rel="canonical" href="https://ketysegev.com/workshops" />
@@ -20,93 +20,161 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"בית","item":"https://ketysegev.com/"},{"@type":"ListItem","position":2,"name":"סדנאות","item":"https://ketysegev.com/workshops"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"Course","name":"המצפן הפנימי","url":"https://ketysegev.com/workshop-inner-compass"}},{"@type":"ListItem","position":2,"item":{"@type":"Course","name":"מסע החוסן — CURE Teens","url":"https://ketysegev.com/workshop-cure-teens"}},{"@type":"ListItem","position":3,"item":{"@type":"Course","name":"המצפן לארגונים","url":"https://ketysegev.com/workshop-organizations"}}]}</script>
 <style>
-  :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#2D2A26;--ink-500:#6B6560}
+  :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#201d19;--ink-500:#6B6560;--ink-700:#4a453e}
   *{box-sizing:border-box}
   body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;font-size:17px}
   a{color:var(--gold-deep)}
-  .wrap{max-width:860px;margin:0 auto;padding:0 22px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
   header.site{position:sticky;top:0;z-index:20;background:rgba(251,247,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--gold-soft)}
   header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 22px}
-  header.site img{height:38px}
   .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink)}
+  .brand img{height:38px}
   .brand b{font-family:Rubik,sans-serif;font-weight:800;font-size:17px;color:var(--gold-deep)}
   .cta-top{background:var(--gold);color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px;white-space:nowrap}
-  h1{font-family:Rubik,sans-serif;font-weight:800;font-size:33px;line-height:1.25;color:var(--ink);margin:8px 0 14px}
-  h2{font-family:Rubik,sans-serif;font-weight:700;font-size:24px;color:var(--gold-deep);margin:34px 0 12px}
-  h3{font-family:Rubik,sans-serif;font-weight:700;font-size:19px;color:var(--ink);margin:0 0 8px}
-  .eyebrow{font-family:Rubik,sans-serif;font-weight:600;font-size:13px;letter-spacing:.12em;color:var(--gold)}
-  .hero{padding:40px 0 8px}
-  .hero .lead{font-size:19px;font-weight:600;margin:0 0 18px}
-  .blk{padding:6px 0}
-  .card{background:#fff;border:1px solid var(--gold-soft);border-radius:16px;padding:24px;margin-bottom:16px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
-  .card p{margin:6px 0 0;color:var(--ink-500)}
-  .card .go{background:var(--gold);color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:11px 20px;border-radius:999px;white-space:nowrap;font-size:15px}
-  .ctaband{background:linear-gradient(160deg,#fff, var(--gold-soft));border:1px solid var(--gold-soft);border-radius:18px;padding:28px 24px;text-align:center;margin:36px 0}
-  .ctaband h2{margin-top:0}
-  .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}
-  .btn{text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:13px 24px;border-radius:999px;font-size:16px}
+  h1,h2,h3{font-family:Rubik,sans-serif;color:var(--ink);margin:0}
+
+  /* ── Hero: full-bleed image + overlay, matching /personal ── */
+  .hero{position:relative;min-height:58vh;display:flex;align-items:flex-end;overflow:hidden;background:#141210}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(15,13,11,.92) 0%,rgba(15,13,11,.5) 48%,rgba(15,13,11,.08) 78%,rgba(15,13,11,0) 100%)}
+  .hero-inner{position:relative;z-index:1;width:100%;padding:0 22px 48px;max-width:1080px;margin:0 auto}
+  .hero .eyebrow{font-family:Rubik,sans-serif;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block}
+  .hero h1{font-weight:800;font-size:40px;line-height:1.2;color:#fff;max-width:620px;margin-bottom:14px}
+  .hero p{color:rgba(255,255,255,.85);font-size:17.5px;max-width:560px;margin:0}
+  @media(max-width:700px){.hero{min-height:52vh}.hero h1{font-size:28px}}
+
+  main.wrap{padding-top:56px}
+  .kicker{font-family:Rubik,sans-serif;font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:10px}
+  .section-head{max-width:600px;margin-bottom:32px}
+  .section-head h2{font-size:26px;font-weight:700}
+
+  /* ── Workshop cards ── */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .card{background:#fff;border:1px solid var(--gold-soft);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:14px;transition:border-color .15s,transform .15s}
+  .card:hover{border-color:var(--gold);transform:translateY(-2px)}
+  .card .tag{align-self:flex-start;font-family:Rubik,sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.06em;color:var(--gold-deep);background:var(--gold-soft);padding:5px 12px;border-radius:999px}
+  .card h3{font-size:20px;font-weight:700}
+  .card .sub{font-family:Rubik,sans-serif;font-weight:600;font-size:13px;color:var(--gold-deep)}
+  .card p{margin:0;color:var(--ink-500);font-size:15px;line-height:1.65}
+  .card .facts{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px;font-size:13.5px;color:var(--ink-700)}
+  .card .facts span{display:flex;align-items:center;gap:7px}
+  .card .price{font-family:Rubik,sans-serif;font-weight:800;font-size:19px;color:var(--ink);margin-top:auto;padding-top:10px;border-top:1px solid var(--gold-soft)}
+  .card .price small{display:block;font-family:Assistant,sans-serif;font-weight:500;font-size:12px;color:var(--ink-500)}
+  .card .go{display:block;text-align:center;background:var(--gold);color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:12px 20px;border-radius:999px;font-size:14.5px}
+  @media(max-width:900px){.cards{grid-template-columns:1fr}}
+
+  .ctaband{background:linear-gradient(160deg,#fff, var(--gold-soft));border:1px solid var(--gold-soft);border-radius:20px;padding:34px 28px;text-align:center;margin:64px 0 40px}
+  .ctaband h2{margin-bottom:10px;font-size:24px}
+  .ctaband p{color:var(--ink-700);max-width:480px;margin:0 auto 20px}
+  .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .btn{text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:14px 26px;border-radius:999px;font-size:15.5px}
   .btn.primary{background:var(--gold);color:#fff}
   .btn.ghost{background:#fff;color:var(--gold-deep);border:1px solid var(--gold)}
   .note{font-size:13.5px;color:var(--ink-500)}
   footer.site{border-top:1px solid var(--gold-soft);padding:26px 0;text-align:center;color:var(--ink-500);font-size:14px}
   footer.site a{color:var(--gold-deep);text-decoration:none;margin:0 8px}
-  @media(max-width:700px){h1{font-size:27px}.card{grid-template-columns:1fr}}
+  a:focus-visible,.btn:focus-visible,.card:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
+  <link rel="stylesheet" href="/site-nav.css" />
 </head>
 <body>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
+  <nav class="site-nav">
+    <a href="/">דף הבית</a>
+    <a href="/method">השיטה</a>
+    <a href="/program">התוכנית</a>
+    <a href="/workshops">סדנאות</a>
+    <a href="/faq">שאלות נפוצות</a>
+    <a href="/contact">יצירת קשר</a>
+  </nav>
   <a class="cta-top" href="/contact">לתאם סדנה</a>
 </div></header>
 
-<main class="wrap">
-  <section class="hero">
-    <p class="eyebrow">סדנאות · חוויה קבוצתית</p>
-    <h1>יום אחד. דפוס חדש.</h1>
-    <p class="lead">סדנה של CureMindset היא לא הרצאה — זה יום עבודה מודרך שמשחרר דפוסים ומעביר כלים מעשיים שנשארים בידיים גם אחרי שהיום נגמר. בהנחיית קטי שגב, מפתחת השיטה.</p>
-  </section>
+<section class="hero">
+  <img src="/images/brand-transformation.jpg" alt="סדנת CureMindset" />
+  <div class="hero-inner">
+    <span class="eyebrow">סדנאות · חוויה קבוצתית</span>
+    <h1>יום עבודה מודרך. דפוס חדש.</h1>
+    <p>סדנה של CureMindset היא לא הרצאה — היא תרגול חי שמשחרר דפוסים ומעביר כלים מעשיים שנשארים בידיים גם אחרי שהיום נגמר. בהנחיית קטי שגב, מפתחת השיטה.</p>
+  </div>
+</section>
 
-  <section class="blk">
-    <h2>שלוש סדנאות — שלושה מסלולים</h2>
+<main class="wrap">
+  <div class="section-head">
+    <span class="kicker">שלושה מסלולים</span>
+    <h2>איזו סדנה מדברת אליך?</h2>
+  </div>
+
+  <div class="cards">
     <div class="card">
+      <span class="tag">למבוגרים</span>
       <div>
-        <h3>המצפן הפנימי — למבוגרים</h3>
-        <p>סדנת הדגל של השיטה: שחרור דפוסים מגבילים ובניית מיינדסט חדש. לקבוצות, מרכזים וקהלים פרטיים.</p>
+        <h3>המצפן הפנימי</h3>
+        <p class="sub">Unleash Your Mindset</p>
       </div>
+      <p>סדנת הדגל של השיטה: פוגשים את החרדה, משחררים את מה שחוסם, וחווטים מחדש את הדרך שבה מגיבים — בפרוטוקול CURE.</p>
+      <div class="facts">
+        <span>📅 3 מפגשים · שעתיים כל מפגש</span>
+        <span>📍 חיפה והקריות · או בזום</span>
+        <span>👥 קבוצה אינטימית, עד 8 משתתפים</span>
+      </div>
+      <div class="price">₪1,190<small>לכל ההשתתפות · כולל ערכה דיגיטלית</small></div>
       <a class="go" href="/workshop-inner-compass">לפרטי הסדנה ←</a>
     </div>
+
     <div class="card">
+      <span class="tag">לנוער</span>
       <div>
-        <h3>מסע החוסן — למתבגרים</h3>
-        <p>חוסן רגשי, ביטחון עצמי ותקשורת בבית — בשפה שמדברת לגיל ההתבגרות. לבתי ספר, מרכזים וקבוצות נוער.</p>
+        <h3>מסע החוסן</h3>
+        <p class="sub">CURE Teens</p>
       </div>
+      <p>חוסן רגשי, ביטחון עצמי ותקשורת בבית — ליווי אחד-על-אחד בשפה שמדברת לגיל ההתבגרות, לא הרצאה קבוצתית.</p>
+      <div class="facts">
+        <span>📅 6 מפגשים אישיים · 50 דקות</span>
+        <span>📍 חיפה/הקריות · או בזום</span>
+        <span>👤 אחד-על-אחד, התאמה מלאה</span>
+      </div>
+      <div class="price">₪3,500<small>לתהליך המלא · 6 מפגשים</small></div>
       <a class="go" href="/workshop-cure-teens">לפרטי הסדנה ←</a>
     </div>
+
     <div class="card">
+      <span class="tag">לארגונים</span>
       <div>
-        <h3>המצפן לארגונים — לצוותים ומנהלים</h3>
-        <p>יום חוסן ותקשורת לצוותים: ניהול לחץ, עבודה תחת אש ושפה שמורידה חיכוכים. לארגונים, עמותות ומוסדות.</p>
+        <h3>המצפן לארגונים</h3>
+        <p class="sub">חוסן לצוותים ומנהלים</p>
       </div>
+      <p>יום חוסן ותקשורת לצוותים: ניהול לחץ, עבודה תחת אש ושפה שמורידה חיכוכים. מותאם לגודל ולצורך של הארגון.</p>
+      <div class="facts">
+        <span>📅 מפגש בודד או סדרה, לפי הצורך</span>
+        <span>📍 במשרדי הארגון · או בזום</span>
+        <span>👥 מקבוצה קטנה ועד מליאה</span>
+      </div>
+      <div class="price">הצעת מחיר מותאמת<small>לפי גודל הארגון והיקף היום</small></div>
       <a class="go" href="/workshop-organizations">לפרטי הסדנה ←</a>
     </div>
-  </section>
+  </div>
 
-  <section class="ctaband">
+  <div class="ctaband">
     <h2>רוצה סדנה אצלכם בארגון?</h2>
     <p>מתאימים יחד את התוכן, הקבוצה והיום — ובונים יום שמשאיר כלים, לא רק חוויה.</p>
     <div class="btnrow">
       <a class="btn primary" href="/contact">לתיאום שיחת סדנה</a>
-      <a class="btn ghost" href="/about">להכיר את קטי</a>
+      <a class="btn ghost" href="/personal">להכיר את קטי</a>
     </div>
     <p class="note">גם לבתי ספר, מרכזים קהילתיים ועמותות</p>
-  </section>
+  </div>
 </main>
 
 <footer class="site"><div class="wrap">
-  <p>דף הבית · השיטה · תוכניות · יצירת קשר<br />
-  <a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></p>
-  <p>© 2026 CureMindset · קטי שגב</p>
+  <a href="/">דף הבית</a> · <a href="/method">השיטה</a> · <a href="/faq">שאלות נפוצות</a> · <a href="/contact">יצירת קשר</a> · <a href="https://wa.me/972543032349" target="_blank" rel="noopener">וואטסאפ</a>
+  <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
+  <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
 </body>
 </html>
