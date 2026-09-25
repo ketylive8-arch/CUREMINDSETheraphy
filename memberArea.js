@@ -3475,47 +3475,6 @@
     );
   }
 
-  // משימה 1.1 — Carousel פתיחה (5 מסכים) לפני הצ'אט. בונה אמון והבנה, בסגנון Curable.
-  // צבעי מותג: קרם #FAF7F2 · זהב #DCCAA4 · דיו #2D2A26.
-  function OpeningCarousel({ onDone }) {
-    const CREAM = "#FAF7F2", GOLD = "#DCCAA4", INK = "#2D2A26", CTA = "#c2974a";
-    const SCREENS = [
-      { icon: "heart-handshake", title: "ברוכה הבאה ", text: "הגעת למקום הנכון. כאן נלווה אותך צעד אחר צעד — בעדינות, ובקצב שלך." },
-      { icon: "wind", title: "מה שאת מרגישה — זו לא חולשה", text: "חרדה, עומס, ביקורת עצמית — הם אזעקה של המערכת העצבית שמנסה להגן עלייך. ואפשר לכוון אותה מחדש." },
-      { icon: "sparkles", title: "השיטה: לחווט מחדש את המוח", text: "CureMindset משלבת NLP ונוירופלסטיות — ומלמדת את המוח מסלול חדש, רגוע ובטוח. זה מדע, לא קסם." },
-      { icon: "users", title: "ואת לא לבד בזה", text: "מעל 500 אנשים כבר עשו את התהליך הזה והחזירו לעצמם את השליטה בחיים. עכשיו תורך." },
-      { icon: "compass", title: "מוכנה? בואי נכיר", text: "כמה שאלות קצרות, ואבנה לך את התהליך האישי שלך. בלי לחץ — רק את ואני." },
-    ];
-    const [i, setI] = useState(0);
-    const last = i === SCREENS.length - 1;
-    const s = SCREENS[i];
-    return (
-      <div style={{ position: "absolute", inset: 0, background: CREAM, color: INK, display: "flex", flexDirection: "column", direction: "rtl" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 20px" }}>
-          <div style={{ display: "flex", gap: 6 }}>
-            {SCREENS.map((_, k) => (
-              <span key={k} style={{ width: k === i? 22: 7, height: 7, borderRadius: 99, background: k === i? INK: GOLD, transition: "all.3s" }} />
-            ))}
-          </div>
-          <button type="button" onClick={onDone} style={{ background: "none", border: "none", color: "#9b917f", fontSize: 13, cursor: "pointer" }}>דלג</button>
-        </div>
-        <div key={i} className="cm-slide-up-in" style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "0 32px" }}>
-          <div style={{ width: 96, height: 96, borderRadius: "50%", background: GOLD, display: "grid", placeItems: "center", marginBottom: 28, color: INK }}>
-            <Icon name={s.icon} size={42} />
-          </div>
-          <h2 style={{ fontFamily: '"Rubik",sans-serif', fontWeight: 800, fontSize: 25, margin: "0 0 14px", lineHeight: 1.25 }}>{s.title}</h2>
-          <p style={{ fontSize: 16.5, lineHeight: 1.7, color: "#5c554b", maxWidth: 340, margin: 0 }}>{s.text}</p>
-        </div>
-        <div style={{ padding: "0 28px 34px" }}>
-          <button type="button" onClick={() => (last? onDone(): setI(i + 1))}
-            style={{ width: "100%", padding: 16, borderRadius: 18, border: "none", cursor: "pointer", background: CTA, color: "#fff", fontFamily: '"Rubik",sans-serif', fontWeight: 800, fontSize: 16.5 }}>
-            {last? "בואי נתחיל ": "המשך"}
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // מפגש וירטואלי חי עם קטי דרך זום — כלול במסלול פרימיום, קביעה דרך היומן.
   function VirtualSessionStage({ paid, onNavigateStage }) {
     const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
@@ -3594,8 +3553,6 @@
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(() =>!localStorage.getItem(AGE_GROUP_KEY));
-    // Carousel פתיחה — מוצג פעם אחת למשתמש חדש, לפני מסך הכניסה/הצ'אט.
-    const [showCarousel, setShowCarousel] = useState(() => { try { return!localStorage.getItem("cm_carousel_seen"); } catch (e) { return true; } });
     // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
@@ -3662,14 +3619,11 @@
     const expired = (access && access.status === "expired") || trialLocked;
 
     // שער כניסה: בלי חשבון מחובר — אין גישה לאזור האישי.
+    // הפתיח (קרוסלת ברוכה הבאה) הוסר — ישר לטופס ההרשמה/כניסה (בקשת קטי).
     if (!loggedIn) {
       return (
         <PhoneFrame>
-          {showCarousel? (
-            <OpeningCarousel onDone={() => { try { localStorage.setItem("cm_carousel_seen", "1"); } catch (e) {} setShowCarousel(false); }} />
-          ): (
-            <AuthGate onAuthed={() => setLoggedIn(true)} onExit={onExit} />
-          )}
+          <AuthGate onAuthed={() => setLoggedIn(true)} onExit={onExit} />
         </PhoneFrame>
       );
     }
