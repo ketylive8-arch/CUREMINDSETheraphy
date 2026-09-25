@@ -22,8 +22,10 @@ function waLink(text) {
   return `https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(text)}`;
 }
 
+// לינקי התשלום הורדו זמנית (בקשת קטי) בזמן שעובדים על עיצוב אזור ההרשמה.
+// כשריקים, הכפתורים נופלים אוטומטית לכניסה לאפליקציה / תיאום שיחה במקום תשלום.
 const PAYMENT_LINKS = {
-  digital: "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ",
+  digital: "",
   youth: "",
   recommended: "",
   premium: "",

@@ -612,7 +612,9 @@
     const [status, setStatus] = useState("idle"); // idle | loading | error
     const [errorMsg, setErrorMsg] = useState("");
     const [showCode, setShowCode] = useState(!expired); // בהתנסות שהסתיימה — התשלום ראשי, הקוד משני
-    const PAY_LINK = "https://pay.grow.link/NDcyNjY~23b0b8d38a77cf03510833361d027ddf-MzY2MDI4MQ";
+    // לינק התשלום הורד זמנית (בקשת קטי) בזמן שעובדים על עיצוב אזור ההרשמה — נופל לוואטסאפ במקום.
+    const PAY_LINK = "";
+    const PAY_FALLBACK = "https://wa.me/972543032349?text=" + encodeURIComponent("היי קטי! אשמח להמשיך את התהליך המלא");
     const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
 
     function redeem() {
@@ -673,7 +675,7 @@
               ))}
             </div>
 
-            <a href={PAY_LINK} target="_blank" rel="noopener noreferrer"
+            <a href={PAY_LINK || PAY_FALLBACK} target="_blank" rel="noopener noreferrer"
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
               להמשיך את התהליך →
             </a>
@@ -718,7 +720,7 @@
             <p className="font-heading font-bold text-[18px] text-ink-800">שדרוג למסלול המלא</p>
             <p className="text-[13.5px] text-ink-500 mt-1.5 leading-relaxed">שערים 2-4 פתוחים במנוי החודשי — כל 14 המודולים, התרגילים והמלווה הדיגיטלי, זמין 24/7.</p>
           </div>
-          <a href={PAY_LINK} target="_blank" rel="noopener noreferrer"
+          <a href={PAY_LINK || PAY_FALLBACK} target="_blank" rel="noopener noreferrer"
             className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
             להמשיך בתשלום →
           </a>
