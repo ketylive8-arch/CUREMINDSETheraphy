@@ -301,6 +301,45 @@
     );
   }
 
+  function EmailStatusPanel({ authHeader }) {
+    const [st, setSt] = useState(null);
+    const [loading, setLoading] = useState(true);
+    function check() {
+      setLoading(true);
+      fetch("/api/admin/email-status", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { setSt(d); setLoading(false); })
+        .catch(() => setLoading(false));
+    }
+    useEffect(() => { check(); }, []);
+    const ok = st && st.active !== "formsubmit";
+    const border = ok ? "#6f9268" : "#c9922f";
+    const bg = ok ? "#eef4ec" : "#fdf6e6";
+    const tint = ok ? "#4b6b45" : "#8a6414";
+    return (
+      <div className="rounded-2xl p-4" style={{ background: bg, border: `1px solid ${border}` }}>
+        <div className="flex items-center justify-between mb-1.5">
+          <h2 className="font-heading font-bold text-[15px] text-ink-800 flex items-center gap-1.5">
+            <Icon name="mail" size={14} className="text-gold-600" /> התראות לידים במייל
+          </h2>
+          <button type="button" onClick={check} className="text-[12px] font-semibold underline" style={{ color: tint }}>בדיקה מחדש</button>
+        </div>
+        {loading ? (
+          <p className="text-[13px] text-ink-500">בודקת את ערוץ המייל...</p>
+        ) : st ? (
+          <div>
+            <span className="inline-block text-[13px] font-heading font-bold" style={{ color: tint }}>
+              {ok ? `פעיל דרך ${st.channels.find((c) => c.key === st.active).label} · נשלח ל-${st.to}` : `לא הוגדר ערוץ ייעודי — נופל ל-FormSubmit (דורש הפעלה חד-פעמית) · נשלח ל-${st.to}`}
+            </span>
+            {!ok ? <p className="text-[11.5px] text-ink-400 mt-1.5">כל טופס באתר (הרשמה, יצירת קשר, סדנאות) עדיין ישלח ליד — אבל FormSubmit דורש שתלחצי על קישור "Activate" שמגיע למייל בפעם הראשונה שהוא שולח. להפעלה יציבה יותר: הגדירי GMAIL_USER+GMAIL_APP_PASSWORD או RESEND_API_KEY ב-Render.</p> : null}
+          </div>
+        ) : (
+          <p className="text-[13px] text-ink-500">לא ניתן היה לבדוק כרגע.</p>
+        )}
+      </div>
+    );
+  }
+
   function WorkshopSignupsPanel({ authHeader }) {
     const [rows, setRows] = useState([]);
     const [open, setOpen] = useState(true);
@@ -549,6 +588,7 @@
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
           <AIStatusPanel authHeader={authHeader} />
+          <EmailStatusPanel authHeader={authHeader} />
           <ContentCatalogPanel authHeader={authHeader} />
           <WorkshopSignupsPanel authHeader={authHeader} />
           <AccessCodesPanel authHeader={authHeader} />

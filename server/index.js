@@ -1332,6 +1332,20 @@ admin.get("/ai-status", async (req, res) => {
   }
 });
 
+// סטטוס ערוץ המייל — האם יש ערוץ מוגדר לשליחת לידים (Webhook/Gmail/Resend/FormSubmit),
+// ולאיזה יעד. לא חושף סודות, רק מציג מה מוגדר ולאן זה נשלח.
+admin.get("/email-status", (req, res) => {
+  const { NOTIFY_TO } = require("./notify");
+  const channels = [
+    { key: "webhook", label: "Webhook (n8n/Make/Zapier)", configured: !!process.env.LEAD_WEBHOOK_URL },
+    { key: "gmail", label: "Gmail ישיר", configured: !!(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) },
+    { key: "resend", label: "Resend", configured: !!process.env.RESEND_API_KEY },
+    { key: "formsubmit", label: "FormSubmit (גיבוי, דורש הפעלה חד-פעמית)", configured: true },
+  ];
+  const active = channels.find((c) => c.configured);
+  res.json({ to: NOTIFY_TO, active: active ? active.key : "formsubmit", channels });
+});
+
 const RISK_RANK = { attention: 3, watch: 2, calm: 1 };
 admin.get("/patients", (req, res) => {
   const patients = db.prepare("SELECT device_token, display_name, last_interaction_at FROM patients ORDER BY created_at DESC").all();

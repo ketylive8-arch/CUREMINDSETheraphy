@@ -62,6 +62,13 @@
   .related{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:22px 0;border-top:1px solid var(--gold-soft);margin-top:30px;font-size:15px}
   .related span{color:var(--ink-500)}
   .disclaimer{background:#f3eee3;border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--ink-500);margin:24px 0}
+  .leadbox{background:linear-gradient(160deg,#fff,var(--gold-soft));border:1px solid var(--gold-soft);border-radius:20px;padding:30px 26px;margin:30px 0;text-align:center}
+  .leadbox h2{margin-top:0}
+  form.lead{display:grid;gap:12px;max-width:420px;margin:18px auto 0;text-align:start}
+  form.lead input,form.lead textarea{font-family:Assistant,sans-serif;font-size:16px;padding:13px 15px;border:1px solid var(--gold-soft);border-radius:12px;background:#fff;width:100%}
+  form.lead textarea{min-height:70px;resize:vertical}
+  .ok{display:none;background:#f1f7f1;border:1px solid #cfe6cf;border-radius:14px;padding:18px;color:#2d6a2d;font-weight:700}
+  .wa-cta{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:13px 24px;border-radius:999px;font-size:16px}
   footer.site{border-top:1px solid var(--gold-soft);padding:26px 0;text-align:center;color:var(--ink-500);font-size:14px}
   footer.site a{color:var(--gold-deep);text-decoration:none;margin:0 8px}
   @media(max-width:600px){h1{font-size:27px}.cards{grid-template-columns:1fr}.hero{padding:30px 0 4px}}
@@ -89,14 +96,30 @@
     <div class="eyebrow">יצירת קשר · CureMindset</div>
     <h1>החלטת השינוי מתחילה בשיחה אחת.</h1>
     <p class="lead">אני יודעת שזה לא תמיד פשוט לפנות לעזרה. אני כאן כדי להקשיב, להבין ולבדוק יחד אם אנחנו מתאימות לעבודה משותפת — בלי התחייבות ובלי מילים גדולות. רק שיחה כנה על מה שעובר עלייך.</p>
-    <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קביעת שיחת היכרות ללא עלות</a>
+    <div class="btnrow" style="justify-content:flex-start;margin-top:4px">
+      <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קביעת שיחת היכרות ללא עלות</a>
+      <a class="wa-cta" href="https://wa.me/972543032349?text=%D7%94%D7%99%D7%99%20%D7%A7%D7%98%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%95%D7%93" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.28-1.38a9.86 9.86 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.79 14.05c-.24.68-1.4 1.3-1.93 1.34-.5.04-1 .22-3.36-.7-2.85-1.13-4.68-4.06-4.82-4.25-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.09.99-2.38.26-.28.57-.35.76-.35.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.15.07.15.11.32.02.51-.09.19-.14.31-.28.48-.14.16-.29.36-.42.49-.14.14-.28.28-.12.56.16.28.72 1.19 1.55 1.93 1.07.95 1.97 1.25 2.25 1.39.28.14.44.12.61-.07.16-.19.7-.82.89-1.1.19-.28.37-.23.63-.14.26.09 1.63.77 1.9.91.28.14.46.21.53.33.07.12.07.68-.17 1.35z"/></svg>
+        וואטסאפ ישיר
+      </a>
+    </div>
   </div>
 
-  <section class="blk"><h2>דרכי יצירת קשר</h2><p>וואטסאפ: 054-303-2349 · אימייל: ketyse@gmail.com</p><p>לקביעת שיחת היכרות ישירות ביומן: <a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קביעת שיחה</a>.</p></section>
-  
-  
+  <div class="leadbox" id="lead">
+    <h2>או משאירים פרטים — קטי חוזרת אישית</h2>
+    <p>בלי התחייבות, בלי מכירה. רק לחזור אליך עם התשובה הנכונה.</p>
+    <form class="lead" id="leadForm" novalidate>
+      <input name="name" type="text" placeholder="שם מלא" autocomplete="name" required />
+      <input name="phone" type="tel" placeholder="טלפון" autocomplete="tel" required />
+      <input name="email" type="email" placeholder="אימייל (לא חובה)" autocomplete="email" />
+      <textarea name="note" placeholder="במה נוכל לעזור? (לא חובה)"></textarea>
+      <button class="btn primary" type="submit" id="leadBtn">שליחה ←</button>
+    </form>
+    <div class="ok" id="leadOk">קיבלנו! קטי תחזור אלייך בהקדם 🤍</div>
+    <p class="note" style="margin-top:16px">וואטסאפ: <a href="https://wa.me/972543032349" target="_blank" rel="noopener">054-303-2349</a> · אימייל: <a href="mailto:ketyse@gmail.com">ketyse@gmail.com</a></p>
+  </div>
 
-  
+
 
   <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
@@ -120,5 +143,28 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+
+<script>
+  (function(){
+    var form=document.getElementById('leadForm');
+    var btn=document.getElementById('leadBtn');
+    var ok=document.getElementById('leadOk');
+    if(!form)return;
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();
+      const d=Object.fromEntries(new FormData(form).entries());
+      btn.disabled=true;btn.textContent='שולח…';
+      try{
+        const res=await fetch('/api/send-lead',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({fullName:d.name||'',phone:d.phone||'',email:d.email||'',onboarding:d.note||'',source:'contact-page'})});
+        if(!res.ok) throw 0;
+        form.hidden=true;ok.hidden=false;ok.style.display='block';
+      }catch(err){
+        btn.disabled=false;btn.textContent='שליחה ←';
+        alert('קרתה תקלה רגעית בשליחה. אפשר לנסות שוב, או לכתוב לנו בוואטסאפ.');
+      }
+    });
+  })();
+</script>
 </body>
 </html>
