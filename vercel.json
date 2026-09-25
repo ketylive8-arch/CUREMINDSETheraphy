@@ -16,6 +16,7 @@
     { "source": "/parents", "destination": "/parents.html" },
     { "source": "/method", "destination": "/method.html" },
     { "source": "/about", "destination": "/about.html" },
+    { "source": "/personal", "destination": "/personal.html" },
     { "source": "/faq", "destination": "/faq.html" },
     { "source": "/contact", "destination": "/contact.html" },
     { "source": "/responsibility", "destination": "/responsibility.html" },
