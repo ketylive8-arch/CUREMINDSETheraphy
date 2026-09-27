@@ -1892,6 +1892,7 @@ function Home({ onEnterApp }) {
         <HbPersonal />
         <HbWorkshops />
         <HbWhyKety />
+        <ArticlesSection />
         <HbFaq />
         <HbFinalCta />
       </main>
