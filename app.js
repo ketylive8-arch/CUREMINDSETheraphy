@@ -308,7 +308,7 @@ function Button({ as = "a", variant = "primary", size = "md", icon, iconPos = "s
   const sizes = { md: "px-6 py-3.5 text-[15px] sm:text-base", lg: "px-8 py-4 text-base sm:text-lg" };
   const variants = {
     primary:
-      "bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(224,82,63,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(224,82,63,0.85)]",
+      "bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(194,151,74,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(194,151,74,0.85)]",
     secondary:
       "bg-white text-ink-800 border border-ink-100 hover:bg-gold-50 hover:border-gold-300 hover:-translate-y-0.5",
     dark: "bg-ink-800 text-white hover:bg-ink-700 hover:-translate-y-0.5",

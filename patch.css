@@ -28,7 +28,7 @@
  * ============================================================ */
 .hb-hero{
   position:relative; overflow:hidden;
-  background:linear-gradient(180deg,#ffffff 0%, #f7f7f5 100%);
+  background:linear-gradient(180deg,#FCFAF6 0%, #F8F4EC 100%);
   padding:clamp(104px,12vw,150px) clamp(20px,5vw,64px) clamp(64px,7vw,100px);
 }
 .hb-hero__inner{
@@ -38,9 +38,9 @@
 .hb-hero__text{ text-align:start; }
 .hb-hero__eyebrow{
   font-family:Rubik,sans-serif; font-weight:600; font-size:12.5px; text-transform:uppercase;
-  letter-spacing:.2em; color:#b23e2c; display:inline-flex; align-items:center; gap:12px; margin-bottom:22px;
+  letter-spacing:.2em; color:#8A6A2F; display:inline-flex; align-items:center; gap:12px; margin-bottom:22px;
 }
-.hb-hero__eyebrow::before{ content:""; width:28px; height:1px; background:#e0523f; display:inline-block; }
+.hb-hero__eyebrow::before{ content:""; width:28px; height:1px; background:#C2974A; display:inline-block; }
 .hb-hero__title{
   font-family:Rubik,sans-serif; font-weight:600; color:#221F1A;
   font-size:clamp(1.9rem,3.2vw,2.9rem); line-height:1.22; letter-spacing:-.005em;
@@ -53,13 +53,13 @@
 .hb-hero__cta{ display:flex; flex-wrap:wrap; align-items:center; gap:18px; }
 .hb-hero__btn{
   display:inline-flex; align-items:center; justify-content:center;
-  background:#e0523f; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:17px;
+  background:#C2974A; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:17px;
   padding:16px 32px; border-radius:999px; text-decoration:none; border:0; cursor:pointer;
-  box-shadow:0 16px 38px -14px rgba(224,82,63,.65); transition:transform .25s, box-shadow .25s, background .25s;
+  box-shadow:0 16px 38px -14px rgba(194,151,74,.65); transition:transform .25s, box-shadow .25s, background .25s;
 }
-.hb-hero__btn:hover{ background:#B0843C; transform:translateY(-2px); box-shadow:0 22px 48px -16px rgba(224,82,63,.8); }
+.hb-hero__btn:hover{ background:#B0843C; transform:translateY(-2px); box-shadow:0 22px 48px -16px rgba(194,151,74,.8); }
 .hb-hero__link{
-  font-family:Rubik,sans-serif; font-weight:700; font-size:16px; color:#b23e2c; text-decoration:none;
+  font-family:Rubik,sans-serif; font-weight:700; font-size:16px; color:#8A6A2F; text-decoration:none;
   display:inline-flex; align-items:center; gap:8px; padding:6px 4px; transition:color .2s, gap .2s;
 }
 .hb-hero__link:hover{ color:#6E521F; gap:12px; }
