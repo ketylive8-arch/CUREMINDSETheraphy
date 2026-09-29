@@ -3545,7 +3545,11 @@
   }
 
   function MemberArea({ onExit }) {
-    const [loggedIn, setLoggedIn] = useState(() =>!!getAuthToken());
+    // בקשת קטי: להוריד את חומת ההרשמה — נכנסים ישר לבוט. השרת כבר תומך בגלישה
+    // אנונימית לפי מזהה המכשיר (deviceToken.js, "נופלים חזרה למזהה המכשיר לגלישת
+    // ניסיון אנונימית") — ה-72 שעות ניסיון רצות גם בלי חשבון. AuthGate נשאר מוגדר
+    // למטה ולא נמחק, למקרה שנרצה נתיב הרשמה אופציונלי (שמירת התקדמות/קוד גישה).
+    const [loggedIn, setLoggedIn] = useState(true);
     const [progress, setProgress] = useState(loadProgress);
     // נפתח על הבוט (צ'ק-אין, שלב 5) — קטי הדיגיטלית היא ליבת המוצר, פוגשים אותה מיד.
     // "היום שלי" (שלב 0) נשאר נגיש כטאב ראשון.
@@ -3620,13 +3624,7 @@
 
     // שער כניסה: בלי חשבון מחובר — אין גישה לאזור האישי.
     // הפתיח (קרוסלת ברוכה הבאה) הוסר — ישר לטופס ההרשמה/כניסה (בקשת קטי).
-    if (!loggedIn) {
-      return (
-        <PhoneFrame>
-          <AuthGate onAuthed={() => setLoggedIn(true)} onExit={onExit} />
-        </PhoneFrame>
-      );
-    }
+    // שער ההרשמה הוסר (loggedIn מוגדר true תמיד למעלה) — נכנסים ישר לתוכן.
 
     return (
       <PhoneFrame>
