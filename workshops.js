@@ -340,7 +340,7 @@
             <span className="wk__eyebrow"><Compass size={15} /> מפת הסדנאות</span>
             <h1 className="wk__title">מפת הדרכים <em>הפנימית</em></h1>
             <p className="wk__lead">
-              שיטת CureMindset היא מתודולוגיה קלינית מובנית הפועלת ברמת התת־מודע — מטפלת בשורש, לא בסימפטום.
+              שיטת CureMindset היא מתודולוגיה מבוססת-מחקר הפועלת ברמת התת־מודע — מטפלת בשורש, לא בסימפטום.
               משלבת NLP, דמיון נוירולוגי, עבודה עם התת־מודע ועקרונות גמישות מוחית (Neuroplasticity) — בשיטת CureMindset של קטי שגב.
             </p>
             <div className="wk__methods">
