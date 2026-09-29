@@ -124,10 +124,10 @@ const CONTENT = {
   workshops: {
     eyebrow: "סדנאות",
     title: "סדנאות ותוכניות CureMindset",
-    subtitle: "כל סדנה בנפרד — עם התוכן, המחיר והמסגרת שלה",
+    subtitle: "כל סדנה בנפרד — עם התוכן והמסגרת שלה. פרטים ומחיר בשיחה קצרה איתי",
     items: [
-      { icon: "compass", title: "המצפן הפנימי", meta: "3 מפגשים · עד 8 · ₪1,190", text: "סדנת חוויה קבוצתית בשיטת CURE: לפגוש חרדה, לשחרר חסמים ולחווט מחדש את הדרך שאתה מגיב.", href: "/workshop-inner-compass" },
-      { icon: "user-round", title: "CURE Teens", meta: "6 מפגשים אישיים · ₪3,500", text: "ליווי פרימיום אישי לנוער 13–18: ביטחון, הרגעת חרדה וכלים אמיתיים לחוסן — בשפה שלהם.", href: "/workshop-cure-teens" },
+      { icon: "compass", title: "המצפן הפנימי", meta: "3 מפגשים · עד 8 משתתפים", text: "סדנת חוויה קבוצתית בשיטת CURE: לפגוש חרדה, לשחרר חסמים ולחווט מחדש את הדרך שאתה מגיב.", href: "/workshop-inner-compass" },
+      { icon: "user-round", title: "CURE Teens", meta: "6 מפגשים אישיים", text: "ליווי פרימיום אישי לנוער 13–18: ביטחון, הרגעת חרדה וכלים אמיתיים לחוסן — בשפה שלהם.", href: "/workshop-cure-teens" },
     ],
     cta: "לבדוק זמינות לסדנה הקרובה",
   },
@@ -139,8 +139,8 @@ const CONTENT = {
       {
         id: "basic",
         badge: "בסיסי · דיגיטלי",
-        price: "₪570",
-        priceNote: "גישה מלאה לאזור הדיגיטלי",
+        price: "אזור דיגיטלי",
+        priceNote: "גישה מלאה + 3 ימי התנסות חינם",
         audience: "מי שרוצה להתחיל עצמאית, בקצב שלו/ה, עם הכלים הדיגיטליים",
         features: [
           "צ'אט עם קטי הדיגיטלית — 24/7",
@@ -155,8 +155,8 @@ const CONTENT = {
       {
         id: "combined",
         badge: "שילוב · מומלץ",
-        price: "₪2,580",
-        priceNote: "דיגיטלי + מפגשי זום אישיים",
+        price: "דיגיטלי + זום אישי",
+        priceNote: "פרטים ומחיר בשיחת היכרות",
         audience: "השילוב האפקטיבי ביותר — הכלים הדיגיטליים יחד עם ליווי חי של קטי",
         features: [
           "כל האזור הדיגיטלי המלא",
@@ -171,8 +171,8 @@ const CONTENT = {
       {
         id: "premium",
         badge: "CURE Teens · פרימיום",
-        price: "₪3,500",
-        priceNote: "ליווי אישי מלא לנוער",
+        price: "ליווי אישי לנוער",
+        priceNote: "שיחת אבחון 20 דק' ללא עלות",
         audience: "ליווי אישי עמוק לנוער (13+) — התהליך המלא עם קטי",
         features: [
           "6 מפגשים אישיים עם קטי (50 דק')",
@@ -891,7 +891,7 @@ function PlanCard({ plan, idx, onEnterApp }) {
           </span>
         )}
         <div className="mt-2 mb-1">
-          <span className="font-heading font-extrabold text-ink-800 text-[36px] sm:text-[42px] leading-none">
+          <span className="font-heading font-extrabold text-ink-800 text-[22px] sm:text-[25px] leading-snug">
             {plan.price}
           </span>
         </div>
