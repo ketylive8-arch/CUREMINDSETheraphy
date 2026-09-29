@@ -9,7 +9,7 @@ const assert = require("node:assert/strict");
 const ROOT = path.join(__dirname, "..");
 const read = (f) => fs.readFileSync(path.join(ROOT, f), "utf8");
 
-const WORKSHOPS = ["workshop-inner-compass.html", "workshop-cure-teens.html", "workshop-organizations.html"];
+const WORKSHOPS = ["workshop-inner-compass.html", "workshop-cure-teens.html"];
 
 test("עמודי הסדנאות: אף כפתור primary לא מוביל לוואטסאפ", () => {
   for (const f of WORKSHOPS) {

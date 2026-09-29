@@ -128,7 +128,6 @@ const CONTENT = {
     items: [
       { icon: "compass", title: "המצפן הפנימי", meta: "3 מפגשים · עד 8 · ₪1,190", text: "סדנת חוויה קבוצתית בשיטת CURE: לפגוש חרדה, לשחרר חסמים ולחווט מחדש את הדרך שאתה מגיב.", href: "/workshop-inner-compass" },
       { icon: "user-round", title: "CURE Teens", meta: "6 מפגשים אישיים · ₪3,500", text: "ליווי פרימיום אישי לנוער 13–18: ביטחון, הרגעת חרדה וכלים אמיתיים לחוסן — בשפה שלהם.", href: "/workshop-cure-teens" },
-      { icon: "sparkles", title: "סדנה לארגונים", meta: "מותאם · צוותים ובתי ספר", text: "סדנת חוסן שמצמצמת שחיקה ומחזירה לצוות כלים מעשיים לוויסות לחץ — לא הרצאה שמתאדה למחרת.", href: "/workshop-organizations" },
     ],
     cta: "לבדוק זמינות לסדנה הקרובה",
   },
@@ -965,47 +964,8 @@ function Plans({ onEnterApp }) {
 }
 
 /* ---------------------------------------------------------------- */
-/* Organizations                                                    */
 /* ---------------------------------------------------------------- */
 
-function Organizations() {
-  return (
-    <section id="organizations" className="py-20 sm:py-28 bg-white border-t border-ink-100">
-      <div className="max-w-[1080px] mx-auto px-5 sm:px-7 text-center">
-        <Reveal className="max-w-[760px] mx-auto mb-12">
-          <Eyebrow>לארגונים ולבתי ספר</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[38px] mb-4">
-            סדנאות חוסן ואימון מנטלי לצוותים
-          </h2>
-          <p className="text-ink-600 text-[17px] leading-relaxed">
-            הרצאות וסדנאות מותאמות אישית לארגונים, חברות הייטק, מוסדות חינוך ומכינות — כלים מעשיים להתמודדות עם לחץ ושחיקה.
-          </p>
-        </Reveal>
-
-        <Reveal className="mb-10">
-          <p className="font-heading text-[13px] font-semibold tracking-[0.14em] uppercase text-gold-600 mb-5">כבר העברתי סדנאות והרצאות ב־</p>
-          <div className="flex flex-wrap items-center justify-center gap-3.5">
-            {["מרכז הצעירים · קריית מוצקין", "עמותת יסמין", "מרכז תכלת"].map((name) => (
-              <span key={name} className="inline-flex items-center gap-2 rounded-full bg-[#FAF8F4] border border-gold-200/80 px-5 py-2.5 text-ink-700 font-heading font-semibold text-[14.5px] shadow-softer">
-                <Icon name="shield-check" size={16} className="text-gold-500 shrink-0" />
-                {name}
-              </span>
-            ))}
-          </div>
-          <p className="text-ink-500 text-[14px] mt-5">
-            פורמט טיפוסי: מפגש בן 60–90 דקות, לקבוצות של עד 30 משתתפים — מותאם לצוות, למורים/יועצות או לבני נוער.
-          </p>
-        </Reveal>
-
-        <Reveal>
-          <Button as="a" href={BOOKING_LINKS.calendar || waLink("היי קטי! אשמח לפרטים על סדנה לארגון")} target="_blank" rel="noopener noreferrer" variant="secondary" size="md">
-            לקביעת שיחת היכרות לארגון
-          </Button>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------------------------------------------------------- */
 /* Testimonials / Results (Curable Clean Cards)                     */
@@ -1612,7 +1572,6 @@ function HbServices() {
   const list = [
     { title: "ליווי אישי 1:1", sub: "תהליך עומק עם קטי", text: "עבודה ממוקדת תוצאות על השורש: מגדירים מטרה, עובדים עם התסמינים ומודדים שינוי שנשאר.", href: "/emotional-coaching" },
     { title: "CURE Teens", sub: "ליווי רגשי לנוער", text: "חוסן, ביטחון וכלים להתמודדות — בשפה של גיל ההתבגרות, בלי טיפול ובלי תוויות.", href: "/cure-teens" },
-    { title: "סדנאות והרצאות", sub: "לארגונים ולקבוצות", text: "יום אחד, דפוס חדש: חוסן, תקשורת ומיינדסט לצוותים, מנהלים וקהלים.", href: "/workshops" },
   ];
   const media = [
     { label: "רדיו חיפה", href: MEDIA_LINKS.radio },
@@ -1656,7 +1615,6 @@ function HbAudiences() {
     { icon: "user-round", title: "מבוגרים", problem: "לחץ, חרדה, ביקורת עצמית, עמידה במקום.", solution: "ליווי אישי בשיטת CURE או המצפן הפנימי.", cta: "לשיחת היכרות", href: "#lead" },
     { icon: "sparkles", title: "בני נוער (13–18)", problem: "חרדת מבחנים, דימוי עצמי, הצפה.", solution: "CURE Teens — ליווי אישי בשפה שלהם.", cta: "לתוכנית", href: "/cure-teens" },
     { icon: "heart", title: "הורים למתבגר/ת", problem: "“לא יודעים איך לעזור”.", solution: "פנייה לליווי רגשי וחיזוק חוסן למתבגר/ת (CURE Teens).", cta: "לתוכנית", href: "/cure-teens" },
-    { icon: "users", title: "ארגונים וצוותים", problem: "מתח, שחיקה, שיתוף פעולה.", solution: "המצפן — סדנת חוסן ארגונית.", cta: "לתיאום שיחה", href: "#lead" },
   ];
   return (
     <section id="audiences" className="py-20 sm:py-28 bg-white">
@@ -1748,7 +1706,6 @@ function HbWorkshops() {
   const list = [
     { title: "המצפן הפנימי", sub: "Unleash Your Mindset", text: "סדנת הדגל לשחרור דפוסים ובניית מיינדסט — למבוגרים.", href: "/workshop-inner-compass" },
     { title: "CURE Teens", sub: "מסע החוסן למתבגרים", text: "חוסן, ביטחון ותקשורת בשפה של גיל ההתבגרות.", href: "/workshop-cure-teens" },
-    { title: "המצפן לארגונים", sub: "חוסן לצוותים", text: "יום חוסן ותקשורת לצוותים, מנהלים וארגונים.", href: "/workshop-organizations" },
   ];
   return (
     <section id="workshops" className="py-20 sm:py-28 bg-white">
