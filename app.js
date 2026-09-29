@@ -308,7 +308,7 @@ function Button({ as = "a", variant = "primary", size = "md", icon, iconPos = "s
   const sizes = { md: "px-6 py-3.5 text-[15px] sm:text-base", lg: "px-8 py-4 text-base sm:text-lg" };
   const variants = {
     primary:
-      "bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(194,151,74,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(194,151,74,0.85)]",
+      "bg-gold-500 text-white shadow-[0_14px_34px_-14px_rgba(224,82,63,0.7)] hover:bg-gold-600 hover:-translate-y-0.5 hover:shadow-[0_20px_46px_-16px_rgba(224,82,63,0.85)]",
     secondary:
       "bg-white text-ink-800 border border-ink-100 hover:bg-gold-50 hover:border-gold-300 hover:-translate-y-0.5",
     dark: "bg-ink-800 text-white hover:bg-ink-700 hover:-translate-y-0.5",
@@ -664,7 +664,7 @@ function About() {
             <Eyebrow>על המייסדת</Eyebrow>
             <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[36px]">קטי שגב · CureMindset</h2>
             <p className="text-ink-600 text-[17px] leading-relaxed">
-              מפתחת שיטת CureMindset, מאמנת מנטלית ומטפלת NLP בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
+              מפתחת שיטת CureMindset, מאמנת מנטלית ומוסמכת NLP בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               <div className="bg-white p-4 rounded-xl border border-gold-200/60 text-center">

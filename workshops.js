@@ -39,7 +39,7 @@
   /* ---- category theming (echoes the infographic station colors) ---- */
   const CATS = {
     youth:  { label: "חינוך · נוער",       accent: "#6f9268", soft: "rgba(111,146,104,0.14)", line: "rgba(111,146,104,0.34)" },
-    depth:  { label: "סדנת עומק",          accent: "#c2974a", soft: "rgba(194,151,74,0.13)",  line: "rgba(194,151,74,0.34)" },
+    depth:  { label: "סדנת עומק",          accent: "#e0523f", soft: "rgba(224,82,63,0.13)",  line: "rgba(224,82,63,0.34)" },
     module: { label: "מודול ממוקד",        accent: "#bd7d5b", soft: "rgba(189,125,91,0.14)",  line: "rgba(189,125,91,0.34)" },
   };
 

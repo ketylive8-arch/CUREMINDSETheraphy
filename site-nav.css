@@ -19,5 +19,5 @@
     transition: color .2s;
     white-space: nowrap;
   }
-  .site-nav a:hover { color: var(--gold-deep, #8a6a2f); }
+  .site-nav a:hover { color: var(--gold-deep, #b23e2c); }
 }
