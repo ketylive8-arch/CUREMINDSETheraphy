@@ -88,7 +88,7 @@ function template(p) {
 <meta property="og:image" content="https://ketysegev.com/images/kety-920.jpg" />
 <meta property="og:locale" content="he_IL" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="/images/logo.png" type="image/png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -143,7 +143,7 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
 </head>
 <body>
 <header class="site"><div class="wrap">
-  <a class="brand" href="/"><img src="/images/logo.svg" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
+  <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
   <a class="cta-top" href="/#plans">להתחיל ניסיון חינם</a>
 </div></header>
 
