@@ -679,7 +679,7 @@
               className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
               להמשיך את התהליך →
             </a>
-            <p className="mt-2 text-[12.5px] text-ink-500">מנוי חודשי · ₪297 בחיוב חודשי · ניתן לבטל בכל עת</p>
+            <p className="mt-2 text-[12.5px] text-ink-500">מנוי חודשי · ₪278 בחיוב חודשי · ניתן לבטל בכל עת</p>
             <p className="mt-2.5 flex items-center justify-center gap-1.5 text-[12.5px] text-gold-700 font-semibold">
               <Icon name="shield-check" size={15} className="text-gold-600" />
               החזר כספי מלא תוך 15 יום — בלי שאלות
@@ -724,7 +724,7 @@
             className="w-full py-4 rounded-2xl bg-gold-500 text-white font-heading font-extrabold text-[16px] hover:bg-gold-600 transition-colors shadow-[0_14px_30px_-14px_rgba(194,151,74,0.9)]">
             להמשיך בתשלום →
           </a>
-          <p className="text-[12.5px] text-ink-500 -mt-2">מנוי חודשי · ₪297 בחיוב חודשי · ניתן לבטל בכל עת</p>
+          <p className="text-[12.5px] text-ink-500 -mt-2">מנוי חודשי · ₪278 בחיוב חודשי · ניתן לבטל בכל עת</p>
           {showCode? (
             <div className="w-full pt-2 border-t border-ink-100">
               <p className="text-[12.5px] text-ink-500 mb-2 mt-4">קיבלת קוד אישי מקטי? הקלידי אותו כאן:</p>
@@ -3547,7 +3547,7 @@
   function MemberArea({ onExit }) {
     // בקשת קטי: להוריד את חומת ההרשמה — נכנסים ישר לבוט. השרת כבר תומך בגלישה
     // אנונימית לפי מזהה המכשיר (deviceToken.js, "נופלים חזרה למזהה המכשיר לגלישת
-    // ניסיון אנונימית") — ה-72 שעות ניסיון רצות גם בלי חשבון. AuthGate נשאר מוגדר
+    // ניסיון אנונימית") — 7 ימי הניסיון רצים גם בלי חשבון. AuthGate נשאר מוגדר
     // למטה ולא נמחק, למקרה שנרצה נתיב הרשמה אופציונלי (שמירת התקדמות/קוד גישה).
     const [loggedIn, setLoggedIn] = useState(true);
     const [progress, setProgress] = useState(loadProgress);

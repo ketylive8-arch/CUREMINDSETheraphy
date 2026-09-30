@@ -84,13 +84,13 @@ function Programs({onPick}){
   return h("div",null,
     h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
     h("h1",null,"בחרי את המרחב שלך"),
-    h("p",{className:"sub"},"מרחב אישי לבניית חוסן, בהירות וביטחון פנימי — עם 3 ימי התנסות מלאה."),
+    h("p",{className:"sub"},"מרחב אישי לבניית חוסן, בהירות וביטחון פנימי — עם 7 ימי התנסות מלאה."),
     h("div",{className:"grid"},
       progs.map(p=>h("div",{key:p.programId,className:"card prog",onClick:()=>onPick(p)},
         h("span",{className:"tag"},tagFor(p.audience)),
         h("h3",null,p.title),
         h("p",null,p.subtitle),
-        h("div",{className:"price"},p.priceDisplay+" · 3 ימי התנסות"),
+        h("div",{className:"price"},p.priceDisplay+" · 7 ימי התנסות"),
         h("div",{className:"row"}, h("button",{className:"btn"},"התחילי כאן"))
       ))
     ),
@@ -118,7 +118,7 @@ function Space({me,program,onExpired}){
     h("div",{className:"trialbar"},
       h("div",null,
         h("div",null, h(Countdown,{endsAt: acc.trialEndsAt || new Date(Date.now()+72*3600e3).toISOString()})),
-        h("small",null,"3 ימי התנסות — מרחב להתנסות ולצמיחה")
+        h("small",null,"7 ימי התנסות — מרחב להתנסות ולצמיחה")
       ),
       h("div",null, h("small",null,"התוכנית: "), (program&&program.title)||enr.programId)
     ),
@@ -153,7 +153,7 @@ function Paywall({onBack}){
     h("h1",null,"72 השעות הסתיימו 🌱"),
     h("p",{className:"sub"},"כדי להמשיך את הליווי — הנה בדיוק מה שכולל המנוי, בשקיפות מלאה."),
     h("div",{className:"pay"},
-      h("div",{className:"big"}, p.price||"₪297 לחודש"),
+      h("div",{className:"big"}, p.price||"₪278 לחודש"),
       h("div",{className:"muted"}, "חיוב "+(p.billingFrequency==="monthly"?"חודשי":p.billingFrequency)+" · "+(p.currency||"ILS")+" · חיוב ראשון: "+(p.firstChargeAt||"")),
       h("ul",null,(p.includes||[]).map((x,i)=>h("li",{key:i},x))),
       h("div",{className:"row"},

@@ -979,7 +979,7 @@ api.get("/checkout", (req, res) => {
       allowed: false, state: gate.state, reason: gate.reason,
       hoursLeft: gate.hoursLeft ?? null,
       message: gate.state === "trial_active"
-        ? "התוכנית בתשלום תיפתח בסיום 72 שעות ההתנסות."
+        ? "התוכנית בתשלום תיפתח בסיום 7 ימי ההתנסות."
         : "אין צורך בתשלום כרגע.",
     });
   }
@@ -990,7 +990,7 @@ api.get("/checkout", (req, res) => {
     allowed: true, state: gate.state, programId: gate.programId,
     // תנאים גלויים לפני checkout (מחיר, מטבע, תדירות, מה כלול, חיוב ראשון, ביטול, מדיניות).
     pricing: {
-      price: prog ? prog.price_display : "₪297 לחודש",
+      price: prog ? prog.price_display : "₪278 לחודש",
       currency: "ILS",
       billingFrequency: prog ? prog.billing_frequency : "monthly",
       firstChargeAt: "מיד עם ההצטרפות (בתום ההתנסות)",

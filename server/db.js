@@ -193,7 +193,7 @@ db.exec(`
     module_ids TEXT,               -- JSON array
     audio_asset_ids TEXT,          -- JSON array
     preview_content TEXT,
-    trial_hours INTEGER NOT NULL DEFAULT 72,
+    trial_hours INTEGER NOT NULL DEFAULT 168,
     price_display TEXT,
     billing_frequency TEXT,
     grow_product_id TEXT,
@@ -489,7 +489,7 @@ function scheduleEngagementNotifications(deviceToken) {
    מודל המוצר — תוכניות, הרשמות ו-72 שעות ניסיון (server-side).
    ═══════════════════════════════════════════════════════════════════ */
 
-const TRIAL_HOURS = 72;
+const TRIAL_HOURS = 168; // 7 ימים (אושר ע"י קטי — היה 72 שעות)
 
 function nowIso() { return new Date().toISOString().replace("T", " ").slice(0, 19); }
 function genId(prefix) { return prefix + "_" + crypto.randomBytes(9).toString("hex"); }
@@ -497,9 +497,9 @@ function genId(prefix) { return prefix + "_" + crypto.randomBytes(9).toString("h
 // זריעת קטלוג התוכניות (מקור אמת יחיד בשרת). ניתן להרחבה מה-Back Office.
 function seedPrograms() {
   const PROGRAMS = [
-    { program_id: "prog_digital_adult", slug: "digital-adult", title: "המרחב האישי — מבוגרים", subtitle: "מאמן רגשי חכם בכף היד", description: "ליווי דיגיטלי יומי בשיטת CureMindset למבוגרים: שיחה, מודול, אודיו ותרגול.", audience: "adult", age_group: "adult", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["conflict", "loyalty", "belonging"]) },
-    { program_id: "prog_digital_teen", slug: "digital-teen", title: "המרחב האישי — נוער", subtitle: "מלווה דיגיטלי לגיל ההתבגרות", description: "ליווי יומי לנוער: שפה ישירה ואמפתית, מודולים וכלים מעשיים לחוסן וביטחון.", audience: "teen", age_group: "youth", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["belonging", "motivation-map", "conflict"]) },
-    { program_id: "prog_digital_parent", slug: "digital-parent", title: "המרחב האישי — הורים", subtitle: "ליווי להורה למתבגר", description: "ליווי דיגיטלי להורים: הבנת התהליך, גבולות פרטיות וכלים לתמיכה במתבגר.", audience: "parent", age_group: "adult", duration: "מתמשך", trial_hours: 72, price_display: "₪297 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["loyalty", "conflict"]) },
+    { program_id: "prog_digital_adult", slug: "digital-adult", title: "המרחב האישי — מבוגרים", subtitle: "מאמן רגשי חכם בכף היד", description: "ליווי דיגיטלי יומי בשיטת CureMindset למבוגרים: שיחה, מודול, אודיו ותרגול.", audience: "adult", age_group: "adult", duration: "מתמשך", trial_hours: 168, price_display: "₪278 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["conflict", "loyalty", "belonging"]) },
+    { program_id: "prog_digital_teen", slug: "digital-teen", title: "המרחב האישי — נוער", subtitle: "מלווה דיגיטלי לגיל ההתבגרות", description: "ליווי יומי לנוער: שפה ישירה ואמפתית, מודולים וכלים מעשיים לחוסן וביטחון.", audience: "teen", age_group: "youth", duration: "מתמשך", trial_hours: 168, price_display: "₪278 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["belonging", "motivation-map", "conflict"]) },
+    { program_id: "prog_digital_parent", slug: "digital-parent", title: "המרחב האישי — הורים", subtitle: "ליווי להורה למתבגר", description: "ליווי דיגיטלי להורים: הבנת התהליך, גבולות פרטיות וכלים לתמיכה במתבגר.", audience: "parent", age_group: "adult", duration: "מתמשך", trial_hours: 168, price_display: "₪278 לחודש", billing_frequency: "monthly", grow_product_id: "grow_digital", module_ids: JSON.stringify(["loyalty", "conflict"]) },
   ];
   const ins = db.prepare(`INSERT OR IGNORE INTO programs
     (program_id, slug, title, subtitle, description, audience, age_group, duration, trial_hours, price_display, billing_frequency, grow_product_id, module_ids)
@@ -510,6 +510,13 @@ function seedPrograms() {
   );
 }
 seedPrograms();
+
+// מיגרציה (אושר ע"י קטי): שורות תוכניות שנזרעו בעבר עם 72 שעות / ₪297 — מעדכנים
+// לניסיון 7 ימים ולמחיר החדש, כדי שגם DB קיים על דיסק ישקף את התמחור המאושר.
+try {
+  db.exec("UPDATE programs SET trial_hours = 168 WHERE trial_hours = 72");
+  db.exec("UPDATE programs SET price_display = '₪278 לחודש' WHERE price_display LIKE '%297%'");
+} catch (e) { /* טבלה עדיין לא קיימת בהתקנה חדשה — הזריעה כבר נכונה */ }
 
 function auditLog(actorUserId, action, entityType, entityId, metadata) {
   try {
