@@ -76,7 +76,7 @@ const CONTENT = {
       { label: "ליווי אישי", href: "#personal" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
-    login: "כניסה למערכת",
+    login: "להתחיל חינם",
     cta: "להתחיל ניסיון חינם",
   },
   hero: {
