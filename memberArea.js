@@ -1870,7 +1870,7 @@
             <Icon name="check-circle" size={15} className="text-gold-600" />
             <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">משימות יומיות</span>
           </div>
-          <p className="text-[13px] text-ink-500 leading-relaxed">משימות קטנות שנגזרו עבורך מהשיחות עם הבוט הטיפולי. צעד קטן ביום.</p>
+          <p className="text-[13px] text-ink-500 leading-relaxed">משימות קטנות שנגזרו עבורך מהשיחות עם הליווי הדיגיטלי. צעד קטן ביום.</p>
         </header>
 
         {tasks === null? (
@@ -3551,7 +3551,7 @@
     // למטה ולא נמחק, למקרה שנרצה נתיב הרשמה אופציונלי (שמירת התקדמות/קוד גישה).
     const [loggedIn, setLoggedIn] = useState(true);
     const [progress, setProgress] = useState(loadProgress);
-    // נפתח על הבוט (צ'ק-אין, שלב 5) — קטי הדיגיטלית היא ליבת המוצר, פוגשים אותה מיד.
+    // נפתח על הליווי הדיגיטלי (צ'ק-אין, שלב 5) — הוא ליבת המוצר, פוגשים אותו מיד.
     // "היום שלי" (שלב 0) נשאר נגיש כטאב ראשון.
     const [current, setCurrent] = useState(5);
     const [serverDashboard, setServerDashboard] = useState(null);
