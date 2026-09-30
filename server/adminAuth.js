@@ -15,7 +15,7 @@ const crypto = require("node:crypto");
 const DEFAULT_ADMIN_USER = "kety";
 // scrypt hash ("salt:derived") of the default admin password — not the password itself.
 const DEFAULT_ADMIN_PASSWORD_HASH =
-  "dca16d453249830ac02aae5f04665ec3:e13259abda56f3d101d595432f0341cbe947f4fd54cc7b1184990a3501156ed3cde650ef2e8e6353dd9d26a6630bddc460483decdbefda301080ce7e4c7d111a";
+  "657dc5adc0dc4b8a4496de16814c530c:792697255b09e91a92d4920edbb4e6bec8e14944054da0b8f9c8ff3310f3718c60e4ae7725c2495623235ef65e9137d1e228b676f13670c992f506f6fa7d9a9f";
 
 function timingSafeEqualStr(a, b) {
   if (a.length !== b.length) return false;
