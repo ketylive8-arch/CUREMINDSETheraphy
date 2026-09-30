@@ -440,7 +440,7 @@ function Hero() {
               <span className="w-2 h-2 rounded-full bg-gold-500" aria-hidden="true" />
               {CONTENT.hero.kicker}
             </span>
-            <h1 className="font-heading font-extrabold text-ink-800 leading-[1.14] tracking-tight text-[34px] sm:text-[46px] lg:text-[54px] mb-5">
+            <h1 className="font-heading font-semibold text-ink-800 leading-[1.14] tracking-tight text-[34px] sm:text-[46px] lg:text-[54px] mb-5">
               {CONTENT.hero.headline}
             </h1>
             <p className="text-ink-600 text-[19px] sm:text-[22px] font-medium leading-relaxed max-w-[560px] mb-4">
@@ -530,7 +530,7 @@ function Problem() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-14">
           <Eyebrow>{CONTENT.problem.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
             {CONTENT.problem.title}
           </h2>
         </Reveal>
@@ -568,7 +568,7 @@ function HowItWorks() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>{CONTENT.howItWorks.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px] leading-tight">
             {CONTENT.howItWorks.title}
           </h2>
         </Reveal>
@@ -599,7 +599,7 @@ function Vision() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[760px] mb-16">
           <Eyebrow>{CONTENT.method.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[40px] leading-tight">
+          <h2 className="font-heading font-semibold text-ink-800 text-[28px] sm:text-[40px] leading-tight">
             {CONTENT.method.title}
           </h2>
         </Reveal>
@@ -622,7 +622,7 @@ function Vision() {
 
         <Reveal className="mt-14 max-w-[860px] mx-auto">
           <div className="bg-[#FAF8F4] border border-gold-200/70 rounded-2xl p-8 sm:p-10 shadow-softer">
-            <h3 className="font-heading font-extrabold text-ink-800 text-[22px] sm:text-[26px] mb-4">
+            <h3 className="font-heading font-semibold text-ink-800 text-[22px] sm:text-[26px] mb-4">
               {CONTENT.method.approachTitle}
             </h3>
             <p className="text-ink-700 text-[17px] leading-relaxed mb-4 font-medium">
@@ -662,7 +662,7 @@ function About() {
           </Reveal>
           <Reveal className="flex flex-col gap-4">
             <Eyebrow>על המייסדת</Eyebrow>
-            <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[36px]">קטי שגב · CureMindset</h2>
+            <h2 className="font-heading font-semibold text-ink-800 text-[28px] sm:text-[36px]">קטי שגב · CureMindset</h2>
             <p className="text-ink-600 text-[17px] leading-relaxed">
               מפתחת שיטת CureMindset, מאמנת מנטלית ומוסמכת NLP בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
             </p>
@@ -703,7 +703,7 @@ function DigitalPlatform() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_.85fr] gap-10 lg:gap-14 items-center mb-14">
           <Reveal className="max-w-[680px]">
             <Eyebrow>המערכת הדיגיטלית</Eyebrow>
-            <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
+            <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[40px]">קטי בכיס שלך — כל יום, בקצב שלך</h2>
             <p className="text-ink-500 text-[17px] mt-2">אימון מנטלי דיגיטלי בשיטת CureMindset: שיחה, כלים ותרגול יומי. מלווה לתרגול — לא תחליף לטיפול.</p>
           </Reveal>
           <Reveal className="hidden lg:flex justify-end">
@@ -755,7 +755,7 @@ function Workshops() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-14">
           <Eyebrow>{CONTENT.workshops.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[40px]">{CONTENT.workshops.title}</h2>
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[40px]">{CONTENT.workshops.title}</h2>
           <p className="text-ink-500 text-[17px] mt-2">{CONTENT.workshops.subtitle}</p>
         </Reveal>
 
@@ -811,7 +811,7 @@ function CureTeens() {
             <Icon name="graduation-cap" size={15} />
             CURE Teens · תהליך מאיץ למתבגרים
           </span>
-          <h2 className="font-heading font-extrabold text-white text-[30px] sm:text-[42px] leading-tight mb-4">
+          <h2 className="font-heading font-semibold text-white text-[30px] sm:text-[42px] leading-tight mb-4">
             מהמסכים אל החיים — פוקוס, ויסות רגשי ותקשורת בבית
           </h2>
           <p className="text-white/75 text-[17px] sm:text-[18px] leading-relaxed">
@@ -943,7 +943,7 @@ function Plans({ onEnterApp }) {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[640px] mb-4">
           <Eyebrow>{CONTENT.plans.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px]">
             {CONTENT.plans.title}
           </h2>
         </Reveal>
@@ -977,7 +977,7 @@ function Testimonials() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>{CONTENT.testimonials.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px]">
             {CONTENT.testimonials.title}
           </h2>
         </Reveal>
@@ -1075,7 +1075,7 @@ function LeadForm({ compact = false }) {
         <div className="w-12 h-12 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-4">
           <Icon name="check-circle-2" size={26} />
         </div>
-        <h3 className="font-heading font-extrabold text-ink-800 text-[22px] mb-2">קיבלנו את הפרטים שלך</h3>
+        <h3 className="font-heading font-semibold text-ink-800 text-[22px] mb-2">קיבלנו את הפרטים שלך</h3>
         <p className="text-ink-600 text-[15.5px] mb-6">
           קטי או מישהי מהצוות תחזור אליך בהקדם. רוצה להתחיל כבר עכשיו? אפשר לכתוב לנו ישירות בוואטסאפ.
         </p>
@@ -1158,7 +1158,7 @@ function LeadSection() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <Reveal>
           <Eyebrow>נתחיל לדבר</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px] mb-4 leading-tight">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px] mb-4 leading-tight">
             השאירי פרטים — ונחזור אליך
           </h2>
           <p className="text-ink-600 text-[17px] leading-relaxed mb-6">
@@ -1214,7 +1214,7 @@ function ArticlesSection() {
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-16">
           <Eyebrow>מהבלוג של קטי</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[30px] sm:text-[42px]">
+          <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px]">
             מאמרים וכלים תודעתיים
           </h2>
         </Reveal>
@@ -1259,7 +1259,7 @@ function Faq() {
       <div className="max-w-[780px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center mb-12">
           <Eyebrow>{CONTENT.faq.eyebrow}</Eyebrow>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[28px] sm:text-[38px]">
+          <h2 className="font-heading font-semibold text-ink-800 text-[28px] sm:text-[38px]">
             {CONTENT.faq.title}
           </h2>
         </Reveal>
@@ -1312,7 +1312,7 @@ function FinalCta() {
     <section id="contact" className="py-20 sm:py-28 bg-white border-t border-gold-200/50">
       <div className="max-w-[720px] mx-auto px-5 sm:px-7 text-center">
         <Reveal>
-          <h2 className="font-heading font-extrabold text-ink-800 text-[32px] sm:text-[44px] mb-4">
+          <h2 className="font-heading font-semibold text-ink-800 text-[32px] sm:text-[44px] mb-4">
             {CONTENT.finalCta.title}
           </h2>
           <p className="text-ink-600 text-[18px] mb-9">
