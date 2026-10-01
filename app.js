@@ -1198,22 +1198,29 @@ function ArticlesSection() {
     return () => { alive = false; };
   }, []);
 
-  // נפילה: מאמרים מקוריים המקשרים לבלוג — כדי שהסקשן לעולם לא יהיה ריק.
-  const fallback = [
-    { title: "חרדה אצל בני נוער — מה קורה במוח ואיך מרגיעים אותו", link: MEDIA_LINKS.article1 || "https://ketysegev.blogspot.com/", description: "חרדה אינה חולשה — היא מערכת התראה שלמדה לירות מוקדם מדי. עובדים עם ויסות מערכת העצבים לצד מסגור מחדש של המחשבה." },
-    { title: "דימוי עצמי נמוך: איך בונים ביטחון פנימי שמחזיק", link: "https://ketysegev.blogspot.com/", description: "ביטחון אמיתי נבנה מ'עוגן בית' פנימי — ערך עצמי וכבוד — ולא ממחמאות מבחוץ. מזהים את הקול המבקר ומפרידים אותו מהעובדות." },
-    { title: "חוסן רגשי בתקופה לא יציבה — שלושה כלים מעשיים", link: "https://ketysegev.blogspot.com/", description: "חוסן הוא מיומנות נלמדת: נשימת קופסה לוויסות מיידי, עוגן SOS לרגעי הצפה, ומיקרו-צעד אחד שמחזיר תנועה קדימה." },
-  ];
-
-  const cards = items && items.length
-    ? items.map((a) => ({ title: a.title, link: a.link, desc: a.description }))
-    : fallback.map((a) => ({ title: a.title, link: a.link, desc: a.description }));
+  // Local published articles stay visible alongside external blog posts.
+  const published = [
+  {
+    "title": "חוסן רגשי בגיל ההתבגרות: מיומנות שאפשר לפתח",
+    "link": "/articles/emotional-resilience-teens.html",
+    "pubDate": "2026-10-01",
+    "description": "כלים לוויסות רגשי, עוגן הבית, אימון מנטלי ותמיכה הורית בגיל ההתבגרות."
+  },
+  {
+    "title": "דימוי עצמי: איך מחזקים ערך פנימי ועובדים עם דפוסים אוטומטיים",
+    "link": "/articles/self-image-subconscious.html",
+    "pubDate": "2026-10-01",
+    "description": "דרכים לחיזוק דימוי עצמי באמצעות עבודה עם אמונות, דמיון מודרך ופעולות קטנות."
+  }
+];
+  const external = Array.isArray(items) ? items.filter((a) => a.link && !published.some((p) => p.link === a.link) && !a.link.endsWith("blogspot.com/")) : [];
+  const cards = [...published, ...external].slice(0, 6).map((a) => ({ title: a.title, link: a.link, desc: a.description }));
 
   return (
     <section id="articles" className="py-20 sm:py-28 bg-white border-t border-gold-200/50">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="max-w-[680px] mb-16">
-          <Eyebrow>מהבלוג של קטי</Eyebrow>
+          <Eyebrow>ספריית הידע של קטי</Eyebrow>
           <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px]">
             מאמרים וכלים תודעתיים
           </h2>

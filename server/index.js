@@ -508,23 +508,17 @@ let articlesCache = { at: 0, items: [] };
 // כדי שדף המאמרים לעולם לא יהיה ריק. תוכן מקורי מבוסס שיטת קטי שגב.
 const FALLBACK_ARTICLES = [
   {
-    title: "חרדה אצל בני נוער — מה באמת קורה במוח, ואיך מרגיעים אותו",
-    link: "https://ketysegev.blogspot.com/",
-    pubDate: "",
-    description: "חרדה אינה חולשה — היא מערכת התראה שלמדה לירות מוקדם מדי. בשיטת CureMindset עובדים עם ויסות מערכת העצבים (נשימה, עיגון גוף) לצד מסגור מחדש של המחשבה שמזינה את האזעקה, כדי להחזיר תחושת שליטה בהדרגה.",
+    "title": "חוסן רגשי בגיל ההתבגרות: מיומנות שאפשר לפתח",
+    "link": "/articles/emotional-resilience-teens.html",
+    "pubDate": "2026-10-01",
+    "description": "כלים לוויסות רגשי, עוגן הבית, אימון מנטלי ותמיכה הורית בגיל ההתבגרות."
   },
   {
-    title: "דימוי עצמי נמוך: איך בונים ביטחון פנימי שמחזיק",
-    link: "https://ketysegev.blogspot.com/",
-    pubDate: "",
-    description: "ביטחון עצמי אמיתי לא נבנה ממחמאות מבחוץ אלא מ'עוגן בית' פנימי — ערך עצמי, כבוד וביטחון קיומי. כאן מתרגלים לזהות את הקול המבקר, להפריד בינו לבין העובדות, ולבנות זהות של 'בוחר/ת' במקום 'נפגע/ת'.",
-  },
-  {
-    title: "חוסן רגשי בתקופה לא יציבה — שלושה כלים מעשיים",
-    link: "https://ketysegev.blogspot.com/",
-    pubDate: "",
-    description: "חוסן הוא מיומנות נלמדת, לא תכונה מולדת. שלושה כלים שאפשר לתרגל כבר היום: נשימת קופסה לוויסות מיידי, עוגן SOS לרגעי הצפה, ומיקרו-צעד אחד קטן שמחזיר תנועה קדימה גם כשהכל מרגיש תקוע.",
-  },
+    "title": "דימוי עצמי: איך מחזקים ערך פנימי ועובדים עם דפוסים אוטומטיים",
+    "link": "/articles/self-image-subconscious.html",
+    "pubDate": "2026-10-01",
+    "description": "דרכים לחיזוק דימוי עצמי באמצעות עבודה עם אמונות, דמיון מודרך ופעולות קטנות."
+  }
 ];
 
 function parseRssItems(xml) {
@@ -556,7 +550,7 @@ app.get("/api/articles", async (req, res) => {
     if (!r.ok) throw new Error(`RSS fetch failed: ${r.status}`);
     const items = parseRssItems(await r.text());
     // אם הבלוג ריק/לא נותן פריטים — מגישים את המאמרים המקוריים במקום דף ריק.
-    const out = items.length ? items : FALLBACK_ARTICLES;
+    const out = [...FALLBACK_ARTICLES, ...items.filter((item) => !FALLBACK_ARTICLES.some((a) => a.link === item.link))].slice(0, 8);
     articlesCache = { at: Date.now(), items: out };
     res.json(out);
   } catch (err) {
