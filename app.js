@@ -1021,7 +1021,7 @@ function normalizePhone(v) {
 }
 
 function LeadForm({ compact = false }) {
-  const [form, setForm] = useState({ fullName: "", phone: "", email: "", subject: "" });
+  const [form, setForm] = useState({ fullName: "", phone: "", email: "", subject: "", goal: "" });
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | sending | done | error
 
@@ -1059,7 +1059,7 @@ function LeadForm({ compact = false }) {
           fullName: form.fullName.trim(),
           email: form.email.trim(),
           phone: normalizePhone(form.phone),
-          onboarding: subjectLabel,
+          onboarding: (subjectLabel + (form.goal.trim() ? " | מה רוצה להשיג: " + form.goal.trim().slice(0, 220) : "")).slice(0, 400),
           source: "landing-lead-form",
         }),
       });
@@ -1133,6 +1133,12 @@ function LeadForm({ compact = false }) {
               <option key={s.value} value={s.value} disabled={s.value === ""}>{s.label}</option>
             ))}
           </select>
+        </div>
+
+        <div>
+          <label htmlFor="lead-goal" className="block text-[14px] font-semibold text-ink-700 mb-1.5">מה את/ה רוצה להשיג?</label>
+          <textarea id="lead-goal" rows="2" value={form.goal} onChange={set("goal")}
+            placeholder="במילים שלך — מה היית רוצה שישתנה?" className={`${inputCls} border-ink-200 resize-none`} />
         </div>
 
         {status === "error" && (

@@ -333,6 +333,8 @@ footer a:hover{color:var(--gold)}
         <input id="email" name="email" type="email" autocomplete="email" inputmode="email" />
         <label for="phone">או טלפון — אחד מהם מספיק</label>
         <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+        <label for="goal">מה אתם רוצים להשיג?</label>
+        <input id="goal" name="goal" placeholder="במילים שלכם — מה הייתם רוצים שישתנה?" />
         <button type="submit">שלחו לי את המתנה</button>
         <p class="privacy">הפרטים נשמרים אצל קטי בלבד ולא מועברים לגורם שלישי.</p>
       </form>
@@ -452,7 +454,7 @@ document.getElementById("giftForm").addEventListener("submit", async function (e
         fullName: f.fullName.value,
         email: f.email.value,
         phone: f.phone.value,
-        onboarding: "בקשת מתנה מעמוד המתנות — כלי נוסף להתחלה",
+        onboarding: ("בקשת מתנה מעמוד המתנות" + (f.goal.value.trim() ? " | מה רוצים להשיג: " + f.goal.value.trim().slice(0, 220) : "")).slice(0, 400),
         source: "gifts-page"
       })
     });
