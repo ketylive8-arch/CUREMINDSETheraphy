@@ -72,6 +72,7 @@ const CONTENT = {
   nav: {
     links: [
       { label: "מה זו השיטה", href: "/method" },
+      { label: "מתנות וכלים", href: "/gifts.html" },
       { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
       { label: "שאלות נפוצות", href: "#faq" },
@@ -1495,10 +1496,10 @@ function HbHero() {
         <Reveal className="hb-hero__text">
           <div className="hb-hero__eyebrow">שיטת CureMindset · קטי שגב</div>
           <h1 className="hb-hero__title">שינוי דפוסים. חיזוק החוסן. יותר בחירה בדרך שבה מגיבים.</h1>
-          <p className="hb-hero__sub">תהליך אישי ומובנה לליווי רגשי ולשינוי דפוסים שמנהלים את היום-יום. מתחילים במיפוי של המצב והמטרה, מזהים את הדפוס המרכזי, מתרגלים אפשרויות חדשות וממשיכים עם כלים שאפשר להשתמש בהם גם מחוץ למפגש. לנוער מגיל 13 ומעלה ולמבוגרים.</p>
+          <p className="hb-hero__sub">ליווי רגשי שמתחיל במה שקורה לך עכשיו: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים להתמודדות — שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
           <div className="hb-hero__cta">
-            <a href="#lead" className="hb-hero__btn">בדיקת התאמה לתהליך</a>
-            <a href="/method" className="hb-hero__link">מה זו השיטה? <span aria-hidden="true">→</span></a>
+            <a href="#lead" className="hb-hero__btn">בדיקת התאמה בחינם</a>
+            <a href="/gifts.html" className="hb-hero__link">מתנות וכלים חינם <span aria-hidden="true">→</span></a>
           </div>
         </Reveal>
       </div>
@@ -1584,6 +1585,7 @@ function HbServices() {
     { label: "רדיו חיפה", href: MEDIA_LINKS.radio },
     { label: "פודקאסט", href: MEDIA_LINKS.spotify },
     { label: "ערוץ היוטיוב", href: MEDIA_LINKS.youtubeChannel },
+    { label: "מתנות וכלים חינם", href: "/gifts.html" },
     { label: "כל הקישורים", href: MEDIA_LINKS.linktree },
   ];
   return (
