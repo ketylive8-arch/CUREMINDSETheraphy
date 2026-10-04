@@ -2,70 +2,178 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>שיחה עם קטי הדיגיטלית | CureMindset</title>
 <meta name="description" content="קטי הדיגיטלית — מלווה לתרגול מבוסס שיטת CureMindset. שיחה, כלי מעשי אחד, וצעד קטן להיום." />
 <link rel="canonical" href="https://ketysegev.com/talk.html" />
 <meta name="robots" content="index, follow" />
-<meta name="theme-color" content="#c2974a" />
+<meta name="theme-color" content="#f6f0e4" />
 <link rel="icon" href="/images/logo.png" type="image/png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
-  :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#2D2A26;--ink-500:#6B6560;--green:#16A34A}
+  :root{
+    --gold:#c2974a; --gold-deep:#8a6a2f; --gold-soft:#efe3cc;
+    --cream:#FBF7EF; --bg:#f6f0e4; --blue:#B8D4E3; --blue-deep:#3f6b83;
+    --ink:#2D2A26; --ink-500:#6B6560; --green:#16A34A;
+    --grad:linear-gradient(135deg,#c2974a,#b8935e 45%,#a083b8 75%,#8fb5cc);
+  }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:var(--cream);display:flex;flex-direction:column;height:100dvh}
-  header.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 16px;background:rgba(251,247,239,.96);border-bottom:1px solid var(--gold-soft);backdrop-filter:blur(8px)}
-  .who{display:flex;align-items:center;gap:10px}
-  .avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-family:Rubik,sans-serif;font-weight:800}
-  .who b{font-family:Rubik,sans-serif;font-size:16px;color:var(--ink);display:block;line-height:1.1}
-  .who span{font-size:12px;color:var(--ink-500)}
-  header.bar a{color:var(--gold-deep);text-decoration:none;font-weight:700;font-size:14px}
-  .disc{font-size:12px;color:var(--ink-500);background:#f3eee3;padding:8px 16px;text-align:center}
-  .stream{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-  .msg{max-width:82%;padding:12px 15px;border-radius:16px;font-size:15.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
-  .msg.kety{align-self:flex-start;background:#fff;border:1px solid var(--gold-soft);border-bottom-right-radius:5px}
-  .msg.me{align-self:flex-end;background:var(--gold);color:#fff;border-bottom-left-radius:5px}
-  .cite{align-self:flex-start;font-size:12px;color:var(--gold-deep);background:var(--gold-soft);padding:4px 10px;border-radius:999px;font-weight:600;margin-top:-6px}
-  .ctl{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px;margin-top:-4px}
-  .ctl button, .starter{font-family:inherit;font-size:13.5px;font-weight:600;border:1px solid var(--gold);color:var(--gold-deep);background:#fff;border-radius:999px;padding:7px 13px;cursor:pointer}
-  .ctl button.human{border-color:var(--green);color:var(--green)}
-  .typing{align-self:flex-start;color:var(--ink-500);font-size:14px;padding:4px 6px}
-  .starters{display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px 0}
-  .composer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--gold-soft);background:var(--cream)}
-  .composer input{flex:1;font-family:inherit;font-size:16px;padding:12px 15px;border:1px solid var(--gold-soft);border-radius:999px;background:#fff}
-  .composer button{border:0;background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:700;border-radius:999px;padding:0 20px;cursor:pointer;font-size:15px}
-  .human-card{align-self:flex-start;max-width:82%;background:#f1f7f1;border:1px solid #cfe6cf;border-radius:14px;padding:14px 16px;font-size:14.5px}
-  .human-card a{display:inline-block;margin-top:8px;color:#fff;background:var(--green);text-decoration:none;font-weight:700;border-radius:999px;padding:8px 15px;font-size:14px}
+  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:var(--bg);display:flex;flex-direction:column;height:100dvh;
+    padding-bottom:env(safe-area-inset-bottom)}
+
+  /* ── רקע חם חי — בועות אור עדינות ── */
+  .aura{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .aura .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
+  .aura .b1{width:46vmax;height:46vmax;background:radial-gradient(circle,rgba(194,151,74,.28),transparent 65%);top:-14vmax;right:-10vmax;animation:drift 34s ease-in-out infinite alternate}
+  .aura .b2{width:40vmax;height:40vmax;background:radial-gradient(circle,rgba(184,212,227,.4),transparent 65%);bottom:-12vmax;left:-8vmax;animation:drift 41s ease-in-out infinite alternate-reverse}
+  @keyframes drift{to{transform:translate(-6vmax,5vmax) scale(1.12)}}
+
+  /* ── פס עליון ── */
+  header.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;
+    background:rgba(251,247,239,.85);border-bottom:1px solid rgba(194,151,74,.18);backdrop-filter:blur(10px)}
+  .who{display:flex;align-items:center;gap:11px}
+  .avatar{position:relative;width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:Rubik,sans-serif;font-weight:800;font-size:19px;box-shadow:0 4px 16px rgba(194,151,74,.35)}
+  .avatar::after{content:"";position:absolute;bottom:1px;left:1px;width:11px;height:11px;border-radius:50%;background:#34d399;border:2.5px solid var(--cream)}
+  .who b{font-family:Rubik,sans-serif;font-size:16.5px;color:var(--ink);display:block;line-height:1.15}
+  .who span{font-size:12.5px;color:var(--ink-500)}
+  header.bar a{color:var(--gold-deep);text-decoration:none;font-weight:700;font-size:14px;background:rgba(194,151,74,.1);padding:8px 14px;border-radius:999px;transition:background .2s}
+  header.bar a:hover{background:rgba(194,151,74,.2)}
+
+  .disc{font-size:12px;color:var(--ink-500);background:rgba(239,227,204,.55);padding:7px 16px;text-align:center;line-height:1.5}
+
+  /* ── אזור השיחה ── */
+  .stream{flex:1;overflow-y:auto;padding:18px 16px 10px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+
+  /* כרטיס פתיחה — רגע התחלה חם */
+  .welcome{align-self:stretch;max-width:520px;margin:2px auto 8px;text-align:center;padding:22px 18px;border-radius:24px;
+    background:rgba(255,255,255,.75);border:1px solid rgba(194,151,74,.2);backdrop-filter:blur(8px);
+    box-shadow:0 10px 34px rgba(138,106,47,.08);animation:rise .5s ease}
+  .welcome .wava{width:56px;height:56px;margin:0 auto 10px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:Rubik,sans-serif;font-weight:800;font-size:24px;box-shadow:0 6px 22px rgba(194,151,74,.4)}
+  .welcome h1{font-family:Rubik,sans-serif;font-size:19px;margin:0 0 6px;color:var(--ink)}
+  .welcome p{font-size:14.5px;color:var(--ink-500);margin:0 0 14px;line-height:1.6}
+  .moods{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+  .mood{font-family:inherit;font-size:14px;font-weight:600;border:1.5px solid rgba(194,151,74,.45);color:var(--gold-deep);background:#fff;
+    border-radius:999px;padding:9px 16px;cursor:pointer;transition:all .2s}
+  .mood:hover{background:var(--gold);color:#fff;border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 16px rgba(194,151,74,.3)}
+
+  /* בועות */
+  .row{display:flex;gap:9px;align-items:flex-end;max-width:min(88%,520px)}
+  .row.kety{align-self:flex-start;animation:rise .35s ease}
+  .row.me{align-self:flex-end;flex-direction:row-reverse;animation:rise .35s ease}
+  .miniava{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:Rubik,sans-serif;font-weight:800;font-size:13px;margin-bottom:2px}
+  .msg{padding:12px 16px;border-radius:18px;font-size:15.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+  .row.kety .msg{background:rgba(255,255,255,.92);border:1px solid rgba(194,151,74,.22);border-bottom-right-radius:6px;
+    box-shadow:0 3px 14px rgba(138,106,47,.06)}
+  .row.me .msg{background:var(--grad);color:#fff;border-bottom-left-radius:6px;box-shadow:0 4px 16px rgba(138,106,47,.18)}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .cite{align-self:flex-start;max-width:min(88%,520px);margin-right:37px;font-size:12px;color:var(--gold-deep);background:rgba(239,227,204,.7);
+    padding:5px 12px;border-radius:999px;font-weight:600}
+  .ctl{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 4px 37px}
+  .ctl button,.starter{font-family:inherit;font-size:13.5px;font-weight:600;border:1.5px solid rgba(194,151,74,.45);color:var(--gold-deep);
+    background:#fff;border-radius:999px;padding:8px 14px;cursor:pointer;transition:all .2s}
+  .ctl button:hover,.starter:hover{background:rgba(194,151,74,.12);transform:translateY(-1px)}
+  .ctl button.human{border-color:#86dfad;color:#0f7a3d;background:#f2fbf5}
+  .ctl button.human:hover{background:#e2f7ea}
+
+  /* מקלדת חיה — שלוש נקודות */
+  .typing{align-self:flex-start;display:flex;gap:5px;margin:0 0 0 37px;background:rgba(255,255,255,.92);border:1px solid rgba(194,151,74,.22);
+    border-radius:18px;border-bottom-right-radius:6px;padding:14px 16px;box-shadow:0 3px 14px rgba(138,106,47,.06)}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.45;animation:blink 1.3s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.25;transform:translateY(0)}45%{opacity:1;transform:translateY(-3px)}}
+
+  .starters{display:flex;flex-wrap:wrap;gap:8px;padding:12px 16px 2px}
+  .starter{font-size:13.5px}
+
+  /* כרטיס תמיכה אנושית */
+  .human-card{align-self:flex-start;max-width:min(88%,520px);margin-right:37px;background:linear-gradient(140deg,#f1f7f1,#eaf5ef);
+    border:1px solid #cfe6cf;border-radius:18px;padding:16px 18px;font-size:14.5px;line-height:1.7;box-shadow:0 4px 16px rgba(22,163,74,.08)}
+  .human-card a{display:inline-block;margin:8px 4px 0 0;color:#fff;background:var(--green);text-decoration:none;font-weight:700;
+    border-radius:999px;padding:9px 16px;font-size:14px;transition:transform .2s}
+  .human-card a:hover{transform:translateY(-1px)}
+
+  /* ── שורת כתיבה ── */
+  .composer{display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(194,151,74,.18);background:rgba(251,247,239,.9);backdrop-filter:blur(10px)}
+  .composer input{flex:1;font-family:inherit;font-size:16px;padding:13px 18px;border:1.5px solid rgba(194,151,74,.3);border-radius:999px;background:#fff;
+    transition:border-color .2s,box-shadow .2s}
+  .composer input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(194,151,74,.15)}
+  .composer button{border:0;background:var(--grad);color:#fff;font-family:Rubik,sans-serif;font-weight:700;border-radius:999px;
+    padding:0 22px;cursor:pointer;font-size:15.5px;box-shadow:0 4px 16px rgba(138,106,47,.25);transition:transform .2s}
+  .composer button:hover{transform:translateY(-1px)}
+  .composer button:active{transform:scale(.97)}
+
   :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:8px}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition-duration:.01s !important}
+  }
 </style>
 </head>
 <body>
+
+<div class="aura" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div></div>
+
 <header class="bar">
-  <div class="who"><div class="avatar">ק</div><div><b>קטי הדיגיטלית</b><span>מלווה לתרגול · לא מטפלת</span></div></div>
+  <div class="who">
+    <div class="avatar">ק</div>
+    <div><b>קטי הדיגיטלית</b><span>כאן ללוות אותך · לא מטפלת</span></div>
+  </div>
   <a href="/program">התוכנית שלי</a>
 </header>
 <div class="disc" id="disc">קטי הדיגיטלית היא מלווה לתרגול — לא מטפלת, לא מאבחנת, ולא שירות חירום. במצוקה מיידית: ער"ן 1201 · מד"א 101.</div>
-<div class="starters" id="starters"></div>
-<div class="stream" id="stream" aria-live="polite"></div>
+
+<div class="stream" id="stream" aria-live="polite">
+
+  <!-- כרטיס פתיחה — צ'ק-אין רגשי בסגנון Curable -->
+  <div class="welcome" id="welcome">
+    <div class="wava">ק</div>
+    <h1>טוב שבאת.</h1>
+    <p>אני כאן כדי להקשיב וללוות אותך בתרגול — צעד אחד קטן בכל פעם. איך את מרגישה עכשיו?</p>
+    <div class="moods">
+      <button class="mood" data-say="אני מרגישה כבד עכשיו וצריכה לרוקן">כבד לי</button>
+      <button class="mood" data-say="יש לי חרדה או מתח שאני מנסה להרגיע">חרדה / מתח</button>
+      <button class="mood" data-say="משהו תקוע לי ואני רוצה להתקדם">משהו תקוע</button>
+      <button class="mood" data-say="בא לי להתחיל בכלי קטן להיום">כלי להיום</button>
+      <button class="mood" data-say="סתם רוצה לדבר בחופשיות">סתם לדבר</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="starters" id="starters" style="display:none"></div>
+
 <form class="composer" id="composer">
   <input id="input" type="text" placeholder="מה עובר עלייך עכשיו?" autocomplete="off" aria-label="הודעה" />
-  <button type="submit">שליחה</button>
+  <button type="submit" aria-label="שליחה">שליחה</button>
 </form>
 
 <script>
 var TOKEN = (function(){ try{ var t=localStorage.getItem('cm_device_token'); if(!t){ t='cm-'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('cm_device_token',t);} return t; }catch(e){ return 'cm-'+Math.random().toString(36).slice(2); } })();
 var HISTORY = [];
-var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
 var stream = document.getElementById('stream');
+var welcomed = false;
 function scroll(){ stream.scrollTop = stream.scrollHeight; }
 
 function bubble(role, text){
-  var d = document.createElement('div'); d.className='msg '+(role==='me'?'me':'kety'); d.textContent=text; stream.appendChild(d); scroll(); return d;
+  var row = document.createElement('div');
+  row.className = 'row ' + (role==='me' ? 'me' : 'kety');
+  if(role!=='me'){
+    var a = document.createElement('div'); a.className='miniava'; a.textContent='ק'; row.appendChild(a);
+  }
+  var d = document.createElement('div'); d.className='msg'; d.textContent=text; row.appendChild(d);
+  stream.appendChild(row); scroll(); return d;
 }
-function citation(c){ if(!c) return; var d=document.createElement('div'); d.className='cite'; d.textContent='📎 '+(c.label||c.source); stream.appendChild(d); scroll(); }
+function citation(c){
+  if(!c) return;
+  var d=document.createElement('div'); d.className='cite'; d.textContent='📎 '+(c.label||c.source); stream.appendChild(d); scroll();
+}
 function controls(list){
   if(!list||!list.length) return;
   var wrap=document.createElement('div'); wrap.className='ctl';
@@ -87,8 +195,12 @@ function humanSupport(){
 
 function send(text){
   if(!text || !text.trim()) return;
+  var w = document.getElementById('welcome');
+  if(w){ w.style.transition='opacity .4s'; w.style.opacity='0'; setTimeout(function(){ w.remove(); }, 400); }
   bubble('me', text); HISTORY.push({role:'user', text:text});
-  var typing=document.createElement('div'); typing.className='typing'; typing.textContent='קטי מקלידה…'; stream.appendChild(typing); scroll();
+  var typing=document.createElement('div'); typing.className='typing';
+  typing.innerHTML='<i></i><i></i><i></i>';
+  stream.appendChild(typing); scroll();
   fetch('/api/checkin', { method:'POST', headers:{'Content-Type':'application/json','X-Device-Token':TOKEN}, body:JSON.stringify({text:text, history:HISTORY.slice(-8)}) })
     .then(function(r){ return r.json().then(function(j){ return {ok:r.ok, status:r.status, j:j}; }); })
     .then(function(res){
@@ -97,7 +209,7 @@ function send(text){
       if(res.status===402){ bubble('kety', j.error||'תקופת ההתנסות הסתיימה.'); return; }
       var reply = j.reply || 'אני כאן איתך. ספרי לי עוד קצת?';
       bubble('kety', reply); HISTORY.push({role:'kety', text:reply});
-      if(j.safety){ /* בטיחות — התשובה כבר כוללת מספרי חירום; מוסיפים כפתור אדם */ controls([{label:'אני צריכה אדם עכשיו',action:'human_support'}]); return; }
+      if(j.safety){ controls([{label:'אני צריכה אדם עכשיו',action:'human_support'}]); return; }
       citation(j.citation);
       controls(j.controls);
     })
@@ -105,6 +217,11 @@ function send(text){
 }
 
 document.getElementById('composer').addEventListener('submit', function(e){ e.preventDefault(); var i=document.getElementById('input'); var v=i.value; i.value=''; send(v); });
+
+// צ'ק-אין רגשי — פותח שיחה במצב שבו המשתמשת נמצאת
+document.querySelectorAll('.mood').forEach(function(m){
+  m.addEventListener('click', function(){ send(m.getAttribute('data-say')); });
+});
 
 // כפתורי פתיחה + disclaimer מה-API (עם נפילה לברירת מחדל).
 fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
@@ -117,11 +234,9 @@ fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
       b.onclick=function(){ send(st.label); s.style.display='none'; };
       s.appendChild(b);
     });
+    if((cfg.starters||[]).length) s.style.display='flex';
   })
   .catch(function(){});
-
-// הודעת פתיחה של קטי.
-bubble('kety','היי, אני קטי הדיגיטלית. אני כאן כדי ללוות אותך בתרגול — צעד אחד קטן בכל פעם. מה עובר עלייך עכשיו?');
 </script>
 </body>
 </html>
