@@ -119,7 +119,7 @@ app.post("/api/auth/register", rateLimit("register", 15), async (req, res) => {
     console.warn("[consent] log failed:", e.message);
   }
 
-  // ── register → enrollment: יוצר enrollment אמיתי + מתחיל 72 שעות (server-side) ──
+  // ── register → enrollment: יוצר enrollment אמיתי + מתחיל 7 ימי התנסות (server-side) ──
   // בחירת התוכנית מגיעה מדף התוכניות (slug/programId); אם חסרה — נגזרת מקבוצת הגיל.
   try {
     const ageGroup = ["youth", "teen", "adult", "parent"].includes(String(req.body.ageGroup))
@@ -908,7 +908,7 @@ api.get("/access", (req, res) => {
           notifyEmail(acct.email, "ההתנסות שלך מסתיימת מחר · CureMindset", {
             "שם": acct.full_name || "",
             "מה קורה עכשיו": "נותר יום אחרון בהתנסות. אפשר להמשיך את המסע המלא — או פשוט להמשיך לדבר איתי.",
-            "3 ימים חינם": "בלי כרטיס אשראי · ביטול בכל עת · החזר מלא תוך 15 יום",
+            "7 ימים חינם": "בלי כרטיס אשראי · ביטול בכל עת · החזר מלא תוך 15 יום",
           }).catch(() => {});
         }
       }
@@ -917,7 +917,7 @@ api.get("/access", (req, res) => {
   res.json(status);
 });
 
-/* ═══ מודל המוצר: תוכניות, enrollment ו-72 שעות (מסע המשתמש) ═══ */
+/* ═══ מודל המוצר: תוכניות, enrollment ו-7 ימי התנסות (מסע המשתמש) ═══ */
 
 // קטלוג התוכניות הציבורי (לדף התוכניות / דפי הפרטים).
 api.get("/programs", (req, res) => {
@@ -938,7 +938,7 @@ api.get("/programs/:slug", (req, res) => {
     moduleIds: JSON.parse(p.module_ids || "[]") });
 });
 
-// בחירת תוכנית → enrollment עם programId + התחלת 72 שעות בשרת. דורש חשבון מאומת.
+// בחירת תוכנית → enrollment עם programId + התחלת 7 ימי התנסות בשרת. דורש חשבון מאומת.
 api.post("/enroll", rateLimit("enroll", 20), (req, res) => {
   if (!req.accountId) return res.status(401).json({ error: "יש להתחבר או להירשם כדי להתחיל תוכנית" });
   const programId = String(req.body?.programId || req.body?.slug || "").trim();
@@ -949,7 +949,7 @@ api.post("/enroll", rateLimit("enroll", 20), (req, res) => {
     created: r.created, trial: enrollmentTrialStatus(r.enrollment) });
 });
 
-// "התוכניות שלי" + שחזור מסע: כל enrollment עם סטטוס 72 השעות המחושב בשרת.
+// "התוכניות שלי" + שחזור מסע: כל enrollment עם סטטוס 7 ימי ההתנסות המחושב בשרת.
 api.get("/my-enrollments", (req, res) => {
   if (!req.accountId) return res.json({ enrollments: [] });
   const rows = getEnrollments(req.accountId).map((e) => {

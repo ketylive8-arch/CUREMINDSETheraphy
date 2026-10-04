@@ -424,7 +424,7 @@ function ensurePatient(deviceToken) {
   db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
 }
 
-// מקור אמת יחיד לאורך ההתנסות: בדיוק 72 שעות מרגע פתיחת החשבון/ה-enrollment.
+// מקור אמת יחיד לאורך ההתנסות: 7 ימים מרגע פתיחת החשבון/ה-enrollment.
 // (TRIAL_HOURS מוגדר מטה — משמש כאן וב-enrollUser כדי שאין שני שעונים סותרים.)
 
 // Access resolution: a redeemed code / active subscription wins; otherwise the
@@ -444,7 +444,7 @@ function getAccessStatus(deviceToken) {
 
   if (row.trial_start_at) {
     const started = new Date(row.trial_start_at.replace(" ", "T") + "Z").getTime();
-    const endsAt = started + TRIAL_HOURS * 3600000; // 72h exactly
+    const endsAt = started + TRIAL_HOURS * 3600000; // 7 ימים בדיוק (TRIAL_HOURS)
     const msLeft = endsAt - Date.now();
     if (msLeft > 0) {
       return {
@@ -486,7 +486,7 @@ function scheduleEngagementNotifications(deviceToken) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   מודל המוצר — תוכניות, הרשמות ו-72 שעות ניסיון (server-side).
+   מודל המוצר — תוכניות, הרשמות ו-7 ימי ניסיון (server-side).
    ═══════════════════════════════════════════════════════════════════ */
 
 const TRIAL_HOURS = 168; // 7 ימים (אושר ע"י קטי — היה 72 שעות)
@@ -679,7 +679,7 @@ function getProgram(idOrSlug) {
   return db.prepare("SELECT * FROM programs WHERE program_id = ? OR slug = ?").get(idOrSlug, idOrSlug) || null;
 }
 
-// יצירת/מציאת enrollment פעיל לתוכנית — לא דורס enrollment קודם, ומתחיל 72 שעות server-side.
+// יצירת/מציאת enrollment פעיל לתוכנית — לא דורס enrollment קודם, ומתחיל 7 ימי התנסות server-side.
 function enrollUser(userId, programId) {
   const prog = getProgram(programId);
   if (!prog) return { error: "program_not_found" };
@@ -698,7 +698,7 @@ function getEnrollments(userId) {
   return db.prepare("SELECT * FROM enrollments WHERE user_id = ? ORDER BY enrolled_at DESC").all(userId);
 }
 
-// סטטוס ה-72 שעות מחושב אך ורק בצד השרת מ-trial_ends_at.
+// סטטוס 7 ימי ההתנסות מחושב אך ורק בצד השרת מ-trial_ends_at.
 function enrollmentTrialStatus(enr) {
   if (!enr) return { status: "none", hoursLeft: 0 };
   if (enr.subscription_status === "active") return { status: "subscribed", hoursLeft: null };

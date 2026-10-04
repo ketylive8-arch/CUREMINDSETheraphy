@@ -2638,7 +2638,7 @@
               <h3>{isReg? "בוא/י נתחיל את פריצת הדרך שלך ": "כניסה לאזור האישי"}</h3>
               <p>
                 {isReg
-                  ? "מרחב אישי ומאובטח — 3 ימי התנסות חינם להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
+                  ? "מרחב אישי ומאובטח — 7 ימי התנסות חינם להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה."
                   : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת."}
               </p>
             </div>
@@ -2649,7 +2649,7 @@
                   <Icon name="sparkles" size={16} className="text-gold-600" />
                   <b style={{ color: "#8a6a1e", fontSize: 14 }}>המסלול שמתאים לך: {recPlan.name}</b>
                 </div>
-                <p style={{ fontSize: 12.5, color: "#6b5726", margin: 0, lineHeight: 1.5 }}>{recPlan.why} · מתחילים ב-3 ימי התנסות חינם.</p>
+                <p style={{ fontSize: 12.5, color: "#6b5726", margin: 0, lineHeight: 1.5 }}>{recPlan.why} · מתחילים ב-7 ימי התנסות חינם.</p>
               </div>
             )}
 
@@ -2717,7 +2717,7 @@
               האזור האישי שלך — מרחב בטוח ומוצפן לתרגול, לצמיחה ולתהליך הפנימי, בליווי מבוסס השיטה של קטי שגב.
             </p>
             <ul className="au-benefits">
-              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>3 ימי התנסות חינם — מרחב להתנסות ולצמיחה, בלי התחייבות</li>
+              <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>7 ימי התנסות חינם — מרחב להתנסות ולצמיחה, בלי התחייבות</li>
               <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>שיחות פרטיות ומוצפנות — רק את רואה אותן</li>
               <li><span className="au-tick"><Icon name="check-circle-2" size={14} /></span>ליווי AI מבוסס השיטה והתכנים של קטי</li>
             </ul>

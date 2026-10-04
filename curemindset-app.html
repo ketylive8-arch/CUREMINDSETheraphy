@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CureMindset — המרחב שלי</title>
+<meta name="description" content="המרחב האישי של CureMindset — ליווי דיגיטלי יומיומי, צ׳ק-אין ותרגול." />
+<meta name="robots" content="noindex, follow" />
+<link rel="canonical" href="https://ketysegev.com/curemindset-app.html" />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{
@@ -117,7 +120,7 @@ function Space({me,program,onExpired}){
     h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
     h("div",{className:"trialbar"},
       h("div",null,
-        h("div",null, h(Countdown,{endsAt: acc.trialEndsAt || new Date(Date.now()+72*3600e3).toISOString()})),
+        h("div",null, h(Countdown,{endsAt: acc.trialEndsAt || new Date(Date.now()+168*3600e3).toISOString()})),
         h("small",null,"7 ימי התנסות — מרחב להתנסות ולצמיחה")
       ),
       h("div",null, h("small",null,"התוכנית: "), (program&&program.title)||enr.programId)
@@ -150,7 +153,7 @@ function Paywall({onBack}){
   const p = data.pricing||{};
   return h("div",null,
     h("div",{className:"brand"}, h("span",{className:"dot"}), h("b",null,"CureMindset")),
-    h("h1",null,"72 השעות הסתיימו 🌱"),
+    h("h1",null,"שבעת ימי ההתנסות הסתיימו 🌱"),
     h("p",{className:"sub"},"כדי להמשיך את הליווי — הנה בדיוק מה שכולל המנוי, בשקיפות מלאה."),
     h("div",{className:"pay"},
       h("div",{className:"big"}, p.price||"₪278 לחודש"),

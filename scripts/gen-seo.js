@@ -172,7 +172,7 @@ ${p.faq && p.faq.length ? `<script type="application/ld+json">${faqJsonLd(p.faq)
       <a class="btn primary" href="/#plans">להתחיל ניסיון חינם</a>
       <a class="btn ghost" href="${BRAND.calendly}" target="_blank" rel="noopener">קביעת שיחת היכרות</a>
     </div>
-    <div class="note">3 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת</div>
+    <div class="note">7 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת</div>
   </div>`}
 
   ${related}
