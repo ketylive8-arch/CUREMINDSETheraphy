@@ -1,5 +1,5 @@
 // צינור שליחת התראות ללידים — פולט מייל בכל הרשמה/טופס, ליעד NOTIFY_TO למטה
-// (ברירת מחדל ketylive8@gmail.com; אפשר לשנות עם NOTIFICATION_EMAIL ב-Render).
+// (ברירת מחדל ketyse@gmail.com — המייל הראשי; אפשר לשנות עם NOTIFICATION_EMAIL ב-Render).
 //
 // שלוש דרכים, לפי הסדר. הראשונה שמוגדרת — מנצחת. אין צורך בשום קוד נוסף:
 //
@@ -15,7 +15,7 @@
 //
 // כל הפונקציות לעולם לא זורקות — כישלון מחזיר { sent:false, error }.
 
-const NOTIFY_TO = process.env.NOTIFICATION_EMAIL || "ketylive8@gmail.com";
+const NOTIFY_TO = process.env.NOTIFICATION_EMAIL || "ketyse@gmail.com";
 
 function esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -53,6 +53,25 @@ async function sendViaWebhook(to, subject, fields) {
     return resp.ok ? { sent: true, via: "webhook" } : { sent: false, error: `Webhook ${resp.status}` };
   } catch (e) {
     return { sent: false, error: `Webhook ${String((e && e.message) || e).slice(0, 160)}` };
+  }
+}
+
+// ── 0.5) ממסר KETYS (Base44) — ערוץ ראשי, לא דורש שום מפתח בסביבה.
+// האתר שולח את הליד ל-endpoint של הסוכן, והסוכן שולח את המייל מחשבון ה-Gmail
+// המחובר אליו ישירות אל ketyse@gmail.com. הנמען קבוע בצד הסוכן.
+async function sendViaAgentRelay(to, subject, fields) {
+  const url = process.env.AGENT_RELAY_URL || "https://assist-sales-192ef7d1.base44.app/functions/receive_site_lead";
+  try {
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subject, fields }),
+    });
+    if (!resp.ok) return { sent: false, error: `Relay ${resp.status}` };
+    const r = await resp.json().catch(() => null);
+    return r && r.sent ? { sent: true, via: "agent-relay" } : { sent: false, error: "Relay not sent" };
+  } catch (e) {
+    return { sent: false, error: `Relay ${String((e && e.message) || e).slice(0, 160)}` };
   }
 }
 
@@ -116,7 +135,7 @@ async function sendViaFormSubmit(to, subject, fields) {
 
 // שולח מייל ליעד כלשהו דרך Gmail → Resend → FormSubmit. לעולם לא זורק.
 async function notifyEmail(to, subject, fields) {
-  for (const send of [sendViaWebhook, sendViaGmail, sendViaResend, sendViaFormSubmit]) {
+  for (const send of [sendViaWebhook, sendViaAgentRelay, sendViaGmail, sendViaResend, sendViaFormSubmit]) {
     const r = await send(to, subject, fields);
     if (r === null) continue; // ספק לא מוגדר — לנסות את הבא
     if (r.sent) return r; // הצלחה
