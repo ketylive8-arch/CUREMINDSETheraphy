@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin.html
 Disallow: /api/
 
-Sitemap: https://ketysegev.com/sitemap.xml
+Sitemap: https://www.ketysegev.com/sitemap.xml

@@ -72,7 +72,7 @@ app.use((req, res, next) => {
 // חשוב: robots.txt ו-sitemap.xml מוגשים כקבצים סטטיים (השורש מכיל את הקבצים
 // המלאים עם כל 20 העמודים). בעבר היה כאן route דינמי שהחזיר sitemap עם דף הבית
 // בלבד ודרס את הקובץ הסטטי — כך שגוגל לא ראה את עמודי ה-SEO. הוסר (P0 SEO fix).
-const SITE_URL = (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+const SITE_URL = (process.env.SITE_URL || "https://www.ketysegev.com").replace(/\/$/, "");
 
 app.use(express.json({ limit: "100kb" }));
 app.use(express.static(STATIC_DIR));
@@ -276,7 +276,7 @@ app.post("/api/auth/reset", rateLimit("reset", 12), (req, res) => {
 // זרימה מלאה: (1) הלקוח מבקש כתובת התחלה; (2) הספק מחזיר code ל-callback;
 // (3) מחליפים code ב-token, שולפים מייל+שם, יוצרים/מוצאים חשבון, מנפיקים טוקן
 // ומפנים חזרה לאתר עם הטוקן. כשספק לא מוגדר — 501, והלקוח פשוט לא מציג את הכפתור.
-const OAUTH_BASE = () => (process.env.SITE_URL || "https://ketysegev.com").replace(/\/$/, "");
+const OAUTH_BASE = () => (process.env.SITE_URL || "https://www.ketysegev.com").replace(/\/$/, "");
 const oauthStates = new Map(); // state -> expires (הגנת CSRF, תוקף קצר)
 function makeState() {
   const s = require("node:crypto").randomBytes(16).toString("hex");

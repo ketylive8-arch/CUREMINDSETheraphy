@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="CURE MINDSET · קטי שגב" />
 <meta property="og:title" content="תוכניות — CureMindset" />
 <meta property="og:description" content="תהליך פרימיום אישי, תוכנית קבוצתית וליווי דיגיטלי — אותה שיטה, שלוש דרכים לעבוד על שינוי דפוסים וחיזוק חוסן רגשי." />
-<meta property="og:url" content="https://ketysegev.com/programs" />
+<meta property="og:url" content="https://www.ketysegev.com/programs" />
 <meta property="og:image" content="https://ketysegev.com/images/kety-920.jpg" />
 <meta property="og:locale" content="he_IL" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -26,7 +26,7 @@
 <style>
   :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#2D2A26;--ink-500:#6B6560}
   *{box-sizing:border-box}
-  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:var(--cream);line-height:1.8;font-size:17px}
+  body{margin:0;font-family:Assistant,Arial,sans-serif;color:var(--ink);background:#f6f0e4;line-height:1.8;font-size:17px}
   a{color:var(--gold-deep)}
   .wrap{max-width:900px;margin:0 auto;padding:0 22px}
   header.site{position:sticky;top:0;z-index:20;background:rgba(251,247,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--gold-soft)}
@@ -34,30 +34,43 @@
   header.site img{height:38px}
   .brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink)}
   .brand b{font-family:Rubik,sans-serif;font-weight:800;font-size:17px;color:var(--gold-deep)}
-  .cta-top{background:var(--gold);color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px;white-space:nowrap}
-  h1{font-family:Rubik,sans-serif;font-weight:600;font-size:33px;line-height:1.25;color:var(--ink);margin:8px 0 14px}
+  .cta-top{background:var(--grad);color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;padding:9px 16px;border-radius:999px;white-space:nowrap}
+  h1{font-family:Rubik,sans-serif;font-weight:700;font-size:33px;line-height:1.3;margin:8px 0 14px;background:linear-gradient(120deg,#2D2A26 30%,#8a6a2f 60%,#6d5aa0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--ink)}
   h2{font-family:Rubik,sans-serif;font-weight:600;font-size:23px;color:var(--gold-deep);margin:0 0 6px}
   h3{font-family:Rubik,sans-serif;font-weight:600;font-size:16px;color:var(--ink);margin:16px 0 6px}
   .eyebrow{font-family:Rubik,sans-serif;font-weight:600;font-size:13px;letter-spacing:.12em;color:var(--gold)}
   .hero{padding:40px 0 8px}
   .hero .lead{font-size:19px;font-weight:600;color:var(--ink);margin:0 0 8px}
-  .prog{background:#fff;border:1px solid var(--gold-soft);border-radius:18px;padding:24px 24px 20px;margin:18px 0}
+  .prog{background:rgba(255,255,255,.88);border:1px solid rgba(194,151,74,.22);border-radius:20px;padding:24px 24px 20px;margin:18px 0;box-shadow:0 8px 28px rgba(138,106,47,.07);backdrop-filter:blur(6px);transition:transform .25s,box-shadow .25s}
+  .prog:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(138,106,47,.12)}
   .prog .kicker{font-family:Rubik,sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase}
   .prog .who{color:var(--ink-500);font-size:15.5px;margin:2px 0 0}
   .prog ul{margin:6px 0 0;padding-inline-start:20px}
   .prog ul li{margin:4px 0}
   .prog .result{background:var(--cream);border-inline-start:3px solid var(--gold);border-radius:10px;padding:10px 14px;margin-top:14px;font-weight:600;font-size:15.5px}
-  .prog .go{display:inline-block;margin-top:14px;font-family:Rubik,sans-serif;font-weight:700;text-decoration:none;color:var(--gold-deep)}
-  .ctaband{background:linear-gradient(160deg,#fff, var(--gold-soft));border:1px solid var(--gold-soft);border-radius:18px;padding:28px 24px;text-align:center;margin:30px 0}
+  .prog .go{display:inline-block;margin-top:14px;font-family:Rubik,sans-serif;font-weight:700;text-decoration:none;color:var(--gold-deep);transition:transform .2s}
+  .prog .go:hover{transform:translateX(-3px)}
+  .ctaband{background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(239,227,204,.8));border:1px solid rgba(194,151,74,.25);border-radius:22px;padding:28px 24px;text-align:center;margin:30px 0;box-shadow:0 12px 36px rgba(138,106,47,.09)}
   .ctaband h2{margin-top:0;color:var(--ink)}
   .btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}
   .btn{text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:13px 24px;border-radius:999px;font-size:16px}
-  .btn.primary{background:var(--gold);color:#fff}
-  .btn.ghost{background:#fff;color:var(--gold-deep);border:1px solid var(--gold)}
+  .btn.primary{background:var(--grad);color:#fff;box-shadow:0 6px 18px rgba(138,106,47,.28);transition:transform .2s}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.ghost{background:rgba(255,255,255,.85);color:var(--gold-deep);border:1.5px solid rgba(194,151,74,.5);transition:transform .2s}
+  .btn.ghost:hover{transform:translateY(-2px);background:#fff}
   .note{font-size:13.5px;color:var(--ink-500)}
   nav.related{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink-500);margin:26px 0 8px}
   nav.related a{background:#fff;border:1px solid var(--gold-soft);border-radius:999px;padding:6px 14px;text-decoration:none}
   .disclaimer{font-size:13.5px;color:var(--ink-500);background:#fff;border:1px solid var(--gold-soft);border-radius:12px;padding:14px 16px;margin:18px 0}
+
+  /* ── עיצוב חי: רקע נושם ── */
+  .aura{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+  .aura .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
+  .aura .b1{width:46vmax;height:46vmax;background:radial-gradient(circle,rgba(194,151,74,.25),transparent 65%);top:-14vmax;right:-10vmax;animation:drift 34s ease-in-out infinite alternate}
+  .aura .b2{width:40vmax;height:40vmax;background:radial-gradient(circle,rgba(184,212,227,.38),transparent 65%);bottom:-12vmax;left:-8vmax;animation:drift 41s ease-in-out infinite alternate-reverse}
+  @keyframes drift{to{transform:translate(-6vmax,5vmax) scale(1.12)}}
+  :root{--grad:linear-gradient(135deg,#c2974a,#b8935e 45%,#a083b8 75%,#8fb5cc)}
+
   footer.site{border-top:1px solid var(--gold-soft);padding:26px 0;text-align:center;color:var(--ink-500);font-size:14px}
   footer.site a{color:var(--gold-deep);text-decoration:none;margin:0 8px}
   @media(max-width:700px){h1{font-size:27px}}
@@ -65,6 +78,7 @@
   <link rel="stylesheet" href="/site-nav.css" />
 </head>
 <body>
+<div class="aura" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div></div>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
   <nav class="site-nav">
