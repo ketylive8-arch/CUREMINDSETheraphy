@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": false,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/parents", "destination": "/cure-teens", "permanent": true },
+    { "source": "/parents.html", "destination": "/cure-teens", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://curemindsetheraphy.onrender.com/api/$1" },
     { "source": "/uploads/(.*)", "destination": "https://curemindsetheraphy.onrender.com/uploads/$1" },
