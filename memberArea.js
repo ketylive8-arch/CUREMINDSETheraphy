@@ -890,7 +890,6 @@
     { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
     { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
-    { id: 8, icon: "graduation-cap", title: "התוכנית שלי", subtitle: "תהליך CURE MINDSET · 14 יום במודולים", alwaysUnlocked: true },
     { id: 9, icon: "video", title: "המפגש שלי", subtitle: "מפגש זום אישי וחי עם קטי", alwaysUnlocked: true },
   ];
 
@@ -3661,10 +3660,6 @@
               onNavigateStage={navigateToStage}
               onNeedHuman={() => window.open(CALENDAR_LINK, "_blank", "noopener")}
             />
-          </div>
-        ): current === 8? (
-          <div className="flex-1 overflow-y-auto px-5 py-6">
-            <ProgramStage onNavigateStage={navigateToStage} paid={paid} onUpgrade={() => setShowCodeEntry(true)} />
           </div>
         ): current === 9? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
