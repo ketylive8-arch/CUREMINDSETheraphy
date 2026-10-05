@@ -219,6 +219,47 @@ function send(text){
 
 document.getElementById('composer').addEventListener('submit', function(e){ e.preventDefault(); var i=document.getElementById('input'); var v=i.value; i.value=''; send(v); });
 
+/* ═══ בדיקת התאמה מונחית — 3 שאלות רגשיות ואז הפניה לקביעת שיחת זום ═══ */
+var FIT = {};
+function fitChips(opts, next){
+  var row=document.createElement('div'); row.className='starters'; row.style.display='flex';
+  opts.forEach(function(o){
+    var b=document.createElement('button'); b.className='starter'; b.textContent=o;
+    b.onclick=function(){ row.remove(); bubble('me', o); FIT[o]=true; next(o); };
+    row.appendChild(b);
+  });
+  stream.appendChild(row); scroll();
+}
+function fitCheck(){
+  var s0=document.getElementById('starters'); if(s0) s0.style.display='none';
+  var w=document.getElementById('welcome'); if(w) w.remove();
+  bubble('kety','אפשר לעשות בדיקת התאמה קצרה — שלוש שאלות, חצי דקה. בסוף אני אגיד לך איך השיטה יכולה לעזור, ומשם קובעים שיחת היכרות בזום, בחינם.');
+  setTimeout(function(){
+    bubble('kety','שאלה 1 מתוך 3: איפה את נמצאת עכשיו מבחינה רגשית?');
+    fitChips(['מוצפת — יותר מדי בבת אחת','חרדה או מתח ברקע','תקועה — רוצה לזוז ולא מצליחה','ביקורת עצמית שלא מפסיקה','משהו אחר'], function(q1){
+      FIT.q1=q1;
+      bubble('kety','שאלה 2 מתוך 3: כמה זמן זה מלווה אותך?');
+      fitChips(['ימים אחרונים','כמה שבועות','חודשים','כבר שנים'], function(q2){
+        FIT.q2=q2;
+        bubble('kety','ושאלה אחרונה: מה היית רוצה שיהיה אחרת בעוד חודש?');
+        fitChips(['פחות עומס, יותר שקט','להזיז את הדבר שתקוע','שקט בראש בלילה','לא בטוחה — בשביל זה כדאי לדבר'], fitFinish);
+      });
+    });
+  }, 400);
+}
+function fitFinish(){
+  var d=document.createElement('div'); d.className='human-card';
+  d.innerHTML='תודה על הכנות. מה שתיארת — '+FIT.q1.toLowerCase()+' שמלווה אותך '+FIT.q2+' — '
+    +'הוא בדיוק המקום שבו השיטה מתחילה: לא לחכות שיעבור, אלא לבנות עוגן פנימי ולהזיז את הדבר האחד שתקוע.<br><br>'
+    +'<b>הצעד הבא — שיחת היכרות חינם בזום עם קטי:</b><br>'
+    +'<a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קובעים לבד לפי היומן — השיחה נכנסת ישר ליומן של קטי</a><br>'
+    +'<a href="https://wa.me/972543032349" target="_blank" rel="noopener">או וואטסאפ ישיר לקטי</a><br><br>'
+    +'ואם בא לך להתחיל לבד בינתיים: <a href="/program" target="_blank" rel="noopener">7 ימי התנסות חינם</a>';
+  stream.appendChild(d); scroll();
+}
+if(/[?&]fit/.test(location.search)){ setTimeout(fitCheck, 700); }
+
+
 // צ'ק-אין רגשי — פותח שיחה במצב שבו המשתמשת נמצאת
 document.querySelectorAll('.mood').forEach(function(m){
   m.addEventListener('click', function(){ send(m.getAttribute('data-say')); });
@@ -230,6 +271,11 @@ fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
   .then(function(cfg){
     if(cfg.disclaimer) document.getElementById('disc').textContent = cfg.disclaimer;
     var s=document.getElementById('starters');
+    var fit=document.createElement('button'); fit.className='starter';
+    fit.style.cssText='font-weight:800;color:#8a6a2f;border-color:#c2974a';
+    fit.textContent='בדיקת התאמה בחינם — 3 שאלות';
+    fit.onclick=function(){ fitCheck(); };
+    s.appendChild(fit);
     (cfg.starters||[]).forEach(function(st){
       var b=document.createElement('button'); b.className='starter'; b.textContent=st.label;
       b.onclick=function(){ send(st.label); s.style.display='none'; };

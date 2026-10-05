@@ -1503,7 +1503,7 @@ function HbHero() {
           <h1 className="hb-hero__title">שינוי דפוסים. חיזוק החוסן. יותר בחירה בדרך שבה מגיבים.</h1>
           <p className="hb-hero__sub">ליווי רגשי שמתחיל במה שקורה לך עכשיו: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים להתמודדות — שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
           <div className="hb-hero__cta">
-            <a href="#lead" className="hb-hero__btn">בדיקת התאמה בחינם</a>
+            <a href="/talk?fit" className="hb-hero__btn">בדיקת התאמה בחינם</a>
             <a href="/gifts.html" className="hb-hero__link">מתנות וכלים חינם <span aria-hidden="true">→</span></a>
           </div>
         </Reveal>
