@@ -230,7 +230,9 @@ function fitChips(opts, next){
   });
   stream.appendChild(row); scroll();
 }
+var FIT_ACTIVE=false;
 function fitCheck(){
+  FIT_ACTIVE=true;
   var s0=document.getElementById('starters'); if(s0) s0.style.display='none';
   var w=document.getElementById('welcome'); if(w) w.remove();
   bubble('kety','אפשר לעשות בדיקת התאמה קצרה — שלוש שאלות, חצי דקה. בסוף אני אגיד לך איך השיטה יכולה לעזור, ומשם קובעים שיחת היכרות בזום, בחינם.');
@@ -281,7 +283,7 @@ fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
       b.onclick=function(){ send(st.label); s.style.display='none'; };
       s.appendChild(b);
     });
-    if((cfg.starters||[]).length) s.style.display='flex';
+    if((cfg.starters||[]).length && !FIT_ACTIVE) s.style.display='flex';
   })
   .catch(function(){});
 </script>
