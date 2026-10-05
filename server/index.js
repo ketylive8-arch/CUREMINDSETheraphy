@@ -1223,6 +1223,10 @@ api.delete("/goals/:id", (req, res) => {
 // patient-facing device-token API below. Mounted before "/api" so its requests
 // never reach the device-token middleware (Express matches prefixes in order).
 const admin = express.Router();
+// הגנה מפני ניחוש סיסמה בכוח גס: בלי זה, אין הגבלה על מספר הניסיונות מול
+// Basic Auth של הפאנל — השער היחיד לכל נתוני המטופלות. אותה מגבלה כמו שאר
+// נתיבי האימות הרגישים באתר.
+admin.use(rateLimit("admin-auth", 30));
 admin.use(adminAuthMiddleware);
 
 // ── Access codes: the therapist generates a personal code after payment and
