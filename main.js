@@ -29,7 +29,7 @@
     useEffect(hideSplash, []);
     return (
       <React.Fragment>
-        <Home onEnterApp={() => setView("app")} />
+        {view === "home" ? <Home onEnterApp={() => setView("app")} /> : null}
         {view === "app" ? <MemberArea onExit={() => setView("home")} /> : null}
       </React.Fragment>
     );
@@ -37,4 +37,8 @@
 
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(<App />);
+
+  // רשת ביטחון: אם React נכשל לעלות מסיבה כלשהי (שגיאת JS, קובץ שלא נטען),
+  // מסך הטעינה הממותג לא יישאר תקוע לנצח — יוסר בכפייה אחרי 6 שניות.
+  setTimeout(hideSplash, 6000);
 })();
