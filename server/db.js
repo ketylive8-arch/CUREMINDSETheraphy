@@ -409,6 +409,8 @@ const crmColumns = [
   // חבר מביא חבר — קוד הפניה אישי + מי הזמין את החשבון.
   "ALTER TABLE accounts ADD COLUMN ref_code TEXT",
   "ALTER TABLE accounts ADD COLUMN referred_by TEXT",
+  // מניעת ניצול ניסיון חוזר: מזהה IP שפתח כל התנסות (ללא הרשמה אין מזהה אחר).
+  "ALTER TABLE patient_profile ADD COLUMN signup_ip TEXT",
 ];
 for (const stmt of crmColumns) {
   try {
@@ -418,10 +420,38 @@ for (const stmt of crmColumns) {
   }
 }
 
-function ensurePatient(deviceToken) {
+const MAX_NEW_TRIALS_PER_IP_PER_DAY = 3;
+
+function patientExists(deviceToken) {
+  return !!db.prepare("SELECT 1 FROM patients WHERE device_token = ?").get(deviceToken);
+}
+
+// מגבלה על פתיחת ניסיונות חדשים מאותה כתובת IP ב-24 שעות האחרונות — מונעת
+// ניצול לרעה (ניקוי דפדפן / גלישה פרטית שוב ושוב כדי לקבל ניסיון טרי בלי סוף)
+// בלי לדרוש הרשמה. נדיבה בכוונה כדי לא לפגוע במשפחות/משרדים משותפי-IP.
+function newTrialsFromIpToday(ip) {
+  if (!ip) return 0;
+  const row = db
+    .prepare("SELECT COUNT(*) AS c FROM patient_profile WHERE signup_ip = ? AND trial_start_at > datetime('now', '-1 day')")
+    .get(ip);
+  return row ? row.c : 0;
+}
+
+// signupIp: רק לניסיון אנונימי חדש (לא לחשבונות מחוברים — ensurePatient(accountId)
+// הקיים ממשיך לעבוד בלי שינוי). אם ה-IP כבר מיצה את המכסה היום, עדיין נפתחת
+// גישה (לא חוסמים כניסה) אבל בלי שעון ניסיון חדש — הגישה תיראה פגה מיד.
+function ensurePatient(deviceToken, signupIp) {
+  const isNew = !patientExists(deviceToken);
   db.prepare("INSERT OR IGNORE INTO patients (device_token) VALUES (?)").run(deviceToken);
   db.prepare("INSERT OR IGNORE INTO protocol_progress (device_token) VALUES (?)").run(deviceToken);
-  db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at) VALUES (?, datetime('now'))").run(deviceToken);
+  if (isNew && signupIp && newTrialsFromIpToday(signupIp) >= MAX_NEW_TRIALS_PER_IP_PER_DAY) {
+    db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, signup_ip) VALUES (?, ?)").run(deviceToken, signupIp);
+  } else {
+    db.prepare("INSERT OR IGNORE INTO patient_profile (device_token, trial_start_at, signup_ip) VALUES (?, datetime('now'), ?)").run(
+      deviceToken,
+      signupIp || null
+    );
+  }
 }
 
 // מקור אמת יחיד לאורך ההתנסות: 7 ימים מרגע פתיחת החשבון/ה-enrollment.

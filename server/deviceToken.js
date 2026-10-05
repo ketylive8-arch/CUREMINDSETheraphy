@@ -18,7 +18,8 @@ function deviceTokenMiddleware(req, res, next) {
   if (!token || typeof token !== "string" || token.length > 200) {
     return res.status(400).json({ error: "Missing or invalid X-Device-Token header" });
   }
-  ensurePatient(token);
+  // IP נשלח רק כדי לצמצם ניצול לרעה של ניסיונות חוזרים (ensurePatient) — ראה db.js.
+  ensurePatient(token, req.ip);
   req.deviceToken = token;
   next();
 }
