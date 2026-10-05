@@ -71,7 +71,6 @@
     }
   }
 
-  const AGE_GROUP_KEY = "cm_age_group_set";
   const AUTH_TOKEN_KEY = "cm_auth_token";
   const AUTH_NAME_KEY = "cm_auth_name";
 
@@ -328,278 +327,8 @@
     return h;
   }
 
-  /* ---------------------------------------------------------------- */
-  /* Age group onboarding */
-  /* ---------------------------------------------------------------- */
-
-  function AgeGroupOnboarding({ onDone }) {
-    const [selected, setSelected] = useState(null);
-    const [saving, setSaving] = useState(false);
-
-    function confirm() {
-      if (!selected) return;
-      setSaving(true);
-      fetch("/api/profile", {
-        method: "PUT",
-        headers: authHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ ageGroup: selected }),
-      })
-        .catch(() => {})
-        .finally(() => {
-          localStorage.setItem(AGE_GROUP_KEY, "1");
-          onDone(selected);
-        });
-    }
-
-    const options = [
-      { value: "adult", label: "מבוגר/ת", desc: "18+", icon: "user-round" },
-      { value: "youth", label: "נוער", desc: "עד גיל 18", icon: "users" },
-    ];
-
-    return (
-      <div className="absolute inset-0 z-[70] bg-white flex flex-col items-center gap-6 px-8 py-10 text-center overflow-y-auto" dir="rtl">
-        <div className="w-14 h-14 rounded-full bg-gold-100 flex items-center justify-center mx-auto">
-          <Icon name="sparkles" size={26} className="text-gold-600" />
-        </div>
-        <div>
-          <p className="font-heading font-bold text-[18px] text-ink-800">ברוכ/ה הבא/ה לאזור האישי</p>
-          <p className="text-[13px] text-ink-500 mt-1">כדי שאתאים את השפה והתכנים עבורך, ספר/י לי מי את/ה:</p>
-        </div>
-        <div className="flex gap-4 w-full">
-          {options.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setSelected(opt.value)}
-              className={`flex-1 flex flex-col items-center gap-2 py-5 rounded-2xl border-2 transition-all ${
-                selected === opt.value
-                  ? "border-gold-500 bg-gold-50"
-                  : "border-ink-200 bg-ink-50 hover:border-gold-300"
-              }`}
-            >
-              <span className={`w-10 h-10 rounded-full flex items-center justify-center ${selected === opt.value? "bg-gold-500 text-white": "bg-ink-200 text-ink-600"}`}>
-                <Icon name={opt.icon} size={20} />
-              </span>
-              <span className={`font-heading font-bold text-[15px] ${selected === opt.value? "text-gold-700": "text-ink-700"}`}>{opt.label}</span>
-              <span className="text-[12px] text-ink-400">{opt.desc}</span>
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          disabled={!selected || saving}
-          onClick={confirm}
-          className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] disabled:opacity-40 transition-opacity hover:bg-gold-600"
-        >
-          {saving? "שומר...": "מתחילים"}
-        </button>
-      </div>
-    );
-  }
-
-  /* ---------------------------------------------------------------- */
-  /* IntakeChat — אינטייק כשיחה (לא טופס). קטי הדיגיטלית שואלת שאלה     */
-  /* אחת בכל פעם, המשתמש עונה ב-chips/טקסט. אפיון §2, §5.2, §18.3.      */
-  /* ---------------------------------------------------------------- */
   const INTAKE_KEY = "cm_intake";
 
-  function IntakeChat({ onDone, firstName }) {
-    const [msgs, setMsgs] = useState([]);
-    const [step, setStep] = useState(-1);      // -1 = פתיחה, אחר כך אינדקס שאלה
-    const [typing, setTyping] = useState(false);
-    const [answers, setAnswers] = useState({ audience: "", time: "", format: "", mood: 0 });
-    const [multi, setMulti] = useState([]);     // (שמור לתאימות; לא בשימוש בזרימה הנוכחית)
-    const [goalText, setGoalText] = useState("");
-    const scrollRef = useRef(null);
-
-    // רצף קצר וממשיך — בלי לחזור על מה שכבר נאסף בשיחת ההיכרות שלפני ההרשמה
-    // (שם, אתגר, השפעה, מטרה). כאן רק ההשלמות להתאמת ה"היום שלי".
-    const STEPS = [
-      { key: "audience", type: "single", q: "רק כדי לכוון נכון — מי מתחיל/ה את התהליך?",
-        opts: [{ v: "adult", l: "מבוגר/ת" }, { v: "parent", l: "הורה" }, { v: "youth", l: "נער/ה" }, { v: "org", l: "ארגון" }] },
-      { key: "time", type: "single", q: "כמה זמן ביום נוח לך להשקיע? נתאים את הקצב אלייך.",
-        opts: [{ v: "5", l: "5 דקות" }, { v: "10", l: "10 דקות" }, { v: "15", l: "15+ דקות" }] },
-      { key: "format", type: "single", q: "ואיך הכי נוח לך ללמוד ולתרגל?",
-        opts: [{ v: "text", l: "טקסט" }, { v: "audio", l: "אודיו" }, { v: "practice", l: "תרגול קצר" }, { v: "mix", l: "שילוב" }] },
-      { key: "mood", type: "scale", q: "אחרונה — איך את/ה מרגיש/ה ממש עכשיו, מ-1 (קשה) עד 10 (רגוע/ה)? זה רק בשבילנו, בלי שיפוט." },
-    ];
-
-    useEffect(() => {
-      // פתיחה עם המשכיות — מכירים במה שכבר שותף, ומבטיחים שלא נחזור על עצמנו.
-      const hi = firstName ? `היי ${firstName}, טוב שאת כאן.` : "טוב שאת כאן.";
-      pushKety(`${hi} כבר סיפרת לי על מה שמעיק ומה המטרה שלך — לא נחזור על זה. יש לי רק עוד שלוש שאלות קצרות כדי לדייק לך את "היום שלי".`, () => setStep(0));
-    }, []);
-
-    useEffect(() => {
-      if (step >= 0 && step < STEPS.length) pushKety(STEPS[step].q);
-    }, [step]);
-
-    useEffect(() => {
-      const el = scrollRef.current; if (el) el.scrollTop = el.scrollHeight;
-    }, [msgs, typing]);
-
-    function pushKety(text, after) {
-      setTyping(true);
-      const delay = Math.min(1400, 500 + text.length * 12);
-      setTimeout(() => {
-        setTyping(false);
-        setMsgs((m) => [...m, { role: "kety", text }]);
-        if (after) setTimeout(after, 300);
-      }, delay);
-    }
-    function pushUser(text) { setMsgs((m) => [...m, { role: "user", text }]); }
-
-    function answerSingle(opt) {
-      pushUser(opt.l);
-      const cur = STEPS[step];
-      setAnswers((a) => ({ ...a, [cur.key]: opt.v }));
-      advance();
-    }
-    function toggleMulti(opt) {
-      setMulti((prev) => prev.includes(opt.v) ? prev.filter((x) => x !== opt.v) : [...prev, opt.v]);
-    }
-    function confirmMulti() {
-      const cur = STEPS[step];
-      const labels = cur.opts.filter((o) => multi.includes(o.v)).map((o) => o.l);
-      pushUser(labels.length ? labels.join(" · ") : "אני עוד לא בטוח/ה");
-      setAnswers((a) => ({ ...a, topics: multi }));
-      advance();
-    }
-    function confirmGoal(skip) {
-      pushUser(skip || !goalText.trim() ? "בוא/י פשוט נתחיל" : goalText.trim());
-      setAnswers((a) => ({ ...a, goal: skip ? "" : goalText.trim() }));
-      advance();
-    }
-    function answerScale(n) {
-      pushUser(`${n} מתוך 10`);
-      setAnswers((a) => ({ ...a, mood: n }));
-      advance();
-    }
-    function advance() {
-      if (step + 1 < STEPS.length) { setStep(step + 1); }
-      else { finish(); }
-    }
-    function finish() {
-      setStep(STEPS.length); // מצב סיום
-      pushKety("תודה ששיתפת אותי — זה עוזר לי להתאים לך בדיוק את מה שצריך. בניתי לך התחלה קטנה ומדויקת. נתחיל בצעד אחד.", () => {
-        // שמירה: פרופיל + אונבורדינג + מקומי (לקריאת "היום שלי")
-        const ageGroup = answers.audience === "youth" ? "youth" : "adult";
-        try { localStorage.setItem(INTAKE_KEY, JSON.stringify(answers)); localStorage.setItem(AGE_GROUP_KEY, "1"); } catch (e) {}
-        fetch("/api/profile", { method: "PUT", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify({ ageGroup }) }).catch(() => {});
-        fetch("/api/onboarding", { method: "POST", headers: authHeaders({ "Content-Type": "application/json" }), body: JSON.stringify(answers) }).catch(() => {});
-      });
-    }
-
-    const cur = step >= 0 && step < STEPS.length ? STEPS[step] : null;
-    const showInput = cur && !typing;
-    const totalSteps = STEPS.length;
-    const progress = step < 0 ? 0 : Math.min(step, totalSteps) / totalSteps;
-
-    return (
-      <div className="absolute inset-0 z-[70] bg-ink-50 flex flex-col" dir="rtl">
-        {/* פס התקדמות עדין */}
-        <div className="h-1 bg-ink-100 shrink-0">
-          <div className="h-full bg-gold-500 transition-all duration-500" style={{ width: `${progress * 100}%` }} />
-        </div>
-
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-5 space-y-3.5">
-          {msgs.map((m, i) => (
-            m.role === "user" ? (
-              <div key={i} className="flex justify-start cm-fade-in-soft">
-                <div className="max-w-[82%] rounded-3xl rounded-br-lg bg-gold-500 text-white px-4 py-2.5 shadow-soft">
-                  <p className="text-[14.5px] leading-relaxed whitespace-pre-wrap">{m.text}</p>
-                </div>
-              </div>
-            ) : (
-              <div key={i} className="flex justify-end cm-fade-in-soft">
-                <div className="max-w-[86%]">
-                  <div className="flex items-center gap-2 mb-1.5 justify-end pe-1">
-                    <span className="text-[11px] font-heading font-semibold text-gold-500">קטי · מלווה דיגיטלית</span>
-                    <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center shrink-0"><Icon name="sparkles" size={13} /></span>
-                  </div>
-                  <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3 shadow-softer">
-                    <p className="text-[14.5px] leading-relaxed text-ink-700 whitespace-pre-wrap">{m.text}</p>
-                  </div>
-                </div>
-              </div>
-            )
-          ))}
-          {typing && (
-            <div className="flex justify-end">
-              <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3.5 shadow-softer"><TypingDots /></div>
-            </div>
-          )}
-        </div>
-
-        {/* אזור התשובה — chips / טקסט / סקאלה */}
-        {showInput && (
-          <div className="shrink-0 border-t border-ink-100 bg-white px-4 py-3.5">
-            {cur.type === "single" && (
-              <div className="flex flex-wrap gap-2">
-                {cur.opts.map((o) => (
-                  <button key={o.v} type="button" onClick={() => answerSingle(o)}
-                    className="px-4 py-2.5 rounded-full border border-gold-300 bg-gold-50 text-ink-700 font-heading font-semibold text-[14px] hover:bg-gold-100 transition-colors">
-                    {o.l}
-                  </button>
-                ))}
-              </div>
-            )}
-            {cur.type === "multi" && (
-              <div>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {cur.opts.map((o) => {
-                    const on = multi.includes(o.v);
-                    return (
-                      <button key={o.v} type="button" onClick={() => toggleMulti(o)}
-                        className={`px-4 py-2.5 rounded-full border font-heading font-semibold text-[14px] transition-colors ${on ? "bg-gold-500 text-white border-gold-500" : "border-gold-300 bg-gold-50 text-ink-700 hover:bg-gold-100"}`}>
-                        {on ? "✓ " : ""}{o.l}
-                      </button>
-                    );
-                  })}
-                </div>
-                <button type="button" onClick={confirmMulti}
-                  className="w-full py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors">
-                  המשך
-                </button>
-              </div>
-            )}
-            {cur.type === "text" && (
-              <div className="flex flex-col gap-2.5">
-                <textarea value={goalText} onChange={(e) => setGoalText(e.target.value)} rows={2} placeholder={cur.placeholder}
-                  className="w-full rounded-2xl border border-ink-200 px-4 py-3 text-[14.5px] text-ink-700 resize-none focus:border-gold-400 focus:outline-none" />
-                <div className="flex gap-2">
-                  <button type="button" onClick={() => confirmGoal(false)}
-                    className="flex-1 py-3 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors">שליחה</button>
-                  <button type="button" onClick={() => confirmGoal(true)}
-                    className="px-5 py-3 rounded-2xl border border-ink-200 text-ink-500 font-heading font-semibold text-[14px] hover:bg-ink-50 transition-colors">דילוג</button>
-                </div>
-              </div>
-            )}
-            {cur.type === "scale" && (
-              <div className="flex flex-wrap gap-2 justify-center">
-                {[1,2,3,4,5,6,7,8,9,10].map((n) => (
-                  <button key={n} type="button" onClick={() => answerScale(n)}
-                    className="w-10 h-10 rounded-full border border-gold-300 bg-gold-50 text-ink-700 font-heading font-bold text-[15px] hover:bg-gold-500 hover:text-white transition-colors">
-                    {n}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* כפתור התחלה בסיום */}
-        {step >= STEPS.length && !typing && (
-          <div className="shrink-0 border-t border-ink-100 bg-white px-4 py-4">
-            <button type="button" onClick={() => onDone(answers)}
-              className="w-full py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[16px] hover:bg-gold-600 transition-colors">
-              מתחילים את הצעד הראשון →
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  }
 
   /* ---------------------------------------------------------------- */
   /* Access gate — 3-day (72h) trial + personal access code */
@@ -887,9 +616,8 @@
     { id: 2, icon: "compass", title: "גבול ההבחנה", subtitle: "הפרדה בין רגש, מחשבה ומציאות" },
     { id: 3, icon: "footprints", title: "קרקוע", subtitle: "חזרה לגוף ולכאן ועכשיו" },
     { id: 4, icon: "sparkles", title: "מדד חוסן", subtitle: "השיקוף האישי שלך", alwaysUnlocked: true },
-    { id: 5, icon: "message-circle", title: "צ'ק-אין", subtitle: "שיחה חמה איתי, ברגע הזה", alwaysUnlocked: true },
     { id: 6, icon: "book-open", title: "החומרים שלי", subtitle: "חומרים שהוקצו לך אישית", alwaysUnlocked: true },
-    { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שנקבעו לך מהצ'ק-אין", alwaysUnlocked: true },
+    { id: 7, icon: "check-circle", title: "משימות יומיות", subtitle: "המשימות שלי לתרגול היומי", alwaysUnlocked: true },
     { id: 9, icon: "video", title: "המפגש שלי", subtitle: "מפגש זום אישי וחי עם קטי", alwaysUnlocked: true },
   ];
 
@@ -914,14 +642,14 @@
       ? [
           { icon: "heart", label: "נתחיל ברוגע", title: "עוגן SOS — הרגעה מהירה", time: "2 דק'",
             reason: `כי סימנת ${mood}/10 — קודם מורידים עוצמה, אחר כך מדברים.`, stage: 1 },
-          { icon: "message-circle", label: "אחר כך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
-            reason: "לשתף מה עובר עלייך עכשיו, בקצב שלך.", stage: 5 },
+          { icon: "sparkles", label: "אחר כך", title: "מדד חוסן — השיקוף שלך", time: "5 דק'",
+            reason: "לראות במספרים איפה את עומדת היום.", stage: 4 },
           { icon: "footprints", label: "אם מתאים", title: "תרגול קרקוע", time: "5 דק'",
             reason: "מחזיר את הגוף לכאן ועכשיו.", stage: 3 },
         ]
       : [
-          { icon: "message-circle", label: "הצעד הבא שלך", title: "צ'ק-אין קצר עם קטי הדיגיטלית", time: "5 דק'",
-            reason: mood ? `סימנת ${mood}/10 היום — נתחיל מזה.` : "כדי שנדע מאיפה להמשיך היום.", stage: 5 },
+          { icon: "sparkles", label: "הצעד הבא שלך", title: "מדד חוסן — השיקוף שלך", time: "5 דק'",
+            reason: mood ? `סימנת ${mood}/10 היום — נראה את התמונה המלאה.` : "כדי שנדע מאיפה להמשיך היום.", stage: 4 },
           { icon: "footprints", label: "אם יש לך 5 דקות", title: wantsAudio ? "תרגול קרקוע מודרך (אודיו)" : "תרגול קרקוע קצר", time: "5 דק'",
             reason: wantsAudio ? "בחרת פורמט אודיו — נלווה אותך בהקשבה." : "מחזיר את הגוף לכאן ועכשיו כשיש עומס.", stage: 3 },
           { icon: "graduation-cap", label: shortTime ? "כשיהיה לך עוד רגע" : "אם יש לך יותר זמן", title: "המשך התוכנית שלך", time: "10–15 דק'",
@@ -1351,381 +1079,6 @@
             )}
           </div>
         ): null}
-      </div>
-    );
-  }
-
-  /* ---------------------------------------------------------------- */
-  /* Stage 5 — Conversational Check-in (Behavioral Health Check) */
-  /* ---------------------------------------------------------------- */
-
-  function ListeningWaveform() {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 cm-fade-in-soft">
-        <div className="flex items-end gap-1.5 h-14">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="cm-wave-bar w-2 rounded-full bg-gradient-to-t from-gold-300 to-gold-500"
-              style={{ height: "100%", animationDelay: `${i * 0.12}s` }}
-            />
-          ))}
-        </div>
-        <p className="mt-6 text-[13px] text-ink-400">מקשיבה לך ברגישות...</p>
-      </div>
-    );
-  }
-
-  function CheckInComposer({ text, setText, onSend, disabled }) {
-    const filled = text.trim().length > 0;
-    return (
-      <div className="cm-fade-in-soft" style={{ animationDelay: "0.15s" }}>
-        <div
-          className="relative rounded-3xl border backdrop-blur-xl transition-all duration-500"
-          style={{
-            borderColor: filled? "rgba(211,168,87,0.65)": "rgba(255,255,255,0.12)",
-            boxShadow: filled? "0 0 34px -6px rgba(211,168,87,0.45)": "0 0 0 rgba(0,0,0,0)",
-            background: "rgba(255,255,255,0.05)",
-          }}
-        >
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value.slice(0, 4000))}
-            placeholder="כתבי כאן בחופשיות, בלי לסנן את עצמך..."
-            rows={5}
-            disabled={disabled}
-            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-[15px] leading-relaxed text-ink-800 placeholder:text-ink-400 focus:outline-none"
-          />
-          <div className="flex items-center justify-between px-4 pb-3.5">
-            <span className="text-[11px] text-ink-300">{text.length}/4000</span>
-            <button
-              type="button"
-              onClick={onSend}
-              disabled={!filled || disabled}
-              aria-label="שליחה"
-              className={`flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-gold-300 to-gold-500 text-ink-800 shadow-soft transition-all ${
-                filled &&!disabled? "cm-send-pulse opacity-100 scale-100": "opacity-35 scale-95"
-              }`}
-            >
-              <Icon name="arrow-up" size={18} strokeWidth={2.5} />
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function TypedReply({ reply }) {
-    const [typed, setTyped] = useState("");
-    useEffect(() => {
-      setTyped("");
-      if (!reply) return;
-      let i = 0;
-      const id = setInterval(() => {
-        i += 1;
-        setTyped(reply.slice(0, i));
-        if (i >= reply.length) clearInterval(id);
-      }, 18);
-      return () => clearInterval(id);
-    }, [reply]);
-
-    return (
-      <p className="text-[15px] leading-relaxed text-ink-700">
-        {typed}
-        {typed.length < reply.length? <span className="cm-cursor-blink text-gold-400">▍</span>: null}
-      </p>
-    );
-  }
-
-  // פתיח קצר וממוקד על גמישות מוחית — נפתח כשנכנסים לצ'אט ה-AI, טקסט נקי בלי אימוג'ים.
-  function NeuroplasticityIntro() {
-    const [open, setOpen] = useState(false);
-    return (
-      <div className="cm-fade-in-soft mb-5 rounded-2xl border border-gold-200 bg-white backdrop-blur-xl overflow-hidden">
-        <button type="button" onClick={() => setOpen(!open)} className="w-full flex items-center justify-between gap-2 px-4 py-3.5 text-right">
-          <span className="flex items-center gap-2">
-            <Icon name="sparkles" size={14} className="text-gold-400 shrink-0" />
-            <span className="font-heading font-semibold text-[14px] text-ink-800">רגע לפני שמתחילים — קצת על גמישות מוחית</span>
-          </span>
-          <Icon name={open? "chevron-up": "chevron-down"} size={16} className="text-ink-400 shrink-0" />
-        </button>
-        {open && (
-          <div className="px-4 pb-4 text-[13.5px] leading-relaxed text-ink-600 space-y-3" dir="rtl">
-            <p>
-              המוח שלנו הוא איבר דינמי שמשתנה כל הזמן בתגובה לחוויות וללמידה. גמישות מוחית (Neuroplasticity) היא
-              היכולת של המוח ליצור קשרים חדשים בין תאי עצב, לחזק קשרים קיימים ולשנות את מבנהו ותפקודו לאורך החיים.
-            </p>
-            <div>
-              <p className="font-semibold text-ink-700 mb-1">איך זה קורה?</p>
-              <p>כשאנחנו לומדים או חווים דברים חדשים, נוצרים קשרים חדשים בין תאי עצב. ככל שחוזרים על פעולה או מחשבה מסוימת, הקשרים מתחזקים — וכך המוח לומד, זוכר ומסתגל.</p>
-            </div>
-            <div>
-              <p className="font-semibold text-ink-700 mb-1">מה משפיע על הגמישות המוחית?</p>
-              <p>גיל (גבוהה יותר בגיל צעיר אך נמשכת גם בבגרות), סביבה עשירה בגירויים ותמיכה חברתית, פעילות גופנית סדירה, ותזונה מאוזנת.</p>
-            </div>
-            <p className="text-ink-500">
-              בדיוק על העיקרון הזה בנויה שיטת CureMindset: כשמלמדים את המוח דפוסים חדשים, בעדינות ובעקביות — השינוי מחזיק. עכשיו, ספרי לי מה עובר עלייך.
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // שלב 2 — פופאפ הסבר התהליך: מה קורה, ואיפה נכנס התשלום. מוצג בכניסה הראשונה.
-  function ProcessIntro({ onStart }) {
-    const name = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
-    const steps = [
-      ["1", "אשאל אותך כמה שאלות", "על מה שאת מרגישה עכשיו — בגוף, ברגש ובמחשבות."],
-      ["2", "תקבלי שיקוף אישי + צעד מעשי", "תובנה והכוונה מיד, מבוססות על השיטה של קטי."],
-      ["3", "התוכנית המלאה נפתחת בהצטרפות", "התרגולים, החומרים האישיים והליווי המלא — עם ההצטרפות לתוכנית בתשלום."],
-    ];
-    return (
-      <div
-        className="absolute inset-0 z-40 flex flex-col items-center px-5 overflow-y-auto py-6"
-        style={{ background: "rgba(253,251,247,0.98)", backdropFilter: "blur(3px)" }}
-        dir="rtl"
-      >
-        <div className="w-full max-w-[340px] my-auto rounded-3xl bg-white border border-gold-200 shadow-[0_30px_70px_-30px_rgba(120,90,30,0.5)] p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center mx-auto mb-3">
-            <Icon name="heart-handshake" size={26} />
-          </div>
-          <h3 className="font-heading font-extrabold text-[20px] text-ink-800">{name? `היי ${name}, ככה זה עובד`: "איך זה עובד?"}</h3>
-          <p className="text-[13px] text-ink-500 mt-1.5 mb-4">{name? `שלושה צעדים פשוטים לתהליך האישי שלך, ${name}.`: "שלושה צעדים פשוטים לתהליך שלך עם CureMindset."}</p>
-          <div className="space-y-3 text-right">
-            {steps.map(([n, t, d]) => (
-              <div key={n} className="flex gap-3 items-start">
-                <span className="shrink-0 w-7 h-7 rounded-full bg-gold-500 text-white font-heading font-bold text-[13px] flex items-center justify-center">{n}</span>
-                <div>
-                  <p className="font-heading font-bold text-[13.5px] text-ink-800 leading-snug">{t}</p>
-                  <p className="text-[12px] text-ink-500 leading-relaxed">{d}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button
-            type="button" onClick={onStart}
-            className="w-full mt-5 py-3.5 rounded-2xl bg-gold-500 text-white font-heading font-bold text-[15px] hover:bg-gold-600 transition-colors"
-          >
-            בואו נתחיל
-          </button>
-          <p className="text-[10.5px] text-ink-400 mt-3 leading-relaxed">
-            השירות אינו מהווה ייעוץ רפואי. בכל מצוקה יש לפנות לגורם מקצועי מוסמך.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // אינדיקציית "קטי מקלידה..." — שלוש נקודות מונפשות, נקי בלי אימוג'ים.
-  function TypingDots() {
-    return (
-      <div className="flex items-center gap-1.5">
-        {[0, 1, 2].map((i) => (
-          <span key={i} className="w-2 h-2 rounded-full bg-gold-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-        ))}
-      </div>
-    );
-  }
-
-  // בועת הודעה בשיחה — משתמש (זהב, מימין) או קטי (לבן, משמאל).
-  function ChatBubble({ msg, animate, onNavigateStage }) {
-    const isUser = msg.role === "user";
-    if (isUser) {
-      return (
-        <div className="flex justify-start cm-fade-in-soft">
-          <div className="max-w-[82%] rounded-3xl rounded-br-lg bg-gold-500 text-white px-4 py-3 shadow-soft">
-            <p className="text-[14.5px] leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="flex justify-end cm-fade-in-soft">
-        <div className="max-w-[86%] w-full">
-          <div className="flex items-center gap-2 mb-1.5 justify-end pe-1">
-            <span className="text-[11px] font-heading font-semibold text-gold-500">קטי · מלווה דיגיטלית</span>
-            <span className="w-6 h-6 rounded-full bg-gold-100 text-gold-600 flex items-center justify-center shrink-0">
-              <Icon name="sparkles" size={13} />
-            </span>
-          </div>
-          <div className="rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3.5 shadow-softer">
-            {animate? (
-              <TypedReply reply={msg.text} />
-            ): (
-              <p className="text-[14.5px] leading-relaxed text-ink-700 whitespace-pre-wrap">{msg.text}</p>
-            )}
-            <div className="flex items-center gap-2 mt-3 flex-wrap">
-              <SpeakButton text={msg.text} label="האזנה" />
-              {msg.locked? (
-                <a href="/#plans" target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12px] hover:bg-gold-600 transition-colors">
-                  למסלולים
-                </a>
-              ): null}
-            </div>
-          </div>
-          {msg.task? (
-            <div className="mt-2.5 rounded-2xl border border-gold-400/40 bg-gold-50/70 px-4 py-3.5">
-              <div className="flex items-center gap-2 mb-1">
-                <Icon name="heart" size={14} className="text-gold-600 shrink-0" />
-                <span className="text-[11px] font-heading font-semibold uppercase tracking-wider text-gold-600">תרגול אישי בשבילך</span>
-              </div>
-              <p className="font-heading font-bold text-[14px] text-ink-800">{msg.task.title}</p>
-              {msg.task.description? <p className="text-[13px] text-ink-600 leading-relaxed mt-0.5">{msg.task.description}</p>: null}
-              <button type="button" onClick={() => onNavigateStage && onNavigateStage(7)}
-                className="mt-2.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12.5px] hover:bg-gold-600 transition-colors">
-                לתרגול המלא
-              </button>
-            </div>
-          ): null}
-        </div>
-      </div>
-    );
-  }
-
-  // מסך הליבה: שיחה רציפה עם קטי AI — היסטוריה נשמרת, "קטי מקלידה", האזנה, הובלה לתרגול/תשלום.
-  function CheckInStage({ onDashboardUpdate, onNavigateStage }) {
-    const THREAD_KEY = "cm_chat_thread_v1";
-    const firstName = (() => { try { return (localStorage.getItem(AUTH_NAME_KEY) || "").split(" ")[0]; } catch (e) { return ""; } })();
-    const greeting = `היי${firstName? " " + firstName: ""}, אני קטי — אני כאן איתך, בלי שיפוט ובלי למהר.\nמה עובר עלייך עכשיו? כתבי בחופשיות, כמו שזה יוצא.`;
-
-    const [messages, setMessages] = useState(() => {
-      try {
-        const raw = localStorage.getItem(THREAD_KEY);
-        if (raw) {
-          const arr = JSON.parse(raw);
-          if (Array.isArray(arr) && arr.length) return arr.map((m) => ({...m, fresh: false }));
-        }
-      } catch (e) {}
-      return [{ role: "kety", text: greeting, ts: Date.now(), fresh: false }];
-    });
-    const [input, setInput] = useState("");
-    const [sending, setSending] = useState(false);
-    const [showIntro, setShowIntro] = useState(() => {
-      try { return!localStorage.getItem("cm_intro_seen"); } catch (e) { return true; }
-    });
-    const scrollRef = useRef(null);
-
-    function dismissIntro() {
-      try { localStorage.setItem("cm_intro_seen", "1"); } catch (e) {}
-      setShowIntro(false);
-    }
-
-    // שמירת היסטוריית השיחה במכשיר (עד 60 הודעות אחרונות).
-    useEffect(() => {
-      try { localStorage.setItem(THREAD_KEY, JSON.stringify(messages.slice(-60))); } catch (e) {}
-    }, [messages]);
-
-    // גלילה אוטומטית לתחתית עם כל הודעה חדשה / בזמן הקלדה.
-    useEffect(() => {
-      const el = scrollRef.current;
-      if (el) el.scrollTop = el.scrollHeight;
-    }, [messages, sending]);
-
-    async function send() {
-      const trimmed = input.trim();
-      if (!trimmed || sending) return;
-      // היסטוריה אחרונה (עד 8 הודעות) נשלחת כדי שקטי תמשיך ברצף וזוכרת את השיחה.
-      const priorHistory = messages.slice(-8).map((m) => ({ role: m.role, text: m.text }));
-      setMessages((m) => [...m, { role: "user", text: trimmed, ts: Date.now() }]);
-      setInput("");
-      setSending(true);
-      try {
-        const res = await fetch("/api/checkin", {
-          method: "POST",
-          headers: authHeaders({ "Content-Type": "application/json" }),
-          body: JSON.stringify({ text: trimmed, history: priorHistory }),
-        });
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          const locked = res.status === 402;
-          const msg = locked
-            ? (errData.error || "תקופת ההתנסות הסתיימה — כדי להמשיך בליווי אפשר להצטרף לאחד המסלולים.")
-            : (errData.error || (res.status === 503
-                ? "אני כאן, רק צריכה רגע — ננסה שוב בעוד רגע?"
-                : "לא הצלחתי להשיב כרגע. ננסה שוב בעוד רגע? אני איתך."));
-          setMessages((m) => [...m, { role: "kety", text: msg, ts: Date.now(), fresh: true, locked }]);
-          return;
-        }
-        const data = await res.json();
-        if (onDashboardUpdate && data.dashboard) onDashboardUpdate(data.dashboard);
-        setMessages((m) => [...m, {
-          role: "kety",
-          text: data.reply || "תודה ששיתפת אותי בזה. אני כאן.",
-          ts: Date.now(),
-          fresh: true,
-          task: data.dailyTask || null,
-        }]);
-      } catch (e) {
-        setMessages((m) => [...m, { role: "kety", text: "נראה שיש רגע של תקלה בחיבור. ננסה שוב עוד רגע? אני כאן.", ts: Date.now(), fresh: true }]);
-      } finally {
-        setSending(false);
-      }
-    }
-
-    function onKeyDown(e) {
-      if (e.key === "Enter" &&!e.shiftKey) {
-        e.preventDefault();
-        send();
-      }
-    }
-
-    const lastIdx = messages.length - 1;
-
-    return (
-      <div className="relative flex flex-col h-full overflow-hidden">
-        {showIntro? <ProcessIntro onStart={dismissIntro} />: null}
-        <div className="pointer-events-none absolute -top-24 -right-16 h-72 w-72 rounded-full bg-gold-400/20 blur-3xl cm-glow-drift" />
-
-        {/* אזור ההודעות — נגלל */}
-        <div ref={scrollRef} className="relative z-10 flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4">
-          {messages.map((m, i) => (
-            <ChatBubble
-              key={m.ts + "-" + i}
-              msg={m}
-              animate={m.role === "kety" && m.fresh && i === lastIdx}
-              onNavigateStage={onNavigateStage}
-            />
-          ))}
-          {sending? (
-            <div className="flex justify-end cm-fade-in-soft">
-              <div className="flex items-center gap-2.5 rounded-3xl rounded-tr-lg border border-gold-200 bg-white px-4 py-3 shadow-softer">
-                <TypingDots />
-                <span className="text-[12.5px] text-ink-400">קטי מקלידה…</span>
-              </div>
-            </div>
-          ): null}
-        </div>
-
-        {/* מחבר ההודעות — נעוץ בתחתית */}
-        <div className="relative z-10 shrink-0 border-t border-gold-100 bg-white/85 backdrop-blur-xl px-3 py-3">
-          <div className="flex items-end gap-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value.slice(0, 4000))}
-              onKeyDown={onKeyDown}
-              placeholder="כתבי כאן בחופשיות…"
-              rows={1}
-              disabled={sending}
-              className="flex-1 resize-none max-h-32 rounded-3xl border border-ink-200 bg-ink-50/60 px-4 py-3 text-[15px] leading-relaxed text-ink-800 placeholder:text-ink-400 focus:outline-none focus:border-gold-400 focus:ring-2 focus:ring-gold-200 transition-colors"
-            />
-            <button
-              type="button"
-              onClick={send}
-              disabled={!input.trim() || sending}
-              aria-label="שליחה"
-              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-500 text-white shadow-soft transition-all ${
-                input.trim() &&!sending? "opacity-100 scale-100 hover:from-gold-500 hover:to-gold-600": "opacity-40 scale-95"
-              }`}
-            >
-              <Icon name="arrow-up" size={18} strokeWidth={2.5} />
-            </button>
-          </div>
-          <p className="text-[10.5px] text-ink-300 text-center mt-2">
-            זמינה 24/7 · שיחה פרטית ומוצפנת · אינו תחליף לטיפול רפואי
-          </p>
-        </div>
       </div>
     );
   }
@@ -3038,13 +2391,6 @@
                     <p className="text-[12.5px] text-ink-600 leading-relaxed">{ex.desc}</p>
                     <div className="mt-2.5 flex flex-wrap gap-2">
                       <SpeakButton text={`${ex.title}. ${ex.desc}`} />
-                      <button
-                        type="button"
-                        onClick={() => onNavigateStage(5)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold-200 text-gold-700 font-heading font-semibold text-[12px] hover:bg-gold-50 transition-colors"
-                      >
-                        <Icon name="message-circle" size={13} /> ליווי AI לתרגיל
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -3447,13 +2793,6 @@
                         <div className="flex flex-wrap gap-2 mt-3">
                           <button
                             type="button"
-                            onClick={() => onNavigateStage(5)}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gold-500 text-white font-heading font-semibold text-[12.5px] hover:bg-gold-600 transition-colors"
-                          >
-                            <Icon name="message-circle" size={14} /> שיחת AI ליום זה
-                          </button>
-                          <button
-                            type="button"
                             onClick={() => toggle(d.day)}
                             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-ink-200 text-ink-600 font-heading font-semibold text-[12.5px] hover:border-gold-300 transition-colors"
                           >
@@ -3550,12 +2889,11 @@
     // למטה ולא נמחק, למקרה שנרצה נתיב הרשמה אופציונלי (שמירת התקדמות/קוד גישה).
     const [loggedIn, setLoggedIn] = useState(true);
     const [progress, setProgress] = useState(loadProgress);
-    // נפתח על הליווי הדיגיטלי (צ'ק-אין, שלב 5) — הוא ליבת המוצר, פוגשים אותו מיד.
-    // "היום שלי" (שלב 0) נשאר נגיש כטאב ראשון.
-    const [current, setCurrent] = useState(5);
+    // נפתח על "היום שלי" (שלב 0). הצ'אט של קטי הדיגיטלית הורד מהאתר —
+    // הצ'אט לגולשים חי בעמוד /talk ואינו תלוי באזור החברים.
+    const [current, setCurrent] = useState(0);
     const [serverDashboard, setServerDashboard] = useState(null);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [showOnboarding, setShowOnboarding] = useState(() =>!localStorage.getItem(AGE_GROUP_KEY));
     // access: null = still checking; { status: "trial"|"code"|"expired", daysLeft }
     const [access, setAccess] = useState(null);
     const [showCodeEntry, setShowCodeEntry] = useState(false);
@@ -3650,10 +2988,7 @@
           />
         )}
         {showSummary && <JourneySummary onClose={() => setShowSummary(false)} onExit={onExit} />}
-        {!expired && showOnboarding && <IntakeChat firstName={(userName || "").split(" ")[0]} onDone={() => { setShowOnboarding(false); setCurrent(5); }} />}
-        {showOnboarding &&!expired? (
-          <div className="flex-1" />
-        ): current === 0? (
+        {current === 0? (
           <div className="flex-1 overflow-y-auto px-5 py-6 bg-ink-50">
             <TodayStage
               firstName={(userName || "").split(" ")[0]}
@@ -3671,10 +3006,6 @@
             <ClinicalInsights />
             <MoodTracker />
             <ResilienceDashboard progress={progress} sessions={loadSessions()} data={serverDashboard} onNavigateStage={navigateToStage} />
-          </div>
-        ): current === 5? (
-          <div className="flex-1 min-h-0 flex flex-col bg-ink-50">
-            <CheckInStage onDashboardUpdate={setServerDashboard} onNavigateStage={navigateToStage} />
           </div>
         ): current === 6? (
           <div className="flex-1 overflow-y-auto px-5 py-6">
