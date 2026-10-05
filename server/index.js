@@ -26,6 +26,7 @@ const { STARTERS, CONTROLS, DISCLAIMER, citationFor } = require("./chatConfig");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
+const { composeLeadReply } = require("./leadReply");
 
 const app = express();
 // Behind Render's proxy — needed so req.ip is the real client IP (consent log).
@@ -437,6 +438,19 @@ app.post("/api/webhooks/grow", (req, res) => {
   res.json({ ok: true, duplicate: !!result.duplicate });
 });
 
+// תגובה אוטומטית חמה ללקוח/ה עצמו/ה (לא לקטי) — רק אם יש כתובת מייל.
+// לעולם לא חוסמת/מעכבת את התשובה ללקוח; כשלון שקט אם אין מפתח OpenAI
+// או שהניסוח נכשל. לא שולחת שום דבר אם אין מייל (עדיין אין ערוץ וואטסאפ אוטומטי).
+function sendLeadAutoReply({ name, email, goal, source }) {
+  if (!email) return;
+  composeLeadReply({ name, goal, source })
+    .then((text) => {
+      if (!text) return;
+      return notifyEmail(email, "קיבלתי את הפנייה שלך 🌿 — קטי שגב", { "הודעה מקטי": `${text}\n\n— קטי שגב, CureMindset` });
+    })
+    .catch(() => {});
+}
+
 app.post("/api/workshop-signup", (req, res) => {
   const { fullName, phone, email, workshop } = req.body || {};
   if (typeof fullName !== "string" || fullName.trim().length < 2) {
@@ -472,6 +486,7 @@ app.post("/api/workshop-signup", (req, res) => {
   });
 
   res.status(201).json({ ok: true });
+  sendLeadAutoReply({ name: cleanName, email: cleanEmail, goal: `מעוניין/ת בסדנה: ${cleanWorkshop}`, source: "סדנאות" });
 });
 
 // ── /api/send-lead ──
@@ -498,6 +513,7 @@ app.post("/api/send-lead", rateLimit("send-lead", 20), async (req, res) => {
   // תמיד מחזיר ok ללקוח — כדי לא לחסום את חוויית ההרשמה גם אם ערוץ המייל לא מוגדר.
   if (r && r.error) console.warn("[notify] send-lead email failed:", r.error);
   res.status(202).json({ ok: true, delivered: !!(r && r.sent) });
+  sendLeadAutoReply({ name, email, goal: onboarding, source });
 });
 
 // מאמרים: משיכה מערוץ ה-RSS של קטי (ARTICLES_RSS_URL ב-Environment ברנדר).
