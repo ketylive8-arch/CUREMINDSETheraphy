@@ -64,11 +64,13 @@
       const header = "Basic " + btoa(`${username}:${password}`);
       try {
         const res = await fetch("/api/admin/patients", { headers: { Authorization: header } });
-        if (!res.ok) throw new Error("unauthorized");
+        if (res.status === 401) { setStatus("error"); return; }   // credentials really wrong
+        if (!res.ok) { setStatus("neterror"); return; }           // server issue, not the password
         saveAuthHeader(header);
         onAuthed(header);
       } catch {
-        setStatus("error");
+        // Network failure — almost always the free server waking from sleep.
+        setStatus("neterror");
       }
     }
     return (
@@ -99,6 +101,7 @@
           />
 
           {status === "error" ? <p className="text-[12.5px] text-rose-400 mb-3">שם המשתמש או הסיסמה אינם נכונים.</p> : null}
+          {status === "neterror" ? <p className="text-[12.5px] text-amber-400 mb-3">השרת מתעורר (זה חינמי ולוקח ~30 שניות). זו לא בעיית סיסמה — המתיני רגע ולחצי "כניסה" שוב.</p> : null}
 
           <button
             type="submit"
