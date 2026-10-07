@@ -777,6 +777,14 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
     return res.status(402).json({ error: "תקופת הניסיון הסתיימה — נדרש קוד גישה כדי להמשיך בליווי" });
   }
 
+  // שער הסכמה: מאז שההרשמה (ששם נרשמה ההסכמה) הוסרה, אין יותר נקודה אחרת
+  // שמתעדת הסכמה — חובה לבדוק כאן, לפני כל הודעה, לא רק בצד הלקוח.
+  const consents = currentConsents(req.deviceToken);
+  const missingRequired = REQUIRED_CONSENTS.filter((t) => !consents[t]);
+  if (missingRequired.length) {
+    return res.status(403).json({ error: "נדרשת הסכמה לתנאי השימוש ולמדיניות הפרטיות לפני תחילת שיחה", consentRequired: missingRequired });
+  }
+
   try {
     const ageGroup = getAgeGroup(req.deviceToken);
 
