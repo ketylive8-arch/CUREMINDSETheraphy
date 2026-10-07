@@ -1537,7 +1537,7 @@ function HbRecognize() {
           ))}
         </div>
         <Reveal className="text-center mt-9">
-          <p className="font-heading font-bold text-ink-800 text-[20px] sm:text-[23px] leading-snug">זו לא תקלה באופי שלך. זו הגנה ישנה — ואפשר לשחרר אותה.</p>
+          <p className="font-heading font-bold text-ink-800 text-[20px] sm:text-[23px] leading-snug">זה לא מי שאת/ה. זו הגנה ישנה — ואפשר לשחרר אותה.</p>
         </Reveal>
       </div>
     </section>
