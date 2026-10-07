@@ -610,6 +610,97 @@ function dailyBriefing() {
   return { generatedAt: new Date().toISOString(), summary, actions: actions.slice(0, 3) };
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   §6 + §7 — Experiments & the Source→…→Client funnel. Real numbers only;
+   nothing here is ever invented. A channel that can't be measured stays
+   UNMEASURABLE and is reported as such, never as a success.
+   ═══════════════════════════════════════════════════════════════════ */
+
+function mapExp(r) {
+  if (!r) return null;
+  return {
+    id: r.id, channelId: r.channel_id, offer: r.offer, distribution: r.distribution,
+    trackingId: r.tracking_id, entries: r.entries, completions: r.completions,
+    leads: r.leads, calls: r.calls, clients: r.clients, status: r.status, createdAt: r.created_at,
+  };
+}
+function getExperiment(id) { return mapExp(db.prepare("SELECT * FROM dist_experiments WHERE id = ?").get(id)); }
+
+// Start a pilot for a channel, with a unique tracking id (CODE-E1, CODE-E2…).
+function createExperiment(channelId, { offer = null, distribution = null, trackingId = null } = {}) {
+  const ch = getChannel(channelId);
+  if (!ch) return { error: "not_found", status: 404 };
+  if (!trackingId) {
+    const n = db.prepare("SELECT COUNT(*) AS c FROM dist_experiments WHERE channel_id = ?").get(channelId).c + 1;
+    trackingId = `${ch.channelCode}-E${n}`;
+  }
+  const info = db.prepare(
+    "INSERT INTO dist_experiments (channel_id, offer, distribution, tracking_id, status) VALUES (?,?,?,?, 'planned')"
+  ).run(channelId, clampStr(offer, 200), clampStr(distribution, 300), clampStr(trackingId, 60));
+  return { ok: true, experiment: getExperiment(info.lastInsertRowid) };
+}
+
+function listExperiments(channelId) {
+  const rows = channelId
+    ? db.prepare("SELECT * FROM dist_experiments WHERE channel_id = ? ORDER BY id DESC").all(channelId)
+    : db.prepare("SELECT * FROM dist_experiments ORDER BY id DESC").all();
+  return rows.map(mapExp);
+}
+
+// Record measured funnel numbers for a pilot. Only the stages given are updated.
+function recordFunnel(id, patch = {}) {
+  const row = db.prepare("SELECT * FROM dist_experiments WHERE id = ?").get(id);
+  if (!row) return { error: "not_found", status: 404 };
+  const sets = [], args = [];
+  for (const k of ["entries", "completions", "leads", "calls", "clients"]) {
+    if (k in patch) { sets.push(`${k} = ?`); args.push(toInt(patch[k])); }
+  }
+  if ("status" in patch && ["planned", "running", "done"].includes(patch.status)) { sets.push("status = ?"); args.push(patch.status); }
+  if (!sets.length) return { ok: true, experiment: mapExp(row) };
+  args.push(id);
+  db.prepare(`UPDATE dist_experiments SET ${sets.join(", ")} WHERE id = ?`).run(...args);
+  return { ok: true, experiment: getExperiment(id) };
+}
+
+// Aggregate funnel across all pilots. hasData=false → the UI shows INSUFFICIENT DATA.
+function funnelReport() {
+  const exps = listExperiments();
+  const totals = { entries: 0, completions: 0, leads: 0, calls: 0, clients: 0 };
+  let measured = 0;
+  for (const e of exps) {
+    for (const k of Object.keys(totals)) totals[k] += (e[k] || 0);
+    if ((e.entries || 0) + (e.leads || 0) + (e.clients || 0) > 0) measured++;
+  }
+  return { experiments: exps.length, measured, totals, hasData: measured > 0 };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   §16 — Weekly Learning. Looks back 7 days: who responded, piloted,
+   distributed, converted — and where work produced nothing. Real counts
+   only; an empty CRM reports insufficientData instead of inventing a trend.
+   ═══════════════════════════════════════════════════════════════════ */
+
+function weeklyLearning(now = new Date()) {
+  const since = new Date(now.getTime() - 7 * 86400000).toISOString().replace("T", " ").slice(0, 19);
+  const all = listChannels();
+  const reached = (statuses) => all.filter((c) => statuses.includes(c.status)).length;
+  const runs = listAgentRuns(60).filter((r) => (r.ranAt || "") >= since);
+  const foundByAgent = runs.reduce((s, r) => s + (r.added || 0), 0);
+  return {
+    generatedAt: now.toISOString(),
+    window: "7 ימים אחרונים",
+    addedThisWeek: all.filter((c) => (c.createdAt || "") >= since).length,
+    foundByAgent,
+    responded: reached(["RESPONSE", "INTERESTED", "PILOT", "DISTRIBUTING", "LEADS_GENERATED", "CLIENT"]),
+    pilots: reached(["PILOT", "DISTRIBUTING", "LEADS_GENERATED"]),
+    distributing: reached(["DISTRIBUTING", "LEADS_GENERATED"]),
+    clients: reached(["CLIENT"]),
+    stuckContacted: all.filter((c) => c.status === "CONTACTED").length,
+    funnel: funnelReport(),
+    insufficientData: all.length === 0,
+  };
+}
+
 // ── Daily-agent run log ─────────────────────────────────────────────────────
 function recordAgentRun({ queries = [], found = 0, added = 0, duplicates = 0, emailed = false, note = null } = {}) {
   const info = db.prepare(
@@ -630,5 +721,6 @@ module.exports = {
   pipelineStats, meta,
   generateDraft, listDrafts, setDraftState, dailyBriefing,
   recordAgentRun, listAgentRuns,
+  createExperiment, getExperiment, listExperiments, recordFunnel, funnelReport, weeklyLearning,
   CHANNEL_KINDS, OPP_TYPES, PIPELINE, PRIORITIES, OFFER_MODELS, METRIC_STATUS,
 };

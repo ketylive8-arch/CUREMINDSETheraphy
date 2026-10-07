@@ -1456,6 +1456,27 @@ admin.post("/dist/agent/run", async (req, res) => {
 });
 admin.get("/dist/agent/runs", (req, res) => res.json({ runs: leadEngine.listAgentRuns(14) }));
 
+// §6+§7 — ניסויים (פיילוטים) ומדידת משפך.
+admin.get("/dist/experiments", (req, res) => {
+  const cid = req.query.channelId ? parseInt(req.query.channelId, 10) : undefined;
+  res.json({ experiments: leadEngine.listExperiments(cid) });
+});
+admin.post("/dist/experiments", (req, res) => {
+  const { channelId, offer, distribution, trackingId } = req.body || {};
+  const r = leadEngine.createExperiment(parseInt(channelId, 10), { offer, distribution, trackingId });
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.status(201).json(r);
+});
+admin.patch("/dist/experiments/:id", (req, res) => {
+  const r = leadEngine.recordFunnel(parseInt(req.params.id, 10), req.body || {});
+  if (r.error) return res.status(r.status || 400).json(r);
+  res.json(r);
+});
+admin.get("/dist/funnel", (req, res) => res.json(leadEngine.funnelReport()));
+
+// §16 — למידה שבועית.
+admin.get("/dist/weekly", (req, res) => res.json(leadEngine.weeklyLearning()));
+
 app.use("/api/admin", admin);
 app.use("/api", api);
 

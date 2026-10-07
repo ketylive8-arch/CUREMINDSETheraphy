@@ -30,12 +30,15 @@ const CATEGORIES = [
   { kind: "enrichment", why: "ערך רגשי להורים מעבר לחוג עצמו", q: (c) => [`מרכז העשרה נוער ${c}`] },
 ];
 
-// Deterministic daily rotation so the agent varies its focus and doesn't repeat.
+// Deterministic daily rotation: one category per day, spread across several
+// cities so a run can reach ~12–15 leads without repeating yesterday's focus.
 function pickFocus(date = new Date()) {
   const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
   const cat = CATEGORIES[dayOfYear % CATEGORIES.length];
-  const city = CITIES[dayOfYear % CITIES.length];
-  return { cat, city, queries: cat.q(city).slice(0, 2) };
+  const start = dayOfYear % CITIES.length;
+  const cities = [0, 1, 2, 3, 4, 5].map((i) => CITIES[(start + i) % CITIES.length]);
+  const plan = cities.map((city) => ({ city, q: cat.q(city)[0] }));
+  return { cat, city: cities[0], cities, plan, queries: plan.map((p) => p.q) };
 }
 
 function hostname(url) {
@@ -61,78 +64,111 @@ async function googleSearch(query, { key, cx } = {}) {
 }
 
 // Main entry. `searchFn(query)` is injectable for testing; defaults to Google.
-// Returns a summary object; never throws.
+// Returns a full run report (§19); never throws.
 async function runDailyAgent({ searchFn = googleSearch, emailFn = notifyEmail, now = new Date() } = {}) {
-  const { cat, city, queries } = pickFocus(now);
+  const { cat, plan, queries } = pickFocus(now);
+
+  // §12/§18 — Audit-first: review what's already in the CRM before searching.
+  const audit = leadEngine.dailyBriefing();
 
   // No search provider configured — record the run honestly and stop. No fabrication.
   if (!process.env.GOOGLE_SEARCH_KEY || !process.env.GOOGLE_SEARCH_CX) {
     if (searchFn === googleSearch) {
       leadEngine.recordAgentRun({ queries, note: "no_search_key" });
-      return { ok: false, reason: "no_search_key", queries };
+      return { ok: false, reason: "no_search_key", queries, audit };
     }
   }
 
   let found = 0, added = 0, duplicates = 0;
   const newLeads = [];
   const seen = new Set();
+  let failures = 0; // §11 credit-saving: stop after 2 consecutive search failures.
 
-  try {
-    for (const q of queries) {
-      let results = [];
-      try { results = (await searchFn(q)) || []; } catch (e) { continue; }
-      for (const r of results) {
-        found++;
-        const name = cleanName(r.title);
-        const site = hostname(r.link);
-        if (!name || seen.has(site || name)) continue;
-        seen.add(site || name);
-        const res = leadEngine.createChannel({
-          name,
-          channelKind: cat.kind,
-          oppType: "AUDIENCE_OWNER",
-          region: city,
-          whyYes: cat.why,
-          website: r.link,
-          sourceUrl: r.link,
-          audienceSizeStatus: "UNKNOWN",
-          priority: "MEDIUM",
-          status: "DISCOVERED",
-          notes: r.snippet ? String(r.snippet).slice(0, 300) : null,
-        });
-        if (res.ok) { added++; newLeads.push({ ...res.channel, snippet: r.snippet }); }
-        else if (res.error === "duplicate") duplicates++;
-      }
+  for (const step of plan) {
+    if (failures >= 2) break;           // §11 — stop, don't keep burning searches
+    if (added >= 15) break;             // enough quality leads for one day
+    let results = [];
+    try { results = (await searchFn(step.q)) || []; failures = 0; }
+    catch (e) { failures++; continue; }
+    for (const r of results) {
+      found++;
+      const name = cleanName(r.title);
+      const site = hostname(r.link);
+      if (!name || seen.has(site || name)) continue;
+      seen.add(site || name);
+      const res = leadEngine.createChannel({
+        name,
+        channelKind: cat.kind,
+        oppType: "AUDIENCE_OWNER",
+        region: step.city,
+        whyYes: cat.why,
+        website: r.link,
+        sourceUrl: r.link,
+        audienceSizeStatus: "UNKNOWN",
+        priority: "MEDIUM",
+        status: "DISCOVERED",
+        notes: r.snippet ? String(r.snippet).slice(0, 300) : null,
+      });
+      if (res.ok) { added++; newLeads.push({ ...res.channel, snippet: r.snippet }); }
+      else if (res.error === "duplicate") duplicates++;
     }
-  } catch (e) {
-    leadEngine.recordAgentRun({ queries, found, added, duplicates, note: `error: ${String((e && e.message) || e).slice(0, 160)}` });
-    return { ok: false, reason: "error", error: String((e && e.message) || e) };
   }
 
-  // Build and send the Hebrew summary email.
+  // Build and send the Hebrew summary email. Each lead carries goal + offer (§2).
   let emailed = false;
   const dateStr = now.toLocaleDateString("he-IL", { day: "numeric", month: "numeric" });
   if (added > 0) {
     const fields = {};
-    newLeads.slice(0, 5).forEach((l, i) => {
+    newLeads.slice(0, 15).forEach((l, i) => {
       fields[`ליד ${i + 1} · ${l.channelCode}`] =
-        `${l.name} (${l.channelKindLabel}, ${l.region}) — למה שיגיד כן: ${l.whyYes}. מקור: ${l.website || l.sourceUrl || ""}`;
+        `${l.name} (${l.channelKindLabel}, ${l.region}). למה שיגיד כן: ${l.whyYes}. מטרה: שיחת היכרות / שת"פ הפצה. מה מציעים: כלי דיגיטלי חינמי להורים (מודל 4). מקור: ${l.website || l.sourceUrl || ""}`;
     });
-    fields["מה עכשיו"] = "היכנסי למנוע ההפצה, בחרי ליד ולחצי 'הכנת פנייה' — או השיבי לי איזה מספר לפתח.";
+    fields["מה עכשיו"] = "בחרי מספרים והשיבי לי — ואכין לך הודעות פנייה מוכנות.";
     const r = await emailFn(LEAD_TO, `הסוכן שלך · לידים חדשים · ${dateStr}`, fields);
     emailed = !!(r && r.sent);
   } else {
     const r = await emailFn(LEAD_TO, `הסוכן שלך · ${dateStr}`, {
-      "עדכון": `סרקתי היום ${queries.length} חיפושים (${cat.kind}, ${city}) ולא נמצאו מקומות חדשים שעוד לא במאגר. אמשיך מחר עם קטגוריה ואזור אחרים.`,
+      "עדכון": `סרקתי היום ${queries.length} חיפושים (${cat.kind}) ולא נמצאו מקומות חדשים שעוד לא במאגר. אמשיך מחר עם קטגוריה ואזור אחרים.`,
     });
     emailed = !!(r && r.sent);
   }
 
-  leadEngine.recordAgentRun({ queries, found, added, duplicates, emailed, note: `${cat.kind} · ${city}` });
-  return { ok: true, queries, found, added, duplicates, emailed };
+  leadEngine.recordAgentRun({ queries, found, added, duplicates, emailed, note: cat.kind });
+
+  // §19 — full run output.
+  const output = {
+    whatMovedForward: added > 0 ? `נוספו ${added} ערוצים חדשים (${cat.kind}).` : "לא נוספו ערוצים חדשים היום.",
+    bestOpportunities: leadEngine.listChannels({ priority: "HIGH" }).slice(0, 5).map((c) => ({ code: c.channelCode, name: c.name })),
+    draftsReady: (audit.summary && audit.summary.awaitingApproval) || 0,
+    tests: leadEngine.listExperiments().filter((e) => e.status !== "done").length,
+    measurement: leadEngine.funnelReport(),
+    nextActions: audit.actions || [],
+    searchUsage: { queries: queries.length, failures },
+  };
+  return { ok: true, queries, found, added, duplicates, emailed, output };
 }
 
-module.exports = { runDailyAgent, pickFocus, cleanName, hostname, googleSearch, CITIES, CATEGORIES };
+// §16 — weekly learning email (for a weekly Render cron / routine).
+async function runWeeklyLearning({ emailFn = notifyEmail, now = new Date() } = {}) {
+  const w = leadEngine.weeklyLearning(now);
+  const dateStr = now.toLocaleDateString("he-IL", { day: "numeric", month: "numeric" });
+  const fields = w.insufficientData
+    ? { "סיכום שבועי": "אין עדיין מספיק נתונים לשבוע הזה. ככל שייכנסו ערוצים ופעולות — הסיכום יתמלא." }
+    : {
+        "נוספו השבוע": String(w.addedThisWeek),
+        'נמצאו ע"י הסוכן': String(w.foundByAgent),
+        "הגיבו / מתעניינים": String(w.responded),
+        "בפיילוט": String(w.pilots),
+        "מפיצים בפועל": String(w.distributing),
+        "לקוחות": String(w.clients),
+        "תקועים (נשלחה פנייה בלי תגובה)": String(w.stuckContacted),
+        "משפך מדיד": w.funnel.hasData ? `${w.funnel.totals.leads} לידים · ${w.funnel.totals.clients} לקוחות` : "אין מספיק נתונים",
+      };
+  const r = await emailFn(LEAD_TO, `הסוכן שלך · סיכום שבועי · ${dateStr}`, fields);
+  return { ok: true, emailed: !!(r && r.sent), weekly: w };
+}
+
+module.exports = { runDailyAgent, runWeeklyLearning, pickFocus, cleanName, hostname, googleSearch, CITIES, CATEGORIES };
 
 // CLI: `node server/leadAgent.js`
 if (require.main === module) {

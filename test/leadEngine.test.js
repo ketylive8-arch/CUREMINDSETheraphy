@@ -133,3 +133,22 @@ test("agent — ריצה שנייה באותו יום: כפילויות, בלי 
   const r2 = await agent.runDailyAgent({ searchFn: fakeSearch, emailFn: fakeEmail });
   assert.ok(r2.duplicates >= 1, "זוהתה כפילות");
 });
+
+/* ── Experiments, funnel, weekly (spec §6,7,16) ── */
+test("experiments — מזהה מעקב אוטומטי + מדידת משפך אמיתית", () => {
+  const c = le.createChannel({ name: "ליד לניסוי", channelKind: "learning_center", whyYes: "x" });
+  const e = le.createExperiment(c.channel.id, { offer: "כלי", distribution: "ניוזלטר" });
+  assert.ok(e.ok);
+  assert.match(e.experiment.trackingId, /-E1$/, "מזהה מעקב נגזר מקוד הערוץ");
+  le.recordFunnel(e.experiment.id, { entries: 50, leads: 7, clients: 2 });
+  const f = le.funnelReport();
+  assert.equal(f.hasData, true);
+  assert.ok(f.totals.leads >= 7 && f.totals.clients >= 2);
+});
+
+test("weekly learning — מבנה תקין וספירה אמיתית", () => {
+  const w = le.weeklyLearning();
+  assert.equal(w.window, "7 ימים אחרונים");
+  assert.equal(typeof w.clients, "number");
+  assert.ok("funnel" in w);
+});
