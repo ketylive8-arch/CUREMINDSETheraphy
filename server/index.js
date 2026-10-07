@@ -1502,6 +1502,15 @@ try {
   console.error("content seed failed:", e.message);
 }
 
+// זריעת הלידים האמיתיים שהסוכן כבר מצא — כדי שהדשבורד לא יהיה ריק בכניסה. אידמפוטנטי.
+try {
+  const { seedLeads } = require("./leadSeed");
+  const l = seedLeads();
+  console.log(`Lead seed: +${l.inserted} new, ${l.existing} existing, ${l.total} total`);
+} catch (e) {
+  console.error("lead seed failed:", e.message);
+}
+
 // Clean deep-link routes. The public site is one clean marketing app served
 // from index.html; /workshops and /dashboard are entry points into it, and
 // /admin opens the password-gated Back-Office (its data APIs require Basic Auth).
