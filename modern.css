@@ -1,0 +1,120 @@
+/* ============================================================
+ * modern.css — עדכון עיצוב כלל-אתרי (2026-10-08)
+ * מפיץ את שפת העיצוב החדשה של about.html על כל עמודי התוכן:
+ * אווירה חיה (בועות אור), כרטיסי זכוכית, כפתורי גרדיאנט,
+ * כותרת זכוכית, פס CTA מוגבה. נטען אחרי הסטיילים הקיימים.
+ * ============================================================ */
+
+:root{
+  --grad:linear-gradient(135deg,#c2974a,#b8935e 45%,#a083b8 75%,#8fb5cc);
+}
+
+/* ── אווירה חיה: בועות אור עדינות ברקע (בלי שינוי HTML) ── */
+body::before,
+body::after{
+  content:"";position:fixed;z-index:-1;border-radius:50%;
+  filter:blur(80px);opacity:.38;pointer-events:none;
+}
+body::before{
+  width:52vmax;height:52vmax;
+  background:radial-gradient(circle,rgba(194,151,74,.28),transparent 65%);
+  top:-18vmax;right:-14vmax;
+}
+body::after{
+  width:44vmax;height:44vmax;
+  background:radial-gradient(circle,rgba(184,212,227,.38),transparent 65%);
+  bottom:-16vmax;left:-12vmax;
+}
+
+/* ── כרטיסי זכוכית עם הרמה בריחוף ── */
+.card,
+.blk .card,
+main .card{
+  background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+  border-color:rgba(194,151,74,.18);
+  border-radius:18px;
+  box-shadow:0 14px 34px -22px rgba(138,106,47,.35);
+  transition:transform .25s,box-shadow .25s;
+}
+main .card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 20px 42px -18px rgba(138,106,47,.42);
+}
+
+/* ── כפתורים: גרדיאנט עם צל והרמה ── */
+.btn.primary,
+main .btn.primary{
+  background:var(--grad);
+  color:#fff;
+  border:none;
+  box-shadow:0 10px 26px -8px rgba(194,151,74,.55);
+  transition:transform .2s,box-shadow .2s;
+}
+.btn.primary:hover,
+main .btn.primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 32px -8px rgba(194,151,74,.6);
+}
+.btn.ghost{
+  border:1.5px solid rgba(194,151,74,.4);
+  transition:background .2s,transform .2s;
+}
+.btn.ghost:hover{
+  background:rgba(194,151,74,.08);
+  transform:translateY(-1px);
+}
+
+/* ── כפתור CTA בכותרת העליונה (site-nav) ── */
+.cta-top{
+  background:var(--grad) !important;
+  color:#fff !important;
+  box-shadow:0 6px 18px rgba(194,151,74,.3);
+  transition:transform .2s;
+}
+.cta-top:hover{transform:translateY(-1px)}
+
+/* ── כותרת עליונה: זכוכית מטושטשת ── */
+header.site{
+  background:rgba(251,247,239,.86);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(194,151,74,.16);
+}
+
+/* ── פס CTA בסוף עמוד ── */
+.ctaband{
+  background:linear-gradient(150deg,rgba(255,255,255,.92),rgba(239,227,204,.72));
+  border:1px solid rgba(194,151,74,.22);
+  border-radius:22px;
+  box-shadow:0 18px 44px -24px rgba(138,106,47,.45);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+
+/* ── רשימות סימנים: כרטיסים קטנים עם הרמה ── */
+.signs li{
+  background:#fff;
+  border:1px solid rgba(194,151,74,.18);
+  border-radius:16px;
+  box-shadow:0 10px 26px -18px rgba(138,106,47,.35);
+  transition:transform .25s,box-shadow .25s;
+}
+.signs li:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 32px -16px rgba(138,106,47,.4);
+}
+
+/* ── ניווט "עוד בנושא" ── */
+.related{
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(194,151,74,.18);
+  border-radius:14px;
+  padding:12px 16px;
+  -webkit-backdrop-filter:blur(6px);
+  backdrop-filter:blur(6px);
+}
+
+/* ── סימון בחירה בזהב ── */
+::selection{background:rgba(194,151,74,.25)}
