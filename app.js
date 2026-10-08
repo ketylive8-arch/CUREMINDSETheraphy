@@ -1629,32 +1629,88 @@ function HbServices() {
   );
 }
 
-/* SECTION 4 — למי זה מתאים? */
-function HbAudiences() {
-  const cards = [
-    { icon: "user-round", title: "מבוגרים", problem: "לחץ, חרדה, ביקורת עצמית, עמידה במקום.", solution: "ליווי אישי בשיטת CURE או המצפן הפנימי.", cta: "לשיחת היכרות", href: "#lead" },
-    { icon: "sparkles", title: "בני נוער (13–18)", problem: "חרדת מבחנים, דימוי עצמי, הצפה.", solution: "CURE Teens — ליווי אישי בשפה שלהם.", cta: "לתוכנית", href: "/cure-teens" },
-    { icon: "shield", title: "חיילים, משוחררים ואנשי מילואים", problem: "דריכות, סיוטים, ניתוק — אחרי שירות או מילואים.", solution: "ליווי רגשי להתמודדות עם פוסט-טראומה — בהדרגה, בבטחה.", cta: "לעמוד החיילים", href: "/soldiers.html" },
-    { icon: "heart", title: "הורים למתבגר/ת", problem: "“לא יודעים איך לעזור”.", solution: "פנייה לליווי רגשי וחיזוק חוסן למתבגר/ת (CURE Teens).", cta: "לתוכנית", href: "/cure-teens" },
+/* SECTION — עמודי התוכן (בהשראת זרימת Tony Robbins: Pillars) */
+function HbPillars() {
+  const pillars = [
+    { icon: "wind", title: "חרדה ולחץ", desc: "דריכות, הצפה ומחשבות שלא נעצרות — ויסות מהשורש.", href: "/anxiety-and-stress" },
+    { icon: "sparkles", title: "ביטחון עצמי ודימוי", desc: "ערך פנימי שלא תלוי במה שאחרים חושבים.", href: "/self-confidence" },
+    { icon: "footprints", title: "דחיינות והתנעה", desc: "להבין את הדפוס — ולהתחיל לזוז בצעדים קטנים.", href: "/procrastination" },
+    { icon: "graduation-cap", title: "חוסן רגשי לנוער", desc: "CURE Teens — בשפה של גיל ההתבגרות, בלי סטיגמה.", href: "/cure-teens" },
+    { icon: "heart", title: "אימון רגשי למבוגרים", desc: "עבודת עומק על דפוסים, חסימות ומטרות.", href: "/emotional-coaching" },
+    { icon: "heart-handshake", title: "הורים למתבגר/ת", desc: "להבין מה קורה לילד/ה — ולדעת איך לעזור.", href: "/cure-teens" },
   ];
   return (
-    <section id="audiences" className="py-20 sm:py-28 bg-white">
+    <section id="pillars" className="py-20 sm:py-28 bg-[#FAF8F4] border-t border-ink-100">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <Reveal className="text-center max-w-[640px] mx-auto mb-14">
-          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">איפה את/ה נמצא/ת?</h2>
+          <Eyebrow>העמודים לחיים עם יותר שקט פנימי</Eyebrow>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">מהם העמודים של השקט שלך?</h2>
+          <p className="text-ink-500 text-[15.5px] mt-3">בוחרים את העמוד שמדבר אליך — ומשם מתחילים לעבוד.</p>
         </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {cards.map((c, i) => (
-            <Reveal key={c.title} style={{ transitionDelay: `${i * 80}ms` }}
-              className="bg-[#FAF8F4] border border-ink-100 rounded-2xl p-7 flex flex-col gap-3 hover:border-gold-300 cm-lift">
-              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={c.icon} size={20} /></span>
-              <h3 className="font-heading font-bold text-ink-800 text-[21px]">{c.title}</h3>
-              <p className="text-ink-500 text-[15px]">{c.problem}</p>
-              <p className="text-ink-700 text-[15.5px] flex-1"><b className="text-gold-700 font-semibold">הפתרון:</b> {c.solution}</p>
-              <a href={c.href} className="font-heading font-bold text-[14.5px] text-gold-700 hover:text-gold-800 mt-1">{c.cta} ←</a>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {pillars.map((p, i) => (
+            <Reveal key={p.title} style={{ transitionDelay: `${i * 70}ms` }}
+              className="bg-white border border-ink-100 rounded-2xl p-7 flex flex-col gap-2 hover:border-gold-300 cm-lift">
+              <span className="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gold-100 text-gold-700"><Icon name={p.icon} size={20} /></span>
+              <h3 className="font-heading font-bold text-ink-800 text-[19px]">{p.title}</h3>
+              <p className="text-ink-500 text-[14.5px] flex-1">{p.desc}</p>
+              <a href={p.href} className="font-heading font-bold text-[14px] text-gold-700 hover:text-gold-800 mt-1">לחקור ←</a>
             </Reveal>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION — קולות מתוך תהליך (בהשראת TR: Testimonials) */
+function HbVoices() {
+  return (
+    <section id="voices" className="py-20 sm:py-28 bg-white">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center max-w-[640px] mx-auto mb-14">
+          <Eyebrow>{CONTENT.testimonials.eyebrow}</Eyebrow>
+          <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight">{CONTENT.testimonials.title}</h2>
+        </Reveal>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
+          {CONTENT.testimonials.quotes.map((q, i) => (
+            <Reveal key={i} style={{ transitionDelay: `${i * 90}ms` }}
+              className="bg-[#FAF8F4] rounded-2xl p-8 border border-gold-200/60 shadow-softer flex flex-col justify-between">
+              <span className="font-heading font-extrabold text-gold-300 text-[44px] leading-[0.6] block mb-4">“</span>
+              <p className="text-ink-700 text-[16.5px] leading-relaxed font-medium mb-6">{q.text}</p>
+              <p className="text-gold-700 text-[14.5px] font-semibold">— {q.who}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* SECTION — נתוני תוצאות (בהשראת TR: Robbins equals results) */
+function HbStats() {
+  const stats = [
+    { n: "6+", l: "שנות ניסיון קליני" },
+    { n: "מאות", l: "תהליכי עומק" },
+    { n: "4", l: "שלבים מובנים — פרוטוקול CURE" },
+    { n: "24/7", l: "המרחב הדיגיטלי שלך" },
+  ];
+  return (
+    <section id="results" className="py-16 sm:py-20 bg-white border-y border-gold-200/50">
+      <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
+        <Reveal className="text-center mb-10">
+          <h2 className="font-heading font-extrabold text-ink-800 text-[24px] sm:text-[30px]">CureMindset = תוצאות</h2>
+        </Reveal>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {stats.map((st, i) => (
+            <Reveal key={st.l} style={{ transitionDelay: `${i * 70}ms` }}
+              className="bg-[#FAF8F4] rounded-2xl border border-ink-100 p-6 text-center shadow-softer">
+              <div className="font-heading font-extrabold text-gold-600 text-[34px] leading-tight">{st.n}</div>
+              <div className="text-ink-500 text-[13.5px] mt-1">{st.l}</div>
+            </Reveal>
+          ))}
+        </div>
+        <p className="text-center text-ink-400 text-[13px] mt-6">התוצאות משתנות מאדם לאדם, וההתקדמות נמדדת יחד מול המטרה האישית שלך.</p>
       </div>
     </section>
   );
@@ -1769,7 +1825,7 @@ function HbWhyKety() {
             </div>
           </Reveal>
           <Reveal style={{ transitionDelay: "80ms" }}>
-            <Eyebrow>הסיפור שמאחורי השיטה</Eyebrow>
+            <Eyebrow>מי האדם מאחורי השיטה</Eyebrow>
             <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[32px] leading-tight mb-6">
               אני מלמדת את מה שהוציא אותי החוצה
             </h2>
@@ -1789,6 +1845,9 @@ function HbWhyKety() {
               <p>
                 מהרגע הזה הפסקתי להילחם בתסמין והתחלתי להקשיב לו. זה מה שהוציא אותי החוצה — וזו השיטה שאני מלמדת היום: לא להילחם במה שמרגישים, אלא לשחרר אותו מהשורש.
               </p>
+              <div className="mt-6">
+                <Button as="a" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לפגוש את קטי — שיחת היכרות בחינם</Button>
+              </div>
             </div>
           </Reveal>
         </div>
@@ -1863,13 +1922,16 @@ function Home({ onEnterApp }) {
       <Nav onEnterApp={onEnterApp} />
       <main>
         <HbHero />
+        <HbPillars />
+        <HbVoices />
+        <HbWhyKety />
+        <HbStats />
         <HbRecognize />
         <HbSolution />
-        <HbServices />
         <HbHow />
+        <HbServices />
         <HbPersonal />
         <HbWorkshops />
-        <HbWhyKety />
         <ArticlesSection />
         <HbFaq />
         <HbFinalCta />
