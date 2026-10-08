@@ -1634,6 +1634,7 @@ function HbAudiences() {
   const cards = [
     { icon: "user-round", title: "מבוגרים", problem: "לחץ, חרדה, ביקורת עצמית, עמידה במקום.", solution: "ליווי אישי בשיטת CURE או המצפן הפנימי.", cta: "לשיחת היכרות", href: "#lead" },
     { icon: "sparkles", title: "בני נוער (13–18)", problem: "חרדת מבחנים, דימוי עצמי, הצפה.", solution: "CURE Teens — ליווי אישי בשפה שלהם.", cta: "לתוכנית", href: "/cure-teens" },
+    { icon: "shield", title: "חיילים, משוחררים ואנשי מילואים", problem: "דריכות, סיוטים, ניתוק — אחרי שירות או מילואים.", solution: "ליווי רגשי להתמודדות עם פוסט-טראומה — בהדרגה, בבטחה.", cta: "לעמוד החיילים", href: "/soldiers.html" },
     { icon: "heart", title: "הורים למתבגר/ת", problem: "“לא יודעים איך לעזור”.", solution: "פנייה לליווי רגשי וחיזוק חוסן למתבגר/ת (CURE Teens).", cta: "לתוכנית", href: "/cure-teens" },
   ];
   return (

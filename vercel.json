@@ -17,6 +17,7 @@
     { "source": "/self-confidence", "destination": "/self-confidence.html" },
     { "source": "/procrastination", "destination": "/procrastination.html" },
     { "source": "/cure-teens", "destination": "/cure-teens.html" },
+    { "source": "/soldiers", "destination": "/soldiers.html" },
     { "source": "/parents", "destination": "/parents.html" },
     { "source": "/method", "destination": "/method.html" },
     { "source": "/about", "destination": "/about.html" },
