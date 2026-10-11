@@ -12,6 +12,7 @@ const STARTERS = [
   { id: "understand-pattern", label: "אני רוצה להבין דפוס", mode: "explain" },
   { id: "talk-to-child", label: "כלי לשיחה עם הילד/ה", mode: "parenting" },
   { id: "summarize-unit", label: "סכמי לי את היחידה", mode: "summary" },
+  { id: "whats-included", label: "מה זה התוכנית ומה אני מקבל/ת?", mode: "program-info" },
 ];
 
 // כפתורי שליטה שקיימים תמיד ליד כל תגובה.

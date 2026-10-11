@@ -157,6 +157,13 @@ function isGreeting(text) {
   return t.length <= 6 && /(היי|הי|שלום|בוקר|ערב|היא)/.test(t);
 }
 
+// שאלה על התוכנית עצמה ("מה זה", "מה אני מקבל") — לא תיאור רגשי, ולכן לא
+// עובר דרך מיפוי הנושאים הרגשיים (THEMES). עונה קצר ומזמין למתנה ב-/gifts.
+function isProgramQuestion(text) {
+  const t = String(text || "");
+  return /מה (זה|זאת) (ה?תוכני|ה?אפליקצי|cure\s*mindset)|מה אני (מקבל|אקבל)|מה כלול|מה ה(?:ליווי|מסלול)/i.test(t);
+}
+
 // גיבוב יציב מהטקסט — כדי שהודעות שונות יקבלו וריאציות שונות (לא רק לפי שעה).
 function hash(s) {
   let h = 0;
@@ -196,6 +203,17 @@ function guidedReply(text, retrieved, userProfile) {
   const h = hash(text);
   const th = pickTheme(text) || pickTheme(userProfile);
   const name = firstNameFrom(userProfile);
+
+  if (isProgramQuestion(text)) {
+    const g = name ? `${name}, ` : "";
+    return {
+      reply: `${g}CureMindset זה ליווי יומי — שיחה, תרגול וכלים לפי מה שעובר עלייך, לא עוד תוכן גנרי. ` +
+        `רוצה לנסות בלי התחייבות? יש מתנה ראשונה — מדיטציית בוקר קצרה — ב-/gifts, אחרי שם ודרך יצירת קשר. ` +
+        `רוצה שנתחיל עכשיו ואת/ה מספר/ת לי מה עובר עלייך?`,
+      dailyTask: { title: "מדיטציית בוקר", description: "קחי/קח את מדיטציית הבוקר החינמית ב-/gifts והתחילי/התחל איתה מחר בבוקר.", category: "mindfulness" },
+      triggers: [], patterns: [], balanceAlerts: [], wins: [], via: "guided-local",
+    };
+  }
 
   // ברכה קצרה בלבד → מגיבים בחום ומזמינים לשתף.
   if (isGreeting(text)) {

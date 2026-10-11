@@ -136,14 +136,14 @@
     }
     .hero-meta span::before { content: '—'; margin-left: 8px; opacity: 0.5; }
     .hero-visual {
-      background: var(--ink);
+      background: var(--soft);
       position: relative;
       overflow: hidden;
     }
     .hero-visual-inner {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, #2C2318 0%, #1A1714 40%, #3D2E1E 100%);
+      background: linear-gradient(135deg, #F7F1E4 0%, #EFE3CC 55%, #E8D8B8 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -154,7 +154,7 @@
     .hero-quote {
       font-family: 'Frank Ruhl Libre', serif;
       font-size: clamp(22px, 2.5vw, 38px);
-      color: var(--gold);
+      color: var(--warm-mid);
       line-height: 1.5;
       font-weight: 300;
       font-style: italic;
@@ -163,7 +163,8 @@
       margin-top: 24px;
       font-size: 11px;
       letter-spacing: 0.2em;
-      color: rgba(255,255,255,0.35);
+      color: var(--warm-mid);
+      opacity: .6;
       text-transform: uppercase;
     }
     .decorative-line {
