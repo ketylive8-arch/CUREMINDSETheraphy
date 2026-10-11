@@ -126,7 +126,7 @@
 
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
-  <a class="cta-top" href="/#plans">להתחיל ניסיון חינם</a>
+  <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</button>
 </div></header>
 
 <main class="wrap">
@@ -184,7 +184,7 @@
     <h2>השינוי מתחיל בשיחה אחת</h2>
     <p>אין צורך להגיע עם תשובות. משאירים פרטים ובודקים יחד אם זה מתאים לך.</p>
     <div class="btnrow">
-      <a class="btn primary" href="/#plans">להתחיל ניסיון חינם</a>
+      <a class="btn primary" href="#" onclick="event.preventDefault();window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</a>
       <a class="btn ghost" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">קביעת שיחת זום</a>
     </div>
     <div class="note">7 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת</div>
@@ -198,11 +198,6 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
-
-<div class="sticky-cta" role="region" aria-label="פעולה מהירה">
-  <a class="btn primary" href="/#plans">ניסיון חינם</a>
-  <a class="btn ghost" href="https://wa.me/972543032349" target="_blank" rel="noopener">וואטסאפ</a>
-</div>
 
 <script>
   var items = document.querySelectorAll('.reveal');
@@ -219,5 +214,6 @@
     showAll();
   }
 </script>
+<script src="/curebot-float.js" defer></script>
 </body>
 </html>

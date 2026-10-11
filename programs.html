@@ -91,7 +91,7 @@
     <a href="/contact">יצירת קשר</a>
     <a href="/talk" style="font-weight:800;color:var(--gold-deep,#8a6a2f)">דברו איתי ✨</a>
   </nav>
-  <a class="cta-top" href="/program">להתחיל ניסיון חינם</a>
+  <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</button>
 </div></header>
 
 <main class="wrap">
@@ -139,7 +139,7 @@
       <li>תרגול יומי, קבצי אודיו ומעקב עדין ולא שיפוטי אחר ההתקדמות</li>
       <li>הפניה לקטי או לאיש מקצוע בכל רגע שבו השיחה חורגת מגבולות המערכת</li>
     </ul>
-    <a class="go" href="/program">להתחיל את שאלון ההיכרות ←</a>
+    <a class="go" href="#" onclick="event.preventDefault();window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי ←</a>
   </section>
 
   <section class="prog" style="text-align:center">
@@ -159,7 +159,7 @@
     <p>הוא מתחיל בכך שאפשר לעצור, לזהות מה מנהל אותך, לבחור נקודת עבודה ולתרגל צעד חדש. שיחת ההיכרות היא בלי עלות ובלי התחייבות — שם בודקים יחד איזה מסלול מתאים.</p>
     <div class="btnrow">
       <a class="btn primary" href="/contact">לבדוק אם התהליך מתאים לי</a>
-      <a class="btn ghost" href="/program">להתחיל את שאלון ההיכרות</a>
+      <a class="btn ghost" href="#" onclick="event.preventDefault();window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</a>
     </div>
     <p class="note">שיחת היכרות ללא עלות · ללא התחייבות</p>
   </div>
@@ -172,5 +172,6 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/curebot-float.js" defer></script>
 </body>
 </html>

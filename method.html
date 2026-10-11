@@ -90,7 +90,7 @@
     <a href="/contact">יצירת קשר</a>
     <a href="/talk" style="font-weight:800;color:var(--gold-deep,#8a6a2f)">דברו איתי ✨</a>
   </nav>
-  <a class="cta-top" href="/program">להתחיל ניסיון חינם</a>
+  <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</button>
 </div></header>
 
 <main class="wrap">
@@ -217,7 +217,7 @@
     <p>בואי נזהה יחד את הדפוס — ונראה איך הוא משתחרר.</p>
     <div class="btnrow">
       <a class="btn primary" href="/contact">קביעת שיחת היכרות</a>
-      <a class="btn ghost" href="/program">להתחיל ניסיון חינם במרחב הדיגיטלי</a>
+      <a class="btn ghost" href="#" onclick="event.preventDefault();window.cmOpenBot&&window.cmOpenBot()">יש שאלה? דברי איתי</a>
     </div>
     <p class="note">7 ימי התנסות · בלי כרטיס אשראי · ביטול בכל עת</p>
   </section>
@@ -231,5 +231,6 @@
   <p>CureMindset הוא כלי לאימון, למידה ותרגול אישי. אינו תחליף לאבחון, טיפול רפואי או נפשי, ואינו מיועד למצבי חירום.</p>
   <p>© 2026 CureMindset · קטי שגב</p>
 </div></footer>
+<script src="/curebot-float.js" defer></script>
 </body>
 </html>
