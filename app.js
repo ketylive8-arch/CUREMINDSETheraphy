@@ -508,6 +508,62 @@ function Hero() {
   );
 }
 
+/* ── CureBot: כפתור בדף הבית שפותח שיחה עם העוזרת הדיגיטלית של קטי (נוסף 2026-10-11, לבקשת קטי) ── */
+const CUREBOT_EMBED_URL = "https://curebot-agent.onrender.com/embed";
+
+function CureBotButton() {
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2 mb-6 px-5 py-3 rounded-full bg-white border border-gold-200 font-heading font-semibold text-[15.5px] text-gold-700 shadow-softer hover:bg-gold-50 transition-colors"
+      >
+        <Icon name="sparkles" size={18} />
+        יש שאלה? דברי עם העוזרת שלי
+      </button>
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="שיחה עם העוזרת של קטי שגב"
+          style={{ position: "fixed", inset: 0, zIndex: 60, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,.4)", padding: 12 }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: "relative", width: "min(420px, 100%)", height: "min(640px, 88vh)", background: "#fff", borderRadius: 24, overflow: "hidden", boxShadow: "0 18px 50px rgba(0,0,0,.25)" }}
+          >
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="סגירה"
+              style={{ position: "absolute", top: 10, left: 10, zIndex: 1, width: 34, height: 34, borderRadius: "50%", border: 0, background: "rgba(255,255,255,.92)", color: "#2D2A26", fontSize: 22, lineHeight: 1, cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,.2)" }}
+            >
+              ×
+            </button>
+            <iframe
+              src={CUREBOT_EMBED_URL}
+              title="שיחה עם העוזרת של קטי שגב"
+              style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function FreeTrialBanner() {
   return (
     <section className="bg-white border-y border-gold-200/60 py-5">
@@ -1512,6 +1568,7 @@ function HbHero() {
             <a href="/talk?fit" className="hb-hero__btn">בדיקת התאמה בחינם</a>
             <a href="/gifts.html" className="hb-hero__link">מתנות וכלים חינם <span aria-hidden="true">→</span></a>
           </div>
+          <div style={{ marginTop: 16 }}><CureBotButton /></div>
         </Reveal>
       </div>
     </section>
