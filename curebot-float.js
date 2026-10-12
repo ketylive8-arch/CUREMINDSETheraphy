@@ -52,7 +52,7 @@
     overlay.id = "cmFloatOverlay";
     overlay.innerHTML =
       '<div id="cmFloatModal"><button id="cmFloatClose" type="button" aria-label="סגירה">×</button>' +
-      '<iframe src="' + EMBED_URL + '" title="קטי AI — שיחה עם העוזרת הדיגיטלית"></iframe></div>';
+      '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="קטי AI — שיחה עם העוזרת הדיגיטלית"></iframe></div>';
 
     document.body.appendChild(btn);
     document.body.appendChild(overlay);
