@@ -78,7 +78,7 @@ const CONTENT = {
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "מתנות וכלים חינם",
-    cta: "יש שאלה? דברי איתי",
+    cta: "קטי AI",
   },
   hero: {
     kicker: "CureMindset · קטי שגב",
