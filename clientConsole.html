@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>קונסולת הפצה · CureMindset</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#141A2E;--navy-2:#1E2742;--surface:#FFFFFF;--bg:#F4F6FB;--line:#E3E7F0;
+    --ink:#1E2742;--ink-500:#636B82;--ink-300:#9AA2B8;--turq:#17B3A6;--turq-deep:#0E8F85;
+    --gold:#C9A96E;--violet:#7A6CF0;--green:#16A34A;--green-bg:#E7F3EB;--amber:#C77F13;
+    --amber-bg:#F7EEDC;--rose:#C23A2B;--rose-bg:#F7E3E0;
+    --shadow:0 1px 2px rgba(20,26,46,.04),0 10px 30px rgba(20,26,46,.07);--radius:16px;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --navy:#0C1020;--navy-2:#161D33;--surface:#171E33;--bg:#0E1222;--line:#2A3350;
+    --ink:#EAEDF6;--ink-500:#A7AEC6;--ink-300:#6B7391;--turq:#2BC9BB;--turq-deep:#17B3A6;
+    --gold:#D8BC85;--violet:#9A8EF5;--green:#5BBE7D;--green-bg:#17301F;--amber:#D8A245;
+    --amber-bg:#2E2716;--rose:#E08072;--rose-bg:#2E1C19;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+  }}
+  *{box-sizing:border-box}html,body{margin:0}
+  body{direction:rtl;background:var(--bg);color:var(--ink);font-family:'Heebo',system-ui,sans-serif;font-size:15px;line-height:1.6}
+  .top{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;padding:16px 20px;position:sticky;top:0;z-index:20}
+  .top-in{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--turq),var(--violet));display:grid;place-items:center;font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:18px;color:#fff}
+  .brand b{font-size:17px;font-weight:800;display:block;line-height:1.1}
+  .brand span{font-size:11px;color:rgba(255,255,255,.65)}
+  .top .who{font-size:12.5px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:10px}
+  .top .who button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer}
+  main{max-width:1000px;margin:0 auto;padding:20px 20px 90px}
+  .btn{border:0;border-radius:999px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+  .btn.primary{background:var(--turq);color:#042a27}.btn.primary:hover{background:var(--turq-deep);color:#fff}
+  .btn.primary:disabled{background:var(--line);color:var(--ink-300);cursor:not-allowed}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-500)}
+  input,textarea{font-family:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+  input:focus,textarea:focus{outline:2px solid var(--turq);outline-offset:1px}
+  input[dir=ltr]{direction:ltr;text-align:left}
+  /* ---- auth ---- */
+  .auth{max-width:420px;margin:7vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 24px}
+  .auth h1{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:24px;margin:0 0 4px;text-align:center}
+  .auth .sub{text-align:center;color:var(--ink-500);font-size:13.5px;margin:0 0 18px}
+  .tabs{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:16px}
+  .tabs button{flex:1;border:0;background:none;font:inherit;font-weight:700;font-size:13.5px;color:var(--ink-500);padding:8px;border-radius:999px;cursor:pointer}
+  .tabs button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+  .fld{margin-bottom:12px}.fld label{display:block;font-size:12px;font-weight:700;color:var(--ink-300);margin-bottom:4px}
+  .auth .btn{width:100%;margin-top:4px}
+  .msg{font-size:13px;border-radius:10px;padding:9px 12px;margin-top:12px}
+  .msg.err{background:var(--rose-bg);color:var(--rose)}.msg.ok{background:var(--green-bg);color:var(--green)}
+  /* ---- console ---- */
+  .how{background:color-mix(in srgb,var(--turq) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--turq) 30%,var(--line));border-radius:var(--radius);padding:12px 15px;margin-bottom:16px;font-size:13px;color:var(--ink-500)}
+  .how b{color:var(--ink)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
+  .stat b{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:24px;line-height:1;display:block}
+  .stat.total b{color:var(--turq-deep)}.stat.ready b{color:var(--gold)}.stat.sent b{color:var(--green)}.stat.need b{color:var(--amber)}
+  .stat span{font-size:12px;color:var(--ink-500);margin-top:5px;display:block}
+  .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .bar h2{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:21px;margin:0;flex:1}
+  .list{display:grid;gap:12px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 17px;box-shadow:var(--shadow)}
+  .card.sent{border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+  .row1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px}
+  .badge.new{background:var(--bg);color:var(--ink-500);border:1px solid var(--line)}
+  .badge.ready{background:var(--amber-bg);color:var(--amber)}.badge.sent{background:var(--green-bg);color:var(--green)}
+  .card h3{font-size:16.5px;font-weight:800;margin:7px 0 2px}
+  .meta{font-size:12.5px;color:var(--ink-500)}
+  .why{font-size:12.5px;background:var(--bg);border-radius:10px;padding:8px 11px;margin-top:9px;color:var(--ink-500)}.why b{color:var(--ink)}
+  .fieldwrap{margin-top:10px}.fieldwrap label{display:block;font-size:11px;font-weight:700;color:var(--ink-300);margin-bottom:3px}
+  textarea{min-height:150px;line-height:1.7;resize:vertical}
+  .noemail{font-size:11.5px;color:var(--amber);margin-top:3px}
+  .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+  .spacer{flex:1}
+  .link{background:none;border:0;color:var(--turq-deep);font-weight:700;font-size:12.5px;cursor:pointer;text-decoration:none}
+  .del{background:none;border:0;color:var(--rose);font-weight:700;font-size:12.5px;cursor:pointer}
+  .sentline{font-size:12px;color:var(--green);font-weight:700;margin-top:10px}
+  .cardmsg{font-size:12px;margin-top:8px;border-radius:9px;padding:7px 10px}
+  .cardmsg.err{background:var(--rose-bg);color:var(--rose)}.cardmsg.ok{background:var(--green-bg);color:var(--green)}
+  .empty{text-align:center;color:var(--ink-500);padding:36px 20px}
+  .toast{position:fixed;bottom:18px;inset-inline:0;margin:auto;width:fit-content;max-width:90vw;background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:all .25s;z-index:50}
+  .toast.show{opacity:1;transform:none}
+  dialog{border:0;border-radius:var(--radius);padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:480px;width:92vw;background:var(--surface);color:var(--ink)}
+  dialog::backdrop{background:rgba(10,14,28,.55)}.dlg{padding:20px}
+  .dlg h3{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:19px;margin:0 0 12px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var TKEY="cm_app_token", NKEY="cm_app_name";
+  var token=null, fullName="", leads=[], stats={}, draft={}, cardMsg={}, authTab="login";
+  try{ token=localStorage.getItem(TKEY); fullName=localStorage.getItem(NKEY)||""; }catch(e){}
+
+  var root=document.getElementById("root");
+  var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+  function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1800)}
+
+  function api(path,opts){
+    opts=opts||{};
+    var h=opts.headers||{}; h["Content-Type"]="application/json"; if(token) h["X-Auth-Token"]=token;
+    return fetch(path,{method:opts.method||"GET",headers:h,body:opts.body?JSON.stringify(opts.body):undefined})
+      .then(function(r){
+        if(r.status===401){ logout(); throw {handled:true}; }
+        return r.json().then(function(j){ if(!r.ok) throw (j||{error:"שגיאה"}); return j; });
+      });
+  }
+
+  // ---------- AUTH ----------
+  function renderAuth(err){
+    root.innerHTML=
+      '<div class="auth">'+
+        '<h1>קונסולת הפצה</h1><p class="sub">CureMindset · ניהול הפניות שלך</p>'+
+        '<div class="tabs"><button data-tab="login" class="'+(authTab==="login"?"on":"")+'">כניסה</button>'+
+        '<button data-tab="signup" class="'+(authTab==="signup"?"on":"")+'">הרשמה</button></div>'+
+        (authTab==="signup"?'<div class="fld"><label>שם מלא</label><input id="a_name"></div>':'')+
+        '<div class="fld"><label>אימייל</label><input id="a_email" dir="ltr" type="email"></div>'+
+        '<div class="fld"><label>סיסמה</label><input id="a_pass" type="password"></div>'+
+        '<button class="btn primary" id="a_go">'+(authTab==="login"?"כניסה":"יצירת חשבון")+'</button>'+
+        (err?'<div class="msg err">'+esc(err)+'</div>':'')+
+      '</div>';
+  }
+  function doAuth(){
+    var email=(document.getElementById("a_email").value||"").trim();
+    var pass=document.getElementById("a_pass").value||"";
+    var name=authTab==="signup"?((document.getElementById("a_name")||{}).value||"").trim():"";
+    if(!EMAIL_RE.test(email)) return renderAuth("אימייל לא תקין");
+    if(pass.length<6) return renderAuth("סיסמה — לפחות 6 תווים");
+    if(authTab==="signup"&&name.length<2) return renderAuth("נא למלא שם מלא");
+    var btn=document.getElementById("a_go"); btn.disabled=true; btn.textContent="רגע…";
+    var path=authTab==="login"?"/api/auth/login":"/api/auth/register";
+    var body=authTab==="login"?{email:email,password:pass}:{email:email,password:pass,fullName:name};
+    fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+      .then(function(res){
+        if(!res.ok){ renderAuth(res.j&&res.j.error||"שגיאה, נסי שוב"); return; }
+        if(res.j.needsOtp){ renderAuth("החשבון דורש אימות טלפון — פני לקטי."); return; }
+        token=res.j.token; fullName=res.j.fullName||name||"";
+        try{localStorage.setItem(TKEY,token);localStorage.setItem(NKEY,fullName);}catch(e){}
+        load();
+      })
+      .catch(function(){ renderAuth("תקלת רשת — נסי שוב"); });
+  }
+  function logout(){ token=null; try{localStorage.removeItem(TKEY);localStorage.removeItem(NKEY);}catch(e){} leads=[]; renderAuth(); }
+
+  // ---------- CONSOLE ----------
+  function load(){
+    root.innerHTML='<div class="empty">טוען…</div>';
+    api("/api/app/leads").then(function(j){ leads=j.leads||[]; stats=j.stats||{}; renderConsole(); })
+      .catch(function(e){ if(e&&e.handled)return; root.innerHTML='<div class="empty">תקלה בטעינה. <button class="link" onclick="location.reload()">נסי שוב</button></div>'; });
+  }
+  function val(l,f){ if(draft[l.id]&&draft[l.id][f]!=null) return draft[l.id][f]; return l[f]||""; }
+  function flush(){
+    document.querySelectorAll("[data-card]").forEach(function(c){
+      var id=c.getAttribute("data-card");
+      var e=c.querySelector("[data-f=email]"),s=c.querySelector("[data-f=subject]"),b=c.querySelector("[data-f=body]");
+      if(e||s||b) draft[id]={email:e?e.value:"",subject:s?s.value:"",body:b?b.value:""};
+    });
+  }
+
+  function renderConsole(){
+    var s=stats||{};
+    var statCells=[["total","total",s.total||0,"פניות"],["ready","ready",s.ready||0,"מוכנות"],["need","need",s.needEmail||0,"חסר מייל"],["sent","sent",s.sent||0,"נשלחו"]];
+    var cards = !leads.length
+      ? '<div class="empty">אין עדיין פניות. הוסיפי פנייה ראשונה עם הכפתור למעלה.</div>'
+      : leads.map(cardHtml).join("");
+    root.innerHTML=
+      '<div class="top"><div class="top-in">'+
+        '<div class="brand"><span class="logo">C</span><span><b>קונסולת הפצה</b><span>CureMindset</span></span></div>'+
+        '<div class="who">'+(fullName?('שלום '+esc(fullName)):"")+' <button id="logout">יציאה</button></div>'+
+      '</div></div>'+
+      '<main>'+
+        '<div class="how"><b>איך זה עובד:</b> מוסיפים מקום, כותבים/עורכים נוסח פנייה, ולוחצים «שלח». כל פנייה נשמרת אצלך בלבד.</div>'+
+        '<div class="stats">'+statCells.map(function(c){return '<div class="stat '+c[1]+'"><b>'+c[2]+'</b><span>'+c[3]+'</span></div>'}).join("")+'</div>'+
+        '<div class="bar"><h2>הפניות שלי</h2><button class="btn primary" id="addBtn">+ פנייה חדשה</button></div>'+
+        '<div class="list">'+cards+'</div>'+
+      '</main>';
+  }
+  function cardHtml(l){
+    var sent=l.status==="sent";
+    var email=val(l,"email"),subject=val(l,"subject"),body=val(l,"body");
+    var badge=sent?'<span class="badge sent">נשלח ✓</span>':(email?'<span class="badge ready">מוכן לשליחה</span>':'<span class="badge new">חסר מייל</span>');
+    var cm=cardMsg[l.id];
+    return '<div class="card'+(sent?' sent':'')+'" data-card="'+l.id+'">'+
+      '<div class="row1"><div>'+badge+'<h3>'+esc(l.name)+'</h3><div class="meta">'+esc(l.type||"")+(l.region?' · '+esc(l.region):'')+'</div></div></div>'+
+      (l.why?'<div class="why"><b>למה שיגיד כן:</b> '+esc(l.why)+'</div>':'')+
+      (sent
+        ? '<div class="sentline">נשלח אל '+esc(email)+'</div>'
+        : '<div class="fieldwrap"><label>אל (מייל)</label><input dir="ltr" type="email" data-f="email" placeholder="כתובת מייל של הגוף" value="'+esc(email)+'">'+(email?'':'<div class="noemail">אין עדיין מייל — אפשר להדביק ידנית.</div>')+'</div>'+
+          '<div class="fieldwrap"><label>נושא</label><input data-f="subject" value="'+esc(subject)+'"></div>'+
+          '<div class="fieldwrap"><label>הודעה</label><textarea data-f="body">'+esc(body)+'</textarea></div>')+
+      (cm?'<div class="cardmsg '+cm.type+'">'+esc(cm.text)+'</div>':'')+
+      '<div class="actions">'+
+        (sent?'':'<button class="btn primary" data-act="send" data-id="'+l.id+'">📤 שלח מייל</button><button class="btn ghost" data-act="save" data-id="'+l.id+'">שמירה</button>')+
+        (l.sourceUrl?'<a class="link" href="'+esc(l.sourceUrl)+'" target="_blank" rel="noopener">אתר המקום ↗</a>':'')+
+        '<div class="spacer"></div><button class="del" data-act="del" data-id="'+l.id+'">מחיקה</button>'+
+      '</div></div>';
+  }
+  function cardVals(id){
+    var c=document.querySelector('[data-card="'+id+'"]'); if(!c)return null;
+    var e=c.querySelector("[data-f=email]"),s=c.querySelector("[data-f=subject]"),b=c.querySelector("[data-f=body]");
+    return {email:(e?e.value:"").trim(),subject:(s?s.value:"").trim(),body:(b?b.value:"")};
+  }
+  function byId(id){return leads.find(function(l){return l.id===id})}
+
+  function saveLead(id,quiet){
+    var v=cardVals(id); if(!v)return Promise.resolve(); draft[id]=v;
+    return api("/api/app/leads/"+id,{method:"PUT",body:v}).then(function(j){
+      var i=leads.findIndex(function(l){return l.id===id}); if(i>=0&&j.lead) leads[i]=j.lead; delete draft[id];
+      if(!quiet) toast("נשמר ✓");
+    }).catch(function(e){ if(!(e&&e.handled)&&!quiet) toast("לא נשמר"); });
+  }
+  function sendLead(id){
+    var v=cardVals(id); if(!v)return;
+    if(!EMAIL_RE.test(v.email)){ cardMsg[id]={type:"err",text:"כתובת מייל לא תקינה."}; flush(); renderConsole(); return; }
+    if(!v.subject||!v.body){ cardMsg[id]={type:"err",text:"צריך נושא והודעה."}; flush(); renderConsole(); return; }
+    flush();
+    var btn=document.querySelector('[data-act="send"][data-id="'+id+'"]'); if(btn){btn.disabled=true;btn.textContent="שולח…";}
+    api("/api/app/leads/"+id+"/send",{method:"POST",body:v}).then(function(j){
+      var i=leads.findIndex(function(l){return l.id===id}); if(i>=0){leads[i].status="sent";leads[i].email=v.email;}
+      delete cardMsg[id]; delete draft[id]; stats.sent=(stats.sent||0)+1;
+      toast("המייל נשלח ✓"); renderConsole();
+    }).catch(function(e){ if(e&&e.handled)return; cardMsg[id]={type:"err",text:(e&&e.error)||"השליחה נכשלה"}; flush(); renderConsole(); });
+  }
+
+  // delegated events
+  document.addEventListener("click",function(ev){
+    var tab=ev.target.closest("[data-tab]"); if(tab){authTab=tab.getAttribute("data-tab");renderAuth();return;}
+    if(ev.target.id==="a_go"){doAuth();return;}
+    if(ev.target.id==="logout"){logout();return;}
+    if(ev.target.id==="addBtn"){openAdd();return;}
+    var b=ev.target.closest("[data-act]"); if(!b)return;
+    var act=b.getAttribute("data-act"),id=b.getAttribute("data-id");
+    if(act==="send")sendLead(id);
+    else if(act==="save")saveLead(id,false);
+    else if(act==="del"){var l=byId(id); if(l&&confirm("למחוק את \""+l.name+"\"?")){ api("/api/app/leads/"+id,{method:"DELETE"}).then(function(){leads=leads.filter(function(x){return x.id!==id});delete draft[id];renderConsole();toast("נמחק");}).catch(function(e){if(!(e&&e.handled))toast("לא נמחק");}); }}
+  });
+  document.addEventListener("keydown",function(ev){ if(ev.key==="Enter"&&ev.target&&ev.target.id&&(ev.target.id==="a_pass"||ev.target.id==="a_email")) doAuth(); });
+
+  // add dialog
+  function openAdd(){
+    var dlg=document.createElement("dialog"); dlg.innerHTML=
+      '<form method="dialog" class="dlg"><h3>פנייה חדשה</h3>'+
+      '<div class="fieldwrap"><label>שם הגוף *</label><input id="n_name" required></div>'+
+      '<div class="fieldwrap"><label>סוג</label><input id="n_type" placeholder="מרכז צעירים / מועצת נוער…"></div>'+
+      '<div class="fieldwrap"><label>אזור</label><input id="n_region"></div>'+
+      '<div class="fieldwrap"><label>מייל (אם ידוע)</label><input id="n_email" dir="ltr" type="email"></div>'+
+      '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn primary" value="ok">הוספה</button><button class="btn ghost" value="cancel" type="submit">ביטול</button></div></form>';
+    document.body.appendChild(dlg);
+    dlg.addEventListener("close",function(){ document.body.removeChild(dlg); });
+    dlg.querySelector("form").addEventListener("submit",function(e){
+      if(e.submitter&&e.submitter.value!=="ok")return;
+      e.preventDefault();
+      var name=(dlg.querySelector("#n_name").value||"").trim(); if(!name)return;
+      api("/api/app/leads",{method:"POST",body:{name:name,type:dlg.querySelector("#n_type").value.trim(),region:dlg.querySelector("#n_region").value.trim(),email:dlg.querySelector("#n_email").value.trim(),subject:"פנייה מ-"+(fullName||"CureMindset"),body:""}})
+        .then(function(j){ if(j.lead) leads.push(j.lead); dlg.close(); renderConsole(); toast("נוסף"); })
+        .catch(function(err){ if(!(err&&err.handled)) toast("לא נוסף"); });
+    });
+    dlg.showModal();
+  }
+
+  // boot
+  if(token) load(); else renderAuth();
+})();
+</script>
+</body>
+</html>

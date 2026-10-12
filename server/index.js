@@ -24,7 +24,8 @@ const { detectCrisis, safetyResponse } = require("./safety");
 const { STARTERS, CONTROLS, DISCLAIMER, citationFor } = require("./chatConfig");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
-const { notifyLead, notifyEmail } = require("./notify");
+const { notifyLead, notifyEmail, notifyEmailText } = require("./notify");
+const clientLeads = require("./clientLeads");
 
 const app = express();
 // Behind Render's proxy — needed so req.ip is the real client IP (consent log).
@@ -254,6 +255,73 @@ app.post("/api/onboarding", (req, res) => {
   }
   res.json({ ok: true });
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+// SaaS רב-לקוחות — קונסולת הפצה ללקוחות. כל לקוח (account) מנהל את הלידים שלו
+// בלבד; כל מסלול מאמת את ה-account_id מהטוקן ומבודד את הנתונים לפיו.
+// ───────────────────────────────────────────────────────────────────────────
+function appAccount(req, res) {
+  const accountId = accountIdFromToken(req.header("X-Auth-Token"));
+  if (!accountId) { res.status(401).json({ error: "לא מחובר" }); return null; }
+  return accountId;
+}
+
+app.get("/api/app/leads", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  res.json({ leads: clientLeads.listLeads(accountId), stats: clientLeads.stats(accountId) });
+});
+
+app.post("/api/app/leads", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const r = clientLeads.createLead(accountId, req.body || {});
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
+  res.status(201).json({ lead: r.lead });
+});
+
+app.put("/api/app/leads/:id", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const r = clientLeads.updateLead(accountId, req.params.id, req.body || {});
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
+  res.json({ lead: r.lead });
+});
+
+app.delete("/api/app/leads/:id", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const r = clientLeads.deleteLead(accountId, req.params.id);
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
+  res.json({ ok: true });
+});
+
+// שליחת פנייה אמיתית מהקונסולה. השרת שומר נוסח + נמען, שולח מייל, ומסמן "נשלח".
+app.post("/api/app/leads/:id/send", rateLimit("app-send", 60), async (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const b = req.body || {};
+  // מעדכן קודם את הנוסח/הנמען שהלקוח ערך, ואז שולח.
+  const patch = {};
+  if (typeof b.email === "string") patch.email = b.email.trim();
+  if (typeof b.subject === "string") patch.subject = b.subject;
+  if (typeof b.body === "string") patch.body = b.body;
+  if (Object.keys(patch).length) clientLeads.updateLead(accountId, req.params.id, patch);
+  const lead = clientLeads.getLead(accountId, req.params.id);
+  if (!lead) return res.status(404).json({ error: "לא נמצא" });
+  const to = String(lead.email || "").trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) return res.status(400).json({ error: "כתובת מייל לא תקינה" });
+  if (!lead.subject || !lead.body) return res.status(400).json({ error: "צריך נושא והודעה" });
+  const replyTo = loginReplyTo(accountId) || undefined;
+  const r = await notifyEmailText(to, lead.subject, lead.body, replyTo);
+  if (!r || !r.sent) return res.status(502).json({ error: "שליחת המייל נכשלה — בדקי הגדרות דיוור", detail: r && r.error });
+  const when = new Date().toISOString();
+  clientLeads.markSent(accountId, req.params.id, when);
+  res.json({ ok: true, sentAt: when });
+});
+
+// המייל של הלקוח (reply-to) — כדי שתשובות הנמען יחזרו ללקוח ולא לקטי.
+function loginReplyTo(accountId) {
+  try {
+    const row = db.prepare("SELECT email FROM accounts WHERE id = ?").get(accountId);
+    return row ? row.email : null;
+  } catch (e) { return null; }
+}
 
 // ── שכחתי סיסמה: קוד איפוס בן 6 ספרות למייל, ואז הגדרת סיסמה חדשה ──
 const resetCodes = new Map(); // email -> { code, expires, tries }
@@ -1516,6 +1584,8 @@ try {
 // /admin opens the password-gated Back-Office (its data APIs require Basic Auth).
 app.get(["/workshops", "/dashboard"], (req, res) => res.sendFile(path.join(STATIC_DIR, "index.html")));
 app.get("/admin", (req, res) => res.sendFile(path.join(STATIC_DIR, "admin.html")));
+// קונסולת ההפצה ללקוחות (SaaS רב-לקוחות) — הרשמה/כניסה + ניהול לידים ושליחה.
+app.get(["/app", "/app/leads", "/console"], (req, res) => res.sendFile(path.join(STATIC_DIR, "clientConsole.html")));
 
 app.listen(PORT, () => {
   console.log(`CureMindset server listening on http://localhost:${PORT}`);

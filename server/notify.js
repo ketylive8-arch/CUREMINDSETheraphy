@@ -40,14 +40,14 @@ function buildHtml(subject, fields) {
 // ── 0) Webhook (n8n / Make / Zapier) — הכי גמיש. דורש משתנה אחד: LEAD_WEBHOOK_URL ──
 // שולח את הליד כ-JSON לכתובת ה-Webhook, ושם n8n מטפל בשליחת המייל (חיבור Gmail
 // רגיל ב-n8n, בלי App Password). מקבל גם 'to' כדי ש-n8n יוכל לנתב לנמען הנכון.
-async function sendViaWebhook(to, subject, fields) {
+async function sendViaWebhook(to, subject, fields, opts = {}) {
   const url = process.env.LEAD_WEBHOOK_URL;
   if (!url) return null; // לא מוגדר — ננסה דרך אחרת
   try {
     const resp = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ to, subject, ...fields }),
+      body: JSON.stringify({ to, subject, replyTo: opts.replyTo, ...fields }),
     });
     return resp.ok ? { sent: true, via: "webhook" } : { sent: false, error: `Webhook ${resp.status}` };
   } catch (e) {
@@ -56,7 +56,7 @@ async function sendViaWebhook(to, subject, fields) {
 }
 
 // ── 1) Gmail ישיר דרך Nodemailer ──
-async function sendViaGmail(to, subject, fields) {
+async function sendViaGmail(to, subject, fields, opts = {}) {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) return null; // לא מוגדר — ננסה דרך אחרת
@@ -69,8 +69,10 @@ async function sendViaGmail(to, subject, fields) {
     await transporter.sendMail({
       from: `CureMindset <${user}>`,
       to,
+      replyTo: opts.replyTo || undefined,
       subject,
-      html: buildHtml(subject, fields),
+      ...(opts.text ? { text: opts.text } : {}),
+      html: opts.html || buildHtml(subject, fields),
     });
     return { sent: true, via: "gmail" };
   } catch (e) {
@@ -79,7 +81,7 @@ async function sendViaGmail(to, subject, fields) {
 }
 
 // ── 2) Resend ──
-async function sendViaResend(to, subject, fields) {
+async function sendViaResend(to, subject, fields, opts = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
   const from = process.env.NOTIFICATION_FROM || "CureMindset <onboarding@resend.dev>";
@@ -87,7 +89,7 @@ async function sendViaResend(to, subject, fields) {
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [to], subject, html: buildHtml(subject, fields) }),
+      body: JSON.stringify({ from, to: [to], subject, ...(opts.replyTo ? { reply_to: opts.replyTo } : {}), html: opts.html || buildHtml(subject, fields) }),
     });
     return resp.ok ? { sent: true, via: "resend" } : { sent: false, error: `Resend ${resp.status}` };
   } catch (e) {
@@ -96,7 +98,7 @@ async function sendViaResend(to, subject, fields) {
 }
 
 // ── 3) FormSubmit (גיבוי ללא מפתח) ──
-async function sendViaFormSubmit(to, subject, fields) {
+async function sendViaFormSubmit(to, subject, fields, opts = {}) {
   try {
     const resp = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(to)}`, {
       method: "POST",
@@ -114,13 +116,26 @@ async function sendViaFormSubmit(to, subject, fields) {
 }
 
 // שולח מייל ליעד כלשהו דרך Gmail → Resend → FormSubmit. לעולם לא זורק.
-async function notifyEmail(to, subject, fields) {
+async function notifyEmail(to, subject, fields, opts = {}) {
   for (const send of [sendViaWebhook, sendViaGmail, sendViaResend, sendViaFormSubmit]) {
-    const r = await send(to, subject, fields);
+    const r = await send(to, subject, fields, opts);
     if (r === null) continue; // ספק לא מוגדר — לנסות את הבא
     if (r.sent) return r; // הצלחה
   }
   return { sent: false, error: "no email channel succeeded" };
+}
+
+// שליחת מייל פנייה אמיתי (גוף טקסט חופשי, לא טבלת שדות) — לשימוש קונסולת הלקוח.
+// replyTo = המייל של הלקוח, כדי שתשובות יחזרו אליו. לעולם לא זורק.
+function textToHtml(text) {
+  return (
+    `<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#222;max-width:560px;white-space:pre-wrap">` +
+    esc(text) +
+    `</div>`
+  );
+}
+async function notifyEmailText(to, subject, text, replyTo) {
+  return notifyEmail(to, subject, { "הודעה": text }, { html: textToHtml(text), text: String(text || ""), replyTo });
 }
 
 // התראת ליד לקטי (ליעד ברירת המחדל).
@@ -128,4 +143,4 @@ async function notifyLead(subject, fields) {
   return notifyEmail(NOTIFY_TO, subject, fields);
 }
 
-module.exports = { notifyLead, notifyEmail, NOTIFY_TO };
+module.exports = { notifyLead, notifyEmail, notifyEmailText, NOTIFY_TO };
