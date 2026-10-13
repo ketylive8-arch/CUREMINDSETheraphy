@@ -835,7 +835,7 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
         /\b401\b|invalid_api_key|Incorrect API key/i.test(m) ? "bad-key" :
         /\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(m) ? "no-credit" : "ai-error";
       console.warn(`[checkin] OpenAI unavailable (${reason}) — using local guided engine.`);
-      result = guidedReply(text.trim(), retrieved, userProfile);
+      result = guidedReply(text.trim(), retrieved, userProfile, Array.isArray(history) ? history : []);
     }
 
     const withIds = (items) => items.map((item) => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, ...item }));
