@@ -95,7 +95,14 @@ app.get("/sitemap.xml", (req, res) => {
 });
 
 app.use(express.json({ limit: "100kb" }));
-app.use(express.static(STATIC_DIR));
+// Standalone lead-system mode: when STANDALONE_CONSOLE=1 the root URL opens
+// the lead console itself (not the CureMindset marketing site), so this can be
+// deployed as its own separate system on its own clean domain.
+const STANDALONE_CONSOLE = process.env.STANDALONE_CONSOLE === "1";
+if (STANDALONE_CONSOLE) {
+  app.get("/", (req, res) => res.sendFile(path.join(STATIC_DIR, "clientConsole.html")));
+}
+app.use(express.static(STATIC_DIR, STANDALONE_CONSOLE ? { index: false } : undefined));
 app.use("/uploads", express.static(UPLOADS_DIR));
 
 // Minimal in-memory rate limiter, keyed per device token + route. Protects the
