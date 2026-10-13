@@ -19,6 +19,7 @@ function ensureSchema() {
       name        TEXT NOT NULL,
       type        TEXT NOT NULL DEFAULT '',
       region      TEXT NOT NULL DEFAULT '',
+      category    TEXT NOT NULL DEFAULT '',
       why         TEXT NOT NULL DEFAULT '',
       email       TEXT NOT NULL DEFAULT '',
       source_url  TEXT NOT NULL DEFAULT '',
@@ -31,15 +32,17 @@ function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_client_leads_acct ON client_leads(account_id);
   `);
+  // Migration for databases created before `category` existed.
+  try { db.exec("ALTER TABLE client_leads ADD COLUMN category TEXT NOT NULL DEFAULT ''"); } catch (e) { /* already exists */ }
 }
 
-const EDITABLE = ["name", "type", "region", "why", "email", "source_url", "subject", "body", "status", "sort_order", "sent_at"];
+const EDITABLE = ["name", "type", "region", "category", "why", "email", "source_url", "subject", "body", "status", "sort_order", "sent_at"];
 
 function rowToLead(r) {
   if (!r) return null;
   return {
-    id: r.id, name: r.name, type: r.type, region: r.region, why: r.why,
-    email: r.email, sourceUrl: r.source_url, subject: r.subject, body: r.body,
+    id: r.id, name: r.name, type: r.type, region: r.region, category: r.category || "",
+    why: r.why, email: r.email, sourceUrl: r.source_url, subject: r.subject, body: r.body,
     status: r.status, sentAt: r.sent_at || "", order: r.sort_order, createdAt: r.created_at,
   };
 }
@@ -63,11 +66,12 @@ function createLead(accountId, data) {
   const name = String(d.name || "").trim().slice(0, 200);
   if (!name) return { error: "שם הגוף חובה", status: 400 };
   db.prepare(
-    `INSERT INTO client_leads (id, account_id, name, type, region, why, email, source_url, subject, body, status, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO client_leads (id, account_id, name, type, region, category, why, email, source_url, subject, body, status, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id, accountId, name,
     String(d.type || "").slice(0, 120), String(d.region || "").slice(0, 120),
+    String(d.category || "").slice(0, 120),
     String(d.why || "").slice(0, 2000), String(d.email || "").trim().slice(0, 200),
     String(d.sourceUrl || d.source_url || "").slice(0, 500), String(d.subject || "").slice(0, 300),
     String(d.body || "").slice(0, 8000), String(d.status || "new").slice(0, 20), order
