@@ -1586,6 +1586,15 @@ try {
   console.error("lead seed failed:", e.message);
 }
 
+// Seed the client console (ready login + all located leads, by category) so the
+// owner sees everything inside the system after logging in.
+try {
+  const cl = require("./clientLeadsSeed").seed();
+  console.log(`Client console seed: account ${cl.accountId}, +${cl.seeded} leads (total ${cl.total})`);
+} catch (e) {
+  console.error("client console seed failed:", e.message);
+}
+
 // Clean deep-link routes. The public site is one clean marketing app served
 // from index.html; /workshops and /dashboard are entry points into it, and
 // /admin opens the password-gated Back-Office (its data APIs require Basic Auth).
