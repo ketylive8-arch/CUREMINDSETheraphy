@@ -10,84 +10,110 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --navy:#141A2E;--navy-2:#1E2742;--surface:#FFFFFF;--bg:#F4F6FB;--line:#E3E7F0;
-    --ink:#1E2742;--ink-500:#636B82;--ink-300:#9AA2B8;--turq:#17B3A6;--turq-deep:#0E8F85;
-    --gold:#C9A96E;--violet:#7A6CF0;--green:#16A34A;--green-bg:#E7F3EB;--amber:#C77F13;
-    --amber-bg:#F7EEDC;--rose:#C23A2B;--rose-bg:#F7E3E0;
-    --shadow:0 1px 2px rgba(20,26,46,.04),0 10px 30px rgba(20,26,46,.07);--radius:16px;
+    --cream:#FAF8F4; --cream-2:#FBF7EF; --surface:#FFFFFF; --line:#ECE4D8; --line-2:#E3E7F0;
+    --ink:#2D2A26; --ink-500:#6B6560; --ink-300:#9B958F;
+    --gold:#C9A96E; --gold-deep:#B5892F; --gold-soft:#EFE3CC;
+    --navy:#20283F; --navy-2:#2B3450; --blue:#B8D4E3;
+    --green:#16A34A; --green-bg:#E7F3EB; --amber:#B9791A; --amber-bg:#F7EEDC;
+    --rose:#C23A2B; --rose-bg:#F7E3E0;
+    --shadow:0 1px 2px rgba(45,42,38,.05),0 12px 30px -14px rgba(45,42,38,.18);
+    --shadow-lg:0 30px 60px -28px rgba(45,42,38,.45);
+    --radius:18px; --radius-sm:12px;
   }
   @media (prefers-color-scheme:dark){:root{
-    --navy:#0C1020;--navy-2:#161D33;--surface:#171E33;--bg:#0E1222;--line:#2A3350;
-    --ink:#EAEDF6;--ink-500:#A7AEC6;--ink-300:#6B7391;--turq:#2BC9BB;--turq-deep:#17B3A6;
-    --gold:#D8BC85;--violet:#9A8EF5;--green:#5BBE7D;--green-bg:#17301F;--amber:#D8A245;
-    --amber-bg:#2E2716;--rose:#E08072;--rose-bg:#2E1C19;--shadow:0 1px 2px rgba(0,0,0,.3),0 12px 34px rgba(0,0,0,.4);
+    --cream:#13131A; --cream-2:#15151D; --surface:#1C1C26; --line:#2C2A33; --line-2:#2C2A33;
+    --ink:#F0ECE4; --ink-500:#B2ADA4; --ink-300:#827D74;
+    --gold:#D8BC85; --gold-deep:#C9A96E; --gold-soft:#3A3322;
+    --navy:#0E0E15; --navy-2:#191922; --blue:#8FB6CA;
+    --green:#5BBE7D; --green-bg:#17301F; --amber:#D8A245; --amber-bg:#2E2716;
+    --rose:#E08072; --rose-bg:#2E1C19;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 34px -14px rgba(0,0,0,.6);
+    --shadow-lg:0 30px 60px -24px rgba(0,0,0,.7);
   }}
   *{box-sizing:border-box}html,body{margin:0}
-  body{direction:rtl;background:var(--bg);color:var(--ink);font-family:'Heebo',system-ui,sans-serif;font-size:15px;line-height:1.6}
-  .top{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;padding:16px 20px;position:sticky;top:0;z-index:20}
+  body{direction:rtl;background:var(--cream);color:var(--ink);font-family:'Heebo',system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Frank Ruhl Libre',serif}
+  .btn{border:0;border-radius:999px;padding:11px 20px;font-family:inherit;font-weight:700;font-size:14.5px;cursor:pointer;transition:transform .08s ease,box-shadow .2s ease,background .2s ease;min-height:44px}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:#2b2206;box-shadow:0 8px 20px -10px var(--gold-deep)}
+  .btn.primary:hover{filter:brightness(1.04)}
+  .btn.primary:disabled{background:var(--line);color:var(--ink-300);cursor:not-allowed;box-shadow:none}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-500)}
+  .btn.ghost:hover{border-color:var(--gold);color:var(--ink)}
+  input,textarea{font-family:inherit;font-size:15px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 13px;width:100%;transition:border-color .15s,box-shadow .15s}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 28%,transparent)}
+  input[dir=ltr]{direction:ltr;text-align:left}
+  textarea{min-height:150px;line-height:1.7;resize:vertical}
+
+  /* ---------- AUTH ---------- */
+  .authwrap{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden;background:
+     radial-gradient(900px 500px at 85% -10%, color-mix(in srgb,var(--gold) 22%,transparent), transparent 60%),
+     radial-gradient(700px 500px at 0% 110%, color-mix(in srgb,var(--blue) 30%,transparent), transparent 55%),
+     linear-gradient(180deg,var(--cream),var(--cream-2))}
+  .auth{position:relative;width:100%;max-width:400px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:30px 26px 24px}
+  .auth .mark{width:52px;height:52px;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:26px;color:#fff;margin:0 auto 14px;box-shadow:0 10px 24px -10px var(--gold-deep)}
+  .auth h1{font-weight:900;font-size:25px;margin:0 0 5px;text-align:center}
+  .auth .tag{text-align:center;color:var(--ink-500);font-size:14px;margin:0 auto 20px;max-width:30ch;line-height:1.5}
+  .tabs{display:flex;background:var(--cream);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:18px}
+  .tabs button{flex:1;border:0;background:none;font:inherit;font-weight:700;font-size:14px;color:var(--ink-500);padding:9px;border-radius:999px;cursor:pointer;min-height:40px}
+  .tabs button.on{background:var(--surface);color:var(--gold-deep);box-shadow:var(--shadow)}
+  .fld{margin-bottom:13px}.fld label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-500);margin-bottom:5px}
+  .auth .btn.primary{width:100%;margin-top:6px}
+  .auth-foot{text-align:center;margin-top:18px;font-size:12px;color:var(--ink-300)}
+  .auth-foot b{color:var(--gold-deep);font-weight:700}
+  .msg{font-size:13.5px;border-radius:var(--radius-sm);padding:10px 13px;margin-top:13px}
+  .msg.err{background:var(--rose-bg);color:var(--rose)}.msg.ok{background:var(--green-bg);color:var(--green)}
+
+  /* ---------- APP SHELL ---------- */
+  .top{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;padding:15px 20px;position:sticky;top:0;z-index:20;box-shadow:0 10px 30px -20px rgba(0,0,0,.6)}
   .top-in{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:11px}
-  .brand .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--turq),var(--violet));display:grid;place-items:center;font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:18px;color:#fff}
-  .brand b{font-size:17px;font-weight:800;display:block;line-height:1.1}
-  .brand span{font-size:11px;color:rgba(255,255,255,.65)}
-  .top .who{font-size:12.5px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:10px}
-  .top .who button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:12px;cursor:pointer}
-  main{max-width:1000px;margin:0 auto;padding:20px 20px 90px}
-  .btn{border:0;border-radius:999px;padding:10px 18px;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
-  .btn.primary{background:var(--turq);color:#042a27}.btn.primary:hover{background:var(--turq-deep);color:#fff}
-  .btn.primary:disabled{background:var(--line);color:var(--ink-300);cursor:not-allowed}
-  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink-500)}
-  input,textarea{font-family:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
-  input:focus,textarea:focus{outline:2px solid var(--turq);outline-offset:1px}
-  input[dir=ltr]{direction:ltr;text-align:left}
-  /* ---- auth ---- */
-  .auth{max-width:420px;margin:7vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 24px}
-  .auth h1{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:24px;margin:0 0 4px;text-align:center}
-  .auth .sub{text-align:center;color:var(--ink-500);font-size:13.5px;margin:0 0 18px}
-  .tabs{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:16px}
-  .tabs button{flex:1;border:0;background:none;font:inherit;font-weight:700;font-size:13.5px;color:var(--ink-500);padding:8px;border-radius:999px;cursor:pointer}
-  .tabs button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-  .fld{margin-bottom:12px}.fld label{display:block;font-size:12px;font-weight:700;color:var(--ink-300);margin-bottom:4px}
-  .auth .btn{width:100%;margin-top:4px}
-  .msg{font-size:13px;border-radius:10px;padding:9px 12px;margin-top:12px}
-  .msg.err{background:var(--rose-bg);color:var(--rose)}.msg.ok{background:var(--green-bg);color:var(--green)}
-  /* ---- console ---- */
-  .how{background:color-mix(in srgb,var(--turq) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--turq) 30%,var(--line));border-radius:var(--radius);padding:12px 15px;margin-bottom:16px;font-size:13px;color:var(--ink-500)}
+  .brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-deep));display:grid;place-items:center;font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:19px;color:#fff}
+  .brand b{font-size:17px;font-weight:800;display:block;line-height:1.1;font-family:'Heebo'}
+  .brand span{font-size:11px;color:rgba(255,255,255,.6)}
+  .who{font-size:13px;color:rgba(255,255,255,.82);display:flex;align-items:center;gap:10px}
+  .who button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:12.5px;cursor:pointer;min-height:36px}
+  .who button:hover{background:rgba(255,255,255,.18)}
+  main{max-width:1000px;margin:0 auto;padding:22px 16px 96px}
+  @media(min-width:640px){main{padding:26px 20px 96px}}
+
+  .how{background:linear-gradient(120deg,color-mix(in srgb,var(--gold) 10%,var(--surface)),var(--surface));border:1px solid var(--gold-soft);border-radius:var(--radius);padding:14px 16px;margin-bottom:18px;font-size:13.5px;color:var(--ink-500)}
   .how b{color:var(--ink)}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-  @media(max-width:620px){.stats{grid-template-columns:repeat(2,1fr)}}
-  .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 15px;box-shadow:var(--shadow)}
-  .stat b{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:24px;line-height:1;display:block}
-  .stat.total b{color:var(--turq-deep)}.stat.ready b{color:var(--gold)}.stat.sent b{color:var(--green)}.stat.need b{color:var(--amber)}
-  .stat span{font-size:12px;color:var(--ink-500);margin-top:5px;display:block}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px}
+  @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;box-shadow:var(--shadow)}
+  .stat b{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:27px;line-height:1;display:block}
+  .stat.total b{color:var(--gold-deep)}.stat.ready b{color:var(--amber)}.stat.sent b{color:var(--green)}.stat.need b{color:var(--ink-300)}
+  .stat span{font-size:12.5px;color:var(--ink-500);margin-top:6px;display:block}
   .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-  .bar h2{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:21px;margin:0;flex:1}
-  .list{display:grid;gap:12px}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 17px;box-shadow:var(--shadow)}
-  .card.sent{border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+  .bar h2{font-weight:900;font-size:22px;margin:0;flex:1}
+  .list{display:grid;gap:13px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:17px 18px;box-shadow:var(--shadow)}
+  .card.sent{border-color:color-mix(in srgb,var(--green) 40%,var(--line))}
   .row1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:2px 10px}
-  .badge.new{background:var(--bg);color:var(--ink-500);border:1px solid var(--line)}
+  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:3px 11px}
+  .badge.new{background:var(--cream);color:var(--ink-500);border:1px solid var(--line)}
   .badge.ready{background:var(--amber-bg);color:var(--amber)}.badge.sent{background:var(--green-bg);color:var(--green)}
-  .card h3{font-size:16.5px;font-weight:800;margin:7px 0 2px}
+  .card h3{font-size:17px;font-weight:800;margin:8px 0 2px;font-family:'Heebo'}
   .meta{font-size:12.5px;color:var(--ink-500)}
-  .why{font-size:12.5px;background:var(--bg);border-radius:10px;padding:8px 11px;margin-top:9px;color:var(--ink-500)}.why b{color:var(--ink)}
-  .fieldwrap{margin-top:10px}.fieldwrap label{display:block;font-size:11px;font-weight:700;color:var(--ink-300);margin-bottom:3px}
-  textarea{min-height:150px;line-height:1.7;resize:vertical}
-  .noemail{font-size:11.5px;color:var(--amber);margin-top:3px}
-  .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+  .why{font-size:12.5px;background:var(--cream);border-radius:var(--radius-sm);padding:9px 12px;margin-top:10px;color:var(--ink-500)}.why b{color:var(--ink)}
+  .fieldwrap{margin-top:11px}.fieldwrap label{display:block;font-size:11.5px;font-weight:700;color:var(--ink-300);margin-bottom:4px}
+  .noemail{font-size:11.5px;color:var(--amber);margin-top:4px}
+  .actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
   .spacer{flex:1}
-  .link{background:none;border:0;color:var(--turq-deep);font-weight:700;font-size:12.5px;cursor:pointer;text-decoration:none}
+  .link{background:none;border:0;color:var(--gold-deep);font-weight:700;font-size:12.5px;cursor:pointer;text-decoration:none}
   .del{background:none;border:0;color:var(--rose);font-weight:700;font-size:12.5px;cursor:pointer}
-  .sentline{font-size:12px;color:var(--green);font-weight:700;margin-top:10px}
-  .cardmsg{font-size:12px;margin-top:8px;border-radius:9px;padding:7px 10px}
+  .sentline{font-size:12.5px;color:var(--green);font-weight:700;margin-top:11px}
+  .cardmsg{font-size:12.5px;margin-top:9px;border-radius:10px;padding:8px 11px}
   .cardmsg.err{background:var(--rose-bg);color:var(--rose)}.cardmsg.ok{background:var(--green-bg);color:var(--green)}
-  .empty{text-align:center;color:var(--ink-500);padding:36px 20px}
-  .toast{position:fixed;bottom:18px;inset-inline:0;margin:auto;width:fit-content;max-width:90vw;background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:all .25s;z-index:50}
+  .empty{text-align:center;color:var(--ink-500);padding:44px 20px;background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius)}
+  .empty .big{font-size:30px;display:block;margin-bottom:8px}
+  .toast{position:fixed;bottom:20px;inset-inline:0;margin:auto;width:fit-content;max-width:90vw;background:var(--navy);color:#fff;padding:11px 20px;border-radius:999px;font-size:13.5px;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);transition:all .25s;z-index:50}
   .toast.show{opacity:1;transform:none}
-  dialog{border:0;border-radius:var(--radius);padding:0;box-shadow:0 20px 60px rgba(0,0,0,.3);max-width:480px;width:92vw;background:var(--surface);color:var(--ink)}
-  dialog::backdrop{background:rgba(10,14,28,.55)}.dlg{padding:20px}
-  .dlg h3{font-family:'Frank Ruhl Libre',serif;font-weight:900;font-size:19px;margin:0 0 12px}
+  dialog{border:0;border-radius:var(--radius);padding:0;box-shadow:var(--shadow-lg);max-width:460px;width:92vw;background:var(--surface);color:var(--ink)}
+  dialog::backdrop{background:rgba(32,40,63,.5);backdrop-filter:blur(2px)}
+  .dlg{padding:22px}.dlg h3{font-weight:900;font-size:20px;margin:0 0 14px}
+  .loading{text-align:center;color:var(--ink-500);padding:60px 20px}
 </style>
 </head>
 <body>
@@ -104,7 +130,7 @@
   var root=document.getElementById("root");
   var EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-  function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1800)}
+  function toast(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("show");setTimeout(function(){t.classList.remove("show")},1900)}
 
   function api(path,opts){
     opts=opts||{};
@@ -119,22 +145,25 @@
   // ---------- AUTH ----------
   function renderAuth(err){
     root.innerHTML=
-      '<div class="auth">'+
-        '<h1>קונסולת הפצה</h1><p class="sub">CureMindset · ניהול הפניות שלך</p>'+
+      '<div class="authwrap"><div class="auth">'+
+        '<div class="mark">C</div>'+
+        '<h1>קונסולת הפצה</h1>'+
+        '<p class="tag">כל הפניות שלך במקום אחד — מאתרים, כותבים, ושולחים בלחיצה.</p>'+
         '<div class="tabs"><button data-tab="login" class="'+(authTab==="login"?"on":"")+'">כניסה</button>'+
         '<button data-tab="signup" class="'+(authTab==="signup"?"on":"")+'">הרשמה</button></div>'+
-        (authTab==="signup"?'<div class="fld"><label>שם מלא</label><input id="a_name"></div>':'')+
-        '<div class="fld"><label>אימייל</label><input id="a_email" dir="ltr" type="email"></div>'+
-        '<div class="fld"><label>סיסמה</label><input id="a_pass" type="password"></div>'+
-        '<button class="btn primary" id="a_go">'+(authTab==="login"?"כניסה":"יצירת חשבון")+'</button>'+
+        (authTab==="signup"?'<div class="fld"><label>שם מלא</label><input id="a_name" autocomplete="name"></div>':'')+
+        '<div class="fld"><label>אימייל</label><input id="a_email" dir="ltr" type="email" autocomplete="email"></div>'+
+        '<div class="fld"><label>סיסמה</label><input id="a_pass" type="password" autocomplete="'+(authTab==="login"?"current-password":"new-password")+'"></div>'+
+        '<button class="btn primary" id="a_go">'+(authTab==="login"?"כניסה למערכת":"יצירת חשבון")+'</button>'+
         (err?'<div class="msg err">'+esc(err)+'</div>':'')+
-      '</div>';
+        '<div class="auth-foot">מופעל ע״י <b>CureMindset</b></div>'+
+      '</div></div>';
   }
   function doAuth(){
     var email=(document.getElementById("a_email").value||"").trim();
     var pass=document.getElementById("a_pass").value||"";
     var name=authTab==="signup"?((document.getElementById("a_name")||{}).value||"").trim():"";
-    if(!EMAIL_RE.test(email)) return renderAuth("אימייל לא תקין");
+    if(!EMAIL_RE.test(email)) return renderAuth("כתובת אימייל לא תקינה");
     if(pass.length<6) return renderAuth("סיסמה — לפחות 6 תווים");
     if(authTab==="signup"&&name.length<2) return renderAuth("נא למלא שם מלא");
     var btn=document.getElementById("a_go"); btn.disabled=true; btn.textContent="רגע…";
@@ -155,9 +184,9 @@
 
   // ---------- CONSOLE ----------
   function load(){
-    root.innerHTML='<div class="empty">טוען…</div>';
+    root.innerHTML='<div class="loading">טוען…</div>';
     api("/api/app/leads").then(function(j){ leads=j.leads||[]; stats=j.stats||{}; renderConsole(); })
-      .catch(function(e){ if(e&&e.handled)return; root.innerHTML='<div class="empty">תקלה בטעינה. <button class="link" onclick="location.reload()">נסי שוב</button></div>'; });
+      .catch(function(e){ if(e&&e.handled)return; root.innerHTML='<div class="loading">תקלה בטעינה. <button class="link" onclick="location.reload()">נסי שוב</button></div>'; });
   }
   function val(l,f){ if(draft[l.id]&&draft[l.id][f]!=null) return draft[l.id][f]; return l[f]||""; }
   function flush(){
@@ -172,7 +201,7 @@
     var s=stats||{};
     var statCells=[["total","total",s.total||0,"פניות"],["ready","ready",s.ready||0,"מוכנות"],["need","need",s.needEmail||0,"חסר מייל"],["sent","sent",s.sent||0,"נשלחו"]];
     var cards = !leads.length
-      ? '<div class="empty">אין עדיין פניות. הוסיפי פנייה ראשונה עם הכפתור למעלה.</div>'
+      ? '<div class="empty"><span class="big">✉️</span>אין עדיין פניות. לחצי «פנייה חדשה» כדי להתחיל.</div>'
       : leads.map(cardHtml).join("");
     root.innerHTML=
       '<div class="top"><div class="top-in">'+
@@ -180,7 +209,7 @@
         '<div class="who">'+(fullName?('שלום '+esc(fullName)):"")+' <button id="logout">יציאה</button></div>'+
       '</div></div>'+
       '<main>'+
-        '<div class="how"><b>איך זה עובד:</b> מוסיפים מקום, כותבים/עורכים נוסח פנייה, ולוחצים «שלח». כל פנייה נשמרת אצלך בלבד.</div>'+
+        '<div class="how"><b>איך זה עובד:</b> מוסיפים מקום, כותבים/עורכים את נוסח הפנייה, ולוחצים «שלח». כל פנייה נשמרת אצלך בלבד.</div>'+
         '<div class="stats">'+statCells.map(function(c){return '<div class="stat '+c[1]+'"><b>'+c[2]+'</b><span>'+c[3]+'</span></div>'}).join("")+'</div>'+
         '<div class="bar"><h2>הפניות שלי</h2><button class="btn primary" id="addBtn">+ פנייה חדשה</button></div>'+
         '<div class="list">'+cards+'</div>'+
@@ -233,7 +262,6 @@
     }).catch(function(e){ if(e&&e.handled)return; cardMsg[id]={type:"err",text:(e&&e.error)||"השליחה נכשלה"}; flush(); renderConsole(); });
   }
 
-  // delegated events
   document.addEventListener("click",function(ev){
     var tab=ev.target.closest("[data-tab]"); if(tab){authTab=tab.getAttribute("data-tab");renderAuth();return;}
     if(ev.target.id==="a_go"){doAuth();return;}
@@ -245,9 +273,8 @@
     else if(act==="save")saveLead(id,false);
     else if(act==="del"){var l=byId(id); if(l&&confirm("למחוק את \""+l.name+"\"?")){ api("/api/app/leads/"+id,{method:"DELETE"}).then(function(){leads=leads.filter(function(x){return x.id!==id});delete draft[id];renderConsole();toast("נמחק");}).catch(function(e){if(!(e&&e.handled))toast("לא נמחק");}); }}
   });
-  document.addEventListener("keydown",function(ev){ if(ev.key==="Enter"&&ev.target&&ev.target.id&&(ev.target.id==="a_pass"||ev.target.id==="a_email")) doAuth(); });
+  document.addEventListener("keydown",function(ev){ if(ev.key==="Enter"&&ev.target&&(ev.target.id==="a_pass"||ev.target.id==="a_email")) doAuth(); });
 
-  // add dialog
   function openAdd(){
     var dlg=document.createElement("dialog"); dlg.innerHTML=
       '<form method="dialog" class="dlg"><h3>פנייה חדשה</h3>'+
@@ -255,7 +282,7 @@
       '<div class="fieldwrap"><label>סוג</label><input id="n_type" placeholder="מרכז צעירים / מועצת נוער…"></div>'+
       '<div class="fieldwrap"><label>אזור</label><input id="n_region"></div>'+
       '<div class="fieldwrap"><label>מייל (אם ידוע)</label><input id="n_email" dir="ltr" type="email"></div>'+
-      '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn primary" value="ok">הוספה</button><button class="btn ghost" value="cancel" type="submit">ביטול</button></div></form>';
+      '<div style="display:flex;gap:8px;margin-top:16px"><button class="btn primary" value="ok">הוספה</button><button class="btn ghost" value="cancel" type="submit">ביטול</button></div></form>';
     document.body.appendChild(dlg);
     dlg.addEventListener("close",function(){ document.body.removeChild(dlg); });
     dlg.querySelector("form").addEventListener("submit",function(e){
@@ -269,7 +296,6 @@
     dlg.showModal();
   }
 
-  // boot
   if(token) load(); else renderAuth();
 })();
 </script>
