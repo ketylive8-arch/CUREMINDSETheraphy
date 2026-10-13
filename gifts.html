@@ -384,10 +384,14 @@ footer a:hover{color:var(--gold)}
 
 <script>
 /* ── Reveal on scroll ── */
+const revealEls = document.querySelectorAll(".reveal");
+function showAllReveals() { revealEls.forEach((el) => el.classList.add("on")); }
 const io = new IntersectionObserver((es) => {
   es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); } });
 }, { threshold: 0.12 });
-document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+revealEls.forEach((el) => io.observe(el));
+// רשת ביטחון: תוכן לעולם לא נשאר מוסתר, גם אם ה-IntersectionObserver לא מופעל.
+setTimeout(showAllReveals, 1800);
 
 /* ── Marquee: duplicate track for seamless loop ── */
 const mq = document.getElementById("mq");
