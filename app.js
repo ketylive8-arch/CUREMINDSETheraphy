@@ -797,22 +797,21 @@ function Workshops() {
 /* CURE Teens                                                       */
 /* ---------------------------------------------------------------- */
 
-const CURE_TEENS_NAVY = "linear-gradient(180deg, #0B1A2B 0%, #123047 100%)";
 const CURE_TEENS_CTA_TEXT = "לקביעת פגישת אבחון ופיצוח דפוסים";
 
 function CureTeens() {
   return (
-    <section id="cure-teens" className="py-20 sm:py-28 relative overflow-hidden" style={{ background: CURE_TEENS_NAVY }}>
+    <section id="cure-teens" className="py-20 sm:py-28 relative overflow-hidden bg-[#E8E0D5]">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7 relative">
         <Reveal className="max-w-[800px] mb-14">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border font-heading text-[13px] font-semibold mb-6" style={{ borderColor: "rgba(52,211,153,.4)", color: "#6EE7B7" }}>
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border font-heading text-[13px] font-semibold mb-6" style={{ borderColor: "#C9A96E", color: "#AD8A52" }}>
             <Icon name="graduation-cap" size={15} />
             CURE Teens · תהליך מאיץ למתבגרים
           </span>
-          <h2 className="font-heading font-semibold text-white text-[30px] sm:text-[42px] leading-tight mb-4">
+          <h2 className="font-heading font-semibold text-ink-900 text-[30px] sm:text-[42px] leading-tight mb-4">
             מהמסכים אל החיים — פוקוס, ויסות רגשי ותקשורת בבית
           </h2>
-          <p className="text-white/75 text-[17px] sm:text-[18px] leading-relaxed">
+          <p className="text-ink-600 text-[17px] sm:text-[18px] leading-relaxed">
             תהליך מבוסס NLP וחקר המוח שבונה למתבגר/ת מערכת הפעלה חדשה — מניתוק ודחיינות אל חוסן פנימי, ביטחון ותקשורת מקרבת.
           </p>
         </Reveal>
@@ -824,10 +823,10 @@ function CureTeens() {
             { letter: "R", title: "Rewire · חיווט מחדש", text: "שינוי תגובות אוטומטיות ללחץ ובניית חוסן רגשי." },
             { letter: "E", title: "Empower · העצמה", text: "הנדסת הרגלים, עצמאות רגשית ותקשורת מקרבת." },
           ].map((p, i) => (
-            <Reveal key={p.letter} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-white/[0.05] border border-white/10 p-6 text-center backdrop-blur-sm">
-              <span className="font-heading font-black text-3xl block mb-2" style={{ color: "#6EE7B7" }}>{p.letter}</span>
-              <h3 className="font-heading font-bold text-[17px] text-white mb-2">{p.title}</h3>
-              <p className="text-white/65 text-[14px] leading-relaxed">{p.text}</p>
+            <Reveal key={p.letter} style={{ transitionDelay: `${i * 80}ms` }} className="rounded-2xl bg-white border border-[#E8E0D5] p-6 text-center">
+              <span className="font-heading font-black text-3xl block mb-2" style={{ color: "#AD8A52" }}>{p.letter}</span>
+              <h3 className="font-heading font-bold text-[17px] text-ink-900 mb-2">{p.title}</h3>
+              <p className="text-ink-600 text-[14px] leading-relaxed">{p.text}</p>
             </Reveal>
           ))}
         </div>
@@ -839,21 +838,21 @@ function CureTeens() {
             { icon: "user-round", label: "1:1 · פרונטלי או זום", sub: "ליווי אישי צמוד" },
             { icon: "sparkles", label: "כלים לחוסן", sub: "תרגול שממשיך בין המפגשים" },
           ].map((f, i) => (
-            <div key={i} className="rounded-2xl bg-white/[0.05] border border-white/10 p-5 text-center backdrop-blur-sm">
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3" style={{ background: "rgba(52,211,153,.12)", color: "#6EE7B7" }}>
+            <div key={i} className="rounded-2xl bg-white border border-[#E8E0D5] p-5 text-center">
+              <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl mb-3" style={{ background: "#B8D4E3", color: "#2D2A26" }}>
                 <Icon name={f.icon} size={19} />
               </span>
-              <p className="font-heading font-bold text-[15px] text-white leading-tight">{f.label}</p>
-              <p className="text-white/55 text-[12.5px] mt-1">{f.sub}</p>
+              <p className="font-heading font-bold text-[15px] text-ink-900 leading-tight">{f.label}</p>
+              <p className="text-ink-600 text-[12.5px] mt-1">{f.sub}</p>
             </div>
           ))}
         </Reveal>
 
         <Reveal className="text-center">
-          <Button as="a" href={BOOKING_LINKS.calendar || waLink(CURE_TEENS_CTA_TEXT)} target="_blank" rel="noopener noreferrer" className="bg-[#10B981] hover:bg-[#0E7C63] text-white border-0">
+          <Button as="a" href={BOOKING_LINKS.calendar || waLink(CURE_TEENS_CTA_TEXT)} target="_blank" rel="noopener noreferrer">
             {CURE_TEENS_CTA_TEXT}
           </Button>
-          <p className="text-white/60 text-[13.5px] leading-relaxed mt-4 max-w-[560px] mx-auto">
+          <p className="text-ink-500 text-[13.5px] leading-relaxed mt-4 max-w-[560px] mx-auto">
             מתחילים בשיחת אבחון של 20 דקות — ללא עלות וללא התחייבות. בשיחה נכיר את המתבגר/ת, נזהה את הדפוס ונבנה יחד את המסלול והקצב המתאימים. CURE Teens הוא מסלול ליווי אישי לנוער (13+) והורים, נפרד מתוכניות האפליקציה החודשיות שלמטה.
           </p>
         </Reveal>

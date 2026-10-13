@@ -74,11 +74,6 @@
   .wa-cta{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;text-decoration:none;font-family:Rubik,sans-serif;font-weight:700;padding:13px 24px;border-radius:999px;font-size:16px}
 
   /* ── עיצוב חי: רקע נושם ── */
-  .aura{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-  .aura .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5}
-  .aura .b1{width:46vmax;height:46vmax;background:radial-gradient(circle,rgba(194,151,74,.25),transparent 65%);top:-14vmax;right:-10vmax;animation:drift 34s ease-in-out infinite alternate}
-  .aura .b2{width:40vmax;height:40vmax;background:radial-gradient(circle,rgba(184,212,227,.38),transparent 65%);bottom:-12vmax;left:-8vmax;animation:drift 41s ease-in-out infinite alternate-reverse}
-  @keyframes drift{to{transform:translate(-6vmax,5vmax) scale(1.12)}}
   :root{--grad:linear-gradient(135deg,#c2974a,#b8935e 45%,#a083b8 75%,#8fb5cc)}
 
   footer.site{border-top:1px solid var(--gold-soft);padding:26px 0;text-align:center;color:var(--ink-500);font-size:14px}
@@ -91,7 +86,6 @@
 <link rel="stylesheet" href="/modern.css?v=20261008">
 </head>
 <body>
-<div class="aura" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div></div>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <nav class="site-nav">
