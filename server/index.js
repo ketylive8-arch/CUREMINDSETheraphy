@@ -835,6 +835,9 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
         /\b401\b|invalid_api_key|Incorrect API key/i.test(m) ? "bad-key" :
         /\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(m) ? "no-credit" : "ai-error";
       console.warn(`[checkin] OpenAI unavailable (${reason}) — using local guided engine.`);
+      // אבחון: הגוף המדויק של שגיאת OpenAI (למשל insufficient_quota / billing / project budget).
+      // אינו חושף את המפתח — רק את סיבת הדחייה. עוזר לאבחן "שמתי כסף אבל לא עובר".
+      if (reason !== "no-key") console.warn(`[checkin][ai-detail] ${m.slice(0, 400)}`);
       result = guidedReply(text.trim(), retrieved, userProfile, Array.isArray(history) ? history : []);
     }
 
