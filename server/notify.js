@@ -76,7 +76,7 @@ async function sendViaAgentRelay(to, subject, fields) {
 }
 
 // ── 1) Gmail ישיר דרך Nodemailer ──
-async function sendViaGmail(to, subject, fields) {
+async function sendViaGmail(to, subject, fields, htmlOverride) {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) return null; // לא מוגדר — ננסה דרך אחרת
@@ -90,7 +90,7 @@ async function sendViaGmail(to, subject, fields) {
       from: `CureMindset <${user}>`,
       to,
       subject,
-      html: buildHtml(subject, fields),
+      html: htmlOverride || buildHtml(subject, fields),
     });
     return { sent: true, via: "gmail" };
   } catch (e) {
@@ -99,7 +99,7 @@ async function sendViaGmail(to, subject, fields) {
 }
 
 // ── 2) Resend ──
-async function sendViaResend(to, subject, fields) {
+async function sendViaResend(to, subject, fields, htmlOverride) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
   const from = process.env.NOTIFICATION_FROM || "CureMindset <onboarding@resend.dev>";
@@ -107,7 +107,7 @@ async function sendViaResend(to, subject, fields) {
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to: [to], subject, html: buildHtml(subject, fields) }),
+      body: JSON.stringify({ from, to: [to], subject, html: htmlOverride || buildHtml(subject, fields) }),
     });
     return resp.ok ? { sent: true, via: "resend" } : { sent: false, error: `Resend ${resp.status}` };
   } catch (e) {
@@ -134,9 +134,11 @@ async function sendViaFormSubmit(to, subject, fields) {
 }
 
 // שולח מייל ליעד כלשהו דרך Gmail → Resend → FormSubmit. לעולם לא זורק.
-async function notifyEmail(to, subject, fields) {
+// htmlOverride: גוף HTML מוכן מראש (למשל מייל מתנה ממותג) — עוקף את טבלת
+// השדות האוטומטית (buildHtml) בערוצים שתומכים בכך (Gmail, Resend).
+async function notifyEmail(to, subject, fields, htmlOverride) {
   for (const send of [sendViaWebhook, sendViaAgentRelay, sendViaGmail, sendViaResend, sendViaFormSubmit]) {
-    const r = await send(to, subject, fields);
+    const r = await send(to, subject, fields, htmlOverride);
     if (r === null) continue; // ספק לא מוגדר — לנסות את הבא
     if (r.sent) return r; // הצלחה
   }

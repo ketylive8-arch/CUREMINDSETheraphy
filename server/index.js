@@ -26,7 +26,7 @@ const { STARTERS, CONTROLS, DISCLAIMER, citationFor } = require("./chatConfig");
 const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, createSessionForAccount, accountIdFromToken, accountSummary, hashPassword } = require("./auth");
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail } = require("./notify");
-const { composeLeadReply } = require("./leadReply");
+const { buildGiftEmailHtml, personalizedLine } = require("./leadReply");
 
 const app = express();
 // Behind Render's proxy — needed so req.ip is the real client IP (consent log).
@@ -438,16 +438,15 @@ app.post("/api/webhooks/grow", (req, res) => {
   res.json({ ok: true, duplicate: !!result.duplicate });
 });
 
-// תגובה אוטומטית חמה ללקוח/ה עצמו/ה (לא לקטי) — רק אם יש כתובת מייל.
-// לעולם לא חוסמת/מעכבת את התשובה ללקוח; כשלון שקט אם אין מפתח OpenAI
-// או שהניסוח נכשל. לא שולחת שום דבר אם אין מייל (עדיין אין ערוץ וואטסאפ אוטומטי).
+// תגובה אוטומטית ללקוח/ה עצמו/ה (לא לקטי) — כוללת את מתנת תהליך דיקנס בפועל.
+// המייל והמתנה תמיד נשלחים, גם בלי OpenAI — ה-AI רק מוסיף משפט אישי כתוספת,
+// ולעולם לא חוסם את שליחת המתנה. כשל שקט אם אין כתובת מייל.
 function sendLeadAutoReply({ name, email, goal, source }) {
   if (!email) return;
-  composeLeadReply({ name, goal, source })
-    .then((text) => {
-      if (!text) return;
-      return notifyEmail(email, "קיבלתי את הפנייה שלך 🌿 — קטי שגב", { "הודעה מקטי": `${text}\n\n— קטי שגב, CureMindset` });
-    })
+  personalizedLine({ name, goal })
+    .then((line) => buildGiftEmailHtml({ name, personalLine: line }))
+    .catch(() => buildGiftEmailHtml({ name, personalLine: null }))
+    .then((html) => notifyEmail(email, "המתנה שלי אלייך 🌿 — קטי שגב", { "מתנה": "תהליך דיקנס — נשלח ב-HTML" }, html))
     .catch(() => {});
 }
 
