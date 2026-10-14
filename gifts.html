@@ -33,18 +33,17 @@ a{color:var(--gold-deep)}
 h1,h2,h3{font-family:Rubik,sans-serif;line-height:1.25}
 ::selection{background:var(--gold);color:#fff}
 
-.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
 .reveal.on{opacity:1;transform:none}
 
 /* ── Nav ── */
 header.site{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--beige)}
-.navwrap{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
-.brand svg{width:36px;height:36px}
-.brand .bt small{display:block;font-weight:600;font-size:11px;color:var(--ink-2);font-family:Rubik,sans-serif;letter-spacing:.06em}
-.navcta{background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;text-decoration:none}
-.navcta:hover{background:var(--gold-deep)}
+header.site .wrap{display:flex;align-items:center;justify-content:space-between;padding:13px 22px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink)}
+.brand img{height:36px}
+.cta-top{background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;padding:10px 18px;border-radius:999px;text-decoration:none;border:0;cursor:pointer}
+.cta-top:hover{background:var(--gold-deep)}
 
 /* ── Hero ── */
 .hero{padding:56px 0 40px;text-align:center}
@@ -138,27 +137,25 @@ footer a:hover{color:var(--gold-deep)}
   .hero{padding-top:36px}
 }
 </style>
+<link rel="stylesheet" href="/site-nav.css" />
+<script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
 </head>
 <body>
 
-<header class="site">
-  <div class="navwrap">
-    <a class="brand" href="/" aria-label="CureMindset — לדף הבית">
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#C9A96E"/><stop offset="1" stop-color="#B8D4E3"/>
-        </linearGradient></defs>
-        <circle cx="24" cy="24" r="21" fill="none" stroke="url(#lg)" stroke-width="2.6"/>
-        <path d="M12 30c4-3 8-3 12 0s8 3 12 0" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linecap="round"/>
-        <path d="M12 23c4-3 8-3 12 0s8 3 12 0" fill="none" stroke="url(#lg)" stroke-width="2.6" stroke-linecap="round" opacity=".55"/>
-        <circle cx="24" cy="13" r="3.4" fill="url(#lg)"/>
-      </svg>
-      <span class="bt"><small>המרחב של קטי שגב</small></span>
-    </a>
-    <a class="navcta" href="/talk?fit">בדיקת התאמה בחינם</a>
-  </div>
-</header>
+<header class="site"><div class="wrap">
+  <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
+  <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <nav class="site-nav">
+    <a href="/">דף הבית</a>
+    <a href="/method">השיטה</a>
+    <a href="/programs">תוכניות</a>
+    <a href="/#workshops">סדנאות</a>
+    <a href="/faq">שאלות נפוצות</a>
+    <a href="/contact">יצירת קשר</a>
+  </nav>
+  <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">קטי AI</button>
+</div></header>
 
 <main>
   <!-- HERO -->

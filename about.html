@@ -115,12 +115,23 @@
   a:focus-visible,summary:focus-visible,.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
   @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition-duration:.01s!important}.reveal{opacity:1;transform:none}}
 </style>
+<link rel="stylesheet" href="/site-nav.css" />
+<script src="/site-nav.js" defer></script>
 </head>
 <body>
 
 
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
+  <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <nav class="site-nav">
+    <a href="/">דף הבית</a>
+    <a href="/method">השיטה</a>
+    <a href="/programs">תוכניות</a>
+    <a href="/#workshops">סדנאות</a>
+    <a href="/faq">שאלות נפוצות</a>
+    <a href="/contact">יצירת קשר</a>
+  </nav>
   <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">קטי AI</button>
 </div></header>
 

@@ -1,23 +1,39 @@
 /* site-nav.css — תפריט עליון אחיד לכל הדפים הסטטיים.
  * נטען אחרי ה-style הפנימי של כל דף. משתמש במשתני ה-CSS
  * (--ink, --gold-deep) שכבר מוגדרים ב-:root של כל דף.
- * מובייל: התפריט מוסתר (נשאר לוגו + כפתור); דסקטופ (≥860px): תפריט מלא. */
-.site-nav { display: none; }
-@media (min-width: 860px) {
-  .site-nav {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    margin: 0 auto;
+ * מובייל (<860px): תפריט נפתח עם כפתור המבורגר.
+ * דסקטופ (≥860px): תפריט מלא לרוחב, בלי כפתור המבורגר. */
+
+.nav-toggle{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:38px;height:38px;border-radius:10px;border:1px solid var(--gold-soft,rgba(194,151,74,.3));
+  background:#fff;cursor:pointer;flex-shrink:0;order:2;
+}
+.nav-toggle svg{width:20px;height:20px;stroke:var(--ink,#2D2A26);fill:none;stroke-width:2;stroke-linecap:round}
+
+.site-nav{
+  display:none;
+  position:absolute;top:100%;inset-inline:0;z-index:25;
+  flex-direction:column;gap:2px;padding:10px 22px 16px;
+  background:#FAF8F4;border-bottom:1px solid var(--gold-soft,rgba(194,151,74,.3));
+  box-shadow:0 12px 24px -16px rgba(45,42,38,.2);
+}
+.site-nav.open{display:flex}
+.site-nav a{
+  font-family:Rubik,sans-serif;font-weight:600;font-size:15.5px;
+  color:var(--ink,#2D2A26);text-decoration:none;padding:11px 4px;
+  border-bottom:1px solid rgba(194,151,74,.12);
+}
+.site-nav a:last-child{border-bottom:0}
+.site-nav a:hover{color:var(--gold-deep,#8a6a2f)}
+
+header.site .wrap{position:relative}
+
+@media (min-width:860px){
+  .nav-toggle{display:none}
+  .site-nav{
+    display:flex !important;position:static;flex-direction:row;align-items:center;gap:22px;
+    padding:0;background:transparent;border-bottom:0;box-shadow:none;order:1;flex:1;justify-content:center;
   }
-  .site-nav a {
-    font-family: Rubik, sans-serif;
-    font-weight: 600;
-    font-size: 14.5px;
-    color: var(--ink, #2D2A26);
-    text-decoration: none;
-    transition: color .2s;
-    white-space: nowrap;
-  }
-  .site-nav a:hover { color: var(--gold-deep, #8a6a2f); }
+  .site-nav a{padding:0;border-bottom:0;white-space:nowrap}
 }
