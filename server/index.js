@@ -33,6 +33,10 @@ app.set("trust proxy", 1);
 const PORT = process.env.PORT || 8731;
 const STATIC_DIR = path.join(__dirname, "..");
 const UPLOADS_DIR = path.join(__dirname, "uploads");
+// Standalone lead-system mode: this onrender.com URL IS the product (the lead
+// console), not a duplicate of the marketing site — so the canonical-host
+// redirect below is skipped and the root serves the console directly.
+const STANDALONE_CONSOLE = process.env.STANDALONE_CONSOLE === "1";
 fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 const MATERIAL_TYPES = new Set(["lesson", "audio", "worksheet", "summary", "other"]);
@@ -62,7 +66,7 @@ app.use((req, res, next) => {
   const host = String(req.headers.host || "").toLowerCase();
   const isRenderHost = host.endsWith(".onrender.com");
   const isApiPath = req.path.startsWith("/api") || req.path.startsWith("/uploads");
-  if (isRenderHost && !isApiPath && (req.method === "GET" || req.method === "HEAD")) {
+  if (!STANDALONE_CONSOLE && isRenderHost && !isApiPath && (req.method === "GET" || req.method === "HEAD")) {
     return res.redirect(301, `${SITE_URL}${req.originalUrl === "/" ? "" : req.originalUrl}`);
   }
   next();
@@ -95,10 +99,8 @@ app.get("/sitemap.xml", (req, res) => {
 });
 
 app.use(express.json({ limit: "100kb" }));
-// Standalone lead-system mode: when STANDALONE_CONSOLE=1 the root URL opens
-// the lead console itself (not the CureMindset marketing site), so this can be
-// deployed as its own separate system on its own clean domain.
-const STANDALONE_CONSOLE = process.env.STANDALONE_CONSOLE === "1";
+// Standalone lead-system mode (flag defined near the top): the root URL opens
+// the lead console itself, not the CureMindset marketing site.
 if (STANDALONE_CONSOLE) {
   app.get("/", (req, res) => res.sendFile(path.join(STATIC_DIR, "clientConsole.html")));
 }
