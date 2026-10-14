@@ -7,6 +7,13 @@
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="images/logo.png" type="image/png" />
 <link rel="apple-touch-icon" href="images/logo.png" />
+<!-- PWA: התקנה כאפליקציה בטלפון / בדסקטופ -->
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="theme-color" content="#B98C3C" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="הקליניקה" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -20,5 +27,13 @@
 <script defer src="vendor/babel.min.js"></script>
 <script defer src="icons.js"></script>
 <script type="text/babel" src="adminApp.js"></script>
+<script>
+  // רישום ה-Service Worker — מפעיל התקנה כאפליקציה (PWA) בטלפון ובדסקטופ.
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    });
+  }
+</script>
 </body>
 </html>

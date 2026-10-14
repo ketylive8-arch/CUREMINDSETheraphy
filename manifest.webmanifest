@@ -1,0 +1,18 @@
+{
+  "name": "הקליניקה שלי · CureMindset",
+  "short_name": "הקליניקה",
+  "description": "מערכת הניהול של קטי שגב — מטופלים, תמונה קלינית, התראות וקודים.",
+  "start_url": "/admin",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#B98C3C",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/images/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/images/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/images/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

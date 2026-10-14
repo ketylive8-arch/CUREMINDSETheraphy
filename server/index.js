@@ -1418,11 +1418,49 @@ admin.get("/alerts", (req, res) => {
   })));
 });
 
+// ── מסך-סיכום כללי לבק-אופיס: כל המידע במבט אחד ("מה קורה בתוך המערכת") ──
+admin.get("/overview", (req, res) => {
+  const count = (sql, ...args) => {
+    try { const r = db.prepare(sql).get(...args); return r ? Number(Object.values(r)[0]) || 0 : 0; }
+    catch (e) { return 0; }
+  };
+  const rows = (sql, ...args) => { try { return db.prepare(sql).all(...args); } catch (e) { return []; } };
+
+  const patients = count("SELECT COUNT(*) c FROM patients");
+  const accounts = count("SELECT COUNT(*) c FROM accounts");
+  const checkinsTotal = count("SELECT COUNT(*) c FROM checkins");
+  const checkins7d = count("SELECT COUNT(*) c FROM checkins WHERE created_at >= datetime('now','-7 days')");
+  const moodLogs = count("SELECT COUNT(*) c FROM mood_logs");
+  const workshopSignups = count("SELECT COUNT(*) c FROM workshop_signups");
+  const paidCodes = count("SELECT COUNT(*) c FROM access_codes WHERE redeemed_by IS NOT NULL");
+  // מנויים/ניסיון לפי enrollments (אם קיים); נופל בשקט אם הטבלה ריקה.
+  const subscribed = count("SELECT COUNT(*) c FROM enrollments WHERE status = 'subscribed'");
+  const trialActive = count("SELECT COUNT(*) c FROM enrollments WHERE status = 'trial_active'");
+  const inactive4d = count("SELECT COUNT(*) c FROM patients WHERE last_interaction_at IS NOT NULL AND last_interaction_at < datetime('now','-4 days')");
+  const alerts7d = count("SELECT COUNT(*) c FROM clinical_alert_log WHERE severity IN ('high','medium') AND created_at >= datetime('now','-7 days')");
+
+  const recentSignups = rows(
+    "SELECT full_name, created_at FROM accounts ORDER BY created_at DESC LIMIT 6"
+  ).map((r) => ({ name: r.full_name, createdAt: r.created_at }));
+
+  const recentAlerts = rows(
+    `SELECT a.severity, a.therapist_note, a.created_at, p.display_name
+     FROM clinical_alert_log a LEFT JOIN patients p ON p.device_token = a.device_token
+     WHERE a.severity IN ('high','medium') ORDER BY a.created_at DESC LIMIT 6`
+  ).map((r) => ({ severity: r.severity, note: r.therapist_note, displayName: r.display_name, createdAt: r.created_at }));
+
+  res.json({
+    stats: { patients, accounts, checkinsTotal, checkins7d, moodLogs, workshopSignups, paidCodes, subscribed, trialActive, inactive4d, alerts7d },
+    recentSignups,
+    recentAlerts,
+    generatedAt: new Date().toISOString(),
+  });
+});
+
 admin.patch("/patients/:token", (req, res) => {
   const { displayName } = req.body || {};
   if (typeof displayName !== "string" || !displayName.trim()) {
-    return res.status(400).json({ error: "displayName is required" });
-  }
+    return res.status(400).json({ error: "displayName is required" });  }
   const result = db
     .prepare("UPDATE patients SET display_name = ? WHERE device_token = ?")
     .run(displayName.trim().slice(0, 200), req.params.token);

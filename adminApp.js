@@ -550,6 +550,74 @@
     );
   }
 
+  // ── מסך-סיכום כללי: כל המידע במבט אחד בראש הבק-אופיס ──
+  function OverviewPanel({ authHeader }) {
+    const [data, setData] = useState(null);
+    useEffect(() => {
+      let alive = true;
+      fetch("/api/admin/overview", { headers: { Authorization: authHeader } })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => { if (alive) setData(d); })
+        .catch(() => {});
+      return () => { alive = false; };
+    }, []);
+    if (!data) return null;
+    const s = data.stats || {};
+    const tiles = [
+      { k: "משתמשים רשומים", v: s.accounts, ic: "user-round" },
+      { k: "שיחות צ'ק-אין", v: s.checkinsTotal, sub: s.checkins7d ? `+${s.checkins7d} השבוע` : "", ic: "message-circle" },
+      { k: "מנויים בתשלום", v: (s.subscribed || 0) + (s.paidCodes || 0), ic: "check-circle-2" },
+      { k: "בניסיון", v: s.trialActive, ic: "graduation-cap" },
+      { k: "התראות (7 ימים)", v: s.alerts7d, ic: "alert-circle", warn: s.alerts7d > 0 },
+      { k: "לא פעילים 4 ימים+", v: s.inactive4d, ic: "trending-down", warn: s.inactive4d > 0 },
+    ];
+    const sevPill = { high: "bg-rose-50 text-rose-600", medium: "bg-amber-50 text-amber-700" };
+    return (
+      <div className="rounded-2xl border border-ink-100 bg-white px-5 py-5 shadow-softer space-y-4">
+        <div className="flex items-center gap-2">
+          <Icon name="sliders-horizontal" size={15} className="text-gold-600" />
+          <h2 className="font-heading font-bold text-[16px] text-ink-800">מבט-על · מה קורה במערכת</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          {tiles.map((t, i) => (
+            <div key={i} className="rounded-xl bg-ink-50 px-3.5 py-3">
+              <div className="flex items-center gap-1.5 text-[11px] text-ink-500 mb-1"><Icon name={t.ic} size={12} className={t.warn ? "text-rose-500" : "text-gold-600"} />{t.k}</div>
+              <div className={`font-heading font-extrabold text-[22px] ${t.warn && t.v ? "text-rose-600" : "text-ink-800"}`}>{t.v ?? 0}</div>
+              {t.sub ? <div className="text-[11px] text-emerald-600">{t.sub}</div> : null}
+            </div>
+          ))}
+        </div>
+        {data.recentAlerts && data.recentAlerts.length ? (
+          <div>
+            <p className="text-[12px] font-heading font-semibold text-ink-400 mb-1.5">דורש תשומת לב</p>
+            <div className="space-y-1.5">
+              {data.recentAlerts.map((a, i) => (
+                <div key={i} className={`flex items-start gap-2 text-[12.5px] rounded-lg px-3 py-2 ${sevPill[a.severity] || sevPill.medium}`}>
+                  <span className="font-heading font-semibold shrink-0">{a.displayName || "מטופל/ת"}:</span>
+                  <span className="flex-1">{a.note || a.severity}</span>
+                  <span className="text-[10.5px] opacity-70 shrink-0">{formatDateTime(a.createdAt)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {data.recentSignups && data.recentSignups.length ? (
+          <div>
+            <p className="text-[12px] font-heading font-semibold text-ink-400 mb-1.5">נרשמים אחרונים</p>
+            <div className="flex flex-wrap gap-1.5">
+              {data.recentSignups.map((u, i) => (
+                <span key={i} className="inline-flex items-center gap-1.5 text-[12px] bg-ink-50 rounded-full px-3 py-1.5">
+                  <span className="font-heading font-semibold text-ink-700">{u.name || "—"}</span>
+                  <span className="text-ink-400 text-[11px]">{formatDateTime(u.createdAt)}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
   function ClinicList({ authHeader, onOpenPatient, onLogout }) {
     const [patients, setPatients] = useState(null);
     const [error, setError] = useState(false);
@@ -587,6 +655,7 @@
         </header>
 
         <main className="max-w-2xl mx-auto px-5 py-7 space-y-3">
+          <OverviewPanel authHeader={authHeader} />
           <AIStatusPanel authHeader={authHeader} />
           <EmailStatusPanel authHeader={authHeader} />
           <ContentCatalogPanel authHeader={authHeader} />
