@@ -26,6 +26,7 @@ const { registerAccount, loginAccount, upsertOAuthAccount, destroySession, creat
 const { smsConfigured, issueOtp, checkOtp, accountForOtp } = require("./otp");
 const { notifyLead, notifyEmail, notifyEmailText } = require("./notify");
 const clientLeads = require("./clientLeads");
+const clientProfile = require("./clientProfile");
 
 const app = express();
 // Behind Render's proxy — needed so req.ip is the real client IP (consent log).
@@ -275,6 +276,20 @@ function appAccount(req, res) {
   return accountId;
 }
 
+// ── Client business profile (onboarding questionnaire) ──
+app.get("/api/app/profile", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const profile = clientProfile.getProfile(accountId);
+  res.json({ profile, template: profile && profile.onboarded ? clientProfile.buildTemplate(profile) : null });
+});
+
+app.put("/api/app/profile", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const r = clientProfile.saveProfile(accountId, req.body || {});
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
+  res.json({ profile: r.profile, template: clientProfile.buildTemplate(r.profile) });
+});
+
 app.get("/api/app/leads", (req, res) => {
   const accountId = appAccount(req, res); if (!accountId) return;
   // A client who just registered has no leads yet — give them the full starter
@@ -322,7 +337,7 @@ app.post("/api/app/leads/:id/send", rateLimit("app-send", 60), async (req, res) 
   if (!lead.subject || !lead.body) return res.status(400).json({ error: "צריך נושא והודעה" });
   const replyTo = loginReplyTo(accountId) || undefined;
   const r = await notifyEmailText(to, lead.subject, lead.body, replyTo);
-  if (!r || !r.sent) return res.status(502).json({ error: "שליחת המייל נכשלה — בדקי הגדרות דיוור", detail: r && r.error });
+  if (!r || !r.sent) return res.status(502).json({ error: "שליחת מייל עדיין לא מופעלת — צריך לחבר ערוץ שליחה (מפתח Resend או Gmail). הנוסח נשמר; אחרי החיבור השליחה תעבוד.", detail: r && r.error });
   const when = new Date().toISOString();
   clientLeads.markSent(accountId, req.params.id, when);
   res.json({ ok: true, sentAt: when });
