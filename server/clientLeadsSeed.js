@@ -1,9 +1,10 @@
-// Seeds the client console with a ready login account and ALL the leads the
-// agent has located so far, split into clear categories — so when the owner
-// logs in she immediately SEES everything inside the system (not in chat).
+// Seeds the lead SYSTEM (Segev MKG B2B lead product) with every B2B lead we
+// located — split into clear categories. This system is SEPARATE from the
+// CureMindset website/coaching: it holds business leads only (medical-device
+// distributors, hotels, and any segment the owner adds), never website content.
 //
-// Idempotent: the account is created once; leads are seeded only if the
-// account has none yet. Safe to run on every startup.
+// Idempotent: the owner account is created once; an account's leads are seeded
+// only when it has none. Safe to run on every startup.
 
 const crypto = require("node:crypto");
 const { db } = require("./db");
@@ -15,49 +16,42 @@ const SEED_EMAIL = "segevmkg@gmail.com";
 const SEED_PASSWORD = "Segev2026";
 const SEED_NAME = "Segev Master Marketing";
 
-const CAT_AMB = "CureMindset · הפצה / שגרירים צעירים";
-const CAT_MED = "B2B · ציוד רפואי (מפיצים בחו\"ל)";
-const CAT_HOTEL = "B2B · מלונות";
+const CAT_MED = "מפיצים · ציוד רפואי (חו\"ל)";
+const CAT_HOTEL = "מלונות";
 
 // name, type, region, category, why, email, sourceUrl
 const LEADS = [
-  // ---- CureMindset distribution / youth ambassadors ----
-  ["מרכז הצעירים קריית ביאליק", "מרכז צעירים עירוני", "קריות", CAT_AMB, "מגיע ישירות לצעירי העיר — ערוץ לגיוס קבוצת שגרירים צעירים.", "career.ycb@gmail.com", "https://www.kolzchut.org.il/he/מרכז_צעירים_קריית_ביאליק"],
-  ["עלם (ELEM)", "עמותת נוער", "ארצי/צפון", CAT_AMB, "עובדים עם נוער ומכירים את ההתמודדויות הרגשיות — ערוץ להגעה ולשגרירים.", "elem@elem.org.il", "https://www.elem.org.il/"],
-  ["מועצת התלמידים והנוער הארצית — מחוז חיפה", "מועצת תלמידים ונוער", "חיפה", CAT_AMB, "חברי המועצה הם מנהיגי נוער נבחרים — שגרירים טבעיים.", "", "https://www.gov.il/he/departments/education"],
-  ["מרכז צעירים קריית ים", "מרכז צעירים עירוני", "קריות", CAT_AMB, "מגיע לצעירי העיר; אפשר להקים קבוצת שגרירים.", "", "https://www.kolzchut.org.il/he/מרכז_צעירים_והון_אנושי_קריית_ים"],
-  ["הנוער העובד והלומד — מרחב חיפה/קריות", "תנועת נוער", "חיפה/קריות", CAT_AMB, "המדריכים המתבגרים משפיעים ישירות על קבוצות החניכים.", "", "https://www.noal.co.il/"],
-  ["המכבי הצעיר", "תנועת נוער", "חיפה/צפון", CAT_AMB, "מדריכים מתבגרים = שגרירים טבעיים בקבוצות.", "", "https://www.maccabitzair.org.il/"],
-  ["עמותת נירים", "עמותת נוער", "צפון/גליל", CAT_AMB, "עובדים עם נוער — ערוץ להגעה ולשגרירים.", "", "https://www.kolzchut.org.il/he/נירים"],
-  ["דרור בתי חינוך — קריית חיים", "עמותת נוער", "חיפה", CAT_AMB, "תוכנית המגיעה לנוער באזור חיפה.", "", "https://www.kolzchut.org.il/he/לילות_דרור_-_איתור_בני_נוער_בסיכון"],
-  ["מערך המד\"צים — מחלקת נוער עיריית נהריה", "מנהיגות נוער (מד\"צים)", "נהריה", CAT_AMB, "קבוצת מנהיגות צעירה שמפיצה לבני גילה.", "", "https://www.nahariya.muni.il/"],
-  ["יחידת הנוער — עיריית עכו", "יחידת נוער עירונית", "עכו", CAT_AMB, "מגיעה ישירות לבני הנוער בעיר.", "", "https://www.akko.org.il/"],
-  ["תנועת הצופים — שבט בחיפה", "תנועת נוער", "חיפה", CAT_AMB, "הורי חניכים מתבגרים; מדריכים כשגרירים.", "", "https://www.zofim.org.il/"],
-  ["בני עקיבא — סניף בקריות", "תנועת נוער", "קריות", CAT_AMB, "קומונרים ומדריכים צעירים מעבירים הלאה לחניכים.", "", "https://www.bneiakiva.org.il/"],
-
-  // ---- B2B · medical devices (distributors abroad) ----
+  // ───── מפיצים / חברות מדיקל (צריכים מפיצים/שווקים בחו"ל) ─────
   ["Plas-Free (פלאס-פרי)", "ציוד רפואי — עצירת דימומים", "נצרת", CAT_MED, "סטארטאפ צעיר שצריך שווקים ומפיצים בחו\"ל.", "", "https://innovationisrael.org.il/"],
   ["BioBeat", "ציוד רפואי — ניטור לביש", "ישראל", CAT_MED, "מוצר מדף שמתאים להפצה בינלאומית.", "", "https://www.bio-beat.com/"],
   ["Discure Technologies", "ציוד רפואי — עמוד שדרה", "ישראל", CAT_MED, "טכנולוגיה חדשה שמחפשת חדירה לשוק.", "", "https://discuretech.com/"],
   ["Caps Medical", "ציוד רפואי — אבלציה", "ישראל", CAT_MED, "מכשור שמצריך מפיצים לפי מדינה.", "", "https://www.capsmedical.com/"],
   ["NanoVibronix", "ציוד רפואי — אולטרסאונד", "ישראל/ארה\"ב", CAT_MED, "כבר עובדים עם מפיצים — מרחיבים לשווקים חדשים.", "", "https://www.nanovibronix.com/"],
 
-  // ---- B2B · hotels (the Isrotel-style pitch) ----
-  ["רשת ישרוטל (Isrotel)", "רשת מלונות", "אילת/ארצי", CAT_HOTEL, "פניות רבות בערב/לילה/שבת — עובד דיגיטלי 24/7 שלא מפספס לידים.", "", "https://www.isrotel.co.il/"],
-  ["רשת מלונות דן (Dan Hotels)", "רשת מלונות", "ארצי", CAT_HOTEL, "מענה מיידי לכל פנייה + רשימת המתנה לביטולים.", "", "https://www.danhotels.co.il/"],
-  ["פתאל / לאונרדו (Fattal)", "רשת מלונות", "ארצי", CAT_HOTEL, "מאגר אורחים חוזרים ושיווק אוטומטי בזמנים שהם קובעים.", "", "https://www.fattal.co.il/"],
+  // ───── מלונות — עם מייל ציבורי מאומת ✅ ─────
+  ["מלון טרוול הוטלס", "רשת מלונות", "מטולה / גשר הזיו", CAT_HOTEL, "פניות רבות בערב/לילה/שבת — עובד דיגיטלי 24/7 שלא מפספס לידים.", "reservation@travelhotels.co.il", "https://www.travelhotels.co.il/"],
+  ["מלון אמירי הגליל", "מלון בוטיק", "אמירים, גליל עליון", CAT_HOTEL, "בוטיק קטן — מענה מיידי לכל פנייה שומר על כל הזמנה.", "office@amirey-hagalil.com", "https://www.amirey-hagalil.com/"],
+  ["מלונות אלבי (Albi)", "רשת בוטיק", "ירושלים / ת\"א", CAT_HOTEL, "מאגר אורחים חוזרים + שיווק אוטומטי בזמנים שהם קובעים.", "info@albihotels.com", "https://albihotels.com/he/"],
+  ["מלון Almond / C-Hotels", "מלון בוטיק", "אזור ירושלים", CAT_HOTEL, "מענה מיידי + רשימת המתנה לביטולים.", "info@c-hotels.co.il", "https://c-hotels.co.il/almond-hotel/"],
+  ["מלון Jewel תל אביב", "מלון בוטיק", "תל אביב", CAT_HOTEL, "פניות בלילה — סוכן AI עונה תוך שניות.", "jeweltlv@rl-hotel.co.il", "https://jeweltlv.com/he/contact-us/"],
+  ["רשת מלונות אטלס (Atlas)", "רשת בוטיק", "ת\"א / ארצי", CAT_HOTEL, "הרבה מלונות — מערכת לידים אחת לכל הרשת.", "Contact-res@atlashotels.co.il", "https://www.atlas.co.il/"],
+
+  // ───── מלונות — דרך עמוד צור-קשר (לאימות מייל) 🔎 ─────
+  ["מלון גליליון", "מלון בצפון", "גליל עליון", CAT_HOTEL, "מלון משפחות — הרבה פניות בסופ\"ש.", "", "https://galilion.co.il/"],
+  ["מלון כפר גלעדי", "מלון בצפון", "גליל עליון", CAT_HOTEL, "מלון ותיק — מענה 24/7 ישמור הזמנות.", "", "https://www.giladi-hotel.co.il/"],
+  ["רשת מלונות פרימה (Prima)", "רשת מלונות", "ארצי", CAT_HOTEL, "רשת גדולה — אוטומציה חוצת-מלונות.", "", "https://www.prima-hotels-israel.com/contact-us"],
+  ["רשת מלונות רימונים (Rimonim)", "רשת מלונות", "ארצי", CAT_HOTEL, "רשת ארצית — מערכת לידים מרכזית.", "", "https://www.rimonim.com/"],
+  ["מלון מנדלי", "מלון בוטיק", "תל אביב", CAT_HOTEL, "בוטיק עירוני — מענה מהיר מנצח מתחרים.", "", "https://www.mendelistreethotel.co.il/contact-us"],
+  ["רשת מלונות בראון (Brown)", "רשת בוטיק", "ת\"א / ירושלים", CAT_HOTEL, "קהל צעיר דיגיטלי — וואטסאפ 24/7.", "", "https://www.brownhotels.com/"],
+  ["מלונות VERT (ים המלח / אילת)", "רשת מלונות", "ים המלח / אילת", CAT_HOTEL, "יעד נופש — פניות מסביב לשעון.", "", "https://www.afi-hotels.co.il/contact-us"],
+  ["הרודס בוטיק אילת (Herods)", "מלון בוטיק", "אילת", CAT_HOTEL, "מלון יוקרה — שירות אישי 24/7.", "", "https://www.herods.co.il/contact-us/"],
+  ["מלון עין גדי בוטיק", "מלון בוטיק", "ים המלח", CAT_HOTEL, "אגף בוטיק חדש — מענה מיידי לפניות.", "", "https://www.ein-gedi.co.il/"],
+  ["מלון קיימא (Kayma)", "מלון בוטיק", "עין בוקק, ים המלח", CAT_HOTEL, "בוטיק רגוע — כל ליד נספר.", "", "https://www.isrotel.co.il/isrotel-hotels/dead-sea-hotels/kayma/"],
+  ["רשת ישרוטל (Isrotel)", "רשת מלונות", "אילת / ארצי", CAT_HOTEL, "פניות רבות בלילה/שבת — עובד דיגיטלי 24/7.", "", "https://www.isrotel.co.il/"],
+  ["רשת מלונות דן (Dan)", "רשת מלונות", "ארצי", CAT_HOTEL, "מענה מיידי + רשימת המתנה לביטולים.", "", "https://www.danhotels.co.il/"],
+  ["פתאל / לאונרדו (Fattal)", "רשת מלונות", "ארצי", CAT_HOTEL, "מאגר אורחים חוזרים ושיווק אוטומטי.", "", "https://www.fattal.co.il/"],
 ];
 
-function ambBody(name) {
-  return (
-    "שלום רב,\n\n" +
-    "שמי קטי שגב, מאמנת מנטלית שעובדת עם בני נוער בתחומי החוסן הרגשי, חרדה חברתית, פחדים וביטחון עצמי.\n\n" +
-    "אני מפתחת תוכנית «שגרירים צעירים»: בני נוער מקבלים כלים פשוטים להתמודדות ומשתפים אותם עם חברים לגילם — כך המסר מגיע לצעירים בשפה שלהם.\n\n" +
-    "חשבתי עליכם כי אתם מגיעים ישירות לצעירים ויכולים לחבר אותי לקבוצת שגרירים.\n\n" +
-    "אשמח לשיחה קצרה כדי לבדוק אם זה מתאים — בלי עלות ובלי התחייבות.\n\n" +
-    "בברכה,\nקטי שגב · CureMindset · ketysegev.com"
-  );
-}
 function bizBody(name, kind) {
   const pain = kind === "hotel"
     ? "פתחתם מבצע והוא עובד יופי ואז מתחילות להגיע הפניות בערב ובלילה ובשבת\n\nמישהי יושבת בשתיים בלילה מתכננת חופשה וכותבת לכם כשכל המשפחה כבר ישנה\n\nבבוקר עונים על חלק מהפניות והחלק השני כבר הזמין במקום אחר"
@@ -85,19 +79,16 @@ function ensureAccount() {
   return id;
 }
 
-// Seed the starter lead set into ANY account that has none yet — so a client who
-// registers immediately gets a FULL, working system (categories, regions, ready
-// outreach text, send), not an empty screen. Idempotent: no-op if leads exist.
+// Seed the full B2B lead set into ANY account that has none yet — so a client
+// who registers immediately gets a working, populated system (not empty).
 function seedAccountLeads(accountId) {
   clientLeads.ensureSchema();
   if (clientLeads.listLeads(accountId).length) return 0;
   let n = 0;
   for (const [name, type, region, category, why, email, sourceUrl] of LEADS) {
     const isHotel = category === CAT_HOTEL;
-    const subject = category === CAT_AMB
-      ? "שגרירים צעירים · שת\"פ עם CureMindset (קטי שגב)"
-      : (isHotel ? "כמה לקוחות נשמטים לכם בלילה" : "כמה מפיצים טובים נשמטים לכם בלילה");
-    const body = category === CAT_AMB ? ambBody(name) : bizBody(name, isHotel ? "hotel" : "med");
+    const subject = isHotel ? "כמה לקוחות נשמטים לכם בלילה" : "כמה מפיצים טובים נשמטים לכם בלילה";
+    const body = bizBody(name, isHotel ? "hotel" : "med");
     const r = clientLeads.createLead(accountId, { name, type, region, category, why, email, sourceUrl, subject, body, order: n + 1 });
     if (r.lead) n++;
   }
