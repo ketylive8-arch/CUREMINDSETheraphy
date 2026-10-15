@@ -85,15 +85,15 @@ function ensureAccount() {
   return id;
 }
 
-function seed() {
+// Seed the starter lead set into ANY account that has none yet — so a client who
+// registers immediately gets a FULL, working system (categories, regions, ready
+// outreach text, send), not an empty screen. Idempotent: no-op if leads exist.
+function seedAccountLeads(accountId) {
   clientLeads.ensureSchema();
-  const accountId = ensureAccount();
-  const existing = clientLeads.listLeads(accountId);
-  if (existing.length) return { accountId, seeded: 0, total: existing.length };
+  if (clientLeads.listLeads(accountId).length) return 0;
   let n = 0;
   for (const [name, type, region, category, why, email, sourceUrl] of LEADS) {
     const isHotel = category === CAT_HOTEL;
-    const isMed = category === CAT_MED;
     const subject = category === CAT_AMB
       ? "שגרירים צעירים · שת\"פ עם CureMindset (קטי שגב)"
       : (isHotel ? "כמה לקוחות נשמטים לכם בלילה" : "כמה מפיצים טובים נשמטים לכם בלילה");
@@ -101,7 +101,14 @@ function seed() {
     const r = clientLeads.createLead(accountId, { name, type, region, category, why, email, sourceUrl, subject, body, order: n + 1 });
     if (r.lead) n++;
   }
-  return { accountId, seeded: n, total: n };
+  return n;
 }
 
-module.exports = { seed, SEED_EMAIL, SEED_PASSWORD };
+function seed() {
+  clientLeads.ensureSchema();
+  const accountId = ensureAccount();
+  const seeded = seedAccountLeads(accountId);
+  return { accountId, seeded, total: clientLeads.listLeads(accountId).length };
+}
+
+module.exports = { seed, seedAccountLeads, SEED_EMAIL, SEED_PASSWORD };

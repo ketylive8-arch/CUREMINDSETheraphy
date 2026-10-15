@@ -277,6 +277,10 @@ function appAccount(req, res) {
 
 app.get("/api/app/leads", (req, res) => {
   const accountId = appAccount(req, res); if (!accountId) return;
+  // A client who just registered has no leads yet — give them the full starter
+  // set on first load, so they get a working system (not an empty screen).
+  try { if (!clientLeads.listLeads(accountId).length) require("./clientLeadsSeed").seedAccountLeads(accountId); }
+  catch (e) { /* non-fatal: fall through to whatever the account has */ }
   res.json({ leads: clientLeads.listLeads(accountId), stats: clientLeads.stats(accountId) });
 });
 
