@@ -290,6 +290,14 @@ app.put("/api/app/profile", (req, res) => {
   res.json({ profile: r.profile, template: clientProfile.buildTemplate(r.profile) });
 });
 
+app.put("/api/app/template", (req, res) => {
+  const accountId = appAccount(req, res); if (!accountId) return;
+  const b = req.body || {};
+  const r = clientProfile.saveTemplate(accountId, b.subject, b.body);
+  if (r.error) return res.status(r.status || 400).json({ error: r.error });
+  res.json({ profile: r.profile, template: clientProfile.buildTemplate(r.profile) });
+});
+
 app.get("/api/app/leads", (req, res) => {
   const accountId = appAccount(req, res); if (!accountId) return;
   // A client who just registered has no leads yet — give them the full starter

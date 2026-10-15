@@ -24,6 +24,11 @@ function ensureSchema() {
       updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
     );
   `);
+  // The owner can edit & save their own outreach wording — added to existing DBs.
+  for (const c of [
+    "ALTER TABLE client_profile_biz ADD COLUMN tpl_subject TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE client_profile_biz ADD COLUMN tpl_body TEXT NOT NULL DEFAULT ''",
+  ]) { try { db.exec(c); } catch (e) { /* column exists */ } }
 }
 
 function rowToProfile(r) {
@@ -31,6 +36,7 @@ function rowToProfile(r) {
   return {
     businessName: r.business_name, field: r.field, audience: r.audience,
     offer: r.offer, goal: r.goal, tone: r.tone, contact: r.contact,
+    tplSubject: r.tpl_subject || "", tplBody: r.tpl_body || "",
     onboarded: !!r.onboarded, updatedAt: r.updated_at,
   };
 }
@@ -67,11 +73,26 @@ function saveProfile(accountId, data) {
   return { profile: getProfile(accountId) };
 }
 
+// Save the owner's own edited outreach wording (subject + body). Empty strings
+// clear it and fall back to the auto-generated template.
+function saveTemplate(accountId, subject, body) {
+  ensureSchema();
+  if (!db.prepare("SELECT 1 FROM client_profile_biz WHERE account_id = ?").get(accountId)) {
+    return { error: "מלא קודם את פרטי העסק", status: 400 };
+  }
+  db.prepare("UPDATE client_profile_biz SET tpl_subject=?, tpl_body=?, updated_at=datetime('now') WHERE account_id=?")
+    .run(String(subject || "").slice(0, 300), String(body || "").slice(0, 8000), accountId);
+  return { profile: getProfile(accountId) };
+}
+
 // Build a ready outreach email (subject + body) FROM the client's business TO a
-// prospect in their field — in their own voice. Pure template (no external API),
-// so it always works; the AI layer can refine later.
+// prospect in their field. Uses the owner's edited wording when they saved one,
+// otherwise composes it from the questionnaire. Pure template, always works.
 function buildTemplate(profile) {
   const p = profile || {};
+  if ((p.tplSubject && p.tplSubject.trim()) || (p.tplBody && p.tplBody.trim())) {
+    return { subject: p.tplSubject || "", body: p.tplBody || "", custom: true };
+  }
   const biz = p.businessName || "העסק שלנו";
   const offer = p.offer || "שירות שעוזר לעסקים כמוכם לצמוח";
   const audience = p.audience || "עסקים בתחום";
@@ -90,4 +111,4 @@ function buildTemplate(profile) {
 
 ensureSchema();
 
-module.exports = { ensureSchema, getProfile, saveProfile, buildTemplate };
+module.exports = { ensureSchema, getProfile, saveProfile, saveTemplate, buildTemplate };

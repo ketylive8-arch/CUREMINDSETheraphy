@@ -326,9 +326,13 @@
 
   function templateView(){
     var t=template||{subject:"",body:""};
-    return '<div class="pagehead"><div><h1>נוסח הפנייה שלך</h1><div class="sub">נבנה אוטומטית מפרטי העסק שמילאת. זה הבסיס לכל פנייה — אפשר לערוך לכל ליד בנפרד.</div></div></div>'+
-      '<div class="panel"><h2>'+esc(t.subject||"—")+'</h2><div class="sub">נושא המייל</div><div class="tmpl">'+esc(t.body||"מלא את פרטי העסק כדי לבנות נוסח.")+'</div>'+
-      '<div style="margin-top:14px"><button class="btn ghost sm" data-view="profile">עדכן פרטי עסק →</button></div></div>';
+    return '<div class="pagehead"><div><h1>נוסח הפנייה שלך</h1><div class="sub">הבסיס לכל פנייה חדשה. ערכי ושמרי — או השאירי את מה שהמערכת בנתה מפרטי העסק.</div></div></div>'+
+      '<div class="panel">'+
+        '<div class="fieldwrap"><label>נושא המייל</label><input id="tpl_subject" value="'+esc(t.subject||"")+'"></div>'+
+        '<div class="fieldwrap"><label>גוף הפנייה — רקע ההצעה + המסר</label><textarea id="tpl_body" style="min-height:230px">'+esc(t.body||"")+'</textarea></div>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn primary sm" id="saveTpl">💾 שמור נוסח</button><button class="btn ghost sm" id="resetTpl">אפס לברירת מחדל</button><button class="btn ghost sm" data-view="profile">פרטי העסק →</button></div>'+
+        '<div class="sub" style="margin-top:12px">טיפ: השאירי «[שם הגוף]» במקום בו ייכנס שם הנמען — זה יוחלף אוטומטית בכל פנייה חדשה.</div>'+
+      '</div>';
   }
 
   function profileView(){
@@ -364,6 +368,8 @@
     if(ev.target.id==="o_cancel"){view="leads";renderApp();return;}
     if(ev.target.id==="logout"||ev.target.id==="logout2"){logout();return;}
     if(ev.target.id==="editProfile"){renderOnboard();return;}
+    if(ev.target.id==="saveTpl"){saveTemplate();return;}
+    if(ev.target.id==="resetTpl"){resetTemplate();return;}
     var nv=ev.target.closest("[data-view]"); if(nv){view=nv.getAttribute("data-view");renderApp();return;}
     if(ev.target.id==="addBtn"){openAdd();return;}
     var ch=ev.target.closest("[data-cat]"); if(ch){flush();fCat=ch.getAttribute("data-cat");renderApp();return;}
@@ -376,13 +382,30 @@
   document.addEventListener("change",function(ev){ if(ev.target.id==="regSel"){flush();fRegion=ev.target.value;renderApp();} });
   document.addEventListener("keydown",function(ev){ if(ev.key==="Enter"&&ev.target&&(ev.target.id==="a_pass"||ev.target.id==="a_email"))doAuth(); });
 
+  function saveTemplate(){
+    var subject=(document.getElementById("tpl_subject").value||"").trim();
+    var body=(document.getElementById("tpl_body").value||"");
+    api("/api/app/template",{method:"PUT",body:{subject:subject,body:body}})
+      .then(function(j){template=j.template;toast("הנוסח נשמר ✓");})
+      .catch(function(e){if(!(e&&e.handled))toast("לא נשמר");});
+  }
+  function resetTemplate(){
+    api("/api/app/template",{method:"PUT",body:{subject:"",body:""}})
+      .then(function(j){template=j.template;renderApp();toast("אופס לברירת מחדל ✓");})
+      .catch(function(e){if(!(e&&e.handled))toast("לא נשמר");});
+  }
+
   function openAdd(){
+    var cats=[]; leads.forEach(function(l){var c=l.category||"";if(c&&cats.indexOf(c)<0)cats.push(c);});
+    var defCat=(fCat&&fCat!=="all")?fCat:"";
     var dlg=document.createElement("dialog");
-    dlg.innerHTML='<form method="dialog" class="dlg"><h3>פנייה חדשה</h3>'+
+    dlg.innerHTML='<form method="dialog" class="dlg"><h3>פנייה / ליד חדש</h3>'+
+      '<div class="fieldwrap"><label>קטגוריה (הסגמנט — למשל: מפיצים)</label><input id="n_cat" list="catlist" value="'+esc(defCat)+'" placeholder="בחרי קיימת או כתבי חדשה"><datalist id="catlist">'+cats.map(function(c){return '<option value="'+esc(c)+'">';}).join("")+'</datalist></div>'+
       '<div class="fieldwrap"><label>שם הגוף *</label><input id="n_name" required></div>'+
-      '<div class="fieldwrap"><label>סוג</label><input id="n_type"></div>'+
+      '<div class="fieldwrap"><label>סוג</label><input id="n_type" placeholder="מפיץ / מרפאה / מלון…"></div>'+
       '<div class="fieldwrap"><label>אזור</label><input id="n_region"></div>'+
       '<div class="fieldwrap"><label>מייל (אם ידוע)</label><input id="n_email" dir="ltr" type="email"></div>'+
+      '<div class="fieldwrap"><label>למה שיגיד כן (רקע קצר)</label><textarea id="n_why" style="min-height:70px"></textarea></div>'+
       '<div style="display:flex;gap:8px;margin-top:16px"><button class="btn primary" value="ok">הוספה</button><button class="btn ghost" value="cancel" type="submit">ביטול</button></div></form>';
     document.body.appendChild(dlg);
     dlg.addEventListener("close",function(){document.body.removeChild(dlg);});
@@ -391,8 +414,17 @@
       e.preventDefault();
       var name=(dlg.querySelector("#n_name").value||"").trim();if(!name)return;
       var t=template||{subject:"פנייה",body:""};
-      api("/api/app/leads",{method:"POST",body:{name:name,type:dlg.querySelector("#n_type").value.trim(),region:dlg.querySelector("#n_region").value.trim(),email:dlg.querySelector("#n_email").value.trim(),subject:t.subject,body:(t.body||"").replace("[שם הגוף]",name)}})
-        .then(function(j){if(j.lead)leads.push(j.lead);dlg.close();renderApp();toast("נוסף");})
+      api("/api/app/leads",{method:"POST",body:{
+        name:name,
+        category:dlg.querySelector("#n_cat").value.trim(),
+        type:dlg.querySelector("#n_type").value.trim(),
+        region:dlg.querySelector("#n_region").value.trim(),
+        email:dlg.querySelector("#n_email").value.trim(),
+        why:dlg.querySelector("#n_why").value.trim(),
+        subject:t.subject,
+        body:(t.body||"").replace("[שם הגוף]",name)
+      }})
+        .then(function(j){if(j.lead)leads.push(j.lead);dlg.close();renderApp();toast("נוסף ✓");})
         .catch(function(err){if(!(err&&err.handled))toast("לא נוסף");});
     });
     dlg.showModal();
