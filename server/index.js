@@ -1597,4 +1597,16 @@ app.get("/admin", (req, res) => res.sendFile(path.join(STATIC_DIR, "admin.html")
 
 app.listen(PORT, () => {
   console.log(`CureMindset server listening on http://localhost:${PORT}`);
+  // בדיקה-עצמית חד-פעמית בהפעלה: בודקת את מפתח ה-OpenAI ישירות מול השרת
+  // ורושמת את הסיבה המדויקת (insufficient_quota / billing / project budget / wrong org),
+  // כדי לאבחן "שמתי כסף אבל לא עובד" בלי להמתין להודעת משתמש. אינה חושפת את המפתח.
+  (async () => {
+    try {
+      const { aiStatus } = require("./openai");
+      const st = await aiStatus();
+      console.log(`[ai-selftest] configured=${st.configured} working=${st.working} reason="${st.reason || ""}" detail="${(st.detail || "").slice(0, 300)}"`);
+    } catch (e) {
+      console.log(`[ai-selftest] failed: ${String((e && e.message) || e).slice(0, 200)}`);
+    }
+  })();
 });
