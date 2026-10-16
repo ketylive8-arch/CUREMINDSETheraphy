@@ -29,7 +29,7 @@
 
   /* ── פס עליון ── */
   header.bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;
-    background:rgba(251,247,239,.85);border-bottom:1px solid rgba(194,151,74,.18);backdrop-filter:blur(10px)}
+    background:#FAF8F4;border-bottom:1px solid rgba(194,151,74,.18)}
   .who{display:flex;align-items:center;gap:11px}
   .avatar{position:relative;width:44px;height:44px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;
     font-family:Rubik,sans-serif;font-weight:800;font-size:19px;box-shadow:0 4px 16px rgba(194,151,74,.35)}
@@ -46,12 +46,13 @@
 
   /* כרטיס פתיחה — רגע התחלה חם */
   .welcome{align-self:stretch;max-width:520px;margin:2px auto 8px;text-align:center;padding:22px 18px;border-radius:24px;
-    background:rgba(255,255,255,.75);border:1px solid rgba(194,151,74,.2);backdrop-filter:blur(8px);
+    background:#fff;border:1px solid rgba(194,151,74,.2);
     box-shadow:0 10px 34px rgba(138,106,47,.08);animation:rise .5s ease}
   .welcome .wava{width:56px;height:56px;margin:0 auto 10px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;
     font-family:Rubik,sans-serif;font-weight:800;font-size:24px;box-shadow:0 6px 22px rgba(194,151,74,.4)}
   .welcome h1{font-family:Rubik,sans-serif;font-size:19px;margin:0 0 6px;color:var(--ink)}
   .welcome p{font-size:14.5px;color:var(--ink-500);margin:0 0 14px;line-height:1.6}
+  .welcome-disclaimer{font-size:11.5px;color:var(--ink-300,#9B958F);margin:14px 0 0;line-height:1.5}
   .moods{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
   .mood{font-family:inherit;font-size:14px;font-weight:600;border:1.5px solid rgba(194,151,74,.45);color:var(--gold-deep);background:#fff;
     border-radius:999px;padding:9px 16px;cursor:pointer;transition:all .2s}
@@ -96,7 +97,7 @@
   .human-card a:hover{transform:translateY(-1px)}
 
   /* ── שורת כתיבה ── */
-  .composer{display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(194,151,74,.18);background:rgba(251,247,239,.9);backdrop-filter:blur(10px)}
+  .composer{display:flex;gap:10px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid rgba(194,151,74,.18);background:#FAF8F4}
   .composer input{flex:1;font-family:inherit;font-size:16px;padding:13px 18px;border:1.5px solid rgba(194,151,74,.3);border-radius:999px;background:#fff;
     transition:border-color .2s,box-shadow .2s}
   .composer input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px rgba(194,151,74,.15)}
@@ -109,7 +110,7 @@
 
   /* ── שער הסכמה: מוצג פעם אחת לפני ההודעה הראשונה, עד שמאשרים ── */
   .consent-gate{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:20px;
-    background:rgba(246,240,228,.92);backdrop-filter:blur(6px)}
+    background:rgba(45,42,38,.45)}
   .consent-card{max-width:420px;width:100%;background:#fff;border-radius:22px;padding:24px 22px;text-align:center;
     box-shadow:0 20px 50px rgba(138,106,47,.18);border:1px solid rgba(194,151,74,.2)}
   .consent-card h2{font-family:Rubik,sans-serif;font-size:18px;margin:0 0 10px}
@@ -162,6 +163,7 @@
       <button class="mood" data-say="בא לי להתחיל בכלי קטן להיום">כלי להיום</button>
       <button class="mood" data-say="סתם רוצה לדבר בחופשיות">סתם לדבר</button>
     </div>
+    <p class="welcome-disclaimer">זהו כלי לאימון ותרגול אישי, לא תחליף לטיפול רפואי או נפשי, ולא מיועד למצבי חירום. במצוקה מיידית — ער"ן 1201, מד"א 101.</p>
   </div>
 
 </div>
