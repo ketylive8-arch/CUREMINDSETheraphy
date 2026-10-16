@@ -28,6 +28,7 @@ function ensureSchema() {
   for (const c of [
     "ALTER TABLE client_profile_biz ADD COLUMN tpl_subject TEXT NOT NULL DEFAULT ''",
     "ALTER TABLE client_profile_biz ADD COLUMN tpl_body TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE client_profile_biz ADD COLUMN answers TEXT NOT NULL DEFAULT '{}'",
   ]) { try { db.exec(c); } catch (e) { /* column exists */ } }
 }
 
@@ -37,6 +38,7 @@ function rowToProfile(r) {
     businessName: r.business_name, field: r.field, audience: r.audience,
     offer: r.offer, goal: r.goal, tone: r.tone, contact: r.contact,
     tplSubject: r.tpl_subject || "", tplBody: r.tpl_body || "",
+    answers: (function () { try { return JSON.parse(r.answers || "{}"); } catch (e) { return {}; } })(),
     onboarded: !!r.onboarded, updatedAt: r.updated_at,
   };
 }
@@ -59,16 +61,17 @@ function saveProfile(accountId, data) {
     contact: clip(d.contact, 200),
   };
   if (!vals.business_name) return { error: "שם העסק חובה", status: 400 };
-  const exists = db.prepare("SELECT 1 FROM client_profile_biz WHERE account_id = ?").get(accountId);
-  if (exists) {
+  const existing = getProfile(accountId);
+  const answers = JSON.stringify(Object.assign({}, existing && existing.answers, (d.answers && typeof d.answers === "object") ? d.answers : {}));
+  if (existing) {
     db.prepare(
-      `UPDATE client_profile_biz SET business_name=?, field=?, audience=?, offer=?, goal=?, tone=?, contact=?, onboarded=1, updated_at=datetime('now') WHERE account_id=?`
-    ).run(vals.business_name, vals.field, vals.audience, vals.offer, vals.goal, vals.tone, vals.contact, accountId);
+      `UPDATE client_profile_biz SET business_name=?, field=?, audience=?, offer=?, goal=?, tone=?, contact=?, answers=?, onboarded=1, updated_at=datetime('now') WHERE account_id=?`
+    ).run(vals.business_name, vals.field, vals.audience, vals.offer, vals.goal, vals.tone, vals.contact, answers, accountId);
   } else {
     db.prepare(
-      `INSERT INTO client_profile_biz (account_id, business_name, field, audience, offer, goal, tone, contact, onboarded)
-       VALUES (?,?,?,?,?,?,?,?,1)`
-    ).run(accountId, vals.business_name, vals.field, vals.audience, vals.offer, vals.goal, vals.tone, vals.contact);
+      `INSERT INTO client_profile_biz (account_id, business_name, field, audience, offer, goal, tone, contact, answers, onboarded)
+       VALUES (?,?,?,?,?,?,?,?,?,1)`
+    ).run(accountId, vals.business_name, vals.field, vals.audience, vals.offer, vals.goal, vals.tone, vals.contact, answers);
   }
   return { profile: getProfile(accountId) };
 }

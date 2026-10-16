@@ -87,9 +87,20 @@ function seedAccountLeads(accountId) {
   let n = 0;
   for (const [name, type, region, category, why, email, sourceUrl] of LEADS) {
     const isHotel = category === CAT_HOTEL;
+    const hasEmail = !!email;
+    // Fit score + evidence + confidence (illustrative, per the scoring model).
+    // A verified public email = higher contactability & confidence.
+    const score = hasEmail ? 84 : (isHotel ? 62 : 68);
+    const confidence = hasEmail ? "גבוהה" : "בינונית";
+    const evidence = hasEmail
+      ? "מייל ציבורי מאומת מהאתר הרשמי של העסק."
+      : (isHotel
+          ? "אותר דרך עמוד צור-קשר רשמי באתר; כתובת המייל עדיין לאימות."
+          : "חברה עם מוצר/טכנולוגיה לייצוא — פוטנציאל צורך במפיצים; טרם אומת.");
+    const status = hasEmail ? "review" : "new";
     const subject = isHotel ? "כמה לקוחות נשמטים לכם בלילה" : "כמה מפיצים טובים נשמטים לכם בלילה";
     const body = bizBody(name, isHotel ? "hotel" : "med");
-    const r = clientLeads.createLead(accountId, { name, type, region, category, why, email, sourceUrl, subject, body, order: n + 1 });
+    const r = clientLeads.createLead(accountId, { name, type, region, category, why, email, sourceUrl, subject, body, score, evidence, confidence, status, order: n + 1 });
     if (r.lead) n++;
   }
   return n;

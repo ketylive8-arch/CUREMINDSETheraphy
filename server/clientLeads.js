@@ -32,18 +32,26 @@ function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS idx_client_leads_acct ON client_leads(account_id);
   `);
-  // Migration for databases created before `category` existed.
-  try { db.exec("ALTER TABLE client_leads ADD COLUMN category TEXT NOT NULL DEFAULT ''"); } catch (e) { /* already exists */ }
+  // Migrations for columns added after first release (guarded — no IF NOT EXISTS).
+  for (const c of [
+    "ALTER TABLE client_leads ADD COLUMN category TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE client_leads ADD COLUMN score INTEGER NOT NULL DEFAULT 0",
+    "ALTER TABLE client_leads ADD COLUMN evidence TEXT NOT NULL DEFAULT ''",
+    "ALTER TABLE client_leads ADD COLUMN confidence TEXT NOT NULL DEFAULT ''",
+  ]) { try { db.exec(c); } catch (e) { /* column exists */ } }
 }
 
-const EDITABLE = ["name", "type", "region", "category", "why", "email", "source_url", "subject", "body", "status", "sort_order", "sent_at"];
+// status doubles as the CRM pipeline stage: new | review | qualified | contacted |
+// meeting | opportunity | won | lost | excluded | sent.
+const EDITABLE = ["name", "type", "region", "category", "why", "email", "source_url", "subject", "body", "status", "score", "evidence", "confidence", "sort_order", "sent_at"];
 
 function rowToLead(r) {
   if (!r) return null;
   return {
     id: r.id, name: r.name, type: r.type, region: r.region, category: r.category || "",
     why: r.why, email: r.email, sourceUrl: r.source_url, subject: r.subject, body: r.body,
-    status: r.status, sentAt: r.sent_at || "", order: r.sort_order, createdAt: r.created_at,
+    status: r.status, score: r.score || 0, evidence: r.evidence || "", confidence: r.confidence || "",
+    sentAt: r.sent_at || "", order: r.sort_order, createdAt: r.created_at,
   };
 }
 
@@ -66,15 +74,18 @@ function createLead(accountId, data) {
   const name = String(d.name || "").trim().slice(0, 200);
   if (!name) return { error: "שם הגוף חובה", status: 400 };
   db.prepare(
-    `INSERT INTO client_leads (id, account_id, name, type, region, category, why, email, source_url, subject, body, status, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO client_leads (id, account_id, name, type, region, category, why, email, source_url, subject, body, status, score, evidence, confidence, sort_order)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id, accountId, name,
     String(d.type || "").slice(0, 120), String(d.region || "").slice(0, 120),
     String(d.category || "").slice(0, 120),
     String(d.why || "").slice(0, 2000), String(d.email || "").trim().slice(0, 200),
     String(d.sourceUrl || d.source_url || "").slice(0, 500), String(d.subject || "").slice(0, 300),
-    String(d.body || "").slice(0, 8000), String(d.status || "new").slice(0, 20), order
+    String(d.body || "").slice(0, 8000), String(d.status || "new").slice(0, 20),
+    Number.isFinite(d.score) ? d.score : (parseInt(d.score, 10) || 0),
+    String(d.evidence || "").slice(0, 2000), String(d.confidence || "").slice(0, 40),
+    order
   );
   return { lead: getLead(accountId, id) };
 }
