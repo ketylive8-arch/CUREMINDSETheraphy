@@ -57,6 +57,8 @@ main .btn.primary:hover{
 header.site{
   background:#FAF8F4;
   border-bottom:1px solid var(--beige);
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
 }
 
 /* ── פס CTA בסוף עמוד ── */

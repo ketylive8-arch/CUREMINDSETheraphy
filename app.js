@@ -1204,7 +1204,7 @@ function ArticlesSection() {
   // Local published articles stay visible alongside external blog posts.
   const published = [
   {
-    "title": "ריפוי חרדה מהשורש: מסע של 15 יום לשינוי עמוק",
+    "title": "שחרור חרדה מהשורש: מסע של 15 יום לשינוי עמוק",
     "link": "/articles/healing-anxiety-journey.html",
     "pubDate": "2026-10-07",
     "description": "מסע ריפוי סומטי לנוער, להורים ולכל מי שמכיר את הכבדות בחזה — כולל תוכנית תרגול אינטראקטיבית ל-15 יום."
