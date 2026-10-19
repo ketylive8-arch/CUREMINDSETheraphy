@@ -91,3 +91,33 @@ header.site{
 
 /* ── סימון בחירה בזהב ── */
 ::selection{background:rgba(201,169,110,.3)}
+
+/* ── ציטוט-ענק: Pull Quote ממורכז ── */
+.pull-quote{
+  max-width:620px;margin:30px auto;padding:18px 10px;text-align:center;
+  border-top:1px solid var(--beige);border-bottom:1px solid var(--beige);
+  font-family:Rubik,sans-serif;font-weight:600;font-size:clamp(21px,3.4vw,28px);
+  line-height:1.45;color:#2D2A26;
+}
+
+/* ── מספר-ענק: סטטיסטיקה טיפוגרפית ── */
+.big-stat{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin:28px auto;max-width:460px}
+.big-stat .num{font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(44px,9vw,72px);color:var(--gold-deep);line-height:1}
+.big-stat .cap{font-size:15.5px;color:#6B6560;max-width:420px}
+
+/* ── CTA בין סקשנים ── */
+.cta-mid{text-align:center;margin:26px 0}
+.cta-mid a{display:inline-block}
+
+/* ── רשימת כרטיסים ממוספרת (פרוטוקולים/עקרונות רצף) ── */
+.num-cards{list-style:none;padding:0;margin:14px 0;display:grid;gap:12px}
+@media(min-width:680px){.num-cards.two-col{grid-template-columns:1fr 1fr}}
+.num-cards li{
+  background:#fff;border:1px solid var(--beige);border-radius:14px;
+  padding:14px 16px 14px 48px;position:relative;box-shadow:0 1px 3px rgba(45,42,38,.05);
+}
+.num-cards li .n{
+  position:absolute;inset-inline-start:12px;top:14px;width:24px;height:24px;border-radius:50%;
+  background:var(--gold);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:12.5px;
+  display:flex;align-items:center;justify-content:center;
+}
