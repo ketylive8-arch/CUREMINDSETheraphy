@@ -3,39 +3,169 @@
   "cleanUrls": false,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/parents", "destination": "/cure-teens", "permanent": true },
-    { "source": "/parents.html", "destination": "/cure-teens", "permanent": true }
+    {
+      "source": "/parents",
+      "destination": "/cure-teens",
+      "permanent": true
+    },
+    {
+      "source": "/parents.html",
+      "destination": "/cure-teens",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://curemindsetheraphy.onrender.com/api/$1" },
-    { "source": "/uploads/(.*)", "destination": "https://curemindsetheraphy.onrender.com/uploads/$1" },
-    { "source": "/workshops", "destination": "/workshops.html" },
-    { "source": "/dashboard", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/emotional-coaching", "destination": "/emotional-coaching.html" },
-    { "source": "/anxiety-and-stress", "destination": "/anxiety-and-stress.html" },
-    { "source": "/self-confidence", "destination": "/self-confidence.html" },
-    { "source": "/procrastination", "destination": "/procrastination.html" },
-    { "source": "/cure-teens", "destination": "/cure-teens.html" },
-    { "source": "/parents", "destination": "/parents.html" },
-    { "source": "/method", "destination": "/method.html" },
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/personal", "destination": "/personal.html" },
-    { "source": "/faq", "destination": "/faq.html" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/responsibility", "destination": "/responsibility.html" },
-    { "source": "/accessibility", "destination": "/accessibility.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms", "destination": "/terms.html" },
-    { "source": "/teens-app", "destination": "/teens-experience.html" },
-    { "source": "/teens-experience", "destination": "/teens-experience.html" },
-    { "source": "/program", "destination": "/programs.html" },
-    { "source": "/programs", "destination": "/programs.html" },
-    { "source": "/talk", "destination": "/talk.html" },
-    { "source": "/today", "destination": "/app-today.html" },
-    { "source": "/workshop-inner-compass", "destination": "/workshop-inner-compass.html" },
-    { "source": "/workshop-cure-teens", "destination": "/workshop-cure-teens.html" },
-    { "source": "/workshop-organizations", "destination": "/workshop-organizations.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/(.*)",
+      "destination": "https://curemindsetheraphy.onrender.com/api/$1"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "https://curemindsetheraphy.onrender.com/uploads/$1"
+    },
+    {
+      "source": "/workshops",
+      "destination": "/workshops.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/emotional-coaching",
+      "destination": "/emotional-coaching.html"
+    },
+    {
+      "source": "/anxiety-and-stress",
+      "destination": "/anxiety-and-stress.html"
+    },
+    {
+      "source": "/self-confidence",
+      "destination": "/self-confidence.html"
+    },
+    {
+      "source": "/procrastination",
+      "destination": "/procrastination.html"
+    },
+    {
+      "source": "/cure-teens",
+      "destination": "/cure-teens.html"
+    },
+    {
+      "source": "/parents",
+      "destination": "/parents.html"
+    },
+    {
+      "source": "/method",
+      "destination": "/method.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/personal",
+      "destination": "/personal.html"
+    },
+    {
+      "source": "/faq",
+      "destination": "/faq.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/responsibility",
+      "destination": "/responsibility.html"
+    },
+    {
+      "source": "/accessibility",
+      "destination": "/accessibility.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/teens-app",
+      "destination": "/teens-experience.html"
+    },
+    {
+      "source": "/teens-experience",
+      "destination": "/teens-experience.html"
+    },
+    {
+      "source": "/program",
+      "destination": "/programs.html"
+    },
+    {
+      "source": "/programs",
+      "destination": "/programs.html"
+    },
+    {
+      "source": "/talk",
+      "destination": "/talk.html"
+    },
+    {
+      "source": "/today",
+      "destination": "/app-today.html"
+    },
+    {
+      "source": "/workshop-inner-compass",
+      "destination": "/workshop-inner-compass.html"
+    },
+    {
+      "source": "/workshop-cure-teens",
+      "destination": "/workshop-cure-teens.html"
+    },
+    {
+      "source": "/workshop-organizations",
+      "destination": "/workshop-organizations.html"
+    },
+    {
+      "source": "/anxiety-krayot",
+      "destination": "/anxiety-krayot.html"
+    },
+    {
+      "source": "/emotional-training-guide",
+      "destination": "/emotional-training-guide.html"
+    },
+    {
+      "source": "/emotional-therapy-haifa",
+      "destination": "/emotional-therapy-haifa.html"
+    },
+    {
+      "source": "/empowerment-teens",
+      "destination": "/empowerment-teens.html"
+    },
+    {
+      "source": "/adhd-emotional-support",
+      "destination": "/adhd-emotional-support.html"
+    },
+    {
+      "source": "/test-anxiety",
+      "destination": "/test-anxiety.html"
+    },
+    {
+      "source": "/closed-teen",
+      "destination": "/closed-teen.html"
+    },
+    {
+      "source": "/nlp-haifa",
+      "destination": "/nlp-haifa.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
