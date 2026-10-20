@@ -110,7 +110,7 @@ const CONTENT = {
   },
   method: {
     eyebrow: "השיטה",
-    title: "ריפוי שמתחיל בהקשבה, לא בלחימה",
+    title: "אימון מנטלי שמתחיל בהקשבה",
     items: [
       { icon: "eye", title: "Clarity · בהירות", text: "פוגשים את שומר הראש: מזהים את הדפוס ואת התפקיד שהוא בא למלא." },
       { icon: "wind", title: "Unblock · שחרור חסמים", text: "משחררים את העומס שהצטבר שנים במערכת העצבים." },
@@ -663,7 +663,7 @@ function About() {
             <Eyebrow>על המייסדת</Eyebrow>
             <h2 className="font-heading font-semibold text-ink-800 text-[28px] sm:text-[36px]">קטי שגב · CureMindset</h2>
             <p className="text-ink-600 text-[17px] leading-relaxed">
-              מפתחת שיטת CureMindset, מטפלת NLP ומאמנת מנטלית בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
+              מפתחת שיטת CureMindset, מוסמכת NLP ומאמנת מנטלית בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               <div className="bg-white p-4 rounded-xl border border-gold-200/60 text-center">
@@ -1497,7 +1497,7 @@ function HbHero() {
             <picture>
               <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
               <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 440px, 520px"
-                alt="קטי שגב — מטפלת NLP ומאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
+                alt="קטי שגב — מוסמכת NLP ומאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
             </picture>
           </div>
         </Reveal>
@@ -1551,7 +1551,7 @@ function HbRecognize() {
 function HbSolution() {
   const pillars = [
     { icon: "compass", title: "פרוטוקול CURE", text: "ארבעה שלבים מובנים — מהבנת הדפוס, דרך שחרורו, ועד העצמה יציבה." },
-    { icon: "wind", title: "עבודה עם התת-מודע", text: "שם חיים 95% מהדפוסים — וזו הרמה שבה השינוי באמת נבנה ומחזיק." },
+    { icon: "wind", title: "עבודה עם התת-מודע", text: "שם פועלים חלק גדול מהדפוסים האוטומטיים — וזו הרמה שבה אפשר לתרגל שינוי שמחזיק." },
     { icon: "sparkles", title: "דמיון מודרך וסאבמודלים", text: "שינוי ברמה החושית והתת-חושית, לא רק בהיגיון — שם הדפוס חי." },
     { icon: "heart", title: "הטמעה ובניית חוסן", text: "תרגול יומי מדוד שהופך את השינוי לחלק ממי שאת/ה, לאורך זמן." },
   ];
