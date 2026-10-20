@@ -75,6 +75,7 @@ const CONTENT = {
       { label: "מתנות וכלים", href: "/gifts.html" },
       { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
+      { label: "מאמרים", href: "/articles" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "מתנות וכלים חינם",
@@ -82,8 +83,8 @@ const CONTENT = {
   },
   hero: {
     kicker: "CureMindset · קטי שגב",
-    headline: "המוח שלך יודע לרפא. השיטה הזאת מראה לו איך.",
-    subhead: "חרדה, לחץ, דחיינות, דימוי עצמי נמוך — אלה לא כישלונות. אלה הגנות ישנות שהפסיקו לשרת אותך.",
+    headline: "אימון מנטלי שמחזיר לך כיוון, בחירה וביטחון.",
+    subhead: "לנוער, להורים ולמבוגרים בחיפה, בקריות ובזום: עבודה מעשית על חרדה, פחדים, דימוי עצמי, ביטחון עצמי ודפוסים שחוזרים על עצמם.",
     ctaPrimary: "להתחיל — 7 ימים בחינם",
     ctaNote: "בלי כרטיס אשראי · מתחילים עכשיו",
     banner: "התחילי ב-7 ימי ניסיון חינם · ללא התחייבות · ביטול בכל עת",
@@ -110,7 +111,7 @@ const CONTENT = {
   },
   method: {
     eyebrow: "השיטה",
-    title: "אימון מנטלי שמתחיל בהקשבה",
+    title: "CureMindset: אימון מנטלי שמתחיל בהקשבה",
     items: [
       { icon: "eye", title: "Clarity · בהירות", text: "פוגשים את שומר הראש: מזהים את הדפוס ואת התפקיד שהוא בא למלא." },
       { icon: "wind", title: "Unblock · שחרור חסמים", text: "משחררים את העומס שהצטבר שנים במערכת העצבים." },
@@ -663,7 +664,7 @@ function About() {
             <Eyebrow>על המייסדת</Eyebrow>
             <h2 className="font-heading font-semibold text-ink-800 text-[28px] sm:text-[36px]">קטי שגב · CureMindset</h2>
             <p className="text-ink-600 text-[17px] leading-relaxed">
-              מפתחת שיטת CureMindset, מוסמכת NLP ומאמנת מנטלית בכירה. לאורך השנים לוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק לשחרור חרדות, בניית חוסן נפשי ויציבות פנימית אמיתית.
+              מפתחת שיטת CureMindset, מוסמכת NLP ומאמנת מנטלית בכירה. אני מלווה נוער, הורים ומבוגרים בחיפה, בקריות ובזום, בתהליך מעשי לבניית חוסן, ביטחון ומיקוד פנימי.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
               <div className="bg-white p-4 rounded-xl border border-gold-200/60 text-center">
