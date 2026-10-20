@@ -1233,6 +1233,7 @@ function ArticlesSection() {
           <h2 className="font-heading font-semibold text-ink-800 text-[30px] sm:text-[42px]">
             מאמרים וכלים תודעתיים
           </h2>
+          <a href="/articles" className="inline-flex mt-4 text-gold-700 font-heading font-semibold">לכל המאמרים ←</a>
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
