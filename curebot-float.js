@@ -28,19 +28,24 @@
       "#cmFloatClose{position:absolute;top:10px;left:10px;z-index:1;width:34px;height:34px;border-radius:50%;" +
       "border:1px solid #E8E0D5;background:#fff;color:#2D2A26;font-size:22px;line-height:1;cursor:pointer}" +
       "#cmFloatModal iframe{width:100%;height:100%;border:0;display:block}" +
-      "@media(max-width:480px){#cmFloatBtn .cmw-label small{display:none}}" +
+      "#cmFloatHint{position:fixed;bottom:76px;left:18px;z-index:9998;max-width:240px;background:#fff;color:#2D2A26;" +
+      "border:1px solid #E8E0D5;border-radius:16px 16px 16px 4px;padding:10px 32px 10px 14px;font-family:Assistant,Arial,sans-serif;" +
+      "font-size:14px;line-height:1.45;box-shadow:0 6px 20px rgba(45,42,38,.12);cursor:pointer;display:none}" +
+      "#cmFloatHint.show{display:block;animation:cmHintIn .35s ease}" +
+      "#cmFloatHint button{position:absolute;top:4px;right:6px;border:0;background:none;color:#9B958F;font-size:18px;cursor:pointer;line-height:1}" +
+      "@keyframes cmHintIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}" +
       "@media(prefers-reduced-motion:reduce){#cmFloatBtn{transition:none}}";
     document.head.appendChild(style);
 
     var btn = document.createElement("button");
     btn.id = "cmFloatBtn";
     btn.type = "button";
-    btn.setAttribute("aria-label", "קטי AI — מענה רגשי מיידי");
+    btn.setAttribute("aria-label", "קטי AI — העוזרת הדיגיטלית של קטי שגב. יש שאלה? כתבו לי כאן");
     btn.innerHTML =
       '<span class="cmw-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M12 3a1 1 0 011 1v1.06a7.002 7.002 0 015.94 5.94H20a1 1 0 010 2h-1.06a7.002 7.002 0 01-5.94 5.94V20a1 1 0 01-2 0v-1.06a7.002 7.002 0 01-5.94-5.94H4a1 1 0 010-2h1.06A7.002 7.002 0 0111 5.06V4a1 1 0 011-1z"/>' +
       '<circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></span>' +
-      '<span class="cmw-label"><b>קטי AI</b><small>מענה רגשי מיידי</small></span>';
+      '<span class="cmw-label"><b>קטי AI</b><small>יש שאלה? כתבו לי כאן</small></span>';
 
     var overlay = document.createElement("div");
     overlay.id = "cmFloatOverlay";
@@ -48,10 +53,27 @@
       '<div id="cmFloatModal"><button id="cmFloatClose" type="button" aria-label="סגירה">×</button>' +
       '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="קטי AI — שיחה עם העוזרת הדיגיטלית"></iframe></div>';
 
+    // בועת הסבר קטנה ליד הכפתור — פעם אחת בביקור, כדי שיבינו מה זה
+    var hint = document.createElement("div");
+    hint.id = "cmFloatHint";
+    hint.innerHTML = '<button type="button" aria-label="סגירה">×</button>' +
+      "היי 👋 אני העוזרת הדיגיטלית של קטי. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
+
     document.body.appendChild(btn);
+    document.body.appendChild(hint);
     document.body.appendChild(overlay);
 
+    var seen = false;
+    try { seen = sessionStorage.getItem("cmHintSeen") === "1"; } catch (e) {}
+    function hideHint() {
+      hint.classList.remove("show");
+      try { sessionStorage.setItem("cmHintSeen", "1"); } catch (e) {}
+    }
+    if (!seen) setTimeout(function () { if (!overlay.classList.contains("open")) hint.classList.add("show"); }, 5000);
+    hint.querySelector("button").addEventListener("click", function (e) { e.stopPropagation(); hideHint(); });
+
     function open() {
+      hideHint();
       overlay.classList.add("open");
       document.body.style.overflow = "hidden";
     }
@@ -60,6 +82,7 @@
       document.body.style.overflow = "";
     }
     btn.addEventListener("click", open);
+    hint.addEventListener("click", open);
     overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
     document.getElementById("cmFloatClose").addEventListener("click", close);
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });

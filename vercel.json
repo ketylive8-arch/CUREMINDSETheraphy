@@ -67,11 +67,15 @@
     },
     {
       "source": "/parents",
-      "destination": "/parents.html"
+      "destination": "/cure-teens.html"
     },
     {
       "source": "/method",
       "destination": "/method.html"
+    },
+    {
+      "source": "/articles",
+      "destination": "/articles.html"
     },
     {
       "source": "/about",
