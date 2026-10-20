@@ -33,7 +33,7 @@ const PAYMENT_LINKS = {
 
 const MEDIA_LINKS = {
   linktree: "https://linktr.ee/Ketysegev",
-  instagram: "https://instagram.com/ketysegev",
+  instagram: "https://instagram.com/kety_nlp",
   youtubeChannel: "https://www.youtube.com/@ketynlplive",
   radio: "https://youtu.be/8q_5IAAJohQ?si=eL3RHvjbHDqWsuqj",
   spotify: "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3?si=RGKVlD3VRfqp-W7BKhsQcQ&utm_source=copy-link",
