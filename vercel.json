@@ -12,6 +12,16 @@
       "source": "/parents.html",
       "destination": "/cure-teens",
       "permanent": true
+    },
+    {
+      "source": "/gifts",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/gifts.html",
+      "destination": "/programs",
+      "permanent": true
     }
   ],
   "rewrites": [

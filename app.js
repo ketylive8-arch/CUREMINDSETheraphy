@@ -72,18 +72,17 @@ const CONTENT = {
   nav: {
     links: [
       { label: "מה זו השיטה", href: "/method" },
-      { label: "מתנות וכלים", href: "/gifts.html" },
       { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
-    login: "מתנות וכלים חינם",
+    login: "שיחת היכרות חינם",
     cta: "קטי AI",
   },
   hero: {
     kicker: "CureMindset · קטי שגב",
     headline: "המוח שלך יודע לרפא. השיטה הזאת מראה לו איך.",
-    subhead: "חרדה, לחץ, דחיינות, דימוי עצמי נמוך — אלה לא כישלונות. אלה הגנות ישנות שהפסיקו לשרת אותך.",
+    subhead: "חרדה, דחיינות, דימוי עצמי נמוך — אלה לא כישלונות. אלה הגנות ישנות שהפסיקו לשרת אותך.",
     ctaPrimary: "להתחיל — 7 ימים בחינם",
     ctaNote: "בלי כרטיס אשראי · מתחילים עכשיו",
     banner: "התחילי ב-7 ימי ניסיון חינם · ללא התחייבות · ביטול בכל עת",
@@ -368,7 +367,9 @@ function Nav({ onEnterApp }) {
 
         <div className="hidden lg:flex items-center gap-3">
           <a
-            href="/gifts.html"
+            href="https://calendly.com/ketysegev/meet-with-me"
+            target="_blank"
+            rel="noopener"
             className="inline-flex items-center gap-2 text-[14px] font-semibold text-ink-700 hover:text-gold-600 px-3 py-2 rounded-full transition-colors"
           >
             <Icon name="sparkles" size={16} />
@@ -407,7 +408,9 @@ function Nav({ onEnterApp }) {
           </ul>
           <div className="flex flex-col gap-3 mt-4">
             <a
-              href="/gifts.html"
+              href="https://calendly.com/ketysegev/meet-with-me"
+              target="_blank"
+              rel="noopener"
               onClick={closeAndGo}
               className="inline-flex items-center justify-center gap-2 text-[15px] font-semibold text-ink-700 border border-ink-100 rounded-full py-3"
             >
@@ -1503,10 +1506,10 @@ function HbHero() {
 
         <Reveal className="hb-hero__text">
           <div className="hb-hero__eyebrow">שיטת CureMindset · קטי שגב</div>
-          <h1 className="hb-hero__title">חרדה, לחץ ועומס רגשי לא חייבים לנהל את החיים שלך.</h1>
+          <h1 className="hb-hero__title">חרדה ועומס רגשי לא חייבים לנהל את החיים שלך.</h1>
           <p className="hb-hero__sub">ליווי רגשי שעובד עם השורש, לא רק עם התסמין: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
           <div className="hb-hero__cta">
-            <a href="/gifts.html" className="hb-hero__link">מתנות וכלים חינם <span aria-hidden="true">→</span></a>
+            <a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener" className="hb-hero__link">לשיחת היכרות ללא עלות <span aria-hidden="true">→</span></a>
           </div>
         </Reveal>
       </div>
@@ -1561,7 +1564,7 @@ function HbSolution() {
           <Eyebrow>השיטה</Eyebrow>
           <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">שיטה מובנית — לא משפטי השראה</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed">
-            CureMindset היא שיטת עבודה שפיתחה קטי שגב, על הנחה אחת לא־שגרתית: התסמינים שלך — החרדה, הלחץ, העומס — אינם אויב. הם מנגנוני הגנה שהתת-מודע גייס פעם כדי לשמור עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
+            CureMindset היא שיטת עבודה שפיתחה קטי שגב, על הנחה אחת לא־שגרתית: התסמינים שלך — החרדה, העומס — אינם פגם. הם מנגנוני הגנה שהתת-מודע גייס פעם כדי לשמור עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
           </p>
         </Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1592,7 +1595,6 @@ function HbServices() {
     { label: "רדיו חיפה", href: MEDIA_LINKS.radio },
     { label: "פודקאסט", href: MEDIA_LINKS.spotify },
     { label: "ערוץ היוטיוב", href: MEDIA_LINKS.youtubeChannel },
-    { label: "מתנות וכלים חינם", href: "/gifts.html" },
     { label: "כל הקישורים", href: MEDIA_LINKS.linktree },
   ];
   return (
