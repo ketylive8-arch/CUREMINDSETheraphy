@@ -64,6 +64,10 @@
       "destination": "/method.html"
     },
     {
+      "source": "/articles",
+      "destination": "/articles.html"
+    },
+    {
       "source": "/about",
       "destination": "/about.html"
     },
