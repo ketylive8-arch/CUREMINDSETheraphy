@@ -40,7 +40,7 @@
     var btn = document.createElement("button");
     btn.id = "cmFloatBtn";
     btn.type = "button";
-    btn.setAttribute("aria-label", "קטי AI — העוזרת הדיגיטלית של קטי שגב. יש שאלה? כתבו לי כאן");
+    btn.setAttribute("aria-label", "קטי AI — יש שאלה? כתבו לי כאן");
     btn.innerHTML =
       '<span class="cmw-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M12 3a1 1 0 011 1v1.06a7.002 7.002 0 015.94 5.94H20a1 1 0 010 2h-1.06a7.002 7.002 0 01-5.94 5.94V20a1 1 0 01-2 0v-1.06a7.002 7.002 0 01-5.94-5.94H4a1 1 0 010-2h1.06A7.002 7.002 0 0111 5.06V4a1 1 0 011-1z"/>' +
@@ -51,13 +51,13 @@
     overlay.id = "cmFloatOverlay";
     overlay.innerHTML =
       '<div id="cmFloatModal"><button id="cmFloatClose" type="button" aria-label="סגירה">×</button>' +
-      '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="קטי AI — שיחה עם העוזרת הדיגיטלית"></iframe></div>';
+      '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="שיחה עם קטי AI"></iframe></div>';
 
     // בועת הסבר קטנה ליד הכפתור — פעם אחת בביקור, כדי שיבינו מה זה
     var hint = document.createElement("div");
     hint.id = "cmFloatHint";
     hint.innerHTML = '<button type="button" aria-label="סגירה">×</button>' +
-      "היי 👋 אני העוזרת הדיגיטלית של קטי. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
+      "היי 👋 אני קטי AI. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
 
     document.body.appendChild(btn);
     document.body.appendChild(hint);
