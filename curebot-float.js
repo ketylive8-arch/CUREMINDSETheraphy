@@ -89,6 +89,14 @@
 
     // קריאה נוחה מכפתורים אחרים בדף (נאב, כותרות עמודים סטטיים וכו').
     window.cmOpenBot = open;
+
+    // עוזרת אחת באתר: קישורים שעוד מפנים לעוזרת הישנה (/talk) פותחים את קטי AI.
+    document.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="/talk"]') : null;
+      if (!a) return;
+      e.preventDefault();
+      open();
+    });
   }
 
   if (document.readyState === "loading") {
