@@ -1497,20 +1497,13 @@ function HbHero() {
     <section id="top" className="hb-hero">
       <div className="hb-hero__inner">
         <Reveal className="hb-hero__media">
-          {youtubeEmbed(MEDIA_LINKS.video1) ? (
-            <div className="embed-16x9">
-              <iframe src={youtubeEmbed(MEDIA_LINKS.video1)} title="קטי שגב — הסרט" loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            </div>
-          ) : (
-            <div className="hb-hero__frame">
-              <picture>
-                <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
-                <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 440px, 520px"
-                  alt="קטי שגב — מטפלת NLP ומאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
-              </picture>
-            </div>
-          )}
+          <div className="hb-hero__frame">
+            <picture>
+              <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
+              <img src="images/kety-640.jpg" srcSet="images/kety-640.jpg 640w, images/kety-920.jpg 920w" sizes="(max-width:1024px) 440px, 520px"
+                alt="קטי שגב — מטפלת NLP ומאמנת מנטלית ומפתחת שיטת CureMindset" width={920} height={1150} loading="eager" decoding="async" />
+            </picture>
+          </div>
         </Reveal>
 
         <Reveal className="hb-hero__text">
