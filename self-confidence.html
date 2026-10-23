@@ -45,7 +45,9 @@
   .signs li{background:#fff;border:1px solid var(--gold-soft);border-radius:12px;padding:12px 16px;position:relative;padding-inline-start:40px}
   .signs li:before{content:"✓";position:absolute;inset-inline-start:14px;top:11px;color:var(--gold);font-weight:800}
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cards.c3{grid-template-columns:1fr 1fr 1fr}
   .card{background:#fff;border:1px solid var(--gold-soft);border-radius:14px;padding:18px 20px}
+  .card p{margin:6px 0 0;color:var(--ink-500);font-size:15px}
   .faq details{background:#fff;border:1px solid var(--gold-soft);border-radius:12px;padding:0 18px;margin-bottom:10px}
   .faq summary{font-family:Rubik,sans-serif;font-weight:700;cursor:pointer;padding:15px 0;list-style:none}
   .faq summary::-webkit-details-marker{display:none}
@@ -64,7 +66,7 @@
   .disclaimer{background:#f3eee3;border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--ink-500);margin:24px 0}
   footer.site{border-top:1px solid var(--gold-soft);padding:26px 0;text-align:center;color:var(--ink-500);font-size:14px}
   footer.site a{color:var(--gold-deep);text-decoration:none;margin:0 8px}
-  @media(max-width:600px){h1{font-size:27px}.cards{grid-template-columns:1fr}.hero{padding:30px 0 4px}}
+  @media(max-width:600px){h1{font-size:27px}.cards,.cards.c3{grid-template-columns:1fr}.hero{padding:30px 0 4px}}
   a:focus-visible,summary:focus-visible,.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
   /* מעגל הביטחון — אנימציה */
   .cycle{background:#fff;border:1px solid var(--gold-soft);border-radius:18px;padding:26px 20px;margin:18px 0}
@@ -116,7 +118,12 @@
 
   <section class="blk">
     <h2>שלושת עמודי הבית הפנימי</h2>
-    <p>בתוכך יש בית. הוא לא נבנה על ידי אף אחד אחר — הוא שלך. שלושה דברים בונים אותו: <b>ערך עצמי</b> — מה את/ה שווה בלי תלות באף אחד; <b>כבוד פנימי</b> — מה הכללים של הבית שלך, מה נכנס פנימה ומה נשאר בחוץ; ו<b>חוסן קיומי</b> — מה הביטחון הבסיסי שלך, שלא תלוי באף גורם חיצוני.</p>
+    <p class="lead" style="font-size:17px;margin:0 0 16px">בתוכך יש בית. הוא לא נבנה על ידי אף אחד אחר — הוא שלך.</p>
+    <div class="cards c3">
+      <div class="card"><h3>ערך עצמי</h3><p>מה את/ה שווה בלי תלות באף אחד.</p></div>
+      <div class="card"><h3>כבוד פנימי</h3><p>מה הכללים של הבית שלך — מה נכנס פנימה ומה נשאר בחוץ.</p></div>
+      <div class="card"><h3>חוסן קיומי</h3><p>מה הביטחון הבסיסי שלך, שלא תלוי באף גורם חיצוני.</p></div>
+    </div>
   </section>
 
   <section class="blk">
@@ -156,10 +163,20 @@
         </div>
       </div>
     </div>
-    <p style="margin-top:18px">למה זה חשוב? מהצד אנחנו רואים אדם עם ביטחון — אבל לא רואים את <b>הדרך</b> שהוא עבר כדי להגיע לשם. לכל אחד יש דרך משלו. רוב האנשים רוצים את התוצאה — את הביטחון — אבל לא מבינים שזו דרך, לא מתג שמדליקים. <b>בדיוק שם אני נכנסת: אני מלמדת אותך את הדרך.</b> מגדירים יחד תוצאה רצויה, יוצאים לפעולה, ומודדים את השיפור — סיבוב אחרי סיבוב, עד שהביטחון הופך לחלק ממי שאת/ה.</p>
+    <p style="margin-top:18px">מהצד אנחנו רואים אדם עם ביטחון — אבל לא רואים את <b>הדרך</b> שהוא עבר כדי להגיע לשם. לכל אחד יש דרך משלו. רוב האנשים רוצים את התוצאה — את הביטחון — אבל לא מבינים שזו דרך, לא מתג שמדליקים.</p>
   </section>
 
-  <section class="blk"><h2>למה ביטחון שמבוסס על אישור חיצוני מתמוטט</h2><p>כשהערך העצמי תלוי בהצלחה, במראה או בתגובות של אחרים, כל כישלון קטן מרגיש כמו איום קיומי. הקול המבקר הפנימי מתחזק, וההתרחקות גדלה — וכך נסגר מעגל שמחליש עוד יותר. דימוי עצמי נמוך וחרדה מזינים זה את זה: ככל שהביטחון חלש יותר, כל מצב לא ודאי נתפס כמסוכן יותר, והגוף מגיב בדריכות ובמחשבות חוזרות — מה שמחליש את הביטחון עוד יותר.</p><p>העבודה בשיטת CureMindset מפרידה בין הזהות ('מי אני') לבין הביצוע ('מה עשיתי'), ובונה עוגן פנימי של ערך וכבוד עצמי — בסיס יציב שממנו אפשר לפעול גם באי-ודאות. כשהעוגן הזה מתחזק, גם רמת החרדה היומיומית יורדת באופן טבעי — ולכן עבודה על ביטחון עצמי ועל <a href="/anxiety-and-stress">ויסות חרדה</a> משלימות זו את זו.</p></section>
+  <div class="pull-quote">בדיוק שם אני נכנסת: אני מלמדת אותך את הדרך.</div>
+
+  <section class="blk">
+    <p>מגדירים יחד תוצאה רצויה, יוצאים לפעולה, ומודדים את השיפור — סיבוב אחרי סיבוב, עד שהביטחון הופך לחלק ממי שאת/ה.</p>
+  </section>
+
+  <section class="blk"><h2>למה ביטחון שמבוסס על אישור חיצוני מתמוטט</h2><p>כשהערך העצמי תלוי בהצלחה, במראה או בתגובות של אחרים, כל כישלון קטן מרגיש כמו איום קיומי. הקול המבקר הפנימי מתחזק, וההתרחקות גדלה — וכך נסגר מעגל שמחליש עוד יותר.</p></section>
+
+  <div class="pull-quote">דימוי עצמי נמוך וחרדה מזינים זה את זה — ככל שהביטחון חלש יותר, כל מצב לא ודאי נתפס כמסוכן יותר.</div>
+
+  <section class="blk"><p>העבודה בשיטת CureMindset מפרידה בין הזהות ('מי אני') לבין הביצוע ('מה עשיתי'), ובונה עוגן פנימי של ערך וכבוד עצמי — בסיס יציב שממנו אפשר לפעול גם באי-ודאות. כשהעוגן הזה מתחזק, גם רמת החרדה היומיומית יורדת באופן טבעי — ולכן עבודה על ביטחון עצמי ועל <a href="/anxiety-and-stress">ויסות חרדה</a> משלימות זו את זו.</p></section>
   <section class="blk"><h2>מתי העמוד הזה מדבר אלייך</h2><ul class="signs"><li>קול מבקר פנימי חזק שאף פעם לא מרוצה</li><li>פחד מכישלון או מביקורת שמוביל להתרחקות</li><li>השוואה מתמדת לאחרים ותחושת 'לא מספיק'</li><li>קושי לקבל מחמאה או להציב גבול</li></ul></section>
   <section class="blk"><h2>עקרונות עבודה</h2><div class="cards"><div class="card"><h3>זיהוי הקול המבקר</h3><p>מלמדים להבחין בין קול הביקורת לבין העובדות — ולהשתיק אותו בעדינות.</p></div><div class="card"><h3>עוגן הבית</h3><p>בונים תחושת ערך וביטחון קיומי פנימי שאינה תלויה בתוצאה.</p></div><div class="card"><h3>זהות של 'בוחר/ת'</h3><p>מעבר מ'נפגע/ת' ל'בוחר/ת' — שפה פנימית שמחזירה שליטה.</p></div><div class="card"><h3>פעולה למרות אי-ודאות</h3><p>צעד קטן אחד שמוכיח למערכת שאפשר, ומחזק את החוזק בהדרגה.</p></div></div></section>
 
