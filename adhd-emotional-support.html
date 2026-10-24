@@ -76,8 +76,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -102,10 +112,10 @@
 </div>
 
 <div class="pull-quote">הילד לא צריך עוד נזיפה על מה שהמוח שלו עושה. הוא צריך מישהו שיראה את המאמץ.</div>
-<section class="blk"><h2>על מה עובדים בליווי</h2><div class="cards c3"><div class="card"><h3>ויסות רגשי</h3><p>כלים גופניים קצרים להורדת עומס ברגע, מותאמים לילדים.</p></div><div class="card"><h3>דימוי עצמי</h3><p>מ"אני פשוט שכחן" להבנה שהכישלונות הם תוצאה, לא זהות.</p></div><div class="card"><h3>להורים</h3><p>אפקט המראה: איך הבית משקף ומווסת, בלי כפייה ובלי אשמה.</p></div></div></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>על מה עובדים בליווי</h2><div class="cards c3"><div class="card"><h3>ויסות רגשי</h3><p>כלים גופניים קצרים להורדת עומס ברגע, מותאמים לילדים.</p></div><div class="card"><h3>דימוי עצמי</h3><p>מ"אני פשוט שכחן" להבנה שהכישלונות הם תוצאה, לא זהות.</p></div><div class="card"><h3>להורים</h3><p>אפקט המראה: איך הבית משקף ומווסת, בלי כפייה ובלי אשמה.</p></div></div></section>
 <div class="cta-mid"><a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me">לשיחת היכרות עם ההורה →</a></div>
 
-<section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>האם זה מחליף טיפול תרופתי?</summary><p>לא ולא. הליווי משלים בלבד, ותמיד בתיאום עם הרופא/ת.</p></details><details><summary>האם את מאבחנת הפרעת קשב?</summary><p>לא. אבחון נעשה רק על ידי גורם רפואי/חינוכי מוסמך.</p></details><details><summary>מה גיל המינימום?</summary><p>10, בהתאמה אישית.</p></details><details><summary>איך זה עוזר אם הבעיה "ביולוגית"?</summary><p>הקושי הרגשי המצטבר (תסכול, ביטחון, דימוי) נבנה על גבי הביולוגיה — והוא ניתן לשחרור.</p></details></div></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>האם זה מחליף טיפול תרופתי?</summary><p>לא ולא. הליווי משלים בלבד, ותמיד בתיאום עם הרופא/ת.</p></details><details><summary>האם את מאבחנת הפרעת קשב?</summary><p>לא. אבחון נעשה רק על ידי גורם רפואי/חינוכי מוסמך.</p></details><details><summary>מה גיל המינימום?</summary><p>10, בהתאמה אישית.</p></details><details><summary>איך זה עוזר אם הבעיה "ביולוגית"?</summary><p>הקושי הרגשי המצטבר (תסכול, ביטחון, דימוי) נבנה על גבי הביולוגיה — והוא ניתן לשחרור.</p></details></div></section>
 
 <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
@@ -117,6 +127,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

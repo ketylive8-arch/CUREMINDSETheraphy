@@ -125,8 +125,18 @@
 <link rel="stylesheet" href="/site-nav.css" />
 <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 
 
 <header class="site"><div class="wrap">
@@ -162,7 +172,7 @@
     </div>
   </div>
 
-  <section class="blk story reveal">
+  <section class="blk story reveal" data-sc-in data-sc-stagger="70">
     <h2>הסיפור מאחורי השיטה</h2>
     <p><b>את הסרט שלי לא בחרתי. את הסוף — כן.</b></p>
     <p>כשהייתי ילדה, הבית שלי היה מקום קשה. ילדה לא מבינה מילים כמו "ביטחון" או "אהבה" — היא רואה, מרגישה ולומדת, כמו מי שצופה בסרט שלא בחרה בו. והתת-מודע שומר הכול, כי התפקיד שלו הוא לשמור עלינו.</p>
@@ -172,7 +182,7 @@
     <p>לאורך השנים ליוויתי מאות בני נוער, מבוגרים והורים בתהליכי עומק. מתבגרים לא מגיבים להטפות — הם מגיבים כשמישהו באמת מבין אותם ומדבר בגובה העיניים, בלי שיפוטיות ובלי "פתרונות" מוכנים מראש. זה היתרון שאני מביאה איתי לכל תהליך עם נוער, ומתוכו נולדה תוכנית הדגל הייעודית לנוער — CURE Teens.</p>
   </section>
 
-  <section class="blk reveal">
+  <section class="blk reveal" data-sc-in data-sc-stagger="70">
     <h2>העקרונות שמנחים אותי</h2>
     <ul class="signs">
       <li>כלים מעשיים לפני תיאוריה — כל מפגש מסתיים בצעד</li>
@@ -182,7 +192,7 @@
     </ul>
   </section>
 
-  <section class="blk reveal">
+  <section class="blk reveal" data-sc-in data-sc-stagger="70">
     <div class="glass process-card">
       <h2>התהליך איתי — ומה קורה בשיחת ההיכרות</h2>
       <p>כל תהליך מתחיל בשיחת היכרות קצרה וללא עלות, בזום או בטלפון, שבה נכיר את מה שעובר עלייך ונתאים יחד את הכיוון. אין צורך להגיע מוכנים — רק רצון להתחיל.</p>
@@ -191,7 +201,7 @@
 
   <div class="disclaimer reveal">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
-  <section class="blk reveal">
+  <section class="blk reveal" data-sc-in data-sc-stagger="70">
     <h2>מה קורה בשיחת ההיכרות הראשונה</h2>
     <p class="lead" style="font-size:17px;margin:0 0 16px">מתחילים בשיחה קצרה וללא עלות — ובודקים יחד אם זה מתאים לך.</p>
     <div class="cards">
@@ -201,7 +211,7 @@
     <p class="note" style="margin-top:14px">הליווי מתקיים פרונטלית בקליניקה בקריית מוצקין (מרכז דיאלוג) או בקריית חיים (מרכז תכלת), או טיפול וירטואלי בזום לכל הארץ.</p>
   </section>
 
-  <section class="blk reveal">
+  <section class="blk reveal" data-sc-in data-sc-stagger="70">
     <h2>שאלות נפוצות</h2>
     <div class="faq">
       <details><summary>מה ההכשרה שלי?</summary><p>מטפלת NLP ומאמנת מנטלית, מפתחת שיטת CureMindset, עם ניסיון של מאות תהליכים אישיים וסדנאות.</p></details>
@@ -243,6 +253,8 @@
     showAll();
   }
 </script>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

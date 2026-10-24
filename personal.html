@@ -107,8 +107,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -193,7 +203,7 @@
   </section>
 
   <div class="pull-quote">לא מגיעים עם תשובות. מגיעים עם שאלה אחת טובה.</div>
-  <section class="blk"><h2>מה קורה במפגש — ליווי אישי, אחד-על-אחד</h2><p>תהליך אחד-על-אחד. לא רשימת טיפים. מפגשים משלבים שיחה, דמיון מודרך וכלים לתרגול יומי — למבוגרים, לנוער (13+) ולהורים.</p>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>מה קורה במפגש — ליווי אישי, אחד-על-אחד</h2><p>תהליך אחד-על-אחד. לא רשימת טיפים. מפגשים משלבים שיחה, דמיון מודרך וכלים לתרגול יומי — למבוגרים, לנוער (13+) ולהורים.</p>
     <div class="cards"><div class="card"><h3>60-90 דקות</h3><p>מפגש עומק אחד, בקצב שנקבע על ידך ולא על ידי לוח זמנים.</p></div><div class="card"><h3>מדידה מול המטרה</h3><p>ההתקדמות נבדקת מול המטרה האישית שלך בכל שלב.</p></div><div class="card"><h3>המשך בין המפגשים</h3><p>תרגול קצר, המרחב הדיגיטלי, ועדכון מסאז' של מה זז.</p></div></div>
   </section>
 
@@ -215,6 +225,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

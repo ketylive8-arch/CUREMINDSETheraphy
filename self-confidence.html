@@ -91,8 +91,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -116,7 +126,7 @@
     <a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לשיחת היכרות ללא עלות</a>
   </div>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <h2>שלושת עמודי הבית הפנימי</h2>
     <p class="lead" style="font-size:17px;margin:0 0 16px">בתוכך יש בית. הוא לא נבנה על ידי אף אחד אחר — הוא שלך.</p>
     <div class="cards c3">
@@ -126,7 +136,7 @@
     </div>
   </section>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <h2>מעגל הביטחון — ביטחון עצמי הוא דרך, לא מתג</h2>
     <p>ביטחון עצמי לא מגיע ברגע אחד. הוא נבנה בסיבובים: כל פעולה מזינה את הבאה, וכל סיבוב מעלה אותך שלב. ככה זה עובד בכל תהליך שינוי שאני עושה:</p>
     <div class="cycle">
@@ -168,30 +178,30 @@
 
   <div class="pull-quote">בדיוק שם אני נכנסת: אני מלמדת אותך את הדרך.</div>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <p>מגדירים יחד תוצאה רצויה, יוצאים לפעולה, ומודדים את השיפור — סיבוב אחרי סיבוב, עד שהביטחון הופך לחלק ממי שאת/ה.</p>
   </section>
 
-  <section class="blk"><h2>למה ביטחון שמבוסס על אישור חיצוני מתמוטט</h2><p>כשהערך העצמי תלוי בהצלחה, במראה או בתגובות של אחרים, כל כישלון קטן מרגיש כמו איום קיומי. הקול המבקר הפנימי מתחזק, וההתרחקות גדלה — וכך נסגר מעגל שמחליש עוד יותר.</p></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>למה ביטחון שמבוסס על אישור חיצוני מתמוטט</h2><p>כשהערך העצמי תלוי בהצלחה, במראה או בתגובות של אחרים, כל כישלון קטן מרגיש כמו איום קיומי. הקול המבקר הפנימי מתחזק, וההתרחקות גדלה — וכך נסגר מעגל שמחליש עוד יותר.</p></section>
 
   <div class="pull-quote">דימוי עצמי נמוך וחרדה מזינים זה את זה — ככל שהביטחון חלש יותר, כל מצב לא ודאי נתפס כמסוכן יותר.</div>
 
-  <section class="blk"><p>העבודה בשיטת CureMindset מפרידה בין הזהות ('מי אני') לבין הביצוע ('מה עשיתי'), ובונה עוגן פנימי של ערך וכבוד עצמי — בסיס יציב שממנו אפשר לפעול גם באי-ודאות. כשהעוגן הזה מתחזק, גם רמת החרדה היומיומית יורדת באופן טבעי — ולכן עבודה על ביטחון עצמי ועל <a href="/anxiety-and-stress">ויסות חרדה</a> משלימות זו את זו.</p></section>
-  <section class="blk"><h2>מתי העמוד הזה מדבר אלייך</h2><ul class="signs"><li>קול מבקר פנימי חזק שאף פעם לא מרוצה</li><li>פחד מכישלון או מביקורת שמוביל להתרחקות</li><li>השוואה מתמדת לאחרים ותחושת 'לא מספיק'</li><li>קושי לקבל מחמאה או להציב גבול</li></ul></section>
-  <section class="blk"><h2>עקרונות עבודה</h2><div class="cards"><div class="card"><h3>זיהוי הקול המבקר</h3><p>מלמדים להבחין בין קול הביקורת לבין העובדות — ולהשתיק אותו בעדינות.</p></div><div class="card"><h3>עוגן הבית</h3><p>בונים תחושת ערך וביטחון קיומי פנימי שאינה תלויה בתוצאה.</p></div><div class="card"><h3>זהות של 'בוחר/ת'</h3><p>מעבר מ'נפגע/ת' ל'בוחר/ת' — שפה פנימית שמחזירה שליטה.</p></div><div class="card"><h3>פעולה למרות אי-ודאות</h3><p>צעד קטן אחד שמוכיח למערכת שאפשר, ומחזק את החוזק בהדרגה.</p></div></div></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><p>העבודה בשיטת CureMindset מפרידה בין הזהות ('מי אני') לבין הביצוע ('מה עשיתי'), ובונה עוגן פנימי של ערך וכבוד עצמי — בסיס יציב שממנו אפשר לפעול גם באי-ודאות. כשהעוגן הזה מתחזק, גם רמת החרדה היומיומית יורדת באופן טבעי — ולכן עבודה על ביטחון עצמי ועל <a href="/anxiety-and-stress">ויסות חרדה</a> משלימות זו את זו.</p></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>מתי העמוד הזה מדבר אלייך</h2><ul class="signs"><li>קול מבקר פנימי חזק שאף פעם לא מרוצה</li><li>פחד מכישלון או מביקורת שמוביל להתרחקות</li><li>השוואה מתמדת לאחרים ותחושת 'לא מספיק'</li><li>קושי לקבל מחמאה או להציב גבול</li></ul></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>עקרונות עבודה</h2><div class="cards"><div class="card"><h3>זיהוי הקול המבקר</h3><p>מלמדים להבחין בין קול הביקורת לבין העובדות — ולהשתיק אותו בעדינות.</p></div><div class="card"><h3>עוגן הבית</h3><p>בונים תחושת ערך וביטחון קיומי פנימי שאינה תלויה בתוצאה.</p></div><div class="card"><h3>זהות של 'בוחר/ת'</h3><p>מעבר מ'נפגע/ת' ל'בוחר/ת' — שפה פנימית שמחזירה שליטה.</p></div><div class="card"><h3>פעולה למרות אי-ודאות</h3><p>צעד קטן אחד שמוכיח למערכת שאפשר, ומחזק את החוזק בהדרגה.</p></div></div></section>
 
-  <section class="blk"><h2>אפקט המראה</h2><p>יש פער בין מה שאתה יודע שנכון למה שאתה עושה בפועל? זה "אפקט המראה" — התסכול מעצמך. זה לא כישלון אופי. זה חסך של מבנה פנימי. ומבנה אפשר לבנות.</p></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>אפקט המראה</h2><p>יש פער בין מה שאתה יודע שנכון למה שאתה עושה בפועל? זה "אפקט המראה" — התסכול מעצמך. זה לא כישלון אופי. זה חסך של מבנה פנימי. ומבנה אפשר לבנות.</p></section>
 
-  <section class="blk"><h2>שינוי רמת זהות</h2><p>בעומק, ביטחון הוא לא תחושה — הוא זהות. "אני חרדתית" היא לא זהות, היא התנהגות במסווה. בעבודת 9 השלבים מפרקים את "מי אני מספר לעצמי שאני" — ובונים זהות נבחרת, שההתנהגות נגררת אחריה באוטומט.</p></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>שינוי רמת זהות</h2><p>בעומק, ביטחון הוא לא תחושה — הוא זהות. "אני חרדתית" היא לא זהות, היא התנהגות במסווה. בעבודת 9 השלבים מפרקים את "מי אני מספר לעצמי שאני" — ובונים זהות נבחרת, שההתנהגות נגררת אחריה באוטומט.</p></section>
 
   <div class="pull-quote">לא מנסים להרגיש בטוח. משדרגים את מי שאתה.</div>
   <div class="cta-mid"><a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener">לבדיקת התאמה בחינם →</a></div>
 
-  <section class="blk"><h2>התהליך עם קטי — ומה קורה בשיחת ההיכרות</h2><p>בשיחת ההיכרות (ללא עלות) נזהה את הדפוס שמחליש את הביטחון ואת המצבים שבהם הוא מופיע. משם בונים תהליך מותאם שמשלב עבודה על הזהות הפנימית עם תרגול פעולה יומי — כדי שהביטחון ייבנה מהמעשה, לא רק מהמחשבה.</p></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>התהליך עם קטי — ומה קורה בשיחת ההיכרות</h2><p>בשיחת ההיכרות (ללא עלות) נזהה את הדפוס שמחליש את הביטחון ואת המצבים שבהם הוא מופיע. משם בונים תהליך מותאם שמשלב עבודה על הזהות הפנימית עם תרגול פעולה יומי — כדי שהביטחון ייבנה מהמעשה, לא רק מהמחשבה.</p></section>
 
   <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
-  <section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>אפשר באמת לשנות דימוי עצמי נמוך?</summary><p>כן. דימוי עצמי הוא דפוס נלמד, ולכן ניתן לשינוי. העבודה היא הדרגתית ומשלבת שינוי תפיסה עם תרגול מעשי.</p></details><details><summary>זה מתאים למתבגרים?</summary><p>מאוד. גיל ההתבגרות הוא תקופה מכוננת לדימוי עצמי — יש מסלול ייעודי לנוער עם ליווי אישי לחיזוק חוסן וביטחון.</p></details></div></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>אפשר באמת לשנות דימוי עצמי נמוך?</summary><p>כן. דימוי עצמי הוא דפוס נלמד, ולכן ניתן לשינוי. העבודה היא הדרגתית ומשלבת שינוי תפיסה עם תרגול מעשי.</p></details><details><summary>זה מתאים למתבגרים?</summary><p>מאוד. גיל ההתבגרות הוא תקופה מכוננת לדימוי עצמי — יש מסלול ייעודי לנוער עם ליווי אישי לחיזוק חוסן וביטחון.</p></details></div></section>
 
   <div class="ctaband">
     <h2>השינוי מתחיל בשיחה אחת</h2>
@@ -221,6 +231,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

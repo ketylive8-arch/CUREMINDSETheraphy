@@ -126,8 +126,18 @@
 <link rel="stylesheet" href="/modern.css?v=20261008">
 <meta property="og:title" content="הרצאות ואימון מנטלי לנוער ולהורים | קטי שגב" /><meta property="og:description" content="הרצאות ותכנים מעשיים על אימון מנטלי, ביטחון עצמי, דימוי עצמי ותקשורת עם בני נוער. בחיפה, בקריות ובזום." /><meta property="og:type" content="website" /><meta property="og:url" content="https://www.ketysegev.com/talk" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "הרצאות ואימון מנטלי לנוער ולהורים | קטי שגב", "description": "הרצאות ותכנים מעשיים על אימון מנטלי, ביטחון עצמי, דימוי עצמי ותקשורת עם בני נוער. בחיפה, בקריות ובזום.", "url": "https://www.ketysegev.com/talk", "inLanguage": "he"}</script>
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 
 
 <header class="bar">
@@ -331,5 +341,7 @@ fetch('/api/chat/config', { headers:{'X-Device-Token':TOKEN} })
   })
   .catch(function(){});
 </script>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 </body>
 </html>

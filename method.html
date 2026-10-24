@@ -73,8 +73,18 @@
 <link rel="stylesheet" href="/site-nav.css" />
 <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -99,11 +109,11 @@
 
   <div class="pull-quote">התסמין שלך הוא לא מי שאתה. הוא הודעה — הגנה ישנה שפעם ניסתה לשמור עליך, והיום כבר לא צריכה.</div>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <div class="big-stat"><span class="num">95%</span><span class="cap">מהחיים שלך מנוהלים על ידי התת-מודע. לכן "להחליט להשתנות" בהיגיון לבד לרוב לא מספיק — צריך לרדת אל הרמה הזו ולעבוד שם.</span></div>
   </section>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <h2>אבני הליבה של השיטה</h2>
     <div class="cards c3">
       <div class="card"><h3>חיבור למשאבי הליבה</h3><p>כל האנרגיה והחוסן כבר קיימים אצלך. עבודה על קו הזמן האישי מציפה את החוזקות שכבר נצברו.</p></div>
@@ -112,7 +122,7 @@
     </div>
   </section>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <h2>הפרוטוקול בן ארבעה שלבים — CURE</h2>
     <div class="cure">
       <div class="card">
@@ -134,13 +144,13 @@
     </div>
   </section>
 
-  <section class="blk">
+  <section class="blk" data-sc-in data-sc-stagger="70">
     <h2>שבעה פרוטוקולים, לא טופס אחד</h2>
     <p>בהתאם לדפוס שעולה בשיחת ההיכרות: עוגן הבית, שינוי רמת זהות, Future Pacing רגשי-גופני, הפקת אסטרטגיית חרדה, כללי קבלת החלטות, עקרונות חוסן לנוער, ועבודה על ערכים ואמונות. בוחרים יחד את הדרך המדויקת בשבילך.</p>
     <div class="cta-mid"><a class="btn primary" href="/contact">לשיחת היכרות בחינם →</a></div>
   </section>
 
-  <section class="blk faq">
+  <section class="blk faq" data-sc-in data-sc-stagger="70">
     <h2>שאלות נפוצות על השיטה</h2>
     <details><summary>זה באמת עובד בלי כוח רצון?</summary><p>כן — וזה בדיוק ההבדל. כוח רצון פועל ברמה המודעת, אבל הדפוסים הרגשיים חיים ברמה החושית והתת-חושית. CureMindset עובדת ישירות ברמה שבה הדפוס נמצא — ולכן השינוי מחזיק גם כש"המודע" עייף.</p></details>
     <details><summary>מה ההבדל בין זה לטיפול פסיכולוגי?</summary><p>CureMindset היא שיטת אימון וליווי רגשי מבוססת NLP — לא טיפול נפשי ולא אבחון. היא מתאימה למי שרוצה לעבוד על דפוסים, חרדות וחסימות בגישה מעשית, ואינה תחליף לטיפול כשנדרש טיפול.</p></details>
@@ -165,6 +175,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

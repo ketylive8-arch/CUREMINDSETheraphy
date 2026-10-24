@@ -76,8 +76,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -101,11 +111,11 @@
 </div>
 
 <div class="pull-quote">הסגירות היא לא נגדך. היא ההגנה הכי טובה שיש לו מפני עולם שנראה לו מאיים.</div>
-<section class="blk"><h2>מה עוזר ומה מחמיר</h2><div class="cards"><div class="card"><h3>עוזר</h3><ul><li>לווסת אותך לפני שמדברים</li><li>לדבר על ידו (בטיול, בנסיעה — לא פנים מול פנים)</li><li>לתת כלים במקום להפעיל כוח</li></ul></div><div class="card"><h3>מחמיר</h3><ul><li>"מה קרה לך?!" על כל דבר</li><li>להפוך את החדר לזירה</li><li>להשוות לאחים ולחברים</li><li>להעמיד פנים שהכל רגיל</li></ul></div></div></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>מה עוזר ומה מחמיר</h2><div class="cards"><div class="card"><h3>עוזר</h3><ul><li>לווסת אותך לפני שמדברים</li><li>לדבר על ידו (בטיול, בנסיעה — לא פנים מול פנים)</li><li>לתת כלים במקום להפעיל כוח</li></ul></div><div class="card"><h3>מחמיר</h3><ul><li>"מה קרה לך?!" על כל דבר</li><li>להפוך את החדר לזירה</li><li>להשוות לאחים ולחברים</li><li>להעמיד פנים שהכל רגיל</li></ul></div></div></section>
 <div class="big-stat"><span class="num">6 הצרכים</span><span class="cap">כל התנהגות של מתבגר ממלאת צורך: ודאות, גיוון, חשיבות, קשר, צמיחה או תרומה. סגירות היא בדרך כלל ניסיון כושל להשיג ודאות או חשיבות. מי שמבין את זה — מפסיק להילחם בסימפטום.</span></div>
 <div class="cta-mid"><a class="btn primary" href="https://calendly.com/ketysegev/meet-with-me">לשיחת היכרות — להורה →</a></div>
 
-<section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>מתי דואגים באמת?</summary><p>שינוי חד בשינה/אכילה, החרמה חברתית, סימני פגיעה עצמית — שם פונים גם לגורם מקצועי, מיד.</p></details><details><summary>אני צריך/ה לדבר איתו על זה?</summary><p>לא מיד, ולא בכינוס משפחתי. עדיף תנועה משותפת והקשבה ללא תיוג.</p></details><details><summary>מה הליווי שלך נותן שטיפול לא נותן?</summary><p>כלים גופניים לנער + עבודה על אפקט המראה של ההורה. לא תחליף לטיפול.</p></details><details><summary>כמה זמן עד שינוי?</summary><p>בליווי נער בסגירות: הקשר נבנה ב-2-3 מפגשים לפני עבודת העומק.</p></details></div></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>מתי דואגים באמת?</summary><p>שינוי חד בשינה/אכילה, החרמה חברתית, סימני פגיעה עצמית — שם פונים גם לגורם מקצועי, מיד.</p></details><details><summary>אני צריך/ה לדבר איתו על זה?</summary><p>לא מיד, ולא בכינוס משפחתי. עדיף תנועה משותפת והקשבה ללא תיוג.</p></details><details><summary>מה הליווי שלך נותן שטיפול לא נותן?</summary><p>כלים גופניים לנער + עבודה על אפקט המראה של ההורה. לא תחליף לטיפול.</p></details><details><summary>כמה זמן עד שינוי?</summary><p>בליווי נער בסגירות: הקשר נבנה ב-2-3 מפגשים לפני עבודת העומק.</p></details></div></section>
 
 <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
@@ -117,6 +127,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

@@ -85,8 +85,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -134,7 +144,7 @@
 
   <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
-  <section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>כמה עולה שיחת ההיכרות?</summary><p>שיחת ההיכרות היא ללא עלות וללא התחייבות.</p></details><details><summary>כמה זמן נמשך תהליך?</summary><p>זה מסע מדוד ולא מרוץ. בשיחת ההיכרות נמפה יחד את הצורך ונתאים את הקצב — יש מי שמרגישה שינוי כבר מהמפגש הראשון, ויש מי שצריכה עומק יותר.</p></details><details><summary>האם זה מתאים גם לגברים?</summary><p>בהחלט. השיטה מתאימה לנשים ולגברים, למבוגרים, לבני נוער ולהורים כאחד.</p></details><details><summary>אפשר גם אונליין?</summary><p>כן, אפשר מפגשים בזום מכל מקום בארץ, וגם פרונטלי.</p></details><details><summary>איך מתבצע התשלום?</summary><p>את פרטי התשלום והמסלול המתאים סוגרים יחד אחרי שיחת ההיכרות, בלי התחייבות מראש. במרחב הדיגיטלי מתחילים ב-7 ימי התנסות חינם, בלי כרטיס אשראי.</p></details></div></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>כמה עולה שיחת ההיכרות?</summary><p>שיחת ההיכרות היא ללא עלות וללא התחייבות.</p></details><details><summary>כמה זמן נמשך תהליך?</summary><p>זה מסע מדוד ולא מרוץ. בשיחת ההיכרות נמפה יחד את הצורך ונתאים את הקצב — יש מי שמרגישה שינוי כבר מהמפגש הראשון, ויש מי שצריכה עומק יותר.</p></details><details><summary>האם זה מתאים גם לגברים?</summary><p>בהחלט. השיטה מתאימה לנשים ולגברים, למבוגרים, לבני נוער ולהורים כאחד.</p></details><details><summary>אפשר גם אונליין?</summary><p>כן, אפשר מפגשים בזום מכל מקום בארץ, וגם פרונטלי.</p></details><details><summary>איך מתבצע התשלום?</summary><p>את פרטי התשלום והמסלול המתאים סוגרים יחד אחרי שיחת ההיכרות, בלי התחייבות מראש. במרחב הדיגיטלי מתחילים ב-7 ימי התנסות חינם, בלי כרטיס אשראי.</p></details></div></section>
 
   <div class="ctaband">
     <h2>השינוי מתחיל בשיחה אחת</h2>
@@ -177,6 +187,8 @@
     });
   })();
 </script>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

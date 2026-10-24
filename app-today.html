@@ -48,14 +48,24 @@
 <link rel="canonical" href="https://www.ketysegev.com/app-today" />
 <meta property="og:title" content="אימון מנטלי יומי אונליין | CureMindset · קטי שגב" /><meta property="og:description" content="תרגול יומי קצר לאימון מנטלי, מיקוד פנימי ובניית ביטחון. מתאים לנוער, להורים ולמבוגרים, מכל מקום בארץ." /><meta property="og:type" content="website" /><meta property="og:url" content="https://www.ketysegev.com/app-today" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "אימון מנטלי יומי אונליין | CureMindset · קטי שגב", "description": "תרגול יומי קצר לאימון מנטלי, מיקוד פנימי ובניית ביטחון. מתאים לנוער, להורים ולמבוגרים, מכל מקום בארץ.", "url": "https://www.ketysegev.com/app-today", "inLanguage": "he"}</script>
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="bar">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset" aria-label="CureMindset — לדף הבית" /></a>
   <a href="/programs" style="color:var(--gold-deep);text-decoration:none;font-weight:700;font-size:14px">התוכנית שלי</a>
 </header>
 
-<main class="wrap">
+<main class="wrap" data-sc-in data-sc-stagger="70">
   <div class="hello">
     <div class="eyebrow">היום שלי</div>
     <h1 id="greet">ברוכה הבאה 🌿</h1>
@@ -104,6 +114,8 @@ var sos=document.getElementById('sos');
 document.getElementById('sosBtn').onclick=function(){ sos.showModal ? sos.showModal() : sos.setAttribute('open',''); };
 document.getElementById('sosClose').onclick=function(){ sos.close ? sos.close() : sos.removeAttribute('open'); };
 </script>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

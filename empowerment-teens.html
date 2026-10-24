@@ -76,8 +76,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -101,11 +111,11 @@
 </div>
 
 <div class="pull-quote">חוסן הוא לא גן. חוסן זו מיומנות — ומיומנות אפשר לאמן.</div>
-<section class="blk"><h2>7 העקרונות</h2><ul class="num-cards two-col"><li><span class="n">1</span><b>ויסות רגשי</b> — לדעת מה עולה לי ולהוריד את זה לבד</li><li><span class="n">2</span><b>עוגן פנימי</b> — מקום יציב בגוף שאני חוזר אליו תמיד</li><li><span class="n">3</span><b>דיבור פנימי</b> — לזהות את הקול המבקר ולהחליף אותו</li><li><span class="n">4</span><b>מיקוד</b> — להפנות את הראש למה שכן בשליטה שלי</li><li><span class="n">5</span><b>נשימה</b> — כלי שתי דקות שמרגיע את הגוף ברגע</li><li><span class="n">6</span><b>אומץ חברתי</b> — להיות אני גם כשהקבוצה מושכת</li><li><span class="n">7</span><b>תרגול יומי</b> — חוסן זה אימון, לא מזל</li></ul></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>7 העקרונות</h2><ul class="num-cards two-col"><li><span class="n">1</span><b>ויסות רגשי</b> — לדעת מה עולה לי ולהוריד את זה לבד</li><li><span class="n">2</span><b>עוגן פנימי</b> — מקום יציב בגוף שאני חוזר אליו תמיד</li><li><span class="n">3</span><b>דיבור פנימי</b> — לזהות את הקול המבקר ולהחליף אותו</li><li><span class="n">4</span><b>מיקוד</b> — להפנות את הראש למה שכן בשליטה שלי</li><li><span class="n">5</span><b>נשימה</b> — כלי שתי דקות שמרגיע את הגוף ברגע</li><li><span class="n">6</span><b>אומץ חברתי</b> — להיות אני גם כשהקבוצה מושכת</li><li><span class="n">7</span><b>תרגול יומי</b> — חוסן זה אימון, לא מזל</li></ul></section>
 <div class="big-stat"><span class="num">90 דקות</span><span class="cap">סדנה אחת מכסה את כל שבעת העקרונות. או בליווי פרטני: 45 דקות, 2-3 עקרונות במפגש. שפה מותאמת גיל — בן 13 לא מדבר כמו בן 17.</span></div>
 <div class="cta-mid"><a class="btn primary" href="/parents">לפרטים להורים →</a><a class="btn primary" href="/contact">להזמנת סדנה למוסד שלך →</a></div>
 
-<section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>לאילו גילאים?</summary><p>13-18, בקבוצות גיל מדורגות.</p></details><details><summary>זה טיפול קבוצתי?</summary><p>לא. זו סדנת העצמה מניעתית; במצוקה משמעותית מומלץ ליווי פרטני.</p></details><details><summary>אפשר להזמין לבית ספר או לתנועת נוער?</summary><p>כן, גם בפורמט מפגש אחד וגם כסדרה.</p></details><details><summary>מה ההורה מקבל?</summary><p>מפגש סיכום: מה הנער קיבל, ואיך ממשיכים בבית.</p></details></div></section>
+<section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>לאילו גילאים?</summary><p>13-18, בקבוצות גיל מדורגות.</p></details><details><summary>זה טיפול קבוצתי?</summary><p>לא. זו סדנת העצמה מניעתית; במצוקה משמעותית מומלץ ליווי פרטני.</p></details><details><summary>אפשר להזמין לבית ספר או לתנועת נוער?</summary><p>כן, גם בפורמט מפגש אחד וגם כסדרה.</p></details><details><summary>מה ההורה מקבל?</summary><p>מפגש סיכום: מה הנער קיבל, ואיך ממשיכים בבית.</p></details></div></section>
 
 <div class="disclaimer">CureMindset הוא כלי לאימון, למידה ותרגול אישי בשיטת NLP. הוא אינו תחליף לאבחון, לטיפול רפואי או נפשי, ואינו מיועד למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
@@ -117,6 +127,8 @@
   <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
   <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
 </div></footer>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>

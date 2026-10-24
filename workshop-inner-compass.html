@@ -103,8 +103,18 @@
   <link rel="stylesheet" href="/site-nav.css" />
   <script src="/site-nav.js" defer></script>
 <link rel="stylesheet" href="/modern.css?v=20261008">
+<link rel="stylesheet" href="/vendor/scrollcraft/scrollcraft.css">
+<style>
+  :root{
+    --sc-canvas:#FBF7EF; --sc-surface:#FFFFFF; --sc-ink:#2D2A26; --sc-ink-soft:#6B6560;
+    --sc-accent:#8a6a2f; --sc-accent-ink:#FBF7EF;
+    --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
+  }
+</style>
 </head>
 <body>
+<div class="sc-grain" aria-hidden="true"></div>
+
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" aria-label="CureMindset — לדף הבית" /></a>
   <button type="button" class="nav-toggle" aria-label="תפריט ניווט" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
@@ -135,42 +145,42 @@
 <main class="wrap">
   <p style="font-size:19px;margin:30px 0 0">סדנת חוויה קבוצתית קטנה בהנחיית קטי שגב. לא הרצאה ולא תיאוריה — תרגול חי של הכלים שמרגיעים את מערכת העצבים ומחזירים לך שליטה. יוצאים עם ערכה דיגיטלית ועם שפה פנימית חדשה.</p>
 
-  <section class="blk"><h2>אם זה מרגיש מוכר —</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>אם זה מרגיש מוכר —</h2>
     <ul class="pains"><li>המחשבות לא נעצרות — במיוחד בלילה ובבקרים.</li><li>יש קול פנימי שמבקר אותך יותר ממה שהוא עוזר.</li><li>ניסית &quot;להשתלט על זה בהיגיון&quot; — וזה לא מחזיק.</li><li>אתה יודע מה לעשות, אבל הגוף מגיב אחרת ברגע האמת.</li></ul>
   </section>
 
-  <section class="blk"><h2>מה תיקח/י מהסדנה</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>מה תיקח/י מהסדנה</h2>
     <ul class="ticks"><li>להבין למה מערכת העצבים נכנסת לכוננות — ואיך לכבות אותה תוך פחות מדקה.</li><li>כלי עוגן אישי שאפשר להפעיל בכל רגע קשה, בלי שאף אחד ישים לב.</li><li>לזהות את הדפוס שחוזר אצלך — ולהתחיל לשחרר אותו במקום להילחם בו.</li><li>שפה פנימית חדשה: מביקורת למדריך מיטיב.</li></ul>
   </section>
 
-  <section class="blk"><h2>איך הסדנה בנויה</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>איך הסדנה בנויה</h2>
     <div class="steps"><div class="step"><div class="step-n">1</div><div><h3>מפגש 1 · בהירות — להבין את התגובה (Clarity)</h3><p>מה באמת קורה כשחרדה או עומס עולים, איך לקרוא את הסימנים המוקדמים, ותרגול ראשון של נשימה ועיגון להרגעת הגוף.</p></div></div><div class="step"><div class="step-n">2</div><div><h3>מפגש 2 · שחרור חסמים — לפגוש את מה שחוסם (Unblock)</h3><p>עבודת חלקים: הכרת הקול המבקר והפחד שמתחתיו, שחרור הדפוס הישן והפיכתו לבעל ברית.</p></div></div><div class="step"><div class="step-n">3</div><div><h3>מפגש 3 · חיווט מחדש והעצמה (Rewire + Empower)</h3><p>עיגון התגובה החדשה, Future Pacing — חזרה מודרכת לתסריט עתידי, ובניית תוכנית אישית להמשך עם הכלים שלך.</p></div></div></div>
   </section>
 
-  <section class="blk" id="method"><h2>השיטה שמאחורי הסדנה — פרוטוקול CURE בארבעה שלבים</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70" id="method"><h2>השיטה שמאחורי הסדנה — פרוטוקול CURE בארבעה שלבים</h2>
     <p style="margin:0 0 14px">הסדנה הזאת היא לא הרצאה על השיטה — היא השיטה בפעולה. שלושת המפגשים בנויים על פרוטוקול CURE בן ארבעת השלבים של CureMindset, כך שבכל שלב אתה מרגיש את המעבר — לא רק מבין אותו.</p>
     <div class="steps"><div class="step"><div class="step-n">C</div><div><h3>Clarity · בהירות</h3><p>מפגש 1 — מזהים את התגובה הראשונית ואת התפקיד שהיא באה למלא, וממפים אותה בגוף. ברגע שמבינים את 'שומר הראש', הדרמה של הלחימה יורדת.</p></div></div><div class="step"><div class="step-n">U</div><div><h3>Unblock · שחרור חסמים</h3><p>מפגש 2 — עבודת חלקים: פוגשים את הקול המבקר ואת הפחד שמתחתיו, ומשחררים את העומס שהצטבר. המערכת העצבית מקבלת מרחב בטוח.</p></div></div><div class="step"><div class="step-n">R</div><div><h3>Rewire · חיווט מחדש</h3><p>מפגש 3 — עיגון התגובה החדשה ו-Future Pacing: המוח כותב מחדש את פרוטוקול הביטחון שלו, ברמה החושית שבה הדפוס באמת חי.</p></div></div><div class="step"><div class="step-n">E</div><div><h3>Empower · העצמה</h3><p>ממפגש 3 והלאה — יומן תרגול ל-21 יום, ערכה דיגיטלית והטמעה לילית. יוצאים עם מערכת הפעלה פנימית, לא עם חוויה חד-פעמית.</p></div></div></div>
     <p style="margin:14px 0 0;color:var(--ink-500)"><a href="/method">לקרוא על השיטה המלאה ←</a></p>
   </section>
 
-  <section class="blk"><h2>מה כלול</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>מה כלול</h2>
     <ul class="ticks"><li>3 מפגשים חיים בקבוצה קטנה עם קטי</li><li>ערכה דיגיטלית: הקלטות אודיו של התרגולים</li><li>כרטיסיות עוגן ו-SOS להורדה</li><li>יומן תרגול מודרך ל-21 יום</li><li>גישה לקבוצת תמיכה סגורה של המשתתפים</li></ul>
   </section>
 
-  <section class="blk"><h2>למי זה מתאים</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>למי זה מתאים</h2>
     <ul class="pains"><li>מי שחי עם חרדה, עומס מתמשך או קול ביקורתי פנימי.</li><li>מי שניסה כלים &quot;הגיוניים&quot; וגילה שהם לא מחזיקים ברגע האמת.</li><li>מי שמעדיף ללמוד בקבוצה קטנה ובטוחה, לא מול מסך לבד.</li><li>הורים שרוצים לרשום מתבגר/ת בן 16+ (לנוער צעיר יותר — ראו CURE Teens).</li></ul>
   </section>
 
-  <section class="blk"><h2>כל הפרטים במקום אחד</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>כל הפרטים במקום אחד</h2>
     <dl class="facts"><div class="fact"><dt>פורמט</dt><dd>סדנה קבוצתית חווייתית (פרונטלי / זום)</dd></div><div class="fact"><dt>מפגשים</dt><dd>3 מפגשים</dd></div><div class="fact"><dt>אורך מפגש</dt><dd>שעתיים כל מפגש</dd></div><div class="fact"><dt>מועדים</dt><dd>מחזור חדש נפתח מדי חודש — התאריך המעודכן נמסר בשיחת ההיכרות</dd></div><div class="fact"><dt>מיקום</dt><dd>חיפה והקריות · או בזום בשידור חי</dd></div><div class="fact"><dt>גודל קבוצה</dt><dd>קבוצה אינטימית — עד 8 משתתפים</dd></div><div class="fact"><dt>מחיר</dt><dd>נמסר בשיחת ההיכרות · כולל ערכה דיגיטלית · מע&quot;מ כלול</dd></div><div class="fact"><dt>אפשרויות תשלום</dt><dd>תשלום יחיד מאובטח דרך Grow · עד 3 תשלומים ללא ריבית · Bit / העברה בנקאית בתיאום</dd></div></dl>
     <div class="guarantee"><span style="font-size:20px">🛡️</span><div><b>ההבטחה שלי: </b>אם אחרי המפגש הראשון תרגיש שזה לא בשבילך — תקבל החזר מלא, בלי שאלות.</div></div>
   </section>
 
-  <section class="blk"><h2>למה לסמוך על זה</h2>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>למה לסמוך על זה</h2>
     <div class="proof"><div class="proof-item"><span>✦</span>500+ תהליכים אישיים שקטי ליוותה</div><div class="proof-item"><span>✦</span>שיטת CURE — מבוססת NLP, עבודת חלקים וויסות סומטי</div><div class="proof-item"><span>✦</span>קבוצות קטנות בלבד — עד 8 איש, יחס אישי מלא</div></div>
   </section>
 
-  <section class="blk"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>אני לא אוהב לשתף מול אנשים — זה מתאים לי?</summary><p>הסדנה בנויה כך שתמיד אתה בוחר כמה לשתף. חלק גדול מהעבודה הוא אישי ופנימי, והקבוצה קטנה ובטוחה. אף אחד לא נדרש לחשוף דבר שלא נוח לו.</p></details><details><summary>מה ההבדל בין הסדנה לאפליקציה?</summary><p>האפליקציה היא תרגול יומי אישי עם קטי הדיגיטלית. הסדנה היא חוויה קבוצתית חיה עם קטי עצמה, עומק רגשי גדול יותר והכוח של קבוצה. רבים משלבים את השניים.</p></details><details><summary>זה טיפול פסיכולוגי?</summary><p>לא. זו סדנת אימון ולמידה בשיטת NLP. היא אינה תחליף לטיפול נפשי או רפואי. אם את/ה במצוקה מתמשכת — חשוב לפנות גם לאיש מקצוע.</p></details><details><summary>מה אם אני מפספס מפגש?</summary><p>המפגשים בנויים ברצף, אבל אם פספסת — תקבל/י סיכום והקלטה של התרגולים, ונשלים יחד את מה שצריך.</p></details></div></section>
+  <section class="blk" data-sc-in data-sc-stagger="70"><h2>שאלות נפוצות</h2><div class="faq"><details><summary>אני לא אוהב לשתף מול אנשים — זה מתאים לי?</summary><p>הסדנה בנויה כך שתמיד אתה בוחר כמה לשתף. חלק גדול מהעבודה הוא אישי ופנימי, והקבוצה קטנה ובטוחה. אף אחד לא נדרש לחשוף דבר שלא נוח לו.</p></details><details><summary>מה ההבדל בין הסדנה לאפליקציה?</summary><p>האפליקציה היא תרגול יומי אישי עם קטי הדיגיטלית. הסדנה היא חוויה קבוצתית חיה עם קטי עצמה, עומק רגשי גדול יותר והכוח של קבוצה. רבים משלבים את השניים.</p></details><details><summary>זה טיפול פסיכולוגי?</summary><p>לא. זו סדנת אימון ולמידה בשיטת NLP. היא אינה תחליף לטיפול נפשי או רפואי. אם את/ה במצוקה מתמשכת — חשוב לפנות גם לאיש מקצוע.</p></details><details><summary>מה אם אני מפספס מפגש?</summary><p>המפגשים בנויים ברצף, אבל אם פספסת — תקבל/י סיכום והקלטה של התרגולים, ונשלים יחד את מה שצריך.</p></details></div></section>
 
   <div class="disclaimer">CureMindset והסדנאות הם מרחב לאימון, למידה ותרגול אישי בשיטת NLP. הם אינם תחליף לאבחון, טיפול רפואי או נפשי, ואינם מיועדים למצבי חירום. במצוקה מיידית פנו לעזרה מקצועית — ער"ן 1201, מד"א 101.</div>
 
@@ -221,6 +231,8 @@
     });
   })();
 </script>
+<script src="/vendor/scrollcraft/scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 </body>
