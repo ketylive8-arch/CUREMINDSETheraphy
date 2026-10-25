@@ -27,6 +27,19 @@
       window.__cmOpenApp || APP_ENTRY_PATHS.includes(location.pathname) ? "app" : "home"
     );
     useEffect(hideSplash, []);
+    // סגנון הגלילה (scroll-craft) רץ רק על דף הבית השיווקי, לא על האזור האישי (אפליקציה).
+    // ה-mount חייב לקרות אחרי שה-DOM של React צויר, אז הוא ממתין לפריים הבא.
+    useEffect(() => {
+      if (view !== "home" || !window.ScrollCraft) return;
+      let instance;
+      const raf = requestAnimationFrame(() => {
+        instance = window.ScrollCraft.mount(document.body);
+      });
+      return () => {
+        cancelAnimationFrame(raf);
+        if (instance) instance.destroy();
+      };
+    }, [view]);
     return (
       <React.Fragment>
         {view === "home" ? <Home onEnterApp={() => setView("app")} /> : null}

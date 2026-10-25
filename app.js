@@ -235,37 +235,9 @@ const CONTENT = {
 /* Hooks & Shared Components                                         */
 /* ---------------------------------------------------------------- */
 
-function useInView(options) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setInView(true);
-            obs.disconnect();
-          }
-        });
-      },
-      { threshold: 0.15, ...options }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, inView];
-}
-
 function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
-  const [ref, inView] = useInView();
   return (
-    <Tag
-      ref={ref}
-      className={`cm-reveal ${inView ? "cm-in" : ""} ${className}`}
-      {...rest}
-    >
+    <Tag data-sc-in className={className} {...rest}>
       {children}
     </Tag>
   );
