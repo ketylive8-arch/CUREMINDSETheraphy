@@ -1017,7 +1017,10 @@ const LEAD_SUBJECTS = [
 ];
 
 function normalizePhone(v) {
-  return (v || "").replace(/[^\d]/g, "");
+  let d = (v || "").replace(/[^\d]/g, "");
+  if (d.startsWith("972") && d.length === 12) d = "0" + d.slice(3);
+  else if (d.startsWith("9720") && d.length === 13) d = "0" + d.slice(4);
+  return d;
 }
 
 function LeadForm({ compact = false }) {
