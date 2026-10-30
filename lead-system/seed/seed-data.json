@@ -1,0 +1,43 @@
+{
+  "admin": {
+    "name": "קטי שגב",
+    "email": "segevmkg@gmail.com",
+    "password": "Segev2026!",
+    "role": "admin"
+  },
+  "leads": [
+    { "company": "רשת מלונות אסטרל", "email": "aria@astralhotels.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "נחסם ע\"י השרת (550 Access denied)", "sent_at": "2026-10-29" },
+    { "company": "רשת מלונות אסטרל", "email": "info@astralhotels.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "נחסם ע\"י השרת (550 Access denied)", "sent_at": "2026-10-29" },
+    { "company": "מלון ליטוב", "email": "litovhotel@gmail.com", "sector": "מלונאות", "status": "bounced", "bounce_reason": "תיבת הדואר מלאה (552)", "sent_at": "2026-10-29" },
+    { "company": "ריזורט חדרה", "email": "reception@resorthadera.com", "sector": "מלונאות", "status": "bounced", "bounce_reason": "הדומיין לא קיים (NXDOMAIN)", "sent_at": "2026-10-29" },
+    { "company": "ישרוטל", "email": "amgsrv2@isrotel.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "הכתובת לא קיימת (554)", "sent_at": "2026-09-29" },
+    { "company": "Dopro Cosmetics", "email": "info@doprocosmetics.co.il", "sector": "קוסמטיקה", "status": "bounced", "bounce_reason": "תיבת הדואר מלאה (550)", "sent_at": "2026-10-21" },
+    { "company": "נוב-יישן (יבוא ואלקטרוניקה)", "email": "sales@novation.co.il", "sector": "אלקטרוניקה", "status": "bounced", "bounce_reason": "נחסם ע\"י השרת (550 Access denied)", "sent_at": "2026-10-21" },
+    { "company": "מסעדת אירופה 1917", "email": "info@europa1917.com", "sector": "מסעדנות", "status": "bounced", "bounce_reason": "הדומיין לא קיים (NXDOMAIN)", "sent_at": "2026-09-29" },
+    { "company": "ישרוטל", "email": "br-gsrv1@isrotel.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "הכתובת לא קיימת (554)", "sent_at": "2026-09-29" },
+    { "company": "ישרוטל", "email": "agamim@isrotel.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "הכתובת לא קיימת (554)", "sent_at": "2026-09-29" },
+    { "company": "מלון פגסוס", "email": "info@pegasus-hotel.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "השרת דחה את החיבור (זמני 4.4.1)", "sent_at": "2026-09-25" },
+    { "company": "מלון שרון הרצליה", "email": "reservations@sharon.co.il", "sector": "מלונאות", "status": "bounced", "bounce_reason": "נחסם ע\"י השרת (550 Access denied)", "sent_at": "2026-09-22" },
+    { "company": "My Jerusalem View", "email": "myjerusalemview@gmail.com", "sector": "מלונאות", "status": "bounced", "bounce_reason": "המשתמש לא קיים (550)", "sent_at": "2026-09-28" },
+
+    { "company": "מלון Almond (C-Hotels)", "email": "info@c-hotels.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "בית ספרדי ירושלים", "email": "reservations@sephardichouse.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון שרון הרצליה", "email": "garry@sharon.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "רשת מלונות אטלס", "email": "management@atlashotels.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "רשת מלונות אטלס", "email": "contact-res@atlashotels.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון מקסים תל אביב", "email": "reservation@telavivmaxim.com", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "לאונרדו חיפה", "email": "infohaifa@leonardo-hotels.com", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון נורמן תל אביב", "email": "reservations@thenorman.com", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון עלמא", "email": "info@almahotel.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון 75", "email": "info@hotel75.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון סטאי", "email": "res@thesetaihotel.co.il", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+    { "company": "מלון רום הגולן", "email": "info@romhagolan.com", "sector": "מלונאות", "status": "sent", "sent_at": "2026-10-29" },
+
+    { "company": "מלון מדי הרצליה", "email": "res@medi.co.il", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-25" },
+    { "company": "מלון ויטאל", "email": "info@vitalhotel.co.il", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-25" },
+    { "company": "מלון פסטורל כפר בלום", "email": "res@pastoralhotel.org", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-24" },
+    { "company": "מלון מיתרים", "email": "info@meytarimhotel.co.il", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-24" },
+    { "company": "מלון גליליון", "email": "reservation@galilion.co.il", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-23" },
+    { "company": "מלון כפר גלעדי", "email": "office@kfar-giladi.co.il", "sector": "מלונאות", "status": "no_reply", "sent_at": "2026-09-23" }
+  ]
+}
