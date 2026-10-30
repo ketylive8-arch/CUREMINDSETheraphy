@@ -15,6 +15,9 @@ $data = json_decode((string) file_get_contents(__DIR__ . '/seed-data.json'), tru
 
 // --- Admin user ---------------------------------------------------------
 $a = $data['admin'];
+// In production the password comes from the ADMIN_PASSWORD env var so the
+// public login secret is never the value committed to the repo.
+$adminPassword = getenv('ADMIN_PASSWORD') ?: $a['password'];
 $exists = $pdo->prepare('SELECT id FROM users WHERE email = ?');
 $exists->execute([$a['email']]);
 if (!$exists->fetch()) {
@@ -24,7 +27,7 @@ if (!$exists->fetch()) {
     $st->execute([
         $a['name'],
         $a['email'],
-        password_hash($a['password'], PASSWORD_BCRYPT),
+        password_hash($adminPassword, PASSWORD_BCRYPT),
         $a['role'],
         'ADMIN',
     ]);
