@@ -23,9 +23,15 @@
 }
 
 /* ============================================================
- * עיצוב Hero אדיטוריאלי — בהשראת DESIGN_STRATEGY (Good Inside × The Soke)
- * מיתוג זהב-קרם נשמר. RTL, מובייל-first. inline ב-patch כי styles.css מהודר וישן.
+ * עיצוב Hero — לפי מערכת העיצוב החדשה (Claude Design handoff, 2026-10)
+ * מרחיב את הטוקנים הקיימים (זהב/קרם) עם טרקוטה כצבע-משנה, לפי
+ * design_handoff_curemindset/README.md §9. לא מחליף את הפלטה — מוסיף לה.
+ * RTL, מובייל-first. inline ב-patch כי styles.css מהודר וישן.
  * ============================================================ */
+:root{
+  --cm-terracotta:#BE7240; --cm-terracotta-deep:#8F5024; --cm-apricot:#E0A878;
+  --cm-r-lg:26px; --cm-r-xl:38px;
+}
 .hb-hero{
   position:relative; overflow:hidden;
   background:linear-gradient(180deg,#FCFAF6 0%, #F8F4EC 100%);
@@ -36,37 +42,56 @@
   display:grid; grid-template-columns:1fr; gap:clamp(36px,5vw,72px); align-items:center;
 }
 .hb-hero__text{ text-align:start; }
-.hb-hero__eyebrow{
-  font-family:Rubik,sans-serif; font-weight:600; font-size:12.5px; text-transform:uppercase;
-  letter-spacing:.2em; color:#8A6A2F; display:inline-flex; align-items:center; gap:12px; margin-bottom:22px;
+.hb-hero__kicker{
+  display:inline-flex; align-items:center; gap:9px; margin:0 0 22px; padding:7px 16px;
+  border-radius:999px; background:#fff; border:1px solid rgba(70,58,44,.12);
+  font-family:Rubik,sans-serif; font-size:13px; font-weight:600; color:#4F4A43;
 }
-.hb-hero__eyebrow::before{ content:""; width:28px; height:1px; background:#C2974A; display:inline-block; }
+.hb-hero__kicker-dot{ width:8px; height:8px; border-radius:50%; background:#C2974A; animation:cmHeroPulse 2.6s infinite; flex-shrink:0; }
+@keyframes cmHeroPulse{
+  0%{ box-shadow:0 0 0 0 rgba(194,151,74,.45); }
+  70%{ box-shadow:0 0 0 10px rgba(194,151,74,0); }
+  100%{ box-shadow:0 0 0 0 rgba(194,151,74,0); }
+}
 .hb-hero__title{
-  font-family:Rubik,sans-serif; font-weight:600; color:#221F1A;
-  font-size:clamp(1.9rem,3.2vw,2.9rem); line-height:1.22; letter-spacing:-.005em;
-  margin:0 0 20px; max-width:20ch; text-wrap:balance;
+  font-family:Rubik,sans-serif; font-weight:700; color:#221F1A;
+  font-size:clamp(1.9rem,3.6vw,3.3rem); line-height:1.15; letter-spacing:-.01em;
+  margin:0 0 20px; max-width:19ch; text-wrap:balance;
+}
+.hb-hero__title span{ display:block; }
+.hb-hero__title-em{
+  background:linear-gradient(110deg,#C2974A,var(--cm-terracotta));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
 }
 .hb-hero__sub{
   font-family:Assistant,sans-serif; color:#5B554D; font-weight:400;
-  font-size:clamp(16px,1.4vw,18.5px); line-height:1.75; max-width:48ch; margin:0 0 34px;
+  font-size:clamp(16px,1.4vw,18.5px); line-height:1.75; max-width:48ch; margin:0 0 30px;
 }
-.hb-hero__cta{ display:flex; flex-wrap:wrap; align-items:center; gap:18px; }
+.hb-hero__cta{ display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-bottom:26px; }
 .hb-hero__btn{
-  display:inline-flex; align-items:center; justify-content:center;
-  background:#C2974A; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:17px;
-  padding:16px 32px; border-radius:999px; text-decoration:none; border:0; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  background:#C2974A; color:#fff; font-family:Rubik,sans-serif; font-weight:700; font-size:16.5px;
+  padding:15px 30px; border-radius:999px; text-decoration:none; border:0; cursor:pointer;
   box-shadow:0 16px 38px -14px rgba(194,151,74,.65); transition:transform .25s, box-shadow .25s, background .25s;
 }
 .hb-hero__btn:hover{ background:#B0843C; transform:translateY(-2px); box-shadow:0 22px 48px -16px rgba(194,151,74,.8); }
 .hb-hero__link{
-  font-family:Rubik,sans-serif; font-weight:700; font-size:16px; color:#8A6A2F; text-decoration:none;
-  display:inline-flex; align-items:center; gap:8px; padding:6px 4px; transition:color .2s, gap .2s;
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  font-family:Rubik,sans-serif; font-weight:600; font-size:16px; color:#33302B; text-decoration:none;
+  background:#fff; border:1px solid rgba(70,58,44,.14); border-radius:999px; padding:14px 26px;
+  transition:background .2s, border-color .2s;
 }
-.hb-hero__link:hover{ color:#6E521F; gap:12px; }
+.hb-hero__link:hover{ background:#F5EFE6; border-color:rgba(194,151,74,.4); }
+.hb-hero__trust{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:10px 22px; }
+.hb-hero__trust li{ position:relative; font-size:14px; color:#8C8579; font-weight:500; font-family:Assistant,sans-serif; }
+.hb-hero__trust li:not(:last-child)::after{
+  content:""; position:absolute; inset-inline-end:-12px; top:50%; width:4px; height:4px;
+  border-radius:50%; background:var(--cm-apricot); transform:translateY(-50%);
+}
 .hb-hero__media{ position:relative; justify-self:center; width:100%; max-width:480px; }
 .hb-hero__frame{
-  position:relative; aspect-ratio:4/5; border-radius:20px; overflow:hidden;
-  background:#fff; box-shadow:0 34px 70px -32px rgba(45,42,38,.4);
+  position:relative; aspect-ratio:4/5; border-radius:var(--cm-r-xl); overflow:hidden;
+  background:#fff; border:1px solid rgba(70,58,44,.12); box-shadow:0 34px 70px -32px rgba(45,42,38,.4);
 }
 .hb-hero__frame img{ width:100%; height:100%; object-fit:cover; display:block; }
 
@@ -74,7 +99,7 @@
   .hb-hero__inner{ grid-template-columns:0.9fr 1.1fr; }
   .hb-hero__media{ order:-1; max-width:100%; }   /* מדיה ראשונה = צד שמאל ב-RTL */
 }
-@media (prefers-reduced-motion:reduce){ .hb-hero__btn,.hb-hero__link{ transition:none; } }
+@media (prefers-reduced-motion:reduce){ .hb-hero__btn,.hb-hero__link,.hb-hero__kicker-dot{ transition:none; animation:none; } }
 
 /* ============================================================
  * שכבת תנועה ברמת "taste" (בהשראת Emil Kowalski)

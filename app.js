@@ -1482,12 +1482,21 @@ function HbHero() {
         </Reveal>
 
         <Reveal className="hb-hero__text">
-          <div className="hb-hero__eyebrow">שיטת CureMindset · קטי שגב</div>
-          <h1 className="hb-hero__title">חרדה ועומס רגשי לא חייבים לנהל את החיים שלך.</h1>
+          <div className="hb-hero__kicker"><span className="hb-hero__kicker-dot" aria-hidden="true"></span>שיטת CureMindset · קטי שגב</div>
+          <h1 className="hb-hero__title">
+            <span>חרדה ועומס רגשי</span>
+            <span className="hb-hero__title-em">לא חייבים לנהל את החיים שלך.</span>
+          </h1>
           <p className="hb-hero__sub">ליווי רגשי שעובד עם השורש, לא רק עם התסמין: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
           <div className="hb-hero__cta">
-            <a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener" className="hb-hero__link">לשיחת היכרות ללא עלות <span aria-hidden="true">→</span></a>
+            <a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener" className="hb-hero__btn">לשיחת היכרות ללא עלות</a>
+            <a href="#services" className="hb-hero__link">לכל התוכניות <span aria-hidden="true">←</span></a>
           </div>
+          <ul className="hb-hero__trust" aria-label="נתוני אמון">
+            <li>מאות תהליכים אישיים וסדנאות</li>
+            <li>הכשרות NLP בינלאומיות</li>
+            <li>לנוער · למבוגרים · להורים</li>
+          </ul>
         </Reveal>
       </div>
     </section>
