@@ -1,6 +1,6 @@
 // CureBot — כפתור צף גלובלי, מופיע בכל דף באתר (לא רק בדף הבית).
 // נטען כ-<script> רגיל (לא React) כדי לעבוד גם בעמודי ה-HTML הסטטיים.
-// פותח שיחה עם העוזרת הדיגיטלית דרך אותו embed שכבר מחובר בדף הבית.
+// פותח שיחה עם קיורטי דרך אותו embed שכבר מחובר בדף הבית.
 (function () {
   "use strict";
   var EMBED_URL = "https://curebot-agent.onrender.com/embed";
@@ -40,24 +40,24 @@
     var btn = document.createElement("button");
     btn.id = "cmFloatBtn";
     btn.type = "button";
-    btn.setAttribute("aria-label", "קטי AI — יש שאלה? כתבו לי כאן");
+    btn.setAttribute("aria-label", "קיורטי — יש שאלה? כתבו לי כאן");
     btn.innerHTML =
       '<span class="cmw-orb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' +
       '<path d="M12 3a1 1 0 011 1v1.06a7.002 7.002 0 015.94 5.94H20a1 1 0 010 2h-1.06a7.002 7.002 0 01-5.94 5.94V20a1 1 0 01-2 0v-1.06a7.002 7.002 0 01-5.94-5.94H4a1 1 0 010-2h1.06A7.002 7.002 0 0111 5.06V4a1 1 0 011-1z"/>' +
       '<circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></span>' +
-      '<span class="cmw-label"><b>קטי AI</b><small>יש שאלה? כתבו לי כאן</small></span>';
+      '<span class="cmw-label"><b>קיורטי</b><small>יש שאלה? כתבו לי כאן</small></span>';
 
     var overlay = document.createElement("div");
     overlay.id = "cmFloatOverlay";
     overlay.innerHTML =
       '<div id="cmFloatModal"><button id="cmFloatClose" type="button" aria-label="סגירה">×</button>' +
-      '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="שיחה עם קטי AI"></iframe></div>';
+      '<iframe src="' + EMBED_URL + '?src=' + encodeURIComponent((location.pathname || "/") + (location.search || "")) + '" title="שיחה עם קיורטי"></iframe></div>';
 
     // בועת הסבר קטנה ליד הכפתור — פעם אחת בביקור, כדי שיבינו מה זה
     var hint = document.createElement("div");
     hint.id = "cmFloatHint";
     hint.innerHTML = '<button type="button" aria-label="סגירה">×</button>' +
-      "היי 👋 אני קטי AI. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
+      "היי 👋 אני קיורטי. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
 
     document.body.appendChild(btn);
     document.body.appendChild(hint);
@@ -90,7 +90,7 @@
     // קריאה נוחה מכפתורים אחרים בדף (נאב, כותרות עמודים סטטיים וכו').
     window.cmOpenBot = open;
 
-    // עוזרת אחת באתר: קישורים שעוד מפנים לעוזרת הישנה (/talk) פותחים את קטי AI.
+    // עוזרת אחת באתר: קישורים שעוד מפנים לעוזרת הישנה (/talk) פותחים את קיורטי.
     document.addEventListener("click", function (e) {
       var a = e.target && e.target.closest ? e.target.closest('a[href^="/talk"]') : null;
       if (!a) return;

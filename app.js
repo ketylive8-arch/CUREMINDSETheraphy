@@ -707,7 +707,7 @@ function DigitalPlatform() {
         </div>
 
         <Reveal className="mt-8 bg-white border border-ink-100 rounded-2xl p-7 sm:p-9 shadow-softer">
-          <h3 className="font-heading font-bold text-ink-800 text-[21px] mb-2">מה קטי הדיגיטלית כן — ומה לא</h3>
+          <h3 className="font-heading font-bold text-ink-800 text-[21px] mb-2">מה קיורטי כן — ומה לא</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 text-[15px]">
             <p className="text-ink-600"><b className="text-gold-700">כן:</b> מקשיבה, משקפת, ומציעה כלי מעשי אחד וצעד קטן — מבוסס על מקורות השיטה של קטי.</p>
             <p className="text-ink-600"><b className="text-ink-800">לא:</b> אינה מאבחנת, אינה מבטיחה תוצאה, ואינה תחליף לטיפול מקצועי או לשירות חירום.</p>

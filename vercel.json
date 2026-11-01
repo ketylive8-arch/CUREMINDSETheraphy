@@ -178,6 +178,30 @@
       "destination": "/emotional-therapist-krayot.html"
     },
     {
+      "source": "/anxiety",
+      "destination": "/anxiety-and-stress.html"
+    },
+    {
+      "source": "/teens",
+      "destination": "/cure-teens.html"
+    },
+    {
+      "source": "/adults",
+      "destination": "/personal.html"
+    },
+    {
+      "source": "/emotional-resilience",
+      "destination": "/emotional-resilience.html"
+    },
+    {
+      "source": "/young-adults",
+      "destination": "/young-adults.html"
+    },
+    {
+      "source": "/schools",
+      "destination": "/schools.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
