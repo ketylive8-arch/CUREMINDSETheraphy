@@ -36,27 +36,59 @@ if (!$exists->fetch()) {
     echo "admin already exists\n";
 }
 
-// --- Leads --------------------------------------------------------------
+// --- Leads (only on first boot, when the table is empty) ----------------
 $count = (int) $pdo->query('SELECT COUNT(*) c FROM leads')->fetch()['c'];
-if ($count > 0) {
-    echo "leads already seeded ($count rows) — skipping\n";
-    exit;
+if ($count === 0) {
+    $ins = $pdo->prepare(
+        'INSERT INTO leads (company, email, sector, status, bounce_reason, sent_at)
+         VALUES (:company,:email,:sector,:status,:bounce_reason,:sent_at)'
+    );
+    $n = 0;
+    foreach ($data['leads'] as $l) {
+        $ins->execute([
+            ':company'       => $l['company'],
+            ':email'         => $l['email'] ?? null,
+            ':sector'        => $l['sector'] ?? null,
+            ':status'        => $l['status'] ?? 'new',
+            ':bounce_reason' => $l['bounce_reason'] ?? null,
+            ':sent_at'       => $l['sent_at'] ?? null,
+        ]);
+        $n++;
+    }
+    echo "seeded $n leads\n";
+} else {
+    echo "leads already seeded ($count rows) — skipping insert\n";
 }
 
-$ins = $pdo->prepare(
-    'INSERT INTO leads (company, email, sector, status, bounce_reason, sent_at)
-     VALUES (:company,:email,:sector,:status,:bounce_reason,:sent_at)'
+// --- Suppression + cleanup (runs on EVERY boot, idempotent) -------------
+// Kety's rule: never contact anyone who bounced, asked to be removed, or
+// replied "not relevant". We record them in the suppression list and delete
+// them from the active leads so they can never be contacted again.
+$suppressFile = __DIR__ . '/suppress-emails.json';
+$suppress = is_file($suppressFile)
+    ? (json_decode((string) file_get_contents($suppressFile), true) ?: [])
+    : [];
+
+$supIns = $pdo->prepare(
+    'INSERT OR IGNORE INTO suppressions (email, reason) VALUES (?, ?)'
 );
-$n = 0;
-foreach ($data['leads'] as $l) {
-    $ins->execute([
-        ':company'       => $l['company'],
-        ':email'         => $l['email'] ?? null,
-        ':sector'        => $l['sector'] ?? null,
-        ':status'        => $l['status'] ?? 'new',
-        ':bounce_reason' => $l['bounce_reason'] ?? null,
-        ':sent_at'       => $l['sent_at'] ?? null,
-    ]);
-    $n++;
+foreach ($suppress as $s) {
+    $email = strtolower(trim((string) ($s['email'] ?? '')));
+    if ($email !== '') {
+        $supIns->execute([$email, $s['reason'] ?? null]);
+    }
 }
-echo "seeded $n leads\n";
+
+// Remove every lead that bounced.
+$removedBounced = $pdo->exec("DELETE FROM leads WHERE status = 'bounced'");
+
+// Remove every lead whose address is on the suppression list.
+$removedSuppressed = 0;
+$del = $pdo->prepare('DELETE FROM leads WHERE lower(email) = ?');
+foreach ($pdo->query('SELECT email FROM suppressions')->fetchAll() as $row) {
+    $del->execute([strtolower($row['email'])]);
+    $removedSuppressed += $del->rowCount();
+}
+
+$remaining = (int) $pdo->query('SELECT COUNT(*) c FROM leads')->fetch()['c'];
+echo "cleanup: removed {$removedBounced} bounced + {$removedSuppressed} suppressed; {$remaining} active leads remain\n";

@@ -1,0 +1,20 @@
+[
+  { "email": "aria@astralhotels.co.il",        "reason": "חזר — נחסם" },
+  { "email": "info@astralhotels.co.il",        "reason": "חזר — נחסם" },
+  { "email": "litovhotel@gmail.com",           "reason": "חזר — תיבה מלאה" },
+  { "email": "reception@resorthadera.com",     "reason": "חזר — דומיין לא קיים" },
+  { "email": "amgsrv2@isrotel.co.il",          "reason": "חזר — כתובת לא קיימת" },
+  { "email": "info@doprocosmetics.co.il",      "reason": "חזר — תיבה מלאה" },
+  { "email": "sales@novation.co.il",           "reason": "חזר — נחסם" },
+  { "email": "info@europa1917.com",            "reason": "חזר — דומיין לא קיים" },
+  { "email": "br-gsrv1@isrotel.co.il",         "reason": "חזר — כתובת לא קיימת" },
+  { "email": "agamim@isrotel.co.il",           "reason": "חזר — כתובת לא קיימת" },
+  { "email": "info@pegasus-hotel.co.il",       "reason": "חזר — השרת דחה" },
+  { "email": "reservations@sharon.co.il",      "reason": "חזר — נחסם" },
+  { "email": "myjerusalemview@gmail.com",      "reason": "חזר — משתמש לא קיים" },
+  { "email": "reservations@sephardichouse.co.il", "reason": "השיב 'אם רלוונטי' — דחייה מנומסת" },
+  { "email": "golanhotel@golanhotel.co.il",    "reason": "השיב 'לא כדאי'" },
+  { "email": "zmanaravahotel@gmail.com",       "reason": "מענה אוטומטי — לא להשאיר הודעות" },
+  { "email": "zmanarava.hotel@gmail.com",      "reason": "מענה אוטומטי — לא להשאיר הודעות" },
+  { "email": "5633033@gmail.com",              "reason": "ביקש לא לשלוח מיילים חוזרים" }
+]

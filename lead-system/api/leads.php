@@ -107,6 +107,12 @@ function handle_set_email(int $id): void
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         json_err('כתובת מייל לא תקינה');
     }
+    // Never allow a suppressed (removed / opt-out / bounced) address back in.
+    $sup = db()->prepare('SELECT 1 FROM suppressions WHERE lower(email) = ?');
+    $sup->execute([$email]);
+    if ($sup->fetch()) {
+        json_err('הכתובת הזו ברשימת ההסרה — אי אפשר לפנות אליה שוב', 422);
+    }
     touch_lead($id, ['email' => $email, 'status' => 'new', 'bounce_reason' => null]);
     log_activity($id, (int) $u['id'], 'set_email', "$lead[company] → $email");
     json_out(['ok' => true, 'email' => $email, 'status' => 'new']);

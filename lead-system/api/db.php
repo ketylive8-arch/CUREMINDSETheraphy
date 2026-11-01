@@ -80,6 +80,15 @@ function migrate(PDO $pdo): void
             updated_at     TEXT    NOT NULL DEFAULT (datetime('now'))
         )
     ");
+    // Suppression list — addresses that must never be contacted again
+    // (bounced, asked to be removed, or replied \"not relevant\").
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS suppressions (
+            email      TEXT PRIMARY KEY,
+            reason     TEXT,
+            created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+    ");
     // Activity log — every action the system performs, so it is all visible.
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS activity (
