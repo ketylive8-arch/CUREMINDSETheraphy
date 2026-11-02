@@ -1,0 +1,57 @@
+// CureMindset — root bootstrap. Wrapped in an IIFE so it doesn't collide with
+// top-level declarations in app.js / memberArea.js, which communicate via window.*.
+(function () {
+  "use strict";
+
+  const {
+    useState,
+    useEffect
+  } = React;
+  const Home = window.CureMindsetHome;
+  const MemberArea = window.MemberArea;
+
+  // מסיר את מסך הטעינה הממותג ברגע ש-React עלה (התוכן האמיתי מוכן).
+  function hideSplash() {
+    const s = document.getElementById("cm-splash");
+    if (!s) return;
+    s.classList.add("cm-hide");
+    setTimeout(function () {
+      if (s && s.parentNode) s.parentNode.removeChild(s);
+    }, 650);
+  }
+
+  // כתובות שמטרתן היחידה היא לפתוח את האזור האישי ישר — כל כפתור "להתחיל ניסיון חינם"
+  // בדפים הסטטיים (programs.html, faq.html, contact.html, workshop-*.html וכו') מצביע
+  // ל-/program, שדרכו הם היחידה "להיכנס" לאפליקציה מחוץ לדף הבית עצמו.
+  const APP_ENTRY_PATHS = ["/program", "/dashboard"];
+  function App() {
+    // אם המשתמש חזר זה עתה מהתחברות חברתית (Google/Facebook), או נחת ישירות על כתובת
+    // כניסה לאפליקציה — נפתח ישר לאזור האישי.
+    const [view, setView] = useState(window.__cmOpenApp || APP_ENTRY_PATHS.includes(location.pathname) ? "app" : "home");
+    useEffect(hideSplash, []);
+    // סגנון הגלילה (scroll-craft) רץ רק על דף הבית השיווקי, לא על האזור האישי (אפליקציה).
+    // ה-mount חייב לקרות אחרי שה-DOM של React צויר, אז הוא ממתין לפריים הבא.
+    useEffect(() => {
+      if (view !== "home" || !window.ScrollCraft) return;
+      let instance;
+      const raf = requestAnimationFrame(() => {
+        instance = window.ScrollCraft.mount(document.body);
+      });
+      return () => {
+        cancelAnimationFrame(raf);
+        if (instance) instance.destroy();
+      };
+    }, [view]);
+    return /*#__PURE__*/React.createElement(React.Fragment, null, view === "home" ? /*#__PURE__*/React.createElement(Home, {
+      onEnterApp: () => setView("app")
+    }) : null, view === "app" ? /*#__PURE__*/React.createElement(MemberArea, {
+      onExit: () => setView("home")
+    }) : null);
+  }
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(/*#__PURE__*/React.createElement(App, null));
+
+  // רשת ביטחון: אם React נכשל לעלות מסיבה כלשהי (שגיאת JS, קובץ שלא נטען),
+  // מסך הטעינה הממותג לא יישאר תקוע לנצח — יוסר בכפייה אחרי 6 שניות.
+  setTimeout(hideSplash, 6000);
+})();

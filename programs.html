@@ -18,9 +18,6 @@
 <meta property="og:locale" content="he_IL" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" href="/images/logo.png" type="image/png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"בית","item":"https://www.ketysegev.com/"},{"@type":"ListItem","position":2,"name":"תוכניות","item":"https://www.ketysegev.com/programs"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"OfferCatalog","name":"תוכניות CureMindset","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"תהליך פרימיום אישי — שישה מפגשים לפחות לשינוי דפוסים ולחיזוק חוסן רגשי"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"תוכנית קבוצתית — 4 עד 6 משתתפים"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"ליווי דיגיטלי יומיומי","audience":{"@type":"PeopleAudience","suggestedMinAge":13}}}]}</script>
 <style>
@@ -81,6 +78,8 @@
     --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
   }
 </style>
+<link rel="preload" href="/fonts/heebo-hebrew-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/cm3.css?v=20261102a">
 </head>
 <body>
 <div class="sc-grain" aria-hidden="true"></div>
@@ -97,7 +96,7 @@
     <a href="/articles">מאמרים</a>
     <a href="/contact">יצירת קשר</a>
   </nav>
-  <button type="button" class="cta-top" onclick="window.cmOpenBot&&window.cmOpenBot()">קיורטי</button>
+  <a class="cta-top" href="https://calendly.com/ketysegev/meet-with-me" rel="noopener">שיחת היכרות</a>
 </div></header>
 
 <main class="wrap" data-sc-in data-sc-stagger="70">
@@ -174,9 +173,13 @@
 </main>
 
 <footer class="site"><div class="wrap">
-  <a href="/">דף הבית</a> · <a href="/method">השיטה</a> · <a href="/faq">שאלות נפוצות</a> · <a href="/contact">יצירת קשר</a>
-  <div style="margin-top:8px"><a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></div>
-  <div style="margin-top:12px">© 2026 CureMindset · קטי שגב</div>
+  <div class="foot-top">
+    <div><h4>CureMindset</h4><p>קטי שגב · מאמנת מנטלית. שיטה שנבנתה מניסיון אישי, לא מתיאוריה.</p><a href="https://calendly.com/ketysegev/meet-with-me" rel="noopener">לשיחת היכרות ללא עלות</a></div>
+    <div><h4>האתר</h4><a href="/method">השיטה</a><a href="/programs">תוכניות</a><a href="/faq">שאלות נפוצות</a><a href="/articles">מאמרים</a><a href="/contact">יצירת קשר</a></div>
+    <div><h4>מידע</h4><a href="/privacy">פרטיות</a><a href="/terms">תנאי שימוש</a><a href="/accessibility">נגישות</a><a href="/responsibility">הבהרת אחריות</a></div>
+  </div>
+  <div class="foot-mark" aria-hidden="true">CureMindset</div>
+  <div class="foot-legal"><span>© 2026 CureMindset · קטי שגב</span></div>
 </div></footer>
 <script src="/vendor/scrollcraft/scrollcraft.js"></script>
 <script>ScrollCraft.mount(document.body);</script>
