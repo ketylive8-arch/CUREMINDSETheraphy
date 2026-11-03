@@ -42,17 +42,24 @@
     followup_draft: "הופק מייל אחרון", create_user: "נוצר משתמש",
   };
 
-  // ---------- Login ----------
+  // ---------- Login / Register ----------
   function Login({ onLogin }) {
-    const [email, setEmail] = useState("segevmkg@gmail.com");
+    const [mode, setMode] = useState("login"); // "login" | "register"
+    const [name, setName] = useState("");
+    const [business, setBusiness] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [err, setErr] = useState("");
     const [busy, setBusy] = useState(false);
+    const reg = mode === "register";
     async function submit(e) {
       e.preventDefault();
       setErr(""); setBusy(true);
       try {
-        const r = await api("/login", { method: "POST", body: JSON.stringify({ email, password }) });
+        const body = reg
+          ? { name, email, password, business_name: business }
+          : { email, password };
+        const r = await api(reg ? "/register" : "/login", { method: "POST", body: JSON.stringify(body) });
         token.set(r.token);
         onLogin(r.user);
       } catch (ex) { setErr(ex.message); } finally { setBusy(false); }
@@ -63,9 +70,13 @@
           <div class="brand">
             <div class="logo">S</div>
             <h1>Segev MKG</h1>
-            <p>מערכת לידים ושליחה</p>
+            <p>${reg ? "פתיחת חשבון חדש" : "מערכת לידים חכמה"}</p>
           </div>
           ${err && html`<div class="err">${err}</div>`}
+          ${reg && html`<div class="field"><label>שם מלא</label>
+            <input value=${name} onInput=${(e) => setName(e.target.value)} required /></div>`}
+          ${reg && html`<div class="field"><label>שם העסק</label>
+            <input value=${business} onInput=${(e) => setBusiness(e.target.value)} placeholder="לדוגמה: מלון X / חברת Y" /></div>`}
           <div class="field">
             <label>אימייל</label>
             <input type="email" value=${email} onInput=${(e) => setEmail(e.target.value)} dir="ltr" required />
@@ -74,9 +85,75 @@
             <label>סיסמה</label>
             <input type="password" value=${password} onInput=${(e) => setPassword(e.target.value)} required />
           </div>
-          <button class="btn block" disabled=${busy}>${busy ? "מתחברת…" : "כניסה"}</button>
-          <div class="hint">גישה מאובטחת · משתמשים נוספים נפתחים בלשונית "משתמשים"</div>
+          <button class="btn block" disabled=${busy}>${busy ? "רגע…" : (reg ? "פתיחת חשבון →" : "כניסה")}</button>
+          <div class="hint">
+            ${reg
+              ? html`כבר יש לך חשבון? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("login"); }}>כניסה</a>`
+              : html`לקוחה חדשה? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("register"); }}>פתיחת חשבון חדש</a>`}
+          </div>
         </form>
+      </div>`;
+  }
+
+  // ---------- Onboarding wizard ----------
+  const BUSINESS_TYPES = ["מלונאות", "קוסמטיקה", "מזון ומשקאות", "אלקטרוניקה", "קליניקה / בריאות", "שיווק ופרסום", "אחר"];
+  const SECTOR_OPTS = ["מלונות", "יבואנים / מפיצים", "חברות B2B", "קליניקות", "ציוד רפואי", "מסעדנות", "קוסמטיקה", "הייטק"];
+  function Onboarding({ user, onDone }) {
+    const [step, setStep] = useState(1);
+    const [businessType, setBusinessType] = useState("");
+    const [businessName, setBusinessName] = useState("");
+    const [sectors, setSectors] = useState([]);
+    const [regions, setRegions] = useState("");
+    const [goal, setGoal] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [err, setErr] = useState("");
+    function toggleSector(s) {
+      setSectors((cur) => cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]);
+    }
+    async function finish() {
+      setErr(""); setBusy(true);
+      try {
+        await api("/profile", { method: "POST", body: JSON.stringify({
+          business_name: businessName, business_type: businessType,
+          target_sectors: sectors, regions, goal,
+        }) });
+        onDone();
+      } catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`
+      <div class="login-wrap">
+        <div class="login-card" style=${{ maxWidth: "460px" }}>
+          <div class="brand"><div class="logo">S</div>
+            <h1>ברוכה הבאה, ${user.name}</h1>
+            <p>שתי שאלות קצרות ומתחילים</p></div>
+          ${err && html`<div class="err">${err}</div>`}
+          ${step === 1 ? html`
+            <div class="field"><label>איזה עסק את/ה?</label>
+              <div class="chips">${BUSINESS_TYPES.map((t) => html`
+                <button type="button" key=${t} class=${"chip" + (businessType === t ? " on" : "")}
+                  onClick=${() => setBusinessType(t)}>${t}</button>`)}</div>
+            </div>
+            <div class="field"><label>שם העסק</label>
+              <input value=${businessName} onInput=${(e) => setBusinessName(e.target.value)} placeholder="שם החברה / המותג" /></div>
+            <button class="btn block" disabled=${!businessType} onClick=${() => setStep(2)}>המשך →</button>
+          ` : html`
+            <div class="field"><label>אילו לידים את/ה רוצה? (אפשר כמה)</label>
+              <div class="chips">${SECTOR_OPTS.map((s) => html`
+                <button type="button" key=${s} class=${"chip" + (sectors.includes(s) ? " on" : "")}
+                  onClick=${() => toggleSector(s)}>${s}</button>`)}</div>
+            </div>
+            <div class="field"><label>אזורים (אופציונלי)</label>
+              <input value=${regions} onInput=${(e) => setRegions(e.target.value)} placeholder="לדוגמה: כל הארץ / צפון / מרכז" /></div>
+            <div class="field"><label>מה המטרה? (אופציונלי)</label>
+              <input value=${goal} onInput=${(e) => setGoal(e.target.value)} placeholder="לדוגמה: לקבוע 5 פגישות בחודש" /></div>
+            <div class="row-actions" style=${{ gap: "8px" }}>
+              <button class="btn ghost" onClick=${() => setStep(1)}>← חזרה</button>
+              <button class="btn" style=${{ flex: 1 }} disabled=${busy || sectors.length === 0} onClick=${finish}>
+                ${busy ? "מתחילים…" : "סיום — התחל/י לעבוד"}</button>
+            </div>
+          `}
+          <div class="hint">${step}/2</div>
+        </div>
       </div>`;
   }
 
@@ -255,8 +332,28 @@
     </div>`;
   }
 
+  // ---------- Client welcome / how it works ----------
+  function ClientWelcome({ profile }) {
+    const sectors = (profile && profile.target_sectors) || [];
+    return html`
+      <div class="card" style=${{ background: "linear-gradient(180deg,#fff,#faf8f4)" }}>
+        <div class="head"><h2>המערכת מתחילה לעבוד עבורך 🚀</h2></div>
+        <div style=${{ padding: "16px 18px" }}>
+          <div class="kv">העסק שלך: <b>${(profile && profile.business_name) || "—"}</b> · ${(profile && profile.business_type) || ""}</div>
+          <div class="kv">לידים שביקשת: <b>${sectors.length ? sectors.join(" · ") : "—"}</b></div>
+          <div class="steps">
+            <div class="stepc"><span class="num">1</span> מאתרים לידים אמיתיים לפי מה שבחרת</div>
+            <div class="stepc"><span class="num">2</span> מכינים לכל ליד פנייה מותאמת — את מאשרת</div>
+            <div class="stepc"><span class="num">3</span> שולחים, עוקבים, ומסירים מי שלא רלוונטי — אוטומטית</div>
+          </div>
+          <div class="notice">הלידים הראשונים שלך יופיעו כאן בלוח ברגע שהאיתור מתחיל. בלי להמציא — רק כתובות אמיתיות.</div>
+        </div>
+      </div>`;
+  }
+
   // ---------- Shell ----------
-  function Shell({ user, onLogout }) {
+  function Shell({ user, profile, onLogout }) {
+    const isClient = user.role === "client";
     const [tab, setTab] = useState("dashboard");
     const [stats, setStats] = useState(null);
     const [draft, setDraft] = useState(null);
@@ -279,8 +376,9 @@
       setTimeout(() => setToast(""), 3500);
     }, [loadStats]);
 
-    const tabs = [["dashboard", "לוח בקרה"], ["bounces", "חזרו"], ["activity", "יומן פעילות"]];
-    if (user.role === "admin") tabs.push(["users", "משתמשים"]);
+    const tabs = isClient
+      ? [["dashboard", "לוח בקרה"]]
+      : [["dashboard", "לוח בקרה"], ["bounces", "חזרו"], ["activity", "יומן פעילות"], ["users", "משתמשים"]];
 
     return html`
       <div class="app">
@@ -294,7 +392,9 @@
         <div class="container">
           <div class="tabs">${tabs.map(([v, l]) => html`<button key=${v} class=${"tab" + (tab === v ? " active" : "")} onClick=${() => setTab(v)}>${l}</button>`)}</div>
           ${toast && html`<div class="notice">${toast}</div>`}
-          ${tab === "dashboard" && html`<${React.Fragment}><${Stats} stats=${stats} /><${LeadsTable} onAction=${onAction} /><//>`}
+          ${tab === "dashboard" && (isClient
+            ? html`<${ClientWelcome} profile=${profile} />`
+            : html`<${React.Fragment}><${Stats} stats=${stats} /><${LeadsTable} onAction=${onAction} /><//>`)}
           ${tab === "bounces" && html`<${Bounces} onAction=${onAction} />`}
           ${tab === "activity" && html`<${Activity} />`}
           ${tab === "users" && html`<${Users} />`}
@@ -306,14 +406,30 @@
   // ---------- App root ----------
   function App() {
     const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(undefined); // undefined=loading, null=none
     const [ready, setReady] = useState(false);
+
+    const loadProfile = useCallback(async () => {
+      try { const r = await api("/profile"); setProfile(r.profile); }
+      catch (e) { setProfile(null); }
+    }, []);
+
     useEffect(() => {
       if (!token.get()) { setReady(true); return; }
-      api("/me").then((r) => setUser(r.user)).catch(() => token.clear()).finally(() => setReady(true));
+      api("/me").then(async (r) => { setUser(r.user); await loadProfile(); })
+        .catch(() => token.clear()).finally(() => setReady(true));
     }, []);
-    function logout() { api("/logout", { method: "POST" }).catch(() => {}); token.clear(); setUser(null); }
+
+    function onAuth(u) { setUser(u); setReady(false); loadProfile().finally(() => setReady(true)); }
+    function logout() { api("/logout", { method: "POST" }).catch(() => {}); token.clear(); setUser(null); setProfile(undefined); }
+
     if (!ready) return html`<div class="loading">טוען…</div>`;
-    return user ? html`<${Shell} user=${user} onLogout=${logout} />` : html`<${Login} onLogin=${setUser} />`;
+    if (!user) return html`<${Login} onLogin=${onAuth} />`;
+    // A client who hasn't finished onboarding sees the wizard first.
+    if (user.role === "client" && (!profile || !profile.business_type)) {
+      return html`<${Onboarding} user=${user} onDone=${() => loadProfile()} />`;
+    }
+    return html`<${Shell} user=${user} profile=${profile} onLogout=${logout} />`;
   }
 
   ReactDOM.createRoot(document.getElementById("root")).render(html`<${App} />`);

@@ -80,6 +80,19 @@ function migrate(PDO $pdo): void
             updated_at     TEXT    NOT NULL DEFAULT (datetime('now'))
         )
     ");
+    // Client profile — each registered client's business + what leads they want.
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS client_profiles (
+            user_id        INTEGER PRIMARY KEY,
+            business_name  TEXT,
+            business_type  TEXT,
+            target_sectors TEXT,
+            regions        TEXT,
+            goal           TEXT,
+            status         TEXT NOT NULL DEFAULT 'active',
+            created_at     TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+    ");
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("

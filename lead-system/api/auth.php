@@ -53,6 +53,45 @@ function handle_login(): void
     ]);
 }
 
+/** Self-registration for a new client. Creates the account and logs them in. */
+function handle_register(): void
+{
+    $in = body();
+    $name = trim((string) ($in['name'] ?? ''));
+    $email = strtolower(trim((string) ($in['email'] ?? '')));
+    $password = (string) ($in['password'] ?? '');
+    $businessName = trim((string) ($in['business_name'] ?? ''));
+    if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        json_err('שם או אימייל לא תקינים');
+    }
+    if (strlen($password) < 6) {
+        json_err('הסיסמה צריכה לפחות 6 תווים');
+    }
+    $hash = password_hash($password, PASSWORD_BCRYPT);
+    try {
+        $st = db()->prepare(
+            'INSERT INTO users (name, email, password_hash, role) VALUES (?,?,?,?)'
+        );
+        $st->execute([$name, $email, $hash, 'client']);
+    } catch (PDOException $e) {
+        json_err('האימייל כבר רשום — נסי להתחבר', 409);
+    }
+    $userId = (int) db()->lastInsertId();
+    if ($businessName !== '') {
+        $p = db()->prepare('INSERT INTO client_profiles (user_id, business_name) VALUES (?, ?)');
+        $p->execute([$userId, $businessName]);
+    }
+    $cfg = require __DIR__ . '/config.php';
+    $token = random_token();
+    $exp = date('Y-m-d H:i:s', time() + (int) $cfg['session_ttl']);
+    db()->prepare('INSERT INTO sessions (token, user_id, expires_at) VALUES (?,?,?)')
+        ->execute([$token, $userId, $exp]);
+    log_activity(null, $userId, 'register', $email);
+    $st = db()->prepare('SELECT * FROM users WHERE id = ?');
+    $st->execute([$userId]);
+    json_out(['token' => $token, 'user' => public_user($st->fetch())], 201);
+}
+
 function handle_logout(): void
 {
     $token = bearer_token();

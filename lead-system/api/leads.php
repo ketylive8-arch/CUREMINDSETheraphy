@@ -184,6 +184,54 @@ function handle_activity(): void
     json_out(['activity' => $rows]);
 }
 
+/** The current user's client profile (business + desired leads), or null. */
+function handle_get_profile(): void
+{
+    $u = require_user();
+    $st = db()->prepare('SELECT * FROM client_profiles WHERE user_id = ?');
+    $st->execute([(int) $u['id']]);
+    $p = $st->fetch();
+    if ($p) {
+        $p['target_sectors'] = json_decode($p['target_sectors'] ?? '[]', true) ?: [];
+    }
+    json_out(['profile' => $p ?: null]);
+}
+
+/** Save the onboarding answers: business type, desired sectors, regions, goal. */
+function handle_set_profile(): void
+{
+    $u = require_user();
+    $in = body();
+    $businessName = trim((string) ($in['business_name'] ?? ''));
+    $businessType = trim((string) ($in['business_type'] ?? ''));
+    $sectors = is_array($in['target_sectors'] ?? null) ? $in['target_sectors'] : [];
+    $regions = trim((string) ($in['regions'] ?? ''));
+    $goal = trim((string) ($in['goal'] ?? ''));
+    if ($businessType === '') {
+        json_err('צריך לבחור סוג עסק');
+    }
+    $sectorsJson = json_encode(array_values($sectors), JSON_UNESCAPED_UNICODE);
+    $uid = (int) $u['id'];
+    $exists = db()->prepare('SELECT business_name FROM client_profiles WHERE user_id = ?');
+    $exists->execute([$uid]);
+    $existing = $exists->fetch();
+    if ($existing) {
+        // Keep the name entered at registration if onboarding left it blank.
+        if ($businessName === '') {
+            $businessName = (string) ($existing['business_name'] ?? '');
+        }
+        db()->prepare(
+            'UPDATE client_profiles SET business_name=?, business_type=?, target_sectors=?, regions=?, goal=?, status=\'active\' WHERE user_id=?'
+        )->execute([$businessName, $businessType, $sectorsJson, $regions, $goal, $uid]);
+    } else {
+        db()->prepare(
+            'INSERT INTO client_profiles (user_id, business_name, business_type, target_sectors, regions, goal) VALUES (?,?,?,?,?,?)'
+        )->execute([$uid, $businessName, $businessType, $sectorsJson, $regions, $goal]);
+    }
+    log_activity(null, $uid, 'onboarding', "$businessType · " . implode(',', $sectors));
+    json_out(['ok' => true]);
+}
+
 function handle_users(): void
 {
     require_admin();

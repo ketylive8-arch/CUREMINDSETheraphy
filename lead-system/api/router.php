@@ -62,8 +62,11 @@ try {
     $route = "$method $path";
     match ($route) {
         'POST /api/login'       => handle_login(),
+        'POST /api/register'    => handle_register(),
         'POST /api/logout'      => handle_logout(),
         'GET /api/me'           => handle_me(),
+        'GET /api/profile'      => handle_get_profile(),
+        'POST /api/profile'     => handle_set_profile(),
         'GET /api/stats'        => handle_stats(),
         'GET /api/leads'        => handle_leads(),
         'GET /api/bounces'      => handle_bounces(),
