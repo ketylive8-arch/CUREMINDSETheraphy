@@ -17,9 +17,6 @@
 <meta property="og:locale" content="he_IL" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" href="/images/logo.png" type="image/png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&family=Assistant:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root{--gold:#c2974a;--gold-deep:#8a6a2f;--gold-soft:#efe3cc;--cream:#FBF7EF;--ink:#2D2A26;--ink-500:#6B6560}
   *{box-sizing:border-box}
@@ -95,6 +92,8 @@
     --sc-font-display:"Rubik", system-ui, sans-serif; --sc-font-text:"Assistant", system-ui, sans-serif;
   }
 </style>
+<link rel="preload" href="/fonts/heebo-hebrew-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/cm3.css?v=20261102a">
 </head>
 <header class="site"><div class="wrap">
   <a class="brand" href="/"><img src="/images/logo.png" alt="CureMindset — קטי שגב" /><b>CureMindset</b></a>
@@ -146,10 +145,13 @@
 })();
 </script>
 <footer class="site"><div class="wrap">
-  <p>דף הבית · על קטי · שאלות נפוצות · יצירת קשר · וואטסאפ<br />
-  <a href="/privacy">פרטיות</a> · <a href="/terms">תנאי שימוש</a> · <a href="/accessibility">נגישות</a> · <a href="/responsibility">הבהרת אחריות</a></p>
-  <p>CureMindset הוא כלי לאימון, למידה ותרגול אישי. אינו תחליף לאבחון, טיפול רפואי או נפשי, ואינו מיועד למצבי חירום.</p>
-  <p>© 2026 CureMindset · קטי שגב</p>
+  <div class="foot-top">
+    <div><h4>CureMindset</h4><p>קטי שגב · מאמנת מנטלית. שיטה שנבנתה מניסיון אישי, לא מתיאוריה.</p><a href="https://calendly.com/ketysegev/meet-with-me" rel="noopener">לשיחת היכרות ללא עלות</a></div>
+    <div><h4>האתר</h4><a href="/method">השיטה</a><a href="/programs">תוכניות</a><a href="/faq">שאלות נפוצות</a><a href="/articles">מאמרים</a><a href="/contact">יצירת קשר</a></div>
+    <div><h4>מידע</h4><a href="/privacy">פרטיות</a><a href="/terms">תנאי שימוש</a><a href="/accessibility">נגישות</a><a href="/responsibility">הבהרת אחריות</a></div>
+  </div>
+  <div class="foot-mark" aria-hidden="true">CureMindset</div>
+  <div class="foot-legal"><span>© 2026 CureMindset · קטי שגב</span></div>
 </div></footer>
 <script src="/vendor/scrollcraft/scrollcraft.js"></script>
 <script>ScrollCraft.mount(document.body);</script>

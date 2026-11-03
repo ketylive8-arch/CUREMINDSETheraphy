@@ -176,7 +176,7 @@ function isGreeting(text) {
   const t = String(text || "").trim();
   return t.length <= 6 && /(היי|הי|שלום|בוקר|ערב)/.test(t);
 }
-// שאלה על המוצר/התוכנית — מזמינים למתנת מדיטציית הבוקר ב-/gifts (נשמר מ-main).
+// שאלה על המוצר/התוכנית — מזמינים לשיחת היכרות ללא עלות (עמוד המתנות בוטל בהחלטת קטי, 14.10).
 function isProgramQuestion(text) {
   const t = String(text || "");
   return /מה (זה|זאת) (ה?תוכני|ה?אפליקצי|cure\s*mindset)|מה אני (מקבל|אקבל)|מה כלול|מה ה(?:ליווי|מסלול)/i.test(t);
@@ -230,14 +230,14 @@ function guidedReply(text, retrieved, userProfile, history = []) {
   const th = pickTheme(text) || pickTheme(userProfile);
   const name = firstNameFrom(userProfile);
 
-  // שאלה על המוצר → הסבר קצר + הזמנה למתנת מדיטציית הבוקר ב-/gifts.
+  // שאלה על המוצר → הסבר קצר + הזמנה לשיחת היכרות ללא עלות.
   if (isProgramQuestion(text)) {
     const g = name ? `${name}, ` : "";
     return {
       reply: `${g}CureMindset זה ליווי יומי — שיחה, תרגול וכלים לפי מה שעובר עלייך, לא עוד תוכן גנרי. ` +
-        `רוצה לנסות בלי התחייבות? יש מתנה ראשונה — מדיטציית בוקר קצרה — ב-/gifts, אחרי שם ודרך יצירת קשר. ` +
+        `רוצה לנסות בלי התחייבות? אפשר לקבוע שיחת היכרות ללא עלות עם קטי. ` +
         `רוצה שנתחיל עכשיו ואת/ה מספר/ת לי מה עובר עלייך?`,
-      dailyTask: { title: "מדיטציית בוקר", description: "קחי/קח את מדיטציית הבוקר החינמית ב-/gifts והתחילי/התחל איתה מחר בבוקר.", category: "mindfulness" },
+      dailyTask: { title: "רגע של שקט בבוקר", description: "הקדישי/הקדש שלוש דקות של נשימה איטית מחר בבוקר, לפני שנכנסים ליום.", category: "mindfulness" },
       triggers: [], patterns: [], balanceAlerts: [], wins: [], via: "guided-local",
     };
   }
