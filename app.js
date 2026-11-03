@@ -1345,7 +1345,7 @@ function FinalCta() {
 
 function Footer() {
   return (
-    <footer className="bg-[#1C1917] text-white/80 pt-16 pb-10">
+    <footer className="bg-[#EADDC3] text-ink-800 pt-16 pb-10">
       <div className="max-w-[1080px] mx-auto px-5 sm:px-7">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 pb-10 border-b border-white/10">
           <div>

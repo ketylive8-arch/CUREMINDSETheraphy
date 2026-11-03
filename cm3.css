@@ -19,7 +19,7 @@
   --paper:#FAF8F4; --paper-2:#F2EDE3; --card:#FFFFFF;
   --ink:#26231F; --ink-2:#4F4942; --muted:#6B6560;
   --gold:#C2974A; --gold-deep:#8A6A2F; --gold-soft:#EFE3CC;
-  --field:#1F1C18; --field-2:#2B2722; --field-ink:#F4EFE6; --field-muted:#BDB4A5;
+  --field:#EADDC3; --field-2:#DFD0B1; --field-ink:#2A2620; --field-muted:#5F574A;
   --line:#E2D9C9; --line-strong:#26231F;
   --r:6px;                       /* רדיוס אחד לכל האתר */
   --gut:clamp(20px,5vw,64px);    /* שוליים אחידים */
@@ -204,10 +204,10 @@ body footer.site .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
 @media (min-width:860px){.foot-top{grid-template-columns:1.2fr 1fr 1fr}}
 footer.site h4{color:var(--field-muted)!important;font-size:.95rem;font-weight:500;margin:0 0 14px}
 footer.site a{color:var(--field-ink);text-decoration:none;display:block;padding:5px 0;font-size:1.02rem}
-footer.site a:hover{color:var(--gold)}
+footer.site a:hover{color:var(--gold-deep)}
 footer.site p{color:var(--field-muted);font-size:1rem;max-width:36ch;margin:0 0 .6em}
 .foot-mark{font-weight:400;font-size:clamp(3.4rem,1rem + 13vw,13rem);line-height:.85;letter-spacing:-.05em;color:var(--field-ink);margin:0 0 .12em;direction:ltr;text-align:start;white-space:nowrap;overflow:hidden}
-.foot-legal{display:flex;flex-wrap:wrap;gap:6px 22px;border-top:1px solid #3A352E;padding-top:20px;color:var(--field-muted);font-size:.95rem}
+.foot-legal{display:flex;flex-wrap:wrap;gap:6px 22px;border-top:1px solid rgba(42,38,32,.22);padding-top:20px;color:var(--field-muted);font-size:.95rem}
 .foot-legal a{display:inline;padding:0;font-size:.95rem;color:var(--field-muted)}
 
 /* ---------- ריכוך תנועה: גרגר הסרט הופך עדין מאוד ---------- */
@@ -234,15 +234,15 @@ footer.site p{color:var(--field-muted);font-size:1rem;max-width:36ch;margin:0 0 
 .hb-hero__kicker{color:var(--field-muted)!important;background:none!important;border:0!important;padding:0!important;font-size:.98rem!important;font-weight:500!important;margin-bottom:1.6em!important;letter-spacing:0}
 .hb-hero__kicker-dot{display:none!important}
 .hb-hero__title{font-size:clamp(2.5rem,1rem + 5.6vw,5.4rem)!important;line-height:1.02!important;letter-spacing:-.03em!important;font-weight:500!important;color:var(--field-ink)!important;margin:0 0 .5em!important}
-.hb-hero__title-em{color:var(--gold)!important;background:none!important;-webkit-text-fill-color:currentColor!important}
+.hb-hero__title-em{color:var(--gold-deep)!important;background:none!important;-webkit-text-fill-color:currentColor!important}
 .hb-hero__sub{color:var(--field-muted)!important;font-size:clamp(1.1rem,1rem + .5vw,1.3rem)!important;line-height:1.65!important;max-width:44ch}
 .hb-hero__btn{background:var(--gold)!important;color:var(--field)!important;border-radius:var(--r)!important;box-shadow:none!important;font-weight:600!important;padding:16px 32px!important;min-height:54px}
 .hb-hero__btn:hover{background:#D3A95A!important;box-shadow:none!important}
 .hb-hero__link{color:var(--field-ink)!important;background:none!important;border:0!important;border-bottom:1px solid var(--gold)!important;border-radius:0!important;padding:4px 0!important}
-.hb-hero__link:hover{background:none!important;color:var(--gold)!important}
-.hb-hero__trust{margin-top:clamp(28px,4vw,56px)!important;padding-top:20px;border-top:1px solid #3A352E}
+.hb-hero__link:hover{background:none!important;color:var(--gold-deep)!important}
+.hb-hero__trust{margin-top:clamp(28px,4vw,56px)!important;padding-top:20px;border-top:1px solid rgba(42,38,32,.22)}
 .hb-hero__trust li{color:var(--field-muted)!important;font-size:.95rem!important}
-.hb-hero__trust li::after{background:#4A443B!important}
+.hb-hero__trust li::after{background:rgba(42,38,32,.3)!important}
 .hb-hero__media{max-width:none!important;order:0!important;min-height:420px;position:relative}
 .hb-hero__frame{position:absolute!important;inset:0;border-radius:0!important;box-shadow:none!important;border:0!important;aspect-ratio:auto!important;background:var(--field-2)}
 .hb-hero__frame img{width:100%;height:100%;object-fit:cover;object-position:center 20%;filter:saturate(.92)}
@@ -278,3 +278,66 @@ footer.site p{color:var(--field-muted);font-size:1rem;max-width:36ch;margin:0 0 
 .hb-hero__frame picture,.hb-hero__frame img{position:absolute;inset:0;width:100%;height:100%}
 #root button[class*="rounded-full"],#root a[class*="rounded-full"]{border-radius:var(--r)!important}
 #root a[class*="bg-white"][class*="rounded-full"]{background:var(--card)!important;border:1px solid var(--ink)!important;color:var(--ink)!important;box-shadow:none!important}
+
+/* ===== כל התוכניות: אריחי תמונה בסגנון קטלוג, בלי שחור ===== */
+.tiles{display:grid;gap:clamp(16px,2vw,24px);grid-template-columns:1fr;margin:0 0 clamp(48px,7vw,96px)}
+@media(min-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}.tiles .tile:first-child{grid-column:1/-1;grid-template-columns:1.1fr 1fr;align-items:stretch}.tiles .tile:first-child img{height:100%;aspect-ratio:auto;min-height:340px}}
+.tile{display:grid;grid-template-rows:auto 1fr;background:var(--field);border-radius:12px;overflow:hidden;color:var(--ink);text-decoration:none;transition:transform .35s var(--ease)}
+.tile:hover{transform:translateY(-4px);color:var(--ink)}
+.tile img{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:center 25%;display:block;border-radius:0!important}
+.tile-body{display:flex;flex-direction:column;gap:.6em;padding:clamp(22px,3vw,40px)}
+.tile-k{font-size:.95rem;font-weight:500;color:var(--gold-deep)}
+.tile-h{font-size:clamp(1.5rem,1.1rem + 1.6vw,2.3rem);line-height:1.12;font-weight:500;letter-spacing:-.02em;text-wrap:balance}
+.tile-p{font-size:1.05rem;line-height:1.6;color:var(--field-muted);max-width:48ch}
+.tile-go{margin-top:auto;padding-top:.8em;font-weight:600;border-bottom:1px solid var(--gold);width:max-content;padding-bottom:3px}
+/* פירוט כל תוכנית: תמונה + טקסט קצר, הרשימה נפתחת לפי בקשה */
+.prog{display:grid!important;gap:clamp(24px,4vw,64px)!important;align-items:start;scroll-margin-top:96px}
+@media(min-width:900px){.prog{grid-template-columns:.8fr 1fr}.prog:nth-of-type(odd) .prog-img{order:2}}
+.prog-img{margin:0}.prog-img img{width:100%;border-radius:12px;aspect-ratio:4/5;object-fit:cover;object-position:center 25%;display:block}
+.prog-text{display:flex;flex-direction:column;gap:.2em}
+.more{border-top:1px solid var(--line);margin-top:1.2em}
+.more summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:18px 0;font-weight:600;font-size:1.12rem;min-height:44px}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"+";font-size:1.6rem;font-weight:400;line-height:1;transition:transform .3s var(--ease)}
+.more[open] summary::after{transform:rotate(45deg)}
+.more ul{margin:0 0 1em}
+.ctaband .btn.primary{color:var(--field)!important}
+
+/* ===== דפי תוכן: תמונות ומבנה במקום קוביות טקסט ===== */
+.side-img{margin:0}.side-img img{width:100%;height:auto;border-radius:12px;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:10px;padding:0!important;margin:1.2em 0!important;list-style:none;max-width:none!important}
+.chips li{border:1px solid var(--ink)!important;border-radius:999px;padding:8px 18px!important;font-weight:500;background:var(--field)}
+.chips li::before{display:none!important}
+.hero .hero-grid .hero-photo{margin:0}.hero .hero-grid .hero-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:12px}
+/* מספור אבני ליבה / עקרונות */
+main .cards.c3{counter-reset:k}main .cards.c3 .card{counter-increment:k}
+main .cards.c3 .card::before{content:"0" counter(k);display:block;font-size:2.6rem;font-weight:500;line-height:1;color:var(--gold-deep);margin-bottom:.4em}
+.signs{counter-reset:s}.signs li{counter-increment:s;display:grid;grid-template-columns:3.2rem 1fr;align-items:baseline;font-size:1.2rem!important}
+.signs li::before{content:"0" counter(s)!important;display:block!important;position:static!important;width:auto!important;height:auto!important;background:none!important;color:var(--gold-deep);font-size:1.6rem;font-weight:500}
+.card .n{display:block;font-size:2.6rem;font-weight:500;color:var(--gold-deep);line-height:1;margin-bottom:.3em}
+/* אודות: סיפור עם תמונה דביקה */
+.story-lead{font-size:clamp(1.7rem,1.1rem + 2.4vw,2.9rem)!important;line-height:1.15!important;font-weight:500;letter-spacing:-.02em;max-width:20ch!important;margin-bottom:1em!important;color:var(--ink)}
+@media(min-width:980px){
+ .blk.story{grid-template-columns:minmax(0,.9fr) minmax(0,1fr)!important}
+ .blk.story > h2{grid-column:1/-1!important;position:static!important}
+ .blk.story > .side-img{grid-column:1!important;grid-row:2 / span 9;position:sticky;top:104px;align-self:start}
+ .blk.story > *:not(h2):not(.side-img){grid-column:2!important}
+}
+.blk.story .side-img img{aspect-ratio:4/5;object-fit:cover}
+@media(max-width:979px){.blk.story .side-img{margin:0 0 1.4em}}
+.cure-row{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:0;margin:1.6em 0;max-width:none!important;border-top:1px solid var(--line-strong)}
+.cure-row li{padding:16px 10px 0 0;font-weight:600;font-size:.98rem;line-height:1.3}
+.cure-row li::before{display:none!important}
+.cure-row b{display:block;font-size:clamp(2.4rem,1.4rem + 3vw,4rem);font-weight:500;color:var(--gold-deep);line-height:1;margin-bottom:.15em}
+.cure-row span{display:block;font-weight:400;color:var(--ink-2)}
+.process-split{display:grid;gap:clamp(24px,4vw,64px);align-items:center}
+@media(min-width:900px){.process-split{grid-template-columns:.7fr 1fr}}
+/* שיטה: תמונה לצד שלבי CURE */
+@media(min-width:980px){.blk:has(.cure) .side-img{grid-column:2;margin-bottom:1.4em}}
+.blk .side-img img{max-height:420px;object-fit:cover}
+/* גוון חול במקום שחור בכל מקום */
+#root footer{background:var(--field)!important;color:var(--ink)!important}
+#root footer [class*="text-white"],#root footer p,#root footer a,#root footer span{color:var(--field-muted)!important}
+#root footer .font-heading{color:var(--ink)!important}
+#root footer [class*="border-white"]{border-color:rgba(42,38,32,.2)!important}
+#root footer img{mix-blend-mode:multiply}

@@ -1463,7 +1463,7 @@ function FinalCta() {
 
 function Footer() {
   return /*#__PURE__*/React.createElement("footer", {
-    className: "bg-[#1C1917] text-white/80 pt-16 pb-10"
+    className: "bg-[#EADDC3] text-ink-800 pt-16 pb-10"
   }, /*#__PURE__*/React.createElement("div", {
     className: "max-w-[1080px] mx-auto px-5 sm:px-7"
   }, /*#__PURE__*/React.createElement("div", {
