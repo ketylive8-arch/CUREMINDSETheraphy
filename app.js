@@ -74,7 +74,7 @@ const CONTENT = {
       { label: "מה זו השיטה", href: "/method" },
       { label: "תוכניות", href: "/programs" },
       { label: "ליווי אישי", href: "#personal" },
-      { label: "מאמרים", href: "/articles" },
+      { label: "עזרה וירטואלית", href: "/online" },
       { label: "שאלות נפוצות", href: "#faq" },
     ],
     login: "שיחת היכרות חינם",

@@ -341,3 +341,8 @@ main .cards.c3 .card::before{content:"0" counter(k);display:block;font-size:2.6r
 #root footer .font-heading{color:var(--ink)!important}
 #root footer [class*="border-white"]{border-color:rgba(42,38,32,.2)!important}
 #root footer img{mix-blend-mode:multiply}
+
+/* ---- online / calendly embed ---- */
+.cal-embed{min-height:320px;border:1px solid var(--line,#e3dccd);border-radius:var(--r);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:1.2rem 0}
+.cal-embed .calendly-inline-widget{width:100%;height:720px}
+@media(max-width:640px){.cal-embed .calendly-inline-widget{height:780px}}

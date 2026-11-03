@@ -80,8 +80,8 @@ const CONTENT = {
       label: "ליווי אישי",
       href: "#personal"
     }, {
-      label: "מאמרים",
-      href: "/articles"
+      label: "עזרה וירטואלית",
+      href: "/online"
     }, {
       label: "שאלות נפוצות",
       href: "#faq"
