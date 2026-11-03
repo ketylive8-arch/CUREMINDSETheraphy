@@ -18,6 +18,6 @@ for f in glob.glob("*.html"):
     s=re.sub(r'<footer class="site">.*?</footer>',foot,s,flags=re.S)
     s=re.sub(r'<link href="https://fonts.googleapis.com/css2[^>]*>\s*','',s)
     s=re.sub(r'<link rel="preconnect" href="https://fonts.g[^>]*>\s*','',s)
-    if 'cm3.css' not in s: s=s.replace('</head>','<link rel="preload" href="/fonts/heebo-hebrew-500-normal.woff2" as="font" type="font/woff2" crossorigin>\n<link rel="stylesheet" href="/cm3.css?v=20261102a">\n</head>',1)
+    if 'cm3.css' not in s: s=s.replace('</head>','<link rel="preload" href="/fonts/heebo-hebrew-500-normal.woff2" as="font" type="font/woff2" crossorigin>\n<link rel="stylesheet" href="/cm3.css?v=20261103a">\n</head>',1)
     if s!=o: open(f,"w",encoding="utf8").write(s); n+=1
 print(n)

@@ -346,3 +346,8 @@ main .cards.c3 .card::before{content:"0" counter(k);display:block;font-size:2.6r
 .cal-embed{min-height:320px;border:1px solid var(--line,#e3dccd);border-radius:var(--r);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;margin:1.2rem 0}
 .cal-embed .calendly-inline-widget{width:100%;height:720px}
 @media(max-width:640px){.cal-embed .calendly-inline-widget{height:780px}}
+
+/* ---- נגישות: יעדי לחיצה ופוקוס ---- */
+footer.site a,.related a,.faq summary,.go{display:inline-block;min-height:28px;padding-block:.3rem}
+:where(a,button,summary,input,select,textarea):focus-visible{outline:3px solid var(--gold-deep);outline-offset:3px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}

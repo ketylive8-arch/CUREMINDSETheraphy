@@ -71,14 +71,16 @@ function spotifyEmbed(url) {
 const CONTENT = {
   nav: {
     links: [
-      { label: "מה זו השיטה", href: "/method" },
-      { label: "תוכניות", href: "/programs" },
-      { label: "ליווי אישי", href: "#personal" },
+      { label: "השיטה", href: "/method" },
+      { label: "לנוער", href: "/teens" },
+      { label: "לצעירים", href: "/young-adults" },
+      { label: "למבוגרים", href: "/adults" },
+      { label: "מוסדות", href: "/schools" },
       { label: "עזרה וירטואלית", href: "/online" },
-      { label: "שאלות נפוצות", href: "#faq" },
+      { label: "שאלות נפוצות", href: "/faq" },
     ],
-    login: "שיחת היכרות חינם",
-    cta: "קטי AI",
+    login: "שיחת היכרות",
+    cta: "שיחה עם קיורטי",
   },
   hero: {
     kicker: "CureMindset · קטי שגב",
@@ -1879,24 +1881,110 @@ function HbFinalCta() {
   );
 }
 
+
+/* ---------- דף הבית החדש — לפי חבילת התכנים (3.11.2026) ---------- */
+const HM_CAL = "https://calendly.com/ketysegev/meet-with-me";
+const HM_WA = "https://wa.me/972543032349";
+function HmRows({ items }) {
+  return (<ol className="rows">{items.map(([t, p]) => (<li key={t}><h3>{t}</h3><p>{p}</p></li>))}</ol>);
+}
+function HmHero() {
+  return (
+    <section className="hero" id="top"><div className="hero-grid"><div>
+      <p className="eyebrow">CureMindset · קטי שגב</p>
+      <h1>יש דברים שלא נפתרים בכוח הרצון.</h1>
+      <p className="lead">כי הם לא נמצאים שם. הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן ושהגוף מגיב לפיהם לפני שהספקת לחשוב. שיטת CureMindset עובדת בדיוק שם: על השורש, לא על התסמין.</p>
+      <p>לנוער, לצעירים ולמבוגרים. בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
+      <div className="btnrow">
+        <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות</a>
+        <a className="btn ghost" href="/method">איך השיטה עובדת</a>
+      </div>
+    </div>
+    <figure className="hero-photo"><picture>
+      <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
+      <img src="images/kety-640.jpg" alt="קטי שגב, מטפלת רגשית ומאמנת מנטלית" width="640" height="800" loading="eager" decoding="async" />
+    </picture></figure></div></section>
+  );
+}
+function HmBody() {
+  return (
+    <>
+      <section className="blk"><h2>אתם מכירים את זה?</h2>
+        <HmRows items={[
+          ["הנער/ה שנראה/ית \"בסדר\"", "הציונים בסדר, החברים בסדר, והכול בסדר, חוץ ממה שקורה בפנים לפני מבחן, לפני שיעור, לפני מסיבה."],
+          ["הצעיר/ה שכבר עייפ/ה מלהסביר", "\"מה אתה עושה בחיים?\" היא שאלה שכל אחד שואל, ואף אחד לא באמת מקשיב לתשובה."],
+          ["ההורה שמרגיש חסר אונים", "רואה, מרגיש, יודע שמשהו שם, ולא יודע איך לגעת בזה בלי לשבור את הקשר."],
+          ["המבוגר/ת שמרוצה מהכול חוץ מעצמו/ה", "עבודה, בית, חיים מסודרים, ובתוך הראש מסלול אחר לגמרי."]]} />
+        <p>אם אחד מהמשפטים האלה נשמע מוכר, אתם במקום הנכון.</p>
+      </section>
+      <div className="pull-quote">הדפוס נלמד. ולכן אפשר ללמד אותו מחדש.</div>
+      <section className="blk"><h2>מה בעצם קורה שם בפנים?</h2>
+        <p>חרדה, עומס, דימוי עצמי נמוך ודפוסים חוזרים לא "נופלים עלינו". הם נלמדים.</p>
+        <p>בשנים הראשונות לחיים המוח לומד מה בטוח ומה לא. הילד שמגלה ש"אסור לטעות" לומד להתכווץ. הנערה שמגלה ש"הדעה שלי מעייפת אנשים" לומדת לשתוק. הבגרות מגיעה, הסביבה משתנה, והדפוס נשאר. עכשיו הוא פועל אוטומטית: לפני מבחן, בחדר מלא אנשים, מול הבוס.</p>
+        <p>בשלב הזה, לדבר על הבעיה לא מספיק. צריך לגעת בשכבה שבה היא נשמרה: התת-מודע. זו העבודה של CureMindset.</p>
+      </section>
+      <section className="blk" id="cure"><h2>ארבעת שלבי השיטה</h2>
+        <ol className="cure-row" aria-label="ארבעת שלבי CURE">
+          <li><b>C</b>Clarity<span>בהירות</span></li><li><b>U</b>Unblock<span>שחרור</span></li>
+          <li><b>R</b>Rewire<span>חיווט מחדש</span></li><li><b>E</b>Empower<span>העצמה</span></li>
+        </ol>
+        <HmRows items={[
+          ["C · בהירות", "מזהים את הדפוס, את החוזקות ואת מה שחשוב לך באמת, ולא מה שאמרו לך שצריך להיות חשוב."],
+          ["U · שחרור", "מורידים את העומס: הפחדים, הלחץ החברתי, האמונה ש\"אני לא מספיק\"."],
+          ["R · חיווט מחדש", "מלמדים את המערכת הרגשית להגיב אחרת, עם כלים של NLP, דמיון מודרך וויסות בזמן אמת."],
+          ["E · העצמה", "בונים \"בית פנימי\" שמחזיק לבד: ביטחון עצמי, החלטות מתוך ערך עצמי ושגרה שמחזיקה לאורך זמן."]]} />
+        <p><a className="go" href="/method">לפירוט השיטה ←</a></p>
+      </section>
+      <section className="blk"><h2>למי זה מתאים?</h2>
+        <HmRows items={[
+          ["לנוער 12-17", "קבוצות קטנות של עד 6 נערים ונערות. חרדת בחינות, לחץ חברתי, דימוי עצמי, מסכים והתנתקות. שלושה מפגשים עם כלים שנשארים."],
+          ["לצעירים 18-25", "אחרי צבא, בלימודים, בתחילת הדרך. ערפל, השוואה, לחץ לבחור. קבוצה קטנה או ליווי אישי."],
+          ["למבוגרים", "ליווי אישי לתהליכי עומק: חרדה, חסמים, דפוסים חוזרים במערכות יחסים ובקריירה."],
+          ["למוסדות חינוך וארגוני נוער", "סדנאות \"המצפן הפנימי\" לבתי ספר, מתנ\"סים ומכינות. תוכנית מובנית, מותאמת לגיל ולצרכים."]]} />
+        <ul className="chips">
+          <li><a href="/teens">לנוער</a></li><li><a href="/young-adults">לצעירים</a></li>
+          <li><a href="/adults">למבוגרים</a></li><li><a href="/schools">למוסדות</a></li>
+        </ul>
+      </section>
+      <section className="blk"><h2>איך נראה התהליך בפועל</h2>
+        <HmRows items={[
+          ["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."],
+          ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."],
+          ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."],
+          ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]} />
+        <p><a className="go" href="/online">קביעת שיחה בזום ביומן ←</a></p>
+      </section>
+      <section className="blk"><h2>על קטי</h2>
+        <p>קטי שגב, מטפלת רגשית ומאמנת מנטלית (NLP Master), מפתחת שיטת CureMindset. אחרי שנים של חיפוש אישי שהגיע עד השורש, ושנים של עבודה עם נוער, צעירים ומבוגרים.</p>
+        <p><a className="go" href="/about">הסיפור שלי ←</a></p>
+      </section>
+      <section className="blk"><h2>שאלות שנשאלות בדרך כלל</h2>
+        <div className="faq">
+          <details><summary>זה טיפול פסיכולוגי?</summary><p>זה תהליך אימון רגשי מבוסס NLP ועבודה עם התת-מודע. הוא אינו מחליף אבחון או טיפול רפואי-נפשי. אם צריך, נעבוד בצד ובשיתוף עם גורם מטפל.</p></details>
+          <details><summary>כמה זמן עד שמרגישים שינוי?</summary><p>לרוב כבר בשלושת המפגשים הראשונים יש היכרות עם הדפוס וכלים לוויסות. שינוי שמחזיק נבנה לאורך התהליך.</p></details>
+          <details><summary>אפשר בזום?</summary><p>כן. המפגשים מתקיימים בקריית מוצקין, בקריית חיים או בזום לכל הארץ.</p></details>
+        </div>
+        <p><a className="go" href="/faq">לכל השאלות ←</a></p>
+      </section>
+      <div className="ctaband"><h2>אם משהו כאן נגע בכם, זה כבר סימן.</h2>
+        <p>שיחת היכרות קצרה, בלי התחייבות, כדי לבדוק יחד אם זה נכון לכם.</p>
+        <div className="btnrow">
+          <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לקביעת שיחה</a>
+          <a className="btn ghost" href={HM_WA} target="_blank" rel="noopener">וואטסאפ</a>
+          <a className="btn ghost" href="tel:0543032349">054-3032349</a>
+        </div></div>
+      <div className="disclaimer">התכנים באתר אינם מהווים ייעוץ או טיפול רפואי.</div>
+    </>
+  );
+}
+
 function Home({ onEnterApp }) {
   return (
     <>
       <Nav onEnterApp={onEnterApp} />
-      <main>
-        <HbHero />
-        <HbPillars />
-        <HbVoices />
-        <HbWhyKety />
-        <HbRecognize />
-        <HbSolution />
-        <HbHow />
-        <HbServices />
-        <HbPersonal />
-        <HbWorkshops />
-        <ArticlesSection />
-        <HbFaq />
-        <HbFinalCta />
+      <main className="wrap">
+        <HmHero />
+        <HmBody />
       </main>
       <Footer />
 {/* WhatsAppFloat הוסר מהאתר — לפי הוראת קטי, 2026-09-17 */}
