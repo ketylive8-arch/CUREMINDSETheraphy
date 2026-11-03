@@ -2561,7 +2561,7 @@
       className: "au-form-col"
     }, /*#__PURE__*/React.createElement("div", {
       className: "au-form-col__head"
-    }, /*#__PURE__*/React.createElement("h3", null, isReg ? "בוא/י נתחיל את פריצת הדרך שלך " : "כניסה לאזור האישי"), /*#__PURE__*/React.createElement("p", null, isReg ? "מרחב אישי ומאובטח — 7 ימי התנסות חינם להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה." : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת.")), isReg && recPlan && /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("h3", null, isReg ? "בוא/י נתחיל את פריצת הדרך שלך " : "כניסה לאזור האישי"), /*#__PURE__*/React.createElement("p", null, isReg ? "מרחב אישי ומאובטח להתנסות ולצמיחה, בלי התחייבות. הפרטים שלך נשמרים בפרטיות מלאה." : "טוב לראות אותך שוב. התחברי כדי להמשיך מהמקום שעצרת.")), isReg && recPlan && /*#__PURE__*/React.createElement("div", {
       style: {
         background: "#f7ecd5",
         border: "1px solid #e4cfa0",
@@ -2593,7 +2593,7 @@
         margin: 0,
         lineHeight: 1.5
       }
-    }, recPlan.why, " \xB7 \u05DE\u05EA\u05D7\u05D9\u05DC\u05D9\u05DD \u05D1-7 \u05D9\u05DE\u05D9 \u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \u05D7\u05D9\u05E0\u05DD.")), /*#__PURE__*/React.createElement("form", {
+    }, recPlan.why, ".")), /*#__PURE__*/React.createElement("form", {
       onSubmit: submit,
       className: "au-form"
     }, isReg && /*#__PURE__*/React.createElement("input", {
@@ -2718,7 +2718,7 @@
     }, /*#__PURE__*/React.createElement(Icon, {
       name: "check-circle-2",
       size: 14
-    })), "7 \u05D9\u05DE\u05D9 \u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \u05D7\u05D9\u05E0\u05DD \u2014 \u05DE\u05E8\u05D7\u05D1 \u05DC\u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \u05D5\u05DC\u05E6\u05DE\u05D9\u05D7\u05D4, \u05D1\u05DC\u05D9 \u05D4\u05EA\u05D7\u05D9\u05D9\u05D1\u05D5\u05EA"), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
+    })), "\u05DE\u05E8\u05D7\u05D1 \u05DC\u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \u05D5\u05DC\u05E6\u05DE\u05D9\u05D7\u05D4, \u05D1\u05DC\u05D9 \u05D4\u05EA\u05D7\u05D9\u05D9\u05D1\u05D5\u05EA"), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("span", {
       className: "au-tick"
     }, /*#__PURE__*/React.createElement(Icon, {
       name: "check-circle-2",

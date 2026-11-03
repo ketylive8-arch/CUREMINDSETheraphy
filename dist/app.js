@@ -93,9 +93,9 @@ const CONTENT = {
     kicker: "CureMindset · קטי שגב",
     headline: "אימון מנטלי שמחזיר לך כיוון, בחירה וביטחון.",
     subhead: "לנוער, להורים ולמבוגרים בחיפה, בקריות ובזום: עבודה מעשית על חרדה, פחדים, דימוי עצמי, ביטחון עצמי ודפוסים שחוזרים על עצמם.",
-    ctaPrimary: "להתחיל — 7 ימים בחינם",
-    ctaNote: "בלי כרטיס אשראי · מתחילים עכשיו",
-    banner: "התחילי ב-7 ימי ניסיון חינם · ללא התחייבות · ביטול בכל עת",
+    ctaPrimary: "לשיחת היכרות ללא עלות",
+    ctaNote: "ללא התחייבות",
+    banner: "שיחת היכרות ללא עלות · ללא התחייבות",
     imgAlt: "קטי שגב, מייסדת שיטת CureMindset"
   },
   problem: {
@@ -179,16 +179,16 @@ const CONTENT = {
   plans: {
     eyebrow: "תוכניות ומסלולים",
     title: "בחרי את המסלול שמתאים לך",
-    subtitle: "מתחילים ב-7 ימי התנסות חינם באזור הדיגיטלי · ליווי אישי בתיאום · תשלום מאובטח",
+    subtitle: "ליווי אישי בתיאום · תשלום מאובטח",
     items: [{
       id: "basic",
       badge: "בסיסי · דיגיטלי",
       price: "אזור דיגיטלי",
-      priceNote: "גישה מלאה + 7 ימי התנסות חינם",
+      priceNote: "גישה מלאה",
       audience: "מי שרוצה להתחיל עצמאית, בקצב שלו/ה, עם הכלים הדיגיטליים",
       features: ["צ'אט עם קטי הדיגיטלית — 24/7", "כל הכלים והתרגולים", "צ'ק-אין יומי ומעקב אישי", "מודולים מודרכים לפי השיטה", "עוגן SOS לרגעי הצפה"],
       highlight: false,
-      cta: "להתחיל 7 ימי התנסות חינם"
+      cta: "להתחיל"
     }, {
       id: "combined",
       badge: "שילוב · מומלץ",
@@ -232,9 +232,6 @@ const CONTENT = {
     }, {
       q: "כמה זמן זה לוקח ביום?",
       a: "מעט. כל יום צעד קטן אחד — שיחה קצרה, שיעור של כמה דקות או תרגול. בנוי כך שייכנס לחיים העמוסים ביותר, לא יעמיס עליהם."
-    }, {
-      q: "מה כולל הניסיון החינם?",
-      a: "7 ימי התנסות מלאים — בלי כרטיס אשראי ובלי התחייבות. מתנסים בשיחה, בכלים ובתרגולים, ורק בסוף מחליטים אם ממשיכים."
     }, {
       q: "מה לגבי פרטיות?",
       a: "כל מה שאת/ה משתף/ת נשמר מוצפן ופרטי. איננו מוכרים מידע. אפשר למחוק את החשבון והנתונים בכל עת."
@@ -505,12 +502,7 @@ function Hero() {
   }, /*#__PURE__*/React.createElement("span", {
     className: "hero-badge-dot",
     "aria-hidden": "true"
-  }), "\u05E9\u05D9\u05D8\u05EA CURE \xB7 \u05D0\u05E8\u05D1\u05E2\u05D4 \u05E9\u05DC\u05D1\u05D9\u05DD"), /*#__PURE__*/React.createElement("div", {
-    className: "hero-badge hero-badge-b"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "hero-badge-dot",
-    "aria-hidden": "true"
-  }), "7 \u05D9\u05DE\u05D9 \u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \u05D1\u05D7\u05D9\u05E0\u05DD"))))));
+  }), "\u05E9\u05D9\u05D8\u05EA CURE \xB7 \u05D0\u05E8\u05D1\u05E2\u05D4 \u05E9\u05DC\u05D1\u05D9\u05DD"))))));
 }
 function FreeTrialBanner() {
   return /*#__PURE__*/React.createElement("section", {
@@ -1259,7 +1251,7 @@ function LeadForm({
     disabled: status === "sending"
   }, status === "sending" ? "שולח…" : "שליחה — ונחזור אליך"), /*#__PURE__*/React.createElement("p", {
     className: "text-[12.5px] text-ink-400 text-center leading-relaxed"
-  }, "\u05D4\u05E4\u05E8\u05D8\u05D9\u05DD \u05E0\u05E9\u05DE\u05E8\u05D9\u05DD \u05D0\u05E6\u05DC \u05E7\u05D8\u05D9 \u05D1\u05DC\u05D1\u05D3 \u05D5\u05DC\u05D0 \u05DE\u05D5\u05E2\u05D1\u05E8\u05D9\u05DD \u05DC\u05D2\u05D5\u05E8\u05DD \u05E9\u05DC\u05D9\u05E9\u05D9. 7 \u05D9\u05DE\u05D9 \u05D4\u05EA\u05E0\u05E1\u05D5\u05EA \xB7 \u05D1\u05DC\u05D9 \u05DB\u05E8\u05D8\u05D9\u05E1 \u05D0\u05E9\u05E8\u05D0\u05D9 \xB7 \u05D1\u05D9\u05D8\u05D5\u05DC \u05D1\u05DB\u05DC \u05E2\u05EA.")));
+  }, "\u05D4\u05E4\u05E8\u05D8\u05D9\u05DD \u05E0\u05E9\u05DE\u05E8\u05D9\u05DD \u05D0\u05E6\u05DC \u05E7\u05D8\u05D9 \u05D1\u05DC\u05D1\u05D3 \u05D5\u05DC\u05D0 \u05DE\u05D5\u05E2\u05D1\u05E8\u05D9\u05DD \u05DC\u05D2\u05D5\u05E8\u05DD \u05E9\u05DC\u05D9\u05E9\u05D9. \u05DC\u05DC\u05D0 \u05D4\u05EA\u05D7\u05D9\u05D9\u05D1\u05D5\u05EA.")));
 }
 function LeadSection() {
   return /*#__PURE__*/React.createElement("section", {
@@ -1273,7 +1265,7 @@ function LeadSection() {
     className: "text-ink-600 text-[17px] leading-relaxed mb-6"
   }, "\u05DC\u05D0 \u05E6\u05E8\u05D9\u05DA \u05DC\u05D4\u05D2\u05D9\u05E2 \u05E2\u05DD \u05EA\u05E9\u05D5\u05D1\u05D5\u05EA. \u05DE\u05E9\u05D0\u05D9\u05E8\u05D9\u05DD \u05E9\u05DD \u05D5\u05D8\u05DC\u05E4\u05D5\u05DF \u05D0\u05D5 \u05D0\u05D9\u05DE\u05D9\u05D9\u05DC, \u05D5\u05D0\u05E0\u05D7\u05E0\u05D5 \u05D7\u05D5\u05D6\u05E8\u05D9\u05DD \u05D0\u05DC\u05D9\u05DA \u05DB\u05D3\u05D9 \u05DC\u05D1\u05D3\u05D5\u05E7 \u05D9\u05D7\u05D3 \u05D0\u05DD \u05D4\u05E9\u05D9\u05D8\u05D4 \u05DE\u05EA\u05D0\u05D9\u05DE\u05D4 \u05DC\u05DA \u05D0\u05D5 \u05DC\u05D1\u05DF/\u05D1\u05EA \u05E9\u05DC\u05DA."), /*#__PURE__*/React.createElement("ul", {
     className: "flex flex-col gap-2.5"
-  }, ["7 ימי התנסות חינם — בלי התחייבות", "שיחה אישית להיכרות והתאמה", "פרטיות מלאה — הנתונים שלך נשארים אצלנו"].map((t, i) => /*#__PURE__*/React.createElement("li", {
+  }, ["שיחת היכרות ללא עלות — בלי התחייבות", "שיחה אישית להיכרות והתאמה", "פרטיות מלאה — הנתונים שלך נשארים אצלנו"].map((t, i) => /*#__PURE__*/React.createElement("li", {
     key: i,
     className: "flex items-center gap-2.5 text-ink-700 text-[15.5px] font-medium"
   }, /*#__PURE__*/React.createElement(Icon, {
@@ -1663,7 +1655,7 @@ function HbHero() {
   }, "\u2190"))), /*#__PURE__*/React.createElement("ul", {
     className: "hb-hero__trust",
     "aria-label": "\u05E0\u05EA\u05D5\u05E0\u05D9 \u05D0\u05DE\u05D5\u05DF"
-  }, /*#__PURE__*/React.createElement("li", null, "\u05DE\u05D0\u05D5\u05EA \u05EA\u05D4\u05DC\u05D9\u05DB\u05D9\u05DD \u05D0\u05D9\u05E9\u05D9\u05D9\u05DD \u05D5\u05E1\u05D3\u05E0\u05D0\u05D5\u05EA"), /*#__PURE__*/React.createElement("li", null, "\u05D4\u05DB\u05E9\u05E8\u05D5\u05EA NLP \u05D1\u05D9\u05E0\u05DC\u05D0\u05D5\u05DE\u05D9\u05D5\u05EA"), /*#__PURE__*/React.createElement("li", null, "\u05DC\u05E0\u05D5\u05E2\u05E8 \xB7 \u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD \xB7 \u05DC\u05D4\u05D5\u05E8\u05D9\u05DD")))));
+  }, /*#__PURE__*/React.createElement("li", null, "\u05D4\u05DB\u05E9\u05E8\u05D5\u05EA NLP \u05D1\u05D9\u05E0\u05DC\u05D0\u05D5\u05DE\u05D9\u05D5\u05EA"), /*#__PURE__*/React.createElement("li", null, "\u05DC\u05E0\u05D5\u05E2\u05E8 \xB7 \u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD \xB7 \u05DC\u05D4\u05D5\u05E8\u05D9\u05DD")))));
 }
 
 /* SECTION 2 — אולי זה מה שקורה לך */
@@ -2201,7 +2193,7 @@ function Home({
 }) {
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Nav, {
     onEnterApp: onEnterApp
-  }), /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement(HbHero, null), /*#__PURE__*/React.createElement(HbPillars, null), /*#__PURE__*/React.createElement(HbVoices, null), /*#__PURE__*/React.createElement(HbWhyKety, null), /*#__PURE__*/React.createElement(HbStats, null), /*#__PURE__*/React.createElement(HbRecognize, null), /*#__PURE__*/React.createElement(HbSolution, null), /*#__PURE__*/React.createElement(HbHow, null), /*#__PURE__*/React.createElement(HbServices, null), /*#__PURE__*/React.createElement(HbPersonal, null), /*#__PURE__*/React.createElement(HbWorkshops, null), /*#__PURE__*/React.createElement(ArticlesSection, null), /*#__PURE__*/React.createElement(HbFaq, null), /*#__PURE__*/React.createElement(HbFinalCta, null)), /*#__PURE__*/React.createElement(Footer, null));
+  }), /*#__PURE__*/React.createElement("main", null, /*#__PURE__*/React.createElement(HbHero, null), /*#__PURE__*/React.createElement(HbPillars, null), /*#__PURE__*/React.createElement(HbVoices, null), /*#__PURE__*/React.createElement(HbWhyKety, null), /*#__PURE__*/React.createElement(HbRecognize, null), /*#__PURE__*/React.createElement(HbSolution, null), /*#__PURE__*/React.createElement(HbHow, null), /*#__PURE__*/React.createElement(HbServices, null), /*#__PURE__*/React.createElement(HbPersonal, null), /*#__PURE__*/React.createElement(HbWorkshops, null), /*#__PURE__*/React.createElement(ArticlesSection, null), /*#__PURE__*/React.createElement(HbFaq, null), /*#__PURE__*/React.createElement(HbFinalCta, null)), /*#__PURE__*/React.createElement(Footer, null));
 }
 
 // Window exports
