@@ -22,6 +22,26 @@
       "source": "/gifts.html",
       "destination": "/programs",
       "permanent": true
+    },
+    {
+      "source": "/program",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/program.html",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/read",
+      "destination": "/emotional-coaching",
+      "permanent": true
+    },
+    {
+      "source": "/read.html",
+      "destination": "/emotional-coaching",
+      "permanent": true
     }
   ],
   "rewrites": [
