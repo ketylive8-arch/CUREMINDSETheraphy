@@ -1906,6 +1906,77 @@ function HmHero() {
     </picture></figure></div></section>
   );
 }
+
+/* ===== השראה מ-tonyrobbins.com: עולמות תוכן ===== */
+function HmPillars() {
+  const items = [
+    ["חרדה ולחץ", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"],
+    ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"],
+    ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"],
+    ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"],
+    ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"],
+    ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]
+  ];
+  return (
+    <section className="blk" id="worlds"><h2>עולמות תוכן</h2>
+      <div className="tiles">
+        {items.map(([t, p, href]) => (
+          <a className="tile" href={href} key={href}>
+            <span className="tile-body">
+              <span className="tile-h">{t}</span>
+              <span className="tile-p">{p}</span>
+              <span className="go">לעמוד ←</span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ===== וידאו: מהאולפן ===== */
+function HmWatch() {
+  return (
+    <section className="blk" id="watch"><h2>קטי מדברת</h2>
+      <p>כשמדברים על תת-מודע, על התמכרויות ועל חרדה — לא צריך מונחים. צריך להסביר את זה בשפה של החיים.</p>
+      <div className="video-embed">
+        <iframe src="https://www.youtube.com/embed/8q_5IAAJohQ" title="קטי שגב ברדיו חיפה — מאסטר NLP וטיפול בתת מודע" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+      </div>
+      <p><a className="go" href="https://www.youtube.com/@ketynlplive/videos" target="_blank" rel="noopener">לערוץ היוטיוב ←</a></p>
+    </section>
+  );
+}
+
+/* ===== קטי AI — ליווי וירטואלי ===== */
+function HmAi() {
+  return (
+    <section className="blk" id="kety-ai"><h2>קטי AI — ליווי וירטואלי</h2>
+      <p>לא תמיד אפשר לחכות למפגש. קטי AI היא עוזרת רגשית שמכירה את השיטה, עונה על שאלות על התהליך, ומחזיקה כלים קצרים לרגעים של לחץ.</p>
+      <p>היא לא מאבחנת ולא מטפלת — כשהיא מזהה מצב שדורש אדם, היא מפנה אליי.</p>
+      <div className="btnrow"><button className="btn primary" onClick={() => window.cmOpenBot && window.cmOpenBot()}>לשיחה עם קטי AI</button></div>
+    </section>
+  );
+}
+
+/* ===== במספרים ===== */
+function HmNumbers() {
+  const nums = [
+    ["3", "מפגשים בקבוצת נוער"],
+    ["עד 6", "משתתפים בקבוצה"],
+    ["50-60", "דקות במפגש אישי"],
+    ["12-25", "טווח הגילאים"]
+  ];
+  return (
+    <section className="blk" id="numbers"><h2>איך זה נראה בפועל</h2>
+      <div className="num-cards">
+        {nums.map(([n, l]) => (
+          <div className="big-stat" key={l}><b>{n}</b><span>{l}</span></div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function HmBody() {
   return (
     <>
@@ -1918,6 +1989,7 @@ function HmBody() {
         <p>אם אחד מהמשפטים האלה נשמע מוכר, אתם במקום הנכון.</p>
       </section>
       <div className="pull-quote">הדפוס נלמד. ולכן אפשר ללמד אותו מחדש.</div>
+      <HmPillars />
       <section className="blk"><h2>מה בעצם קורה שם בפנים?</h2>
         <p>חרדה, עומס, דימוי עצמי נמוך ודפוסים חוזרים לא "נופלים עלינו". הם נלמדים.</p>
         <p>בשנים הראשונות לחיים המוח לומד מה בטוח ומה לא. הילד שמגלה ש"אסור לטעות" לומד להתכווץ. הנערה שמגלה ש"הדעה שלי מעייפת אנשים" לומדת לשתוק. הבגרות מגיעה, הסביבה משתנה, והדפוס נשאר. עכשיו הוא פועל אוטומטית: לפני מבחן, בחדר מלא אנשים, מול הבוס.</p>
@@ -1935,6 +2007,9 @@ function HmBody() {
           <li><a href="/adults">למבוגרים</a></li><li><a href="/schools">למוסדות</a></li>
         </ul>
       </section>
+      <HmWatch />
+      <HmNumbers />
+      <HmAi />
       <section className="blk"><h2>איך נראה התהליך בפועל</h2>
         <HmRows items={[
           ["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."],
