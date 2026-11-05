@@ -2242,6 +2242,77 @@ function HmHero() {
     decoding: "async"
   })))));
 }
+
+/* ===== השראה מ-tonyrobbins.com: עולמות תוכן ===== */
+function HmPillars() {
+  const items = [["חרדה ולחץ", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"], ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"], ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"], ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"], ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"], ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]];
+  return /*#__PURE__*/React.createElement("section", {
+    className: "blk",
+    id: "worlds"
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05E2\u05D5\u05DC\u05DE\u05D5\u05EA \u05EA\u05D5\u05DB\u05DF"), /*#__PURE__*/React.createElement("div", {
+    className: "tiles"
+  }, items.map(([t, p, href]) => /*#__PURE__*/React.createElement("a", {
+    className: "tile",
+    href: href,
+    key: href
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "tile-body"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "tile-h"
+  }, t), /*#__PURE__*/React.createElement("span", {
+    className: "tile-p"
+  }, p), /*#__PURE__*/React.createElement("span", {
+    className: "go"
+  }, "\u05DC\u05E2\u05DE\u05D5\u05D3 \u2190"))))));
+}
+
+/* ===== וידאו: מהאולפן ===== */
+function HmWatch() {
+  return /*#__PURE__*/React.createElement("section", {
+    className: "blk",
+    id: "watch"
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D8\u05D9 \u05DE\u05D3\u05D1\u05E8\u05EA"), /*#__PURE__*/React.createElement("p", null, "\u05DB\u05E9\u05DE\u05D3\u05D1\u05E8\u05D9\u05DD \u05E2\u05DC \u05EA\u05EA-\u05DE\u05D5\u05D3\u05E2, \u05E2\u05DC \u05D4\u05EA\u05DE\u05DB\u05E8\u05D5\u05D9\u05D5\u05EA \u05D5\u05E2\u05DC \u05D7\u05E8\u05D3\u05D4 \u2014 \u05DC\u05D0 \u05E6\u05E8\u05D9\u05DA \u05DE\u05D5\u05E0\u05D7\u05D9\u05DD. \u05E6\u05E8\u05D9\u05DA \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05D0\u05EA \u05D6\u05D4 \u05D1\u05E9\u05E4\u05D4 \u05E9\u05DC \u05D4\u05D7\u05D9\u05D9\u05DD."), /*#__PURE__*/React.createElement("div", {
+    className: "video-embed"
+  }, /*#__PURE__*/React.createElement("iframe", {
+    src: "https://www.youtube.com/embed/8q_5IAAJohQ",
+    title: "\u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1 \u05D1\u05E8\u05D3\u05D9\u05D5 \u05D7\u05D9\u05E4\u05D4 \u2014 \u05DE\u05D0\u05E1\u05D8\u05E8 NLP \u05D5\u05D8\u05D9\u05E4\u05D5\u05DC \u05D1\u05EA\u05EA \u05DE\u05D5\u05D3\u05E2",
+    loading: "lazy",
+    allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+    allowFullScreen: true
+  })), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("a", {
+    className: "go",
+    href: "https://www.youtube.com/@ketynlplive/videos",
+    target: "_blank",
+    rel: "noopener"
+  }, "\u05DC\u05E2\u05E8\u05D5\u05E5 \u05D4\u05D9\u05D5\u05D8\u05D9\u05D5\u05D1 \u2190")));
+}
+
+/* ===== קטי AI — ליווי וירטואלי ===== */
+function HmAi() {
+  return /*#__PURE__*/React.createElement("section", {
+    className: "blk",
+    id: "kety-ai"
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D8\u05D9 AI \u2014 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D5\u05D9\u05E8\u05D8\u05D5\u05D0\u05DC\u05D9"), /*#__PURE__*/React.createElement("p", null, "\u05DC\u05D0 \u05EA\u05DE\u05D9\u05D3 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D7\u05DB\u05D5\u05EA \u05DC\u05DE\u05E4\u05D2\u05E9. \u05E7\u05D8\u05D9 AI \u05D4\u05D9\u05D0 \u05E2\u05D5\u05D6\u05E8\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05E9\u05DE\u05DB\u05D9\u05E8\u05D4 \u05D0\u05EA \u05D4\u05E9\u05D9\u05D8\u05D4, \u05E2\u05D5\u05E0\u05D4 \u05E2\u05DC \u05E9\u05D0\u05DC\u05D5\u05EA \u05E2\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA, \u05D5\u05DE\u05D7\u05D6\u05D9\u05E7\u05D4 \u05DB\u05DC\u05D9\u05DD \u05E7\u05E6\u05E8\u05D9\u05DD \u05DC\u05E8\u05D2\u05E2\u05D9\u05DD \u05E9\u05DC \u05DC\u05D7\u05E5."), /*#__PURE__*/React.createElement("p", null, "\u05D4\u05D9\u05D0 \u05DC\u05D0 \u05DE\u05D0\u05D1\u05D7\u05E0\u05EA \u05D5\u05DC\u05D0 \u05DE\u05D8\u05E4\u05DC\u05EA \u2014 \u05DB\u05E9\u05D4\u05D9\u05D0 \u05DE\u05D6\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E9\u05D3\u05D5\u05E8\u05E9 \u05D0\u05D3\u05DD, \u05D4\u05D9\u05D0 \u05DE\u05E4\u05E0\u05D4 \u05D0\u05DC\u05D9\u05D9."), /*#__PURE__*/React.createElement("div", {
+    className: "btnrow"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn primary",
+    onClick: () => window.cmOpenBot && window.cmOpenBot()
+  }, "\u05DC\u05E9\u05D9\u05D7\u05D4 \u05E2\u05DD \u05E7\u05D8\u05D9 AI")));
+}
+
+/* ===== במספרים ===== */
+function HmNumbers() {
+  const nums = [["3", "מפגשים בקבוצת נוער"], ["עד 6", "משתתפים בקבוצה"], ["50-60", "דקות במפגש אישי"], ["12-25", "טווח הגילאים"]];
+  return /*#__PURE__*/React.createElement("section", {
+    className: "blk",
+    id: "numbers"
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05D6\u05D4 \u05E0\u05E8\u05D0\u05D4 \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement("div", {
+    className: "num-cards"
+  }, nums.map(([n, l]) => /*#__PURE__*/React.createElement("div", {
+    className: "big-stat",
+    key: l
+  }, /*#__PURE__*/React.createElement("b", null, n), /*#__PURE__*/React.createElement("span", null, l)))));
+}
 function HmBody() {
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("section", {
     className: "blk"
@@ -2249,7 +2320,7 @@ function HmBody() {
     items: [["הנער/ה שנראה/ית \"בסדר\"", "הציונים בסדר, החברים בסדר, והכול בסדר, חוץ ממה שקורה בפנים לפני מבחן, לפני שיעור, לפני מסיבה."], ["הצעיר/ה שכבר עייפ/ה מלהסביר", "\"מה אתה עושה בחיים?\" היא שאלה שכל אחד שואל, ואף אחד לא באמת מקשיב לתשובה."], ["ההורה שמרגיש חסר אונים", "רואה, מרגיש, יודע שמשהו שם, ולא יודע איך לגעת בזה בלי לשבור את הקשר."], ["המבוגר/ת שמרוצה מהכול חוץ מעצמו/ה", "עבודה, בית, חיים מסודרים, ובתוך הראש מסלול אחר לגמרי."]]
   }), /*#__PURE__*/React.createElement("p", null, "\u05D0\u05DD \u05D0\u05D7\u05D3 \u05DE\u05D4\u05DE\u05E9\u05E4\u05D8\u05D9\u05DD \u05D4\u05D0\u05DC\u05D4 \u05E0\u05E9\u05DE\u05E2 \u05DE\u05D5\u05DB\u05E8, \u05D0\u05EA\u05DD \u05D1\u05DE\u05E7\u05D5\u05DD \u05D4\u05E0\u05DB\u05D5\u05DF.")), /*#__PURE__*/React.createElement("div", {
     className: "pull-quote"
-  }, "\u05D4\u05D3\u05E4\u05D5\u05E1 \u05E0\u05DC\u05DE\u05D3. \u05D5\u05DC\u05DB\u05DF \u05D0\u05E4\u05E9\u05E8 \u05DC\u05DC\u05DE\u05D3 \u05D0\u05D5\u05EA\u05D5 \u05DE\u05D7\u05D3\u05E9."), /*#__PURE__*/React.createElement("section", {
+  }, "\u05D4\u05D3\u05E4\u05D5\u05E1 \u05E0\u05DC\u05DE\u05D3. \u05D5\u05DC\u05DB\u05DF \u05D0\u05E4\u05E9\u05E8 \u05DC\u05DC\u05DE\u05D3 \u05D0\u05D5\u05EA\u05D5 \u05DE\u05D7\u05D3\u05E9."), /*#__PURE__*/React.createElement(HmPillars, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05DE\u05D4 \u05D1\u05E2\u05E6\u05DD \u05E7\u05D5\u05E8\u05D4 \u05E9\u05DD \u05D1\u05E4\u05E0\u05D9\u05DD?"), /*#__PURE__*/React.createElement("p", null, "\u05D7\u05E8\u05D3\u05D4, \u05E2\u05D5\u05DE\u05E1, \u05D3\u05D9\u05DE\u05D5\u05D9 \u05E2\u05E6\u05DE\u05D9 \u05E0\u05DE\u05D5\u05DA \u05D5\u05D3\u05E4\u05D5\u05E1\u05D9\u05DD \u05D7\u05D5\u05D6\u05E8\u05D9\u05DD \u05DC\u05D0 \"\u05E0\u05D5\u05E4\u05DC\u05D9\u05DD \u05E2\u05DC\u05D9\u05E0\u05D5\". \u05D4\u05DD \u05E0\u05DC\u05DE\u05D3\u05D9\u05DD."), /*#__PURE__*/React.createElement("p", null, "\u05D1\u05E9\u05E0\u05D9\u05DD \u05D4\u05E8\u05D0\u05E9\u05D5\u05E0\u05D5\u05EA \u05DC\u05D7\u05D9\u05D9\u05DD \u05D4\u05DE\u05D5\u05D7 \u05DC\u05D5\u05DE\u05D3 \u05DE\u05D4 \u05D1\u05D8\u05D5\u05D7 \u05D5\u05DE\u05D4 \u05DC\u05D0. \u05D4\u05D9\u05DC\u05D3 \u05E9\u05DE\u05D2\u05DC\u05D4 \u05E9\"\u05D0\u05E1\u05D5\u05E8 \u05DC\u05D8\u05E2\u05D5\u05EA\" \u05DC\u05D5\u05DE\u05D3 \u05DC\u05D4\u05EA\u05DB\u05D5\u05D5\u05E5. \u05D4\u05E0\u05E2\u05E8\u05D4 \u05E9\u05DE\u05D2\u05DC\u05D4 \u05E9\"\u05D4\u05D3\u05E2\u05D4 \u05E9\u05DC\u05D9 \u05DE\u05E2\u05D9\u05D9\u05E4\u05EA \u05D0\u05E0\u05E9\u05D9\u05DD\" \u05DC\u05D5\u05DE\u05D3\u05EA \u05DC\u05E9\u05EA\u05D5\u05E7. \u05D4\u05D1\u05D2\u05E8\u05D5\u05EA \u05DE\u05D2\u05D9\u05E2\u05D4, \u05D4\u05E1\u05D1\u05D9\u05D1\u05D4 \u05DE\u05E9\u05EA\u05E0\u05D4, \u05D5\u05D4\u05D3\u05E4\u05D5\u05E1 \u05E0\u05E9\u05D0\u05E8. \u05E2\u05DB\u05E9\u05D9\u05D5 \u05D4\u05D5\u05D0 \u05E4\u05D5\u05E2\u05DC \u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9\u05EA: \u05DC\u05E4\u05E0\u05D9 \u05DE\u05D1\u05D7\u05DF, \u05D1\u05D7\u05D3\u05E8 \u05DE\u05DC\u05D0 \u05D0\u05E0\u05E9\u05D9\u05DD, \u05DE\u05D5\u05DC \u05D4\u05D1\u05D5\u05E1."), /*#__PURE__*/React.createElement("p", null, "\u05D1\u05E9\u05DC\u05D1 \u05D4\u05D6\u05D4, \u05DC\u05D3\u05D1\u05E8 \u05E2\u05DC \u05D4\u05D1\u05E2\u05D9\u05D4 \u05DC\u05D0 \u05DE\u05E1\u05E4\u05D9\u05E7. \u05E6\u05E8\u05D9\u05DA \u05DC\u05D2\u05E2\u05EA \u05D1\u05E9\u05DB\u05D1\u05D4 \u05E9\u05D1\u05D4 \u05D4\u05D9\u05D0 \u05E0\u05E9\u05DE\u05E8\u05D4: \u05D4\u05EA\u05EA-\u05DE\u05D5\u05D3\u05E2. \u05D6\u05D5 \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05E9\u05DC CureMindset.")), /*#__PURE__*/React.createElement("section", {
     className: "blk"
@@ -2270,7 +2341,7 @@ function HmBody() {
     href: "/adults"
   }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
     href: "/schools"
-  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement("section", {
+  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmWatch, null), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement(HmRows, {
     items: [["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."], ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."], ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."], ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]
