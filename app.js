@@ -1484,7 +1484,7 @@ function HbHero() {
             <span>חרדה ועומס רגשי</span>
             <span className="hb-hero__title-em">לא חייבים לנהל את החיים שלך.</span>
           </h1>
-          <p className="hb-hero__sub">ליווי רגשי שעובד עם השורש, לא רק עם התסמין: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
+          <p className="hb-hero__sub">ליווי רגשי שעובד עם השורש, לא רק עם מה שבולט מבחוץ: מיפוי של המצב, זיהוי הדפוס שמפריע, וכלים מעשיים שנשארים איתך גם מחוץ למפגש. לנוער (13+) ולמבוגרים.</p>
           <div className="hb-hero__cta">
             <a href="https://calendly.com/ketysegev/meet-with-me" target="_blank" rel="noopener" className="hb-hero__btn">לשיחת היכרות ללא עלות</a>
             <a href="#services" className="hb-hero__link">לכל התוכניות <span aria-hidden="true">←</span></a>
@@ -1811,7 +1811,7 @@ function HbWhyKety() {
             </h2>
             <div className="text-ink-600 text-[17px] leading-relaxed space-y-4">
               <p>
-                40 שנה של מיגרנות קשות לימדו אותי שהתסמין לא בא נגדי — הוא בא לשמור עליי. מהרגע שהפסקתי להילחם בו והתחלתי להקשיב לו, הכול השתנה. זו השיטה שאני מלמדת היום.
+                40 שנה של מיגרנות קשות לימדו אותי שהכאב לא בא נגדי — הוא בא לשמור עליי. מהרגע שהפסקתי להילחם בו והתחלתי להקשיב לו, הכול השתנה. זו השיטה שאני מלמדת היום.
               </p>
               <div className="flex flex-wrap gap-3 mt-6">
                 <Button as="a" href="/about">הסיפור המלא שלי →</Button>
@@ -1893,7 +1893,7 @@ function HmHero() {
     <section className="hero" id="top"><div className="hero-grid"><div>
       <p className="eyebrow">CureMindset · קטי שגב</p>
       <h1>יש דברים שלא נפתרים בכוח הרצון.</h1>
-      <p className="lead">כי הם לא נמצאים שם. הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן ושהגוף מגיב לפיהם לפני שהספקת לחשוב. שיטת CureMindset עובדת בדיוק שם: על השורש, לא על התסמין.</p>
+      <p className="lead">כי הם לא נמצאים שם. הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן ושהגוף מגיב לפיהם לפני שהספקת לחשוב. שיטת CureMindset עובדת בדיוק שם: על השורש, לא על מה שבולט מבחוץ.</p>
       <p>לנוער, לצעירים ולמבוגרים. בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
       <div className="btnrow">
         <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות</a>
