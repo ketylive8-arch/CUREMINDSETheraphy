@@ -4,3 +4,16 @@ Disallow: /admin.html
 Disallow: /api/
 
 Sitemap: https://www.ketysegev.com/sitemap.xml
+
+# מנועי AI — קריאה וציטוט מותרים
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
