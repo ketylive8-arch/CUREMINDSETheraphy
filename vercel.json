@@ -42,6 +42,11 @@
       "source": "/read.html",
       "destination": "/emotional-coaching",
       "permanent": true
+    },
+    {
+      "source": "/mental-coaching-teens",
+      "destination": "/cure-teens",
+      "permanent": true
     }
   ],
   "rewrites": [
