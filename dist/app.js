@@ -2288,6 +2288,26 @@ function HmWatch() {
 }
 
 /* ===== קטי AI — ליווי וירטואלי ===== */
+function HmPodcast() {
+  return /*#__PURE__*/React.createElement("section", {
+    className: "blk",
+    id: "podcast"
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05D4\u05E4\u05D5\u05D3\u05E7\u05D0\u05E1\u05D8: Mindset TRAINBRAIN"), /*#__PURE__*/React.createElement("p", null, "\u05E9\u05D9\u05D7\u05D5\u05EA \u05E2\u05DC \u05D4\u05DE\u05D5\u05D7, \u05E2\u05DC \u05D3\u05E4\u05D5\u05E1\u05D9\u05DD \u05D5\u05E2\u05DC \u05DE\u05D4 \u05E9\u05D1\u05D0\u05DE\u05EA \u05E2\u05D5\u05D6\u05E8 \u2014 \u05D1\u05D9\u05D5\u05D8\u05D9\u05D5\u05D1, \u05D1\u05D2\u05D5\u05D1\u05D4 \u05D4\u05E2\u05D9\u05E0\u05D9\u05D9\u05DD, \u05D1\u05DC\u05D9 \u05DE\u05D5\u05E0\u05D7\u05D9\u05DD."), /*#__PURE__*/React.createElement("div", {
+    className: "video-embed"
+  }, /*#__PURE__*/React.createElement("iframe", {
+    src: "https://www.youtube.com/embed/videoseries?list=UURNxka7LYKNPFqko72-8U1Q",
+    title: "\u05D4\u05E4\u05D5\u05D3\u05E7\u05D0\u05E1\u05D8 Mindset TRAINBRAIN \u2014 \u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1",
+    allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+    referrerPolicy: "strict-origin-when-cross-origin",
+    allowFullScreen: true,
+    loading: "lazy"
+  })), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("a", {
+    className: "go",
+    href: "https://www.youtube.com/@ketynlplive/videos",
+    target: "_blank",
+    rel: "noopener"
+  }, "\u05DC\u05DB\u05DC \u05D4\u05E4\u05E8\u05E7\u05D9\u05DD \u05D1\u05E2\u05E8\u05D5\u05E5 \u05D4\u05D9\u05D5\u05D8\u05D9\u05D5\u05D1 \u2190")));
+}
 function HmAi() {
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
@@ -2341,7 +2361,7 @@ function HmBody() {
     href: "/adults"
   }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
     href: "/schools"
-  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmWatch, null), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
+  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmWatch, null), /*#__PURE__*/React.createElement(HmPodcast, null), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement(HmRows, {
     items: [["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."], ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."], ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."], ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]

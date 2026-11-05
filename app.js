@@ -1948,6 +1948,21 @@ function HmWatch() {
 }
 
 /* ===== קטי AI — ליווי וירטואלי ===== */
+function HmPodcast() {
+  return (
+    <section className="blk" id="podcast"><h2>הפודקאסט: Mindset TRAINBRAIN</h2>
+      <p>שיחות על המוח, על דפוסים ועל מה שבאמת עוזר — ביוטיוב, בגובה העיניים, בלי מונחים.</p>
+      <div className="video-embed">
+        <iframe src="https://www.youtube.com/embed/videoseries?list=UURNxka7LYKNPFqko72-8U1Q"
+          title="הפודקאסט Mindset TRAINBRAIN — קטי שגב"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin" allowFullScreen loading="lazy"></iframe>
+      </div>
+      <p><a className="go" href="https://www.youtube.com/@ketynlplive/videos" target="_blank" rel="noopener">לכל הפרקים בערוץ היוטיוב ←</a></p>
+    </section>
+  );
+}
+
 function HmAi() {
   return (
     <section className="blk" id="kety-ai"><h2>קטי AI — ליווי וירטואלי</h2>
@@ -2008,6 +2023,7 @@ function HmBody() {
         </ul>
       </section>
       <HmWatch />
+        <HmPodcast />
       <HmNumbers />
       <HmAi />
       <section className="blk"><h2>איך נראה התהליך בפועל</h2>
