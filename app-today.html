@@ -85,6 +85,13 @@
     <a class="tile" href="https://wa.me/972543032349" target="_blank" rel="noopener"><div class="ico">💬</div><b>לדבר עם קטי</b><span>וואטסאפ ישיר</span></a>
   </div>
 
+  <section id="materials" style="margin-top:28px">
+    <div class="eyebrow" style="margin-bottom:10px">החומרים שלי</div>
+    <div id="matList" class="tiles" aria-live="polite">
+      <div class="tile" style="cursor:default"><div class="ico">⏳</div><b>טוען חומרים…</b><span>רגע אחד</span></div>
+    </div>
+  </section>
+
   <div class="row">
     <a href="https://wa.me/972543032349" target="_blank" rel="noopener">אני צריכה אדם</a>
   </div>
@@ -118,5 +125,30 @@ document.getElementById('sosClose').onclick=function(){ sos.close ? sos.close() 
 <script>ScrollCraft.mount(document.body);</script>
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
+
+<script>
+// ספריית החומרים — נשלפת מהמערכת (Base44) ומציגה רק מה שרלוונטי ללקוחה הזו.
+(function(){
+  var list = document.getElementById('matList');
+  if(!list) return;
+  var token = localStorage.getItem('cm_device') || '';
+  fetch('https://base44.app/api/apps/6a65bb7f16f811cbe5809586/functions/clientLibrary', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ device_token: token })
+  }).then(function(r){ return r.json(); }).then(function(d){
+    var items = [].concat((d && d.personal) || [], (d && d.library) || []);
+    if(!items.length){ list.innerHTML = '<div class="tile" style="cursor:default"><div class="ico">📚</div><b>החומרים בדרך</b><span>קטי תקצה לך חומרים בקרוב</span></div>'; return; }
+    list.innerHTML = items.map(function(m){
+      var isNew = m.scope === 'personal';
+      return '<a class="tile" href="' + m.url + '" target="_blank" rel="noopener" style="cursor:pointer">' +
+        '<div class="ico">' + (isNew ? '🎧' : '📄') + '</div>' +
+        '<b>' + m.title + '</b>' +
+        '<span>' + (m.description || '') + '</span>' +
+        (isNew ? '<span style="color:var(--gold-deep);font-weight:700;margin-top:6px;display:block">הוקצה לך אישית</span>' : '') +
+        '</a>';
+    }).join('');
+  }).catch(function(){ list.innerHTML = '<div class="tile" style="cursor:default"><div class="ico">📚</div><b>החומרים לא נטענו</b><span>אפשר לפתוח שוב מאוחר יותר</span></div>'; });
+})();
+</script>
 </body>
 </html>
