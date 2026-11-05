@@ -371,3 +371,22 @@ footer.site a,.related a,.faq summary,.go{display:inline-block;min-height:28px;p
 }
 .video-embed{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;margin:1.1em 0}
 .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+
+/* --- פס 'האזינו לקטי' + שם האתר בכותרת --- */
+.brand-text{font-family:var(--font-head,Rubik,sans-serif);font-weight:700;font-size:1.15rem;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.listen-bar{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem;margin-top:1.4rem}
+.listen-btn{display:inline-flex;align-items:center;gap:.8rem;padding:.7rem 1.1rem;border:1px solid var(--gold-soft,rgba(194,151,74,.45));border-radius:14px;background:#fff;text-decoration:none;color:var(--ink);transition:transform .2s,box-shadow .2s}
+.listen-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(138,106,47,.12)}
+.listen-play{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--gold,#C2974A);color:#fff;font-size:.8rem}
+.listen-txt{display:flex;flex-direction:column;line-height:1.25}
+.listen-txt b{font-size:1rem}
+.listen-txt small{font-size:.8rem;color:var(--ink-soft,#6b6257)}
+.listen-link{font-size:.92rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--gold,#C2974A);padding-bottom:1px}
+@media(max-width:640px){
+ .listen-bar{gap:.6rem}
+ .listen-btn{width:100%}
+ .listen-txt small{font-size:.75rem}
+ .hero{padding-top:96px!important}
+ .hero h1{font-size:clamp(1.6rem,7vw,2.2rem)!important;line-height:1.25}
+}
