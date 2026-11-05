@@ -321,13 +321,11 @@ function Nav({ onEnterApp }) {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-softer border-b border-ink-100/70" : "bg-transparent"
+        "bg-white/95 backdrop-blur-md border-b border-ink-100/70 shadow-[0_1px_0_rgba(45,42,38,.04)]"
       }`}
     >
       <nav className="max-w-[1180px] mx-auto px-5 sm:px-7 h-[68px] flex items-center justify-between" aria-label="ניווט ראשי">
-        <a href="#top" className="shrink-0" aria-label="CureMindset — חזרה לראש העמוד">
-          <Logo />
-        </a>
+        <a href="#top" className="shrink-0 font-heading font-bold text-[19px] sm:text-[21px] tracking-tight text-ink-900" aria-label="קטי שגב — חזרה לראש העמוד">קטי שגב</a>
 
         <ul className="hidden lg:flex items-center gap-7">
           {CONTENT.nav.links.map((l) => (
@@ -1891,63 +1889,21 @@ function HmRows({ items }) {
 function HmHero() {
   return (
     <section className="hero" id="top"><div className="hero-grid"><div>
-      <p className="eyebrow">CureMindset · קטי שגב</p>
-      <h1>יש דברים שלא נפתרים בכוח הרצון.</h1>
-      <p className="lead">כי הם לא נמצאים שם. הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן ושהגוף מגיב לפיהם לפני שהספקת לחשוב. שיטת CureMindset עובדת בדיוק שם: על השורש, לא על מה שבולט מבחוץ.</p>
-      <p>לנוער, לצעירים ולמבוגרים. בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
+      <p className="eyebrow">קטי שגב · ליווי רגשי בחיפה, בקריות ובזום</p>
+      <h1>אתם לא צריכים להסביר לי מה קורה. אני מזהה את זה מהשורה הראשונה.</h1>
+      <p className="lead">הנער שסוגר את הדלת ומדבר איתכם במשפטים קצרים. הצעיר שמסתובב בלי כיוון. ההורים שמנסים לדבר ונתקלים בקיר. והמבוגר שמתפקד מצוין בחוץ ועייף מבפנים. זה המקום שבו מפסיקים להסביר ומתחילים לעבוד.</p>
+      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset. את העבודה עצמה אפשר לשמוע ממני כאן, בסרטון ובפודקאסט, לפני שמדברים.</p>
       <div className="btnrow">
-        <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות</a>
-        <a className="btn ghost" href="/method">איך השיטה עובדת</a>
+        <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות של 20 דקות</a>
+        <a className="btn ghost" href="#keti-speaks">לשמוע אותי מדברת</a>
       </div>
     </div>
     <figure className="hero-photo"><picture>
       <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
-      <img src="images/kety-640.jpg" alt="קטי שגב, מטפלת רגשית ומאמנת מנטלית" width="640" height="800" loading="eager" decoding="async" />
+      <img src="images/kety-640.jpg" alt="קטי שגב, מטפלת רגשית ומאמנת NLP" width="640" height="800" loading="eager" decoding="async" />
     </picture></figure></div></section>
   );
 }
-
-/* ===== השראה מ-tonyrobbins.com: עולמות תוכן ===== */
-function HmPillars() {
-  const items = [
-    ["חרדה ולחץ", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"],
-    ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"],
-    ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"],
-    ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"],
-    ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"],
-    ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]
-  ];
-  return (
-    <section className="blk" id="worlds"><h2>עולמות תוכן</h2>
-      <div className="tiles">
-        {items.map(([t, p, href]) => (
-          <a className="tile" href={href} key={href}>
-            <span className="tile-body">
-              <span className="tile-h">{t}</span>
-              <span className="tile-p">{p}</span>
-              <span className="go">לעמוד ←</span>
-            </span>
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* ===== וידאו: מהאולפן ===== */
-function HmWatch() {
-  return (
-    <section className="blk" id="watch"><h2>קטי מדברת</h2>
-      <p>כשמדברים על תת-מודע, על התמכרויות ועל חרדה — לא צריך מונחים. צריך להסביר את זה בשפה של החיים.</p>
-      <div className="video-embed">
-        <iframe src="https://www.youtube.com/embed/8q_5IAAJohQ" title="קטי שגב ברדיו חיפה — מאסטר NLP וטיפול בתת מודע" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-      </div>
-      <p><a className="go" href="https://www.youtube.com/@ketynlplive/videos" target="_blank" rel="noopener">לערוץ היוטיוב ←</a></p>
-    </section>
-  );
-}
-
-/* ===== קטי AI — ליווי וירטואלי ===== */
 function HmPodcast() {
   return (
     <section className="blk" id="podcast"><h2>הפודקאסט: Mindset TRAINBRAIN</h2>
@@ -2062,7 +2018,7 @@ function Home({ onEnterApp }) {
   return (
     <>
       <Nav onEnterApp={onEnterApp} />
-      <main className="wrap">
+      <main className="wrap" style={{ paddingTop: 72 }}>
         <HmHero />
         <HmBody />
       </main>
