@@ -126,28 +126,90 @@ document.getElementById('sosClose').onclick=function(){ sos.close ? sos.close() 
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 
+
+
 <script>
-// ספריית החומרים — נשלפת מהמערכת (Base44) ומציגה רק מה שרלוונטי ללקוחה הזו.
+// ── שער האזור האישי: הסכמה → קוד גישה → חומרים מוגנים ──
 (function(){
-  var list = document.getElementById('matList');
-  if(!list) return;
-  var token = localStorage.getItem('cm_device') || '';
-  fetch('https://base44.app/api/apps/6a65bb7f16f811cbe5809586/functions/clientLibrary', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ device_token: token })
-  }).then(function(r){ return r.json(); }).then(function(d){
-    var items = [].concat((d && d.personal) || [], (d && d.library) || []);
-    if(!items.length){ list.innerHTML = '<div class="tile" style="cursor:default"><div class="ico">📚</div><b>החומרים בדרך</b><span>קטי תקצה לך חומרים בקרוב</span></div>'; return; }
-    list.innerHTML = items.map(function(m){
-      var isNew = m.scope === 'personal';
-      return '<a class="tile" href="' + m.url + '" target="_blank" rel="noopener" style="cursor:pointer">' +
-        '<div class="ico">' + (isNew ? '🎧' : '📄') + '</div>' +
-        '<b>' + m.title + '</b>' +
-        '<span>' + (m.description || '') + '</span>' +
-        (isNew ? '<span style="color:var(--gold-deep);font-weight:700;margin-top:6px;display:block">הוקצה לך אישית</span>' : '') +
-        '</a>';
-    }).join('');
-  }).catch(function(){ list.innerHTML = '<div class="tile" style="cursor:default"><div class="ico">📚</div><b>החומרים לא נטענו</b><span>אפשר לפתוח שוב מאוחר יותר</span></div>'; });
+  var API = 'https://base44.app/api/apps/6a65bb7f16f811cbe5809586/functions/clientGate';
+  var box = document.getElementById('matList');
+  if(!box) return;
+
+  var dt = localStorage.getItem('cm_device');
+  if(!dt){ dt = 'cm-' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('cm_device', dt); }
+
+  function call(action, extra){
+    var body = Object.assign({ action: action, device_token: dt }, extra || {});
+    return fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
+      .then(function(r){ return r.json(); });
+  }
+  function card(icon, title, sub, action){
+    return '<div class="tile" style="cursor:default"><div class="ico">'+icon+'</div><b>'+title+'</b><span>'+sub+'</span>'+action+'</div>';
+  }
+  function esc(s){ return String(s||'').replace(/[<>]/g,''); }
+
+  function renderConsent(text){
+    box.innerHTML = '<div style="grid-column:1/-1;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px;text-align:right">'
+      + '<b style="display:block;margin-bottom:8px">לפני שנכנסים — חשוב שתדעי</b>'
+      + '<p style="font-size:14px;line-height:1.7;color:var(--ink-500);margin:0 0 12px">'+esc(text)+'</p>'
+      + '<label style="display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-bottom:14px"><input type="checkbox" id="agree" style="margin-top:3px"> <span>קראתי, הבנתי ואני מאשרת</span></label>'
+      + '<button class="btn primary" id="agreeBtn" style="opacity:.5;pointer-events:none">כניסה למרחב שלי</button>'
+      + '</div>';
+    var cb=document.getElementById('agree'), btn=document.getElementById('agreeBtn');
+    cb.onchange=function(){ btn.style.opacity = cb.checked?1:.5; btn.style.pointerEvents = cb.checked?'auto':'none'; };
+    btn.onclick=function(){
+      btn.textContent='רגע…';
+      call('consent').then(function(){ boot(); });
+    };
+  }
+
+  function renderCode(){
+    box.innerHTML = '<div style="grid-column:1/-1;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px;text-align:right">'
+      + '<b style="display:block;margin-bottom:6px">קוד גישה</b>'
+      + '<p style="font-size:14px;color:var(--ink-500);margin:0 0 12px">הקוד מגיע מקטי ומקנה גישה לחומרים ולתוכנית.</p>'
+      + '<input id="codeIn" placeholder="הקלידי קוד" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(0,0,0,.15);font-size:16px;margin-bottom:10px">'
+      + '<button class="btn primary" id="codeBtn">כניסה</button>'
+      + '<div id="codeErr" style="color:#c0392b;font-size:13px;margin-top:8px"></div>'
+      + '</div>';
+    document.getElementById('codeBtn').onclick=function(){
+      var v=document.getElementById('codeIn').value;
+      if(!v) return;
+      call('redeem',{code:v}).then(function(d){
+        if(d.ok){ boot(); }
+        else {
+          var m={invalid_code:'הקוד לא נמצא. אפשר לבדוק עם קטי.',code_taken:'הקוד כבר בשימוש.',code_expired:'הקוד פג תוקף.'};
+          document.getElementById('codeErr').textContent = m[d.error] || 'משהו לא עבד, נסי שוב.';
+        }
+      });
+    };
+  }
+
+  function renderMaterials(d){
+    var items=[].concat(d.personal||[], d.library||[]);
+    if(!items.length){ box.innerHTML = card('📚','החומרים בדרך','קטי תקצה לך חומרים בקרוב'); return; }
+    box.innerHTML = items.map(function(m){
+      var personal = m.scope==='personal';
+      return '<a class="tile" href="'+m.url+'" target="_blank" rel="noopener" style="cursor:pointer">'
+        + '<div class="ico">'+(personal?'🎧':'📄')+'</div><b>'+esc(m.title)+'</b><span>'+esc(m.description)+'</span>'
+        + (personal?'<span style="color:var(--gold-deep);font-weight:700;margin-top:6px;display:block">הוקצה לך אישית</span>':'')
+        + '</a>';
+    }).join('')
+    + '<p style="grid-column:1/-1;font-size:12px;line-height:1.6;color:#8a8a8a;margin:12px 0 0">החומרים הם כלי אימון והעשרה בלבד, אינם מחליפים ייעוץ או טיפול רפואי ומהווים השלמה לו. השימוש באחריותך.</p>';
+  }
+
+  function boot(){
+    call('state').then(function(s){
+      if(!s.ok){ box.innerHTML = card('⚠️','לא הצלחנו לטעון','נסי לרענן מאוחר יותר'); return; }
+      if(!s.consent){ renderConsent(s.terms_text); return; }
+      if(!s.access || !s.access.valid){ renderCode(); return; }
+      call('materials').then(function(d){
+        if(d.ok){ renderMaterials(d); }
+        else if(d.error==='no_consent'){ call('state').then(function(x){ renderConsent(x.terms_text); }); }
+        else { renderCode(); }
+      });
+    }).catch(function(){ box.innerHTML = card('📚','החומרים לא נטענו','אפשר לנסות שוב מאוחר יותר'); });
+  }
+  boot();
 })();
 </script>
 </body>
