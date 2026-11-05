@@ -1,6 +1,6 @@
 // Service Worker מינימלי — מאפשר התקנה כאפליקציה (PWA) ומסך פתיחה.
 // אסטרטגיה: network-first, עם נפילה לקאש כשאין רשת (כדי שהאפליקציה תיפתח גם אופליין).
-const CACHE = "cure-admin-v1";
+const CACHE = "cure-admin-v2";
 const SHELL = ["/admin", "/adminApp.js", "/icons.js", "/styles.css", "/images/logo.png"];
 
 self.addEventListener("install", (e) => {
