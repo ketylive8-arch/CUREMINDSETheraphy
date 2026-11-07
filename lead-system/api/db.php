@@ -61,6 +61,7 @@ function migrate(PDO $pdo): void
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS leads (
             id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            owner_user_id  INTEGER,
             company        TEXT    NOT NULL,
             email          TEXT,
             sector         TEXT,
@@ -80,6 +81,8 @@ function migrate(PDO $pdo): void
             updated_at     TEXT    NOT NULL DEFAULT (datetime('now'))
         )
     ");
+    // Add owner_user_id to an older leads table that predates per-client scoping.
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN owner_user_id INTEGER'); } catch (Throwable $e) {}
     // Client profile — each registered client's business + what leads they want.
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS client_profiles (
@@ -89,10 +92,14 @@ function migrate(PDO $pdo): void
             target_sectors TEXT,
             regions        TEXT,
             goal           TEXT,
+            wants_text     TEXT,
+            agent_instructions TEXT,
             status         TEXT NOT NULL DEFAULT 'active',
             created_at     TEXT NOT NULL DEFAULT (datetime('now'))
         )
     ");
+    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN wants_text TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN agent_instructions TEXT'); } catch (Throwable $e) {}
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("

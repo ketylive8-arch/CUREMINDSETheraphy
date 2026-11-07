@@ -22,6 +22,24 @@
     return data;
   }
 
+  // Download the leads as a CSV (Excel opens it). Keeps the token in the header.
+  async function exportLeadsCsv() {
+    try {
+      const t = token.get();
+      const res = await fetch("/api/leads/export", { headers: t ? { Authorization: "Bearer " + t } : {} });
+      if (!res.ok) throw new Error("export failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "segev-leads-" + new Date().toISOString().slice(0, 10) + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) { /* ignore */ }
+  }
+
   // ---------- status helpers ----------
   const STATUS = {
     new:       { label: "חדש",       dot: "#64748B" },
@@ -105,6 +123,8 @@
     const [sectors, setSectors] = useState([]);
     const [regions, setRegions] = useState("");
     const [goal, setGoal] = useState("");
+    const [wantsText, setWantsText] = useState("");
+    const [agentInstructions, setAgentInstructions] = useState("");
     const [busy, setBusy] = useState(false);
     const [err, setErr] = useState("");
     function toggleSector(s) {
@@ -116,6 +136,7 @@
         await api("/profile", { method: "POST", body: JSON.stringify({
           business_name: businessName, business_type: businessType,
           target_sectors: sectors, regions, goal,
+          wants_text: wantsText, agent_instructions: agentInstructions,
         }) });
         onDone();
       } catch (ex) { setErr(ex.message); setBusy(false); }
@@ -146,6 +167,12 @@
               <input value=${regions} onInput=${(e) => setRegions(e.target.value)} placeholder="לדוגמה: כל הארץ / צפון / מרכז" /></div>
             <div class="field"><label>מה המטרה? (אופציונלי)</label>
               <input value=${goal} onInput=${(e) => setGoal(e.target.value)} placeholder="לדוגמה: לקבוע 5 פגישות בחודש" /></div>
+            <div class="field"><label>תאר/י בחופשיות אילו לידים את/ה רוצה</label>
+              <textarea class="ta" value=${wantsText} onInput=${(e) => setWantsText(e.target.value)}
+                placeholder="לדוגמה: מלונות בוטיק בצפון עם 20-60 חדרים, או יבואני קוסמטיקה שמחפשים מפיצים"></textarea></div>
+            <div class="field"><label>הוראות לסוכן (איך לעבוד, מהיכן, מה להימנע)</label>
+              <textarea class="ta" value=${agentInstructions} onInput=${(e) => setAgentInstructions(e.target.value)}
+                placeholder="לדוגמה: רק עסקים פעילים, לא לפנות למתחרים, להתמקד בלינקדאין ובאתרי החברות"></textarea></div>
             <div class="row-actions" style=${{ gap: "8px" }}>
               <button class="btn ghost" onClick=${() => setStep(1)}>← חזרה</button>
               <button class="btn" style=${{ flex: 1 }} disabled=${busy || sectors.length === 0} onClick=${finish}>
@@ -193,7 +220,11 @@
     }
     return html`
       <div class="card">
-        <div class="head"><h2>לידים</h2><span class="muted">${leads ? leads.length + " רשומות" : ""}</span></div>
+        <div class="head"><h2>לידים</h2>
+          <div style=${{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <span class="muted">${leads ? leads.length + " רשומות" : ""}</span>
+            <button class="btn sm ghost" onClick=${exportLeadsCsv} title="ייצוא לאקסל">⬇ אקסל</button>
+          </div></div>
         <div class="toolbar">
           ${filters.map(([v, l]) => html`<button key=${v} class=${"tab" + (status === v ? " active" : "")} onClick=${() => setStatus(v)}>${l}</button>`)}
           <input class="search" placeholder="חיפוש חברה / מייל / תחום…" value=${q}

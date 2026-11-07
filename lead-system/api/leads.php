@@ -5,18 +5,30 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/helpers.php';
 
+/** A client sees only their own leads; an admin sees the whole pool. */
+function scope_where(array $u): array
+{
+    if (($u['role'] ?? '') === 'client') {
+        return [' AND owner_user_id = ?', [(int) $u['id']]];
+    }
+    return ['', []];
+}
+
 /** Dashboard counts by status. */
 function handle_stats(): void
 {
-    require_user();
-    $rows = db()->query(
-        "SELECT status, COUNT(*) c FROM leads GROUP BY status"
-    )->fetchAll();
+    $u = require_user();
+    [$w, $args] = scope_where($u);
+    $st = db()->prepare("SELECT status, COUNT(*) c FROM leads WHERE 1=1$w GROUP BY status");
+    $st->execute($args);
+    $rows = $st->fetchAll();
     $by = [];
     foreach ($rows as $r) {
         $by[$r['status']] = (int) $r['c'];
     }
-    $total = (int) db()->query('SELECT COUNT(*) c FROM leads')->fetch()['c'];
+    $tot = db()->prepare("SELECT COUNT(*) c FROM leads WHERE 1=1$w");
+    $tot->execute($args);
+    $total = (int) $tot->fetch()['c'];
     json_out([
         'total'    => $total,
         'new'      => $by['new']      ?? 0,
@@ -31,11 +43,11 @@ function handle_stats(): void
 /** List leads, optional ?status= and ?q= search. */
 function handle_leads(): void
 {
-    require_user();
+    $u = require_user();
     $status = $_GET['status'] ?? '';
     $q = trim((string) ($_GET['q'] ?? ''));
-    $sql = 'SELECT * FROM leads WHERE 1=1';
-    $args = [];
+    [$scopeW, $args] = scope_where($u);
+    $sql = "SELECT * FROM leads WHERE 1=1$scopeW";
     if ($status !== '' && $status !== 'all') {
         $sql .= ' AND status = ?';
         $args[] = $status;
@@ -54,11 +66,35 @@ function handle_leads(): void
 /** Bounced list with reasons (רשימת מיילים שחזרו). */
 function handle_bounces(): void
 {
-    require_user();
-    $rows = db()->query(
-        "SELECT * FROM leads WHERE status = 'bounced' ORDER BY updated_at DESC"
-    )->fetchAll();
-    json_out(['bounces' => $rows]);
+    $u = require_user();
+    [$w, $args] = scope_where($u);
+    $st = db()->prepare("SELECT * FROM leads WHERE status = 'bounced'$w ORDER BY updated_at DESC");
+    $st->execute($args);
+    json_out(['bounces' => $st->fetchAll()]);
+}
+
+/** Download the (scoped) leads as a CSV file that Excel opens directly. */
+function handle_export(): void
+{
+    $u = require_user();
+    [$w, $args] = scope_where($u);
+    $st = db()->prepare(
+        "SELECT company, email, sector, city, status, bounce_reason, sent_at, replied_at, notes
+         FROM leads WHERE 1=1$w ORDER BY company"
+    );
+    $st->execute($args);
+    $headers = ['חברה', 'מייל', 'תחום', 'עיר', 'סטטוס', 'סיבת חזרה', 'נשלח', 'ענה', 'הערות'];
+    http_response_code(200);
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="segev-leads-' . date('Y-m-d') . '.csv"');
+    $out = fopen('php://output', 'w');
+    fwrite($out, "\xEF\xBB\xBF"); // UTF-8 BOM so Excel shows Hebrew correctly
+    fputcsv($out, $headers);
+    foreach ($st->fetchAll() as $r) {
+        fputcsv($out, array_values($r));
+    }
+    fclose($out);
+    exit;
 }
 
 function find_lead(int $id): array
@@ -207,6 +243,8 @@ function handle_set_profile(): void
     $sectors = is_array($in['target_sectors'] ?? null) ? $in['target_sectors'] : [];
     $regions = trim((string) ($in['regions'] ?? ''));
     $goal = trim((string) ($in['goal'] ?? ''));
+    $wantsText = trim((string) ($in['wants_text'] ?? ''));
+    $agentInstructions = trim((string) ($in['agent_instructions'] ?? ''));
     if ($businessType === '') {
         json_err('צריך לבחור סוג עסק');
     }
@@ -221,12 +259,12 @@ function handle_set_profile(): void
             $businessName = (string) ($existing['business_name'] ?? '');
         }
         db()->prepare(
-            'UPDATE client_profiles SET business_name=?, business_type=?, target_sectors=?, regions=?, goal=?, status=\'active\' WHERE user_id=?'
-        )->execute([$businessName, $businessType, $sectorsJson, $regions, $goal, $uid]);
+            'UPDATE client_profiles SET business_name=?, business_type=?, target_sectors=?, regions=?, goal=?, wants_text=?, agent_instructions=?, status=\'active\' WHERE user_id=?'
+        )->execute([$businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions, $uid]);
     } else {
         db()->prepare(
-            'INSERT INTO client_profiles (user_id, business_name, business_type, target_sectors, regions, goal) VALUES (?,?,?,?,?,?)'
-        )->execute([$uid, $businessName, $businessType, $sectorsJson, $regions, $goal]);
+            'INSERT INTO client_profiles (user_id, business_name, business_type, target_sectors, regions, goal, wants_text, agent_instructions) VALUES (?,?,?,?,?,?,?,?)'
+        )->execute([$uid, $businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions]);
     }
     log_activity(null, $uid, 'onboarding', "$businessType · " . implode(',', $sectors));
     json_out(['ok' => true]);
