@@ -79,11 +79,11 @@ function handle_export(): void
     $u = require_user();
     [$w, $args] = scope_where($u);
     $st = db()->prepare(
-        "SELECT company, email, sector, city, status, bounce_reason, sent_at, replied_at, notes
+        "SELECT company, contact, role, linkedin, email, sector, city, status, bounce_reason, sent_at, replied_at, notes
          FROM leads WHERE 1=1$w ORDER BY company"
     );
     $st->execute($args);
-    $headers = ['חברה', 'מייל', 'תחום', 'עיר', 'סטטוס', 'סיבת חזרה', 'נשלח', 'ענה', 'הערות'];
+    $headers = ['חברה', 'איש קשר', 'תפקיד', 'לינקדאין', 'מייל', 'תחום', 'עיר', 'סטטוס', 'סיבת חזרה', 'נשלח', 'ענה', 'הערות'];
     http_response_code(200);
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="segev-leads-' . date('Y-m-d') . '.csv"');

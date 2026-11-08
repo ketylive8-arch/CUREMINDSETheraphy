@@ -143,3 +143,7 @@ td .email{color:var(--ink-500);font-size:13px;direction:ltr;text-align:right}
   th.hide-sm,td.hide-sm{display:none}
   .container{padding:14px 12px 50px}
 }
+
+/* LinkedIn link inside a lead row */
+.lk{display:inline-block;margin-top:4px;font-size:12px;font-weight:700;color:#0a66c2;text-decoration:none}
+.lk:hover{text-decoration:underline}

@@ -235,12 +235,17 @@
           ${!leads ? html`<div class="loading">טוען…</div>` : html`
           <table>
             <thead><tr>
-              <th>חברה</th><th>מייל</th><th class="hide-sm">תחום</th><th>סטטוס</th><th>פעולות</th>
+              <th>חברה</th><th>איש קשר</th><th>מייל</th><th class="hide-sm">תחום</th><th>סטטוס</th><th>פעולות</th>
             </tr></thead>
             <tbody>
               ${leads.map((l) => html`<tr key=${l.id}>
                 <td><div class="company">${l.company}</div>
                   ${l.bounce_reason && html`<div class="reason">${l.bounce_reason}</div>`}</td>
+                <td>
+                  ${l.contact ? html`<div class="company">${l.contact}</div>` : html`<div class="email">—</div>`}
+                  ${l.role && html`<div class="email">${l.role}</div>`}
+                  ${l.linkedin && html`<a class="lk" href=${l.linkedin} target="_blank" rel="noopener">לינקדאין ↗</a>`}
+                </td>
                 <td><div class="email">${l.email || "—"}</div></td>
                 <td class="hide-sm">${l.sector || "—"}</td>
                 <td><${Badge} s=${l.status} /></td>

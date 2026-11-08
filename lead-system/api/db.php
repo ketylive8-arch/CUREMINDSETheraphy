@@ -69,6 +69,8 @@ function migrate(PDO $pdo): void
             website        TEXT,
             source_url     TEXT,
             contact        TEXT,
+            role           TEXT,
+            linkedin       TEXT,
             subject        TEXT,
             status         TEXT    NOT NULL DEFAULT 'new',
             bounce_reason  TEXT,
@@ -83,6 +85,9 @@ function migrate(PDO $pdo): void
     ");
     // Add owner_user_id to an older leads table that predates per-client scoping.
     try { $pdo->exec('ALTER TABLE leads ADD COLUMN owner_user_id INTEGER'); } catch (Throwable $e) {}
+    // Decision-maker fields for a lead (person's role + LinkedIn profile URL).
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN role TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN linkedin TEXT'); } catch (Throwable $e) {}
     // Client profile — each registered client's business + what leads they want.
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS client_profiles (

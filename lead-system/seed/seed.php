@@ -60,6 +60,47 @@ if ($count === 0) {
     echo "leads already seeded ($count rows) — skipping insert\n";
 }
 
+// --- Aviation leads (קטגוריית חברות תעופה) — idempotent by company+contact
+// נטענים לבעלות האדמין (קטי) עם איש קשר, תפקיד וקישור לינקדאין. מידע פומבי בלבד.
+$avFile = __DIR__ . '/aviation-leads.json';
+if (is_file($avFile)) {
+    $aviation = json_decode((string) file_get_contents($avFile), true) ?: [];
+    $adminRow = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+    $adminRow->execute([$a['email']]);
+    $adminId = (int) ($adminRow->fetch()['id'] ?? 0);
+
+    $exists = $pdo->prepare(
+        "SELECT id FROM leads WHERE company = ? AND IFNULL(contact,'') = ?"
+    );
+    $insAv = $pdo->prepare(
+        'INSERT INTO leads (owner_user_id, company, contact, role, linkedin, email, sector, city, website, notes, status)
+         VALUES (:owner,:company,:contact,:role,:linkedin,:email,:sector,:city,:website,:notes,:status)'
+    );
+    $added = 0;
+    foreach ($aviation as $l) {
+        $company = (string) ($l['company'] ?? '');
+        $contact = (string) ($l['contact'] ?? '');
+        if ($company === '') continue;
+        $exists->execute([$company, $contact]);
+        if ($exists->fetch()) continue;
+        $insAv->execute([
+            ':owner'    => $adminId ?: null,
+            ':company'  => $company,
+            ':contact'  => $contact ?: null,
+            ':role'     => $l['role'] ?? null,
+            ':linkedin' => $l['linkedin'] ?? null,
+            ':email'    => ($l['email'] ?? '') !== '' ? $l['email'] : null,
+            ':sector'   => $l['sector'] ?? 'תעופה',
+            ':city'     => $l['city'] ?? null,
+            ':website'  => $l['website'] ?? null,
+            ':notes'    => $l['notes'] ?? null,
+            ':status'   => $l['status'] ?? 'new',
+        ]);
+        $added++;
+    }
+    echo "aviation leads: +$added new (" . count($aviation) . " in file)\n";
+}
+
 // --- Suppression + cleanup (runs on EVERY boot, idempotent) -------------
 // Kety's rule: never contact anyone who bounced, asked to be removed, or
 // replied "not relevant". We record them in the suppression list and delete
