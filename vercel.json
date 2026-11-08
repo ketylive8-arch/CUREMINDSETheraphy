@@ -44,6 +44,16 @@
       "permanent": true
     },
     {
+      "source": "/workshops",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/workshops.html",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
       "source": "/mental-coaching-teens",
       "destination": "/cure-teens",
       "permanent": true
@@ -57,10 +67,6 @@
     {
       "source": "/uploads/(.*)",
       "destination": "https://curemindsetheraphy.onrender.com/uploads/$1"
-    },
-    {
-      "source": "/workshops",
-      "destination": "/workshops.html"
     },
     {
       "source": "/dashboard",
