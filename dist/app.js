@@ -179,7 +179,7 @@ const CONTENT = {
     steps: [{
       step: "1",
       title: "מדברים",
-      text: "כותבים בחופשיות. קטי הדיגיטלית מקשיבה ומבינה."
+      text: "כותבים בחופשיות. קיורטי מקשיבה ומבינה."
     }, {
       step: "2",
       title: "מקבלים כלים",
@@ -244,7 +244,7 @@ const CONTENT = {
       price: "אזור דיגיטלי",
       priceNote: "גישה מלאה",
       audience: "מי שרוצה להתחיל עצמאית, בקצב שלו/ה, עם הכלים הדיגיטליים",
-      features: ["צ'אט עם קטי הדיגיטלית — 24/7", "כל הכלים והתרגולים", "צ'ק-אין יומי ומעקב אישי", "מודולים מודרכים לפי השיטה", "עוגן SOS לרגעי הצפה"],
+      features: ["צ'אט עם קיורטי — 24/7", "כל הכלים והתרגולים", "צ'ק-אין יומי ומעקב אישי", "מודולים מודרכים לפי השיטה", "עוגן SOS לרגעי הצפה"],
       highlight: false,
       cta: "להתחיל"
     }, {
@@ -295,7 +295,7 @@ const CONTENT = {
       a: "כל מה שאת/ה משתף/ת נשמר מוצפן ופרטי. איננו מוכרים מידע. אפשר למחוק את החשבון והנתונים בכל עת."
     }, {
       q: "ה-AI — זה מטפל?",
-      a: "לא. \"קטי הדיגיטלית\" היא כלי לאימון, למידה ותרגול המבוסס על השיטה של קטי. היא אינה נותנת אבחנה, אינה תחליף לטיפול רפואי או נפשי, ואינה מיועדת למצבי חירום."
+      a: "לא. \"קיורטי\" היא כלי לאימון, למידה ותרגול המבוסס על השיטה של קטי. היא אינה נותנת אבחנה, אינה תחליף לטיפול רפואי או נפשי, ואינה מיועדת למצבי חירום."
     }, {
       q: "אני הורה — איך זה עובד עם בן/בת נוער?",
       a: "לנוער יש מסלול ייעודי (CURE Teens) — ליווי רגשי אישי לחיזוק חוסן וביטחון של המתבגר/ת. מתחילים בשיחת אבחון קצרה ללא עלות, שבה נתאים יחד את המסלול והקצב."
@@ -750,7 +750,7 @@ function About() {
 function DigitalPlatform() {
   const cards = [{
     icon: "message-circle",
-    title: "שיחה עם קטי הדיגיטלית",
+    title: "שיחה עם קיורטי",
     text: "מלווה לתרגול, זמינה תמיד. מספרת מה עובר עלייך — ומקבלת כלי אחד מעשי וצעד קטן להיום.",
     href: "/talk",
     cta: "לפתוח שיחה"
@@ -1540,7 +1540,16 @@ function Footer() {
   }, /*#__PURE__*/React.createElement("a", {
     href: l.href,
     className: "text-white/60 text-[14.5px] hover:text-gold-400 transition-colors"
-  }, l.label))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  }, l.label)))), /*#__PURE__*/React.createElement("p", {
+    className: "font-heading font-semibold text-white mt-5 mb-3 text-[15px]"
+  }, "\u05D0\u05D9\u05E4\u05D4 \u05E4\u05D5\u05D2\u05E9\u05D9\u05DD"), /*#__PURE__*/React.createElement("ul", {
+    className: "flex flex-col gap-2"
+  }, [["/emotional-therapist-krayot", "מטפלת רגשית בקריות"], ["/anxiety-krayot", "טיפול בחרדה בקריות"], ["/nlp-haifa", "מטפלת NLP בחיפה"], ["/emotional-therapy-haifa", "טיפול רגשי בחיפה"], ["/online", "טיפול בזום לכל הארץ"]].map(([href, label]) => /*#__PURE__*/React.createElement("li", {
+    key: href
+  }, /*#__PURE__*/React.createElement("a", {
+    href: href,
+    className: "text-white/60 text-[14.5px] hover:text-gold-400 transition-colors"
+  }, label))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
     className: "font-heading font-semibold text-white mb-3 text-[15px]"
   }, "\u05D9\u05E6\u05D9\u05E8\u05EA \u05E7\u05E9\u05E8"), /*#__PURE__*/React.createElement("ul", {
     className: "flex flex-col gap-2.5"
@@ -2302,7 +2311,7 @@ function HmWatch() {
   }, "\u05DC\u05E2\u05E8\u05D5\u05E5 \u05D4\u05D9\u05D5\u05D8\u05D9\u05D5\u05D1 \u2190")));
 }
 
-/* ===== קטי AI — ליווי וירטואלי ===== */
+/* ===== קיורטי — ליווי וירטואלי ===== */
 function HmPodcast() {
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
@@ -2327,12 +2336,12 @@ function HmAi() {
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
     id: "kety-ai"
-  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D8\u05D9 AI \u2014 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D5\u05D9\u05E8\u05D8\u05D5\u05D0\u05DC\u05D9"), /*#__PURE__*/React.createElement("p", null, "\u05DC\u05D0 \u05EA\u05DE\u05D9\u05D3 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D7\u05DB\u05D5\u05EA \u05DC\u05DE\u05E4\u05D2\u05E9. \u05E7\u05D8\u05D9 AI \u05D4\u05D9\u05D0 \u05E2\u05D5\u05D6\u05E8\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05E9\u05DE\u05DB\u05D9\u05E8\u05D4 \u05D0\u05EA \u05D4\u05E9\u05D9\u05D8\u05D4, \u05E2\u05D5\u05E0\u05D4 \u05E2\u05DC \u05E9\u05D0\u05DC\u05D5\u05EA \u05E2\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA, \u05D5\u05DE\u05D7\u05D6\u05D9\u05E7\u05D4 \u05DB\u05DC\u05D9\u05DD \u05E7\u05E6\u05E8\u05D9\u05DD \u05DC\u05E8\u05D2\u05E2\u05D9\u05DD \u05E9\u05DC \u05DC\u05D7\u05E5."), /*#__PURE__*/React.createElement("p", null, "\u05D4\u05D9\u05D0 \u05DC\u05D0 \u05DE\u05D0\u05D1\u05D7\u05E0\u05EA \u05D5\u05DC\u05D0 \u05DE\u05D8\u05E4\u05DC\u05EA \u2014 \u05DB\u05E9\u05D4\u05D9\u05D0 \u05DE\u05D6\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E9\u05D3\u05D5\u05E8\u05E9 \u05D0\u05D3\u05DD, \u05D4\u05D9\u05D0 \u05DE\u05E4\u05E0\u05D4 \u05D0\u05DC\u05D9\u05D9."), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u2014 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D5\u05D9\u05E8\u05D8\u05D5\u05D0\u05DC\u05D9"), /*#__PURE__*/React.createElement("p", null, "\u05DC\u05D0 \u05EA\u05DE\u05D9\u05D3 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D7\u05DB\u05D5\u05EA \u05DC\u05DE\u05E4\u05D2\u05E9. \u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u05D4\u05D9\u05D0 \u05E2\u05D5\u05D6\u05E8\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05E9\u05DE\u05DB\u05D9\u05E8\u05D4 \u05D0\u05EA \u05D4\u05E9\u05D9\u05D8\u05D4, \u05E2\u05D5\u05E0\u05D4 \u05E2\u05DC \u05E9\u05D0\u05DC\u05D5\u05EA \u05E2\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA, \u05D5\u05DE\u05D7\u05D6\u05D9\u05E7\u05D4 \u05DB\u05DC\u05D9\u05DD \u05E7\u05E6\u05E8\u05D9\u05DD \u05DC\u05E8\u05D2\u05E2\u05D9\u05DD \u05E9\u05DC \u05DC\u05D7\u05E5."), /*#__PURE__*/React.createElement("p", null, "\u05D4\u05D9\u05D0 \u05DC\u05D0 \u05DE\u05D0\u05D1\u05D7\u05E0\u05EA \u05D5\u05DC\u05D0 \u05DE\u05D8\u05E4\u05DC\u05EA \u2014 \u05DB\u05E9\u05D4\u05D9\u05D0 \u05DE\u05D6\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E9\u05D3\u05D5\u05E8\u05E9 \u05D0\u05D3\u05DD, \u05D4\u05D9\u05D0 \u05DE\u05E4\u05E0\u05D4 \u05D0\u05DC\u05D9\u05D9."), /*#__PURE__*/React.createElement("div", {
     className: "btnrow"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn primary",
     onClick: () => window.cmOpenBot && window.cmOpenBot()
-  }, "\u05DC\u05E9\u05D9\u05D7\u05D4 \u05E2\u05DD \u05E7\u05D8\u05D9 AI")));
+  }, "\u05DC\u05E9\u05D9\u05D7\u05D4 \u05E2\u05DD \u05E7\u05D9\u05D5\u05E8\u05D8\u05D9")));
 }
 
 /* ===== במספרים ===== */

@@ -216,7 +216,7 @@
     },
     {
       "source": "/adults",
-      "destination": "/personal.html"
+      "destination": "/adults.html"
     },
     {
       "source": "/emotional-resilience",
