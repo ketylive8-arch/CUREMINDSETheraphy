@@ -82,7 +82,12 @@ function loadChunks() {
   const chunks = [];
   for (const f of files) {
     try {
-      const content = fs.readFileSync(path.join(KB_DIR, f), "utf8");
+      // ניקוי הגנתי: הסרת הערות HTML ותגיות שעלולות לדלוף לתשובה (מטא-דאטה,
+      // "נבנה אוטומטית", שמות קבצים). המקור לידע הוא הטקסט הטיפולי בלבד.
+      const content = fs
+        .readFileSync(path.join(KB_DIR, f), "utf8")
+        .replace(/<!--[\s\S]*?-->/g, " ")
+        .replace(/<[^>\n]{1,200}>/g, " ");
       chunks.push(...splitIntoChunks(content, f));
     } catch {
       // קובץ פגום — מדלגים, לא מפילים את הצ'אט
@@ -122,10 +127,16 @@ function chunkHasTerm(chunk, term) {
 
 // שליפה: ניקוד כל קטע לפי חפיפת מונחים עם שאלת המשתמש, משוקלל בנדירות המונח
 // (מונח שמופיע בכל הקטעים לא מלמד כלום; מונח נדיר הוא אות חזק).
-function retrieveKnowledge(query, k = 4) {
+// קבצים ייעודיים לנוער — כדי לא להגיש תוכן נוער למבוגר/ת (ולהיפך בהעדפה).
+function isYouthFile(file) {
+  return /youth|teens/i.test(String(file || ""));
+}
+
+function retrieveKnowledge(query, k = 4, opts = {}) {
   const chunks = loadChunks();
   if (!chunks.length) return [];
 
+  const ageGroup = opts && opts.ageGroup ? String(opts.ageGroup) : "";
   const queryTerms = [...new Set(keywords(query))];
   if (!queryTerms.length) return [];
 
@@ -146,6 +157,10 @@ function retrieveKnowledge(query, k = 4) {
           if (n > 0) score += Math.log(1 + chunks.length / n);
         }
       }
+      // התאמת קהל: למבוגר/ת מנמיכים משקל של קבצי נוער, לנוער מעלים אותם מעט.
+      // כך "מוטיבציה לנוער" לא גובר על תוכן מבוגרים רלוונטי יותר.
+      if (ageGroup === "adult" && isYouthFile(c.file)) score *= 0.3;
+      else if (ageGroup === "youth" && isYouthFile(c.file)) score *= 1.25;
       return { chunk: c, score };
     })
     .filter((s) => s.score > 0)

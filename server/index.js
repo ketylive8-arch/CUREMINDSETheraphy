@@ -876,8 +876,9 @@ api.post("/checkin", rateLimit("checkin", 40), async (req, res) => {
       return res.json({ reply: safe.reply, dailyTask: null, safety: safe.safety, dashboard });
     }
 
-    // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI
-    const retrieved = retrieveKnowledge(text.trim());
+    // RAG: שליפת הקטעים הרלוונטיים ממאגר הידע של קטי לפני הפנייה ל-AI.
+    // מעבירים את קהל היעד (מבוגר/נוער) כדי שהשליפה תתאים את עצמה.
+    const retrieved = retrieveKnowledge(text.trim(), 4, { ageGroup });
     // פרופיל אישי מהאבחון בהרשמה — מחבר את התוכן למה שהמשתמש/ת הזינ/ה (דינמי, לא סטטי).
     let userProfile = "";
     try {

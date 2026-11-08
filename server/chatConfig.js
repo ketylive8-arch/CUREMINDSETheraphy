@@ -45,6 +45,13 @@ const KB_TITLES = {
   "16-cure-somatic-protection-shift": "CURE — שינוי סומטי",
   "17-cure-sensory-submodalities-method": "CURE — סאב-מודאליות",
   "18-cure-process-architecture": "ארכיטקטורת CURE",
+  "20-site-method": "השיטה — CureMindset",
+  "21-site-anxiety-stress": "חרדה ולחץ",
+  "22-site-self-confidence": "ביטחון עצמי",
+  "23-site-procrastination": "דחיינות",
+  "24-site-emotional-coaching": "אימון רגשי",
+  "25-site-cure-teens": "CURE Teens — נוער והורים",
+  "26-site-parents": "הדרכת הורים",
 };
 
 function titleForFile(file) {

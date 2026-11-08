@@ -184,7 +184,7 @@ function knowledgeLine(retrieved) {
   if (!Array.isArray(retrieved) || !retrieved.length) return "";
   const txt = String(retrieved[0].text || retrieved[0].content || retrieved[0].snippet || "");
   // שורות מטא-דאטה שאסור להדליף למשתמש/ת (קהל יעד, גילאים, שמות/מספרי מודול).
-  const META = /(קהל\s*היעד|גיל(אי|אים)?|מתאים\s*ל|מיועד\s*ל|מודול\s*\d|קטע\s*\d|target\s*audience|\b\d{1,2}\s*[-–]\s*\d{1,2}\b)/i;
+  const META = /(קהל\s*היעד|גיל(אי|אים)?|מתאים\s*ל|מיועד\s*ל|מודול\s*\d|קטע\s*\d|target\s*audience|נבנה\s*אוטומטית|\.html|<!--|--?>|<[a-z]|\b\d{1,2}\s*[-–]\s*\d{1,2}\b)/i;
   const sent = txt
     .split(/\n+|(?<=[.!?׃])\s+/)
     .map((s) => s.replace(/^[#>*\-\d.\s]+/, "").trim()) // מסיר סימוני markdown/מספור בתחילת שורה
