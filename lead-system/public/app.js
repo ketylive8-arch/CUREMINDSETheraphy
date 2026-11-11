@@ -244,7 +244,7 @@
                 <td>
                   ${l.contact ? html`<div class="company">${l.contact}</div>` : html`<div class="email">—</div>`}
                   ${l.role && html`<div class="email">${l.role}</div>`}
-                  ${l.linkedin && html`<a class="lk" href=${l.linkedin} target="_blank" rel="noopener">לינקדאין ↗</a>`}
+                  ${l.linkedin && /^https?:\/\//i.test(l.linkedin) && html`<a class="lk" href=${l.linkedin} target="_blank" rel="noopener noreferrer">לינקדאין ↗</a>`}
                 </td>
                 <td><div class="email">${l.email || "—"}</div></td>
                 <td class="hide-sm">${l.sector || "—"}</td>

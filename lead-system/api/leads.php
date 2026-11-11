@@ -97,10 +97,17 @@ function handle_export(): void
     exit;
 }
 
-function find_lead(int $id): array
+/**
+ * Fetch a lead the current user is allowed to act on. A client may only reach
+ * their own leads (owner_user_id = their id); an admin reaches the whole pool.
+ * This enforces object-level authorization — without it a logged-in client
+ * could read/modify another tenant's lead by guessing its id (IDOR).
+ */
+function find_lead(int $id, array $u): array
 {
-    $st = db()->prepare('SELECT * FROM leads WHERE id = ?');
-    $st->execute([$id]);
+    [$w, $args] = scope_where($u);
+    $st = db()->prepare("SELECT * FROM leads WHERE id = ?$w");
+    $st->execute(array_merge([$id], $args));
     $lead = $st->fetch();
     if (!$lead) {
         json_err('ליד לא נמצא', 404);
@@ -128,7 +135,7 @@ function touch_lead(int $id, array $fields): void
 function handle_refind(int $id): void
 {
     $u = require_user();
-    $lead = find_lead($id);
+    $lead = find_lead($id, $u);
     touch_lead($id, ['status' => 'refinding', 'notes' => trim(($lead['notes'] ?? '') . "\n[איתור מייל מחדש התחיל]")]);
     log_activity($id, (int) $u['id'], 'refind', $lead['company']);
     json_out(['ok' => true, 'status' => 'refinding']);
@@ -138,7 +145,7 @@ function handle_refind(int $id): void
 function handle_set_email(int $id): void
 {
     $u = require_user();
-    $lead = find_lead($id);
+    $lead = find_lead($id, $u);
     $email = strtolower(trim((string) (body()['email'] ?? '')));
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         json_err('כתובת מייל לא תקינה');
@@ -163,7 +170,7 @@ function handle_set_email(int $id): void
 function handle_resend(int $id): void
 {
     $u = require_user();
-    $lead = find_lead($id);
+    $lead = find_lead($id, $u);
     if (!filter_var($lead['email'] ?? '', FILTER_VALIDATE_EMAIL)) {
         json_err('אין כתובת מייל תקינה לליד הזה — צריך קודם לאתר כתובת', 422);
     }
@@ -185,7 +192,7 @@ function handle_resend(int $id): void
 function handle_followup(int $id): void
 {
     $u = require_user();
-    $lead = find_lead($id);
+    $lead = find_lead($id, $u);
     $cfg = require __DIR__ . '/config.php';
     $company = $lead['company'] ?: 'שלום';
     $subject = 'מייל אחרון מצידי — ' . $company;
@@ -211,12 +218,24 @@ function handle_followup(int $id): void
 /** Recent activity feed — every action the system performed. */
 function handle_activity(): void
 {
-    require_user();
-    $rows = db()->query(
-        "SELECT a.*, l.company FROM activity a
-         LEFT JOIN leads l ON l.id = a.lead_id
-         ORDER BY a.id DESC LIMIT 100"
-    )->fetchAll();
+    $u = require_user();
+    // A client sees only their own activity; an admin sees the whole feed.
+    if (($u['role'] ?? '') === 'client') {
+        $st = db()->prepare(
+            "SELECT a.*, l.company FROM activity a
+             LEFT JOIN leads l ON l.id = a.lead_id
+             WHERE a.user_id = ?
+             ORDER BY a.id DESC LIMIT 100"
+        );
+        $st->execute([(int) $u['id']]);
+        $rows = $st->fetchAll();
+    } else {
+        $rows = db()->query(
+            "SELECT a.*, l.company FROM activity a
+             LEFT JOIN leads l ON l.id = a.lead_id
+             ORDER BY a.id DESC LIMIT 100"
+        )->fetchAll();
+    }
     json_out(['activity' => $rows]);
 }
 
