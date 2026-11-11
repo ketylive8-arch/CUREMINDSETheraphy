@@ -1,4 +1,78 @@
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+function HmSocial() {
+  const box = {
+    width: 46,
+    height: 46,
+    borderRadius: "50%",
+    border: "1px solid var(--line, #E2D9C9)",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "var(--gold-deep, #8A6A2F)",
+    background: "#fff"
+  };
+  const items = [["YouTube", "https://www.youtube.com/@ketynlplive", /*#__PURE__*/React.createElement("svg", {
+    key: "y",
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2C.5 9.1.5 12 .5 12s0 2.9.5 4.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-4.8.5-4.8s0-2.9-.5-4.8zM9.8 15.1V8.9l5.4 3.1-5.4 3.1z"
+  }))], ["Spotify", MEDIA_LINKS.spotify, /*#__PURE__*/React.createElement("svg", {
+    key: "s",
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "currentColor",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M12 1.5A10.5 10.5 0 1 0 22.5 12 10.5 10.5 0 0 0 12 1.5zm4.8 15.1a.65.65 0 0 1-.9.2c-2.5-1.5-5.6-1.9-9.3-1a.65.65 0 1 1-.3-1.3c4-.9 7.5-.5 10.3 1.2a.65.65 0 0 1 .2.9zm1.3-2.9a.8.8 0 0 1-1.1.3c-2.8-1.7-7.2-2.2-10.5-1.2a.8.8 0 1 1-.5-1.5c3.8-1.1 8.6-.6 11.8 1.4a.8.8 0 0 1 .3 1zm.1-3c-3.4-2-9-2.2-12.3-1.2a1 1 0 1 1-.6-1.9c3.800-1.100 10-.9 13.900 1.400a1 1 0 0 1-1 1.700z"
+  }))], ["Instagram", MEDIA_LINKS.instagram, /*#__PURE__*/React.createElement("svg", {
+    key: "i",
+    width: "24",
+    height: "24",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "1.8",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "3",
+    width: "18",
+    height: "18",
+    rx: "5"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "12",
+    r: "4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "17.3",
+    cy: "6.7",
+    r: "1",
+    fill: "currentColor",
+    stroke: "none"
+  }))]];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "social-icons",
+    style: {
+      display: "flex",
+      gap: 14,
+      marginTop: 22,
+      alignItems: "center"
+    }
+  }, items.map(([label, href, icon]) => /*#__PURE__*/React.createElement("a", {
+    key: label,
+    href: href,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    "aria-label": label,
+    title: label,
+    style: box
+  }, icon)));
+}
 function HmHero() {
   return /*#__PURE__*/React.createElement("section", {
     className: "hero",
@@ -9,34 +83,14 @@ function HmHero() {
     className: "eyebrow"
   }, "\u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1 \xB7 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05E8\u05D2\u05E9\u05D9 \u05D1\u05D7\u05D9\u05E4\u05D4, \u05D1\u05E7\u05E8\u05D9\u05D5\u05EA \u05D5\u05D1\u05D6\u05D5\u05DD"), /*#__PURE__*/React.createElement("h1", null, "\u05D0\u05EA\u05DD \u05DC\u05D0 \u05E6\u05E8\u05D9\u05DB\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05DC\u05D9 \u05DE\u05D4 \u05E7\u05D5\u05E8\u05D4. \u05D0\u05E0\u05D9 \u05DE\u05D6\u05D4\u05D4 \u05D0\u05EA \u05D6\u05D4 \u05DE\u05D4\u05E9\u05D5\u05E8\u05D4 \u05D4\u05E8\u05D0\u05E9\u05D5\u05E0\u05D4."), /*#__PURE__*/React.createElement("p", {
     className: "lead"
-  }, "\u05D6\u05D4 \u05D4\u05DE\u05E7\u05D5\u05DD \u05E9\u05D1\u05D5 \u05DE\u05E4\u05E1\u05D9\u05E7\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05D5\u05DE\u05EA\u05D7\u05D9\u05DC\u05D9\u05DD \u05DC\u05E2\u05D1\u05D5\u05D3."), /*#__PURE__*/React.createElement("p", null, "\u05D0\u05E0\u05D9 \u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1, \u05DE\u05D8\u05E4\u05DC\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05D5\u05DE\u05D0\u05DE\u05E0\u05EA NLP, \u05DE\u05E4\u05EA\u05D7\u05EA \u05E9\u05D9\u05D8\u05EA CureMindset. \u05D0\u05EA \u05D4\u05E2\u05D1\u05D5\u05D3\u05D4 \u05E2\u05E6\u05DE\u05D4 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05E9\u05DE\u05D5\u05E2 \u05DE\u05DE\u05E0\u05D9 \u05DB\u05D0\u05DF, \u05D1\u05E1\u05E8\u05D8\u05D5\u05DF \u05D5\u05D1\u05E4\u05D5\u05D3\u05E7\u05D0\u05E1\u05D8, \u05DC\u05E4\u05E0\u05D9 \u05E9\u05DE\u05D3\u05D1\u05E8\u05D9\u05DD."), /*#__PURE__*/React.createElement("div", {
+  }, "\u05D6\u05D4 \u05D4\u05DE\u05E7\u05D5\u05DD \u05E9\u05D1\u05D5 \u05DE\u05E4\u05E1\u05D9\u05E7\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05D5\u05DE\u05EA\u05D7\u05D9\u05DC\u05D9\u05DD \u05DC\u05E2\u05D1\u05D5\u05D3."), /*#__PURE__*/React.createElement("p", null, "\u05D0\u05E0\u05D9 \u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1, \u05DE\u05D8\u05E4\u05DC\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05D5\u05DE\u05D0\u05DE\u05E0\u05EA NLP, \u05DE\u05E4\u05EA\u05D7\u05EA \u05E9\u05D9\u05D8\u05EA CureMindset."), /*#__PURE__*/React.createElement("div", {
     className: "btnrow"
   }, /*#__PURE__*/React.createElement("a", {
     className: "btn primary",
     href: HM_CAL,
     target: "_blank",
     rel: "noopener"
-  }, "\u05DC\u05E9\u05D9\u05D7\u05EA \u05D4\u05D9\u05DB\u05E8\u05D5\u05EA \u05E9\u05DC 20 \u05D3\u05E7\u05D5\u05EA"), /*#__PURE__*/React.createElement("a", {
-    className: "btn ghost",
-    href: "#keti-speaks"
-  }, "\u05DC\u05E9\u05DE\u05D5\u05E2 \u05D0\u05D5\u05EA\u05D9 \u05DE\u05D3\u05D1\u05E8\u05EA")), /*#__PURE__*/React.createElement("div", {
-    className: "listen-bar"
-  }, /*#__PURE__*/React.createElement("a", {
-    className: "listen-btn",
-    href: "https://www.youtube.com/watch?v=8q_5IAAJohQ",
-    target: "_blank",
-    rel: "noopener"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "listen-play",
-    "aria-hidden": "true"
-  }, "\u25B6"), /*#__PURE__*/React.createElement("span", {
-    className: "listen-txt"
-  }, /*#__PURE__*/React.createElement("b", null, "\u05D4\u05D0\u05D6\u05D9\u05E0\u05D5 \u05DC\u05E7\u05D8\u05D9"), /*#__PURE__*/React.createElement("small", null, "\u05E8\u05D9\u05D0\u05D9\u05D5\u05DF \u05D1\u05E8\u05D3\u05D9\u05D5 \u05D7\u05D9\u05E4\u05D4 \xB7 51 \u05D3\u05E7\u05D5\u05EA"))), /*#__PURE__*/React.createElement("a", {
-    className: "listen-link",
-    href: "https://www.youtube.com/@ketynlplive/videos",
-    target: "_blank",
-    rel: "noopener"
-  }, "\u05E2\u05D5\u05D3 \u05D4\u05E7\u05DC\u05D8\u05D5\u05EA \u05D5\u05E9\u05D9\u05D7\u05D5\u05EA \u2190"))), /*#__PURE__*/React.createElement("figure", {
+  }, "\u05DC\u05E9\u05D9\u05D7\u05EA \u05D4\u05D9\u05DB\u05E8\u05D5\u05EA \u05E9\u05DC 20 \u05D3\u05E7\u05D5\u05EA")), /*#__PURE__*/React.createElement(HmSocial, null)), /*#__PURE__*/React.createElement("figure", {
     className: "hero-photo"
   }, /*#__PURE__*/React.createElement("picture", null, /*#__PURE__*/React.createElement("source", {
     srcSet: "images/kety-640.webp 640w, images/kety-920.webp 920w",
@@ -2381,7 +2435,7 @@ function HmBody() {
     href: "/adults"
   }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
     href: "/schools"
-  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmWatch, null), /*#__PURE__*/React.createElement(HmPodcast, null), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
+  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement(HmRows, {
     items: [["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."], ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."], ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."], ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]

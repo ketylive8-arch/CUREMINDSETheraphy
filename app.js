@@ -1,21 +1,33 @@
+function HmSocial() {
+  const box = { width: 46, height: 46, borderRadius: "50%", border: "1px solid var(--line, #E2D9C9)", display: "inline-flex", alignItems: "center", justifyContent: "center", color: "var(--gold-deep, #8A6A2F)", background: "#fff" };
+  const items = [
+    ["YouTube", "https://www.youtube.com/@ketynlplive",
+      <svg key="y" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2C.5 9.1.5 12 .5 12s0 2.9.5 4.8a3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-4.8.5-4.8s0-2.9-.5-4.8zM9.8 15.1V8.9l5.4 3.1-5.4 3.1z"/></svg>],
+    ["Spotify", MEDIA_LINKS.spotify,
+      <svg key="s" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1.5A10.5 10.5 0 1 0 22.5 12 10.5 10.5 0 0 0 12 1.5zm4.8 15.1a.65.65 0 0 1-.9.2c-2.5-1.5-5.6-1.9-9.3-1a.65.65 0 1 1-.3-1.3c4-.9 7.5-.5 10.3 1.2a.65.65 0 0 1 .2.9zm1.3-2.9a.8.8 0 0 1-1.1.3c-2.8-1.7-7.2-2.2-10.5-1.2a.8.8 0 1 1-.5-1.5c3.8-1.1 8.6-.6 11.8 1.4a.8.8 0 0 1 .3 1zm.1-3c-3.4-2-9-2.2-12.3-1.2a1 1 0 1 1-.6-1.9c3.800-1.100 10-.9 13.900 1.400a1 1 0 0 1-1 1.700z"/></svg>],
+    ["Instagram", MEDIA_LINKS.instagram,
+      <svg key="i" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>],
+  ];
+  return (
+    <div className="social-icons" style={{ display: "flex", gap: 14, marginTop: 22, alignItems: "center" }}>
+      {items.map(([label, href, icon]) => (
+        <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label} style={box}>{icon}</a>
+      ))}
+    </div>
+  );
+}
+
 function HmHero() {
   return (
     <section className="hero" id="top"><div className="hero-grid"><div>
       <p className="eyebrow">קטי שגב · ליווי רגשי בחיפה, בקריות ובזום</p>
       <h1>אתם לא צריכים להסביר לי מה קורה. אני מזהה את זה מהשורה הראשונה.</h1>
       <p className="lead">זה המקום שבו מפסיקים להסביר ומתחילים לעבוד.</p>
-      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset. את העבודה עצמה אפשר לשמוע ממני כאן, בסרטון ובפודקאסט, לפני שמדברים.</p>
+      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset.</p>
       <div className="btnrow">
         <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות של 20 דקות</a>
-<a className="btn ghost" href="#keti-speaks">לשמוע אותי מדברת</a>
       </div>
-      <div className="listen-bar">
-        <a className="listen-btn" href="https://www.youtube.com/watch?v=8q_5IAAJohQ" target="_blank" rel="noopener">
-          <span className="listen-play" aria-hidden="true">&#9654;</span>
-          <span className="listen-txt"><b>האזינו לקטי</b><small>ריאיון ברדיו חיפה · 51 דקות</small></span>
-        </a>
-        <a className="listen-link" href="https://www.youtube.com/@ketynlplive/videos" target="_blank" rel="noopener">עוד הקלטות ושיחות &larr;</a>
-      </div>
+      <HmSocial />
     </div>
     <figure className="hero-photo"><picture>
       <source srcSet="images/kety-640.webp 640w, images/kety-920.webp 920w" type="image/webp" sizes="(max-width:1024px) 440px, 520px" />
@@ -2032,8 +2044,6 @@ function HmBody() {
           <li><a href="/adults">למבוגרים</a></li><li><a href="/schools">למוסדות</a></li>
         </ul>
       </section>
-      <HmWatch />
-        <HmPodcast />
       <HmNumbers />
       <HmAi />
       <section className="blk"><h2>איך נראה התהליך בפועל</h2>
