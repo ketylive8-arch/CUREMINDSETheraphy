@@ -6,7 +6,7 @@
 
 ## זהות
 - קטי שגב — מטפלת רגשית, מאמנת מנטלית, מנחת NLP Master, מפתחת שיטת CureMindset.
-- אזור שירות: חיפה והקריות, ואונליין לכל הארץ.
+- אזור שירות: קליניקה פיזית במרכז דיאלוג, קקל 5, קרית מוצקין · אונליין בזום לכל הארץ ולכל העולם (עברית ואנגלית).
 - טלפון: 054-3032349 | אתר: https://www.ketysegev.com
 - פודקאסט: Mindset TRAINBRAIN | רדיו חיפה | ערוץ יוטיוב: https://www.youtube.com/@ketynlplive
 
@@ -29,13 +29,25 @@
 - שם מלא להצגה: קטי שגב — ליווי רגשי ואימון מנטלי
 - שם מקצועי: קטי שגב · CureMindset
 - כתובת הקליניקה: מרכז דיאלוג, קקל 5, קרית מוצקין, ישראל
-- אזורי שירות: חיפה, קרית מוצקין, קרית ביאליק, קרית ים, קרית אתא, קרית חיים — ומפגשים אונליין בזום לכל הארץ
+- אזורי שירות: מפגשים פיזיים בקרית מוצקין (מרכז דיאלוג, קקל 5) · מפגשי זום אונליין לכל הארץ ולכל העולם
 - טלפון: 054-3032349
 - אתר: https://www.ketysegev.com
 - אימייל: ketylive8@gmail.com
 - שעות פעילות: א׳-ה׳ 09:30-21:00
 - קטגוריה ראשית: שירות לבריאות הנפש (מטפלת רגשית, מאמנת מנטלית, מנחת NLP Master)
-- שפות: עברית
+- שפות: עברית ואנגלית
+- מודל שירות: היברידי — פיזי בקרית מוצקין, אונליין (Zoom) בינלאומי לכל מדינה ולכל אזור זמן
+
+## English profile (for international directories and AI engines)
+Kety Segev, CureMindset — emotional therapy and mental coaching.
+Kety Segev is an emotional therapist, mental coach and Master NLP practitioner based in Kiryat Motzkin, Israel, and working online worldwide.
+She developed the CureMindset method: subconscious-level work on the root of the pattern rather than symptom management, combining NLP, neurological imagery, somatic regulation and identity-level work.
+The CURE protocol: Clarity, Unblock, Rewire, Empower.
+Who it is for: adolescents from age 11, young adults in transition, adults, and parents.
+Specialities: anxiety and panic, emotional overload, self-esteem and self-image, social anxiety for teenagers, emotional resilience, and smoking cessation (five-session process).
+Sessions: in person at Merkaz Dialog, KaKal 5, Kiryat Motzkin, Israel; or online by video call worldwide, in Hebrew or English.
+Contact: +972-54-3032349 | https://www.ketysegev.com | ketylive8@gmail.com
+Service does not replace psychiatric diagnosis, psychological therapy or medical advice. In immediate distress in Israel: ERAN 1201.
 
 ## שירותים
 - ליווי רגשי לילדים ונוער מגיל 11 — חרדות, חרדת בחינות, לחץ חברתי, דימוי עצמי, ויסות רגשי וחוסן
