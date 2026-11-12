@@ -1104,49 +1104,6 @@ admin.delete("/materials/:id", (req, res) => {
   res.json({ ok: true });
 });
 
-// ── ערוץ וואטסאפ: "מוח" נקי ונפרד לבוט הוואטסאפ ──
-// רעיון שנלקח מהמעקף של Base44 (QR), אבל בנוי כאן אצלנו, בקוד שלנו.
-// הנתיב הזה *עוקף* את מערכת המשתמשים של האתר (deviceTokenMiddleware) בכוונה —
-// לכן הוא לא נוגע ולא מסכן כלום באזור האישי/אתר. הוא רק מריץ את אותו מוח (NLP + שיטת קטי).
-// מאובטח בסוד משותף (WA_BOT_SECRET) כדי שרק הבוט שלנו יוכל לפנות אליו.
-const waHistory = new Map(); // זיכרון שיחה קצר לכל מספר (RAM בלבד, לא נכתב למסד של האתר)
-app.post("/api/wa/reply", async (req, res) => {
-  const secret = process.env.WA_BOT_SECRET || "";
-  if (secret && req.get("x-wa-secret") !== secret) {
-    return res.status(401).json({ error: "unauthorized" });
-  }
-  const { text, from } = req.body || {};
-  if (typeof text !== "string" || !text.trim()) {
-    return res.status(400).json({ error: "text is required" });
-  }
-  const clean = text.trim().slice(0, 4000);
-  try {
-    const retrieved = retrieveKnowledge(clean);
-    // זיכרון שיחה קצר: 6 ההודעות האחרונות מהמספר הזה, לתשובה זורמת והקשרית
-    const key = String(from || "anon");
-    const hist = waHistory.get(key) || [];
-    let result;
-    try {
-      result = await runBehavioralHealthCheck(clean, "adult", 1, retrieved, "");
-    } catch (aiErr) {
-      const m = String((aiErr && aiErr.message) || "");
-      const reason =
-        aiErr instanceof NoApiKeyError ? "no-key" :
-        /\b401\b|invalid_api_key|Incorrect API key/i.test(m) ? "bad-key" :
-        /\b429\b|insufficient_quota|exceeded your current quota|billing/i.test(m) ? "no-credit" : "ai-error";
-      console.warn(`[wa] OpenAI unavailable (${reason}) — using local guided engine.`);
-      result = guidedReply(clean, retrieved, "", hist);
-    }
-    hist.push({ sender: "user", text: clean });
-    hist.push({ sender: "bot", text: result.reply });
-    waHistory.set(key, hist.slice(-12));
-    res.json({ reply: result.reply });
-  } catch (err) {
-    console.error("[wa] reply failed:", err);
-    res.status(200).json({ reply: "אני כאן איתך 🌿 קרתה תקלה רגעית — נסי שוב בעוד רגע." });
-  }
-});
-
 app.use("/api/admin", admin);
 app.use("/api", api);
 
