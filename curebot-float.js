@@ -35,7 +35,7 @@
       "#cmFloatHint.show{display:block;animation:cmHintIn .4s cubic-bezier(.16,1,.3,1)}" +
       "#cmFloatHint button{position:absolute;top:2px;right:4px;width:32px;height:32px;border:0;background:none;color:#6B6560;font-size:18px;cursor:pointer;line-height:1}" +
       "@keyframes cmHintIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}" +
-      "@media(max-width:560px){#cmFloatOverlay{padding:0}#cmFloatModal{width:100%;height:100%;border-radius:0}#cmFloatBtn{bottom:14px;left:14px}#cmFloatHint{left:14px;bottom:74px}}" +
+      "@media(max-width:560px){#cmFloatOverlay{padding:0}#cmFloatModal{width:100%;height:100%;border-radius:0}#cmFloatBtn{bottom:14px;left:14px;padding:8px}#cmFloatBtn .cmw-label{display:none}#cmFloatHint{left:14px;bottom:74px}}" +
       "@media(prefers-reduced-motion:reduce){#cmFloatBtn{transition:none}#cmFloatHint.show{animation:none}}";
     document.head.appendChild(style);
 
@@ -59,7 +59,7 @@
     var hint = document.createElement("div");
     hint.id = "cmFloatHint";
     hint.innerHTML = '<button type="button" aria-label="סגירה">×</button>' +
-      "היי 👋 אני קיורטי. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
+      "היי, אני קיורטי. אפשר לשאול אותי על הליווי, או פשוט לספר מה קורה.";
 
     document.body.appendChild(btn);
     document.body.appendChild(hint);

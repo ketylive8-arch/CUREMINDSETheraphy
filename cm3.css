@@ -390,3 +390,14 @@ footer.site a,.related a,.faq summary,.go{display:inline-block;min-height:28px;p
  .hero{padding-top:96px!important}
  .hero h1{font-size:clamp(1.6rem,7vw,2.2rem)!important;line-height:1.25}
 }
+
+/* ===== מעבר עיצוב (עקרונות Impeccable): ללא כותרות-על, ללא מספור שאינו רצף, ללא קופסאות ריקות ===== */
+.eyebrow,.kicker,.hero .eyebrow{display:none!important}
+.signs li{grid-template-columns:1.6rem 1fr!important;align-items:baseline!important}
+.signs li::before{content:""!important;width:12px!important;height:1px!important;background:var(--gold)!important;align-self:center!important;margin-top:0!important;font-size:0!important}
+nav.related{display:flex!important;flex-wrap:wrap;gap:4px 24px;align-items:baseline;background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;padding:28px 0 8px!important;margin:44px 0 0!important}
+nav.related span{color:var(--muted);font-size:.95rem}
+nav.related a{background:none!important;border:0!important;border-radius:0!important;padding:.45rem 0!important;min-height:44px;display:inline-flex;align-items:center;text-decoration:underline;text-decoration-thickness:1px}
+.disclaimer{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;padding:1.1rem 0!important;margin:28px 0 0!important;font-size:.92rem;color:var(--muted)}
+.faq summary{min-height:48px;display:flex;align-items:center}
+.btn,body main .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center}

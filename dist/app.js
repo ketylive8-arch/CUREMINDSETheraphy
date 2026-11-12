@@ -83,7 +83,7 @@ function HmHero() {
     className: "eyebrow"
   }, "\u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1 \xB7 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05E8\u05D2\u05E9\u05D9 \u05D1\u05D7\u05D9\u05E4\u05D4, \u05D1\u05E7\u05E8\u05D9\u05D5\u05EA \u05D5\u05D1\u05D6\u05D5\u05DD"), /*#__PURE__*/React.createElement("h1", null, "\u05D0\u05EA\u05DD \u05DC\u05D0 \u05E6\u05E8\u05D9\u05DB\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05DC\u05D9 \u05DE\u05D4 \u05E7\u05D5\u05E8\u05D4. \u05D0\u05E0\u05D9 \u05DE\u05D6\u05D4\u05D4 \u05D0\u05EA \u05D6\u05D4 \u05DE\u05D4\u05E9\u05D5\u05E8\u05D4 \u05D4\u05E8\u05D0\u05E9\u05D5\u05E0\u05D4."), /*#__PURE__*/React.createElement("p", {
     className: "lead"
-  }, "\u05D6\u05D4 \u05D4\u05DE\u05E7\u05D5\u05DD \u05E9\u05D1\u05D5 \u05DE\u05E4\u05E1\u05D9\u05E7\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05D5\u05DE\u05EA\u05D7\u05D9\u05DC\u05D9\u05DD \u05DC\u05E2\u05D1\u05D5\u05D3."), /*#__PURE__*/React.createElement("p", null, "\u05D0\u05E0\u05D9 \u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1, \u05DE\u05D8\u05E4\u05DC\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05D5\u05DE\u05D0\u05DE\u05E0\u05EA NLP, \u05DE\u05E4\u05EA\u05D7\u05EA \u05E9\u05D9\u05D8\u05EA CureMindset."), /*#__PURE__*/React.createElement("div", {
+  }, "\u05D6\u05D4 \u05D4\u05DE\u05E7\u05D5\u05DD \u05E9\u05D1\u05D5 \u05DE\u05E4\u05E1\u05D9\u05E7\u05D9\u05DD \u05DC\u05D4\u05E1\u05D1\u05D9\u05E8 \u05D5\u05DE\u05EA\u05D7\u05D9\u05DC\u05D9\u05DD \u05DC\u05E2\u05D1\u05D5\u05D3."), /*#__PURE__*/React.createElement("p", null, "\u05D0\u05E0\u05D9 \u05E7\u05D8\u05D9 \u05E9\u05D2\u05D1, \u05DE\u05D8\u05E4\u05DC\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05D5\u05DE\u05D0\u05DE\u05E0\u05EA NLP, \u05DE\u05E4\u05EA\u05D7\u05EA \u05E9\u05D9\u05D8\u05EA CureMindset, \u05D1\u05E7\u05E8\u05D9\u05D9\u05EA \u05DE\u05D5\u05E6\u05E7\u05D9\u05DF, \u05D1\u05E7\u05E8\u05D9\u05D9\u05EA \u05D7\u05D9\u05D9\u05DD \u05D5\u05D1\u05D6\u05D5\u05DD \u05DC\u05DB\u05DC \u05D4\u05D0\u05E8\u05E5."), /*#__PURE__*/React.createElement("div", {
     className: "btnrow"
   }, /*#__PURE__*/React.createElement("a", {
     className: "btn primary",
@@ -2435,7 +2435,7 @@ function HmBody() {
     href: "/adults"
   }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
     href: "/schools"
-  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmNumbers, null), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
+  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement(HmRows, {
     items: [["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."], ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."], ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."], ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]

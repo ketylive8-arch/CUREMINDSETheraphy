@@ -23,7 +23,7 @@ function HmHero() {
       <p className="eyebrow">קטי שגב · ליווי רגשי בחיפה, בקריות ובזום</p>
       <h1>אתם לא צריכים להסביר לי מה קורה. אני מזהה את זה מהשורה הראשונה.</h1>
       <p className="lead">זה המקום שבו מפסיקים להסביר ומתחילים לעבוד.</p>
-      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset.</p>
+      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset, בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
       <div className="btnrow">
         <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות של 20 דקות</a>
       </div>
@@ -2044,7 +2044,6 @@ function HmBody() {
           <li><a href="/adults">למבוגרים</a></li><li><a href="/schools">למוסדות</a></li>
         </ul>
       </section>
-      <HmNumbers />
       <HmAi />
       <section className="blk"><h2>איך נראה התהליך בפועל</h2>
         <HmRows items={[
