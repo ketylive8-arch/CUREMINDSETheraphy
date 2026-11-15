@@ -401,3 +401,12 @@ nav.related a{background:none!important;border:0!important;border-radius:0!impor
 .disclaimer{background:none!important;border:0!important;border-top:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;padding:1.1rem 0!important;margin:28px 0 0!important;font-size:.92rem;color:var(--muted)}
 .faq summary{min-height:48px;display:flex;align-items:center}
 .btn,body main .btn{min-height:48px;display:inline-flex;align-items:center;justify-content:center}
+
+/* צפיפות: פחות רווחים ריקים, יותר תוכן במסך */
+.hero{padding:clamp(28px,5vw,64px) 0 clamp(24px,4vw,48px)}
+.blk{padding:clamp(28px,4vw,56px) 0}
+.pull-quote{margin:clamp(12px,2vw,28px) calc(50% - 50vw)!important;padding:clamp(28px,4.5vw,60px) max(var(--gut),calc((100vw - var(--maxw))/2 + var(--gut)))!important;font-size:clamp(1.25rem,1rem + 1.1vw,1.8rem)!important}
+.prog{padding:clamp(24px,4vw,48px) 0!important}
+.ctaband{margin:clamp(20px,3vw,48px) calc(50% - 50vw)!important;padding:clamp(36px,6vw,80px) max(var(--gut),calc((100vw - var(--maxw))/2 + var(--gut)))!important}
+.related{padding:clamp(24px,4vw,48px) 0}
+body footer.site{margin-top:clamp(28px,4vw,64px);padding:clamp(32px,5vw,64px) 0 28px!important}
