@@ -410,3 +410,11 @@ nav.related a{background:none!important;border:0!important;border-radius:0!impor
 .ctaband{margin:clamp(20px,3vw,48px) calc(50% - 50vw)!important;padding:clamp(36px,6vw,80px) max(var(--gut),calc((100vw - var(--maxw))/2 + var(--gut)))!important}
 .related{padding:clamp(24px,4vw,48px) 0}
 body footer.site{margin-top:clamp(28px,4vw,64px);padding:clamp(32px,5vw,64px) 0 28px!important}
+
+/* פתיחה קולנועית בהשראת tonyrobbins.com ו-eitanazaria.co.il: רצועה כהה, כותרת לבנה גדולה, כפתור זהב אחד */
+.hero{padding-top:clamp(88px,8vw,112px)}
+#top.hero{width:100vw;margin-inline:calc(50% - 50vw)!important;padding:clamp(96px,9vw,128px) max(var(--gut),calc((100vw - var(--maxw))/2 + var(--gut))) clamp(48px,6vw,88px);background:#1E1A15!important;color:#FBF7EF}
+#top.hero h1{color:#FBF7EF;font-size:clamp(2.1rem,1.3rem + 3.4vw,4.1rem);line-height:1.08;max-width:16ch}
+#top.hero .lead{color:#FBF7EF;opacity:.85}
+#top.hero p{color:#FBF7EF}
+#top.hero .hero-photo img{box-shadow:0 24px 64px rgba(0,0,0,.45)}
