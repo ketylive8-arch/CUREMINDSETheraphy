@@ -63,6 +63,55 @@ function handle_leads(): void
     json_out(['leads' => $st->fetchAll()]);
 }
 
+/** Add a lead manually (a lead Kety found herself — e.g. from Facebook).
+ * A client's lead is owned by them; an admin's goes to the shared pool. */
+function handle_create_lead(): void
+{
+    $u = require_user();
+    $in = body();
+    $company = trim((string) ($in['company'] ?? ''));
+    if ($company === '') {
+        json_err('צריך לפחות שם עסק / ליד');
+    }
+    $email = strtolower(trim((string) ($in['email'] ?? '')));
+    if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        json_err('כתובת מייל לא תקינה');
+    }
+    // Never add a suppressed (removed/opt-out/bounced) address.
+    if ($email !== '') {
+        $sup = db()->prepare('SELECT 1 FROM suppressions WHERE lower(email) = ?');
+        $sup->execute([$email]);
+        if ($sup->fetch()) {
+            json_err('הכתובת הזו ברשימת ההסרה — אי אפשר להוסיף אותה', 422);
+        }
+    }
+    $linkedin = trim((string) ($in['linkedin'] ?? ''));
+    if ($linkedin !== '' && !preg_match('#^https?://#i', $linkedin)) {
+        $linkedin = 'https://' . $linkedin; // tolerate a pasted bare URL
+    }
+    $ownerId = (($u['role'] ?? '') === 'client') ? (int) $u['id'] : null;
+    db()->prepare(
+        'INSERT INTO leads (owner_user_id, company, contact, role, linkedin, email, phone, sector, city, notes, source_url, status)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?)'
+    )->execute([
+        $ownerId,
+        $company,
+        trim((string) ($in['contact'] ?? '')) ?: null,
+        trim((string) ($in['role'] ?? '')) ?: null,
+        $linkedin ?: null,
+        $email ?: null,
+        trim((string) ($in['phone'] ?? '')) ?: null,
+        trim((string) ($in['sector'] ?? '')) ?: null,
+        trim((string) ($in['city'] ?? '')) ?: null,
+        trim((string) ($in['notes'] ?? '')) ?: null,
+        trim((string) ($in['source_url'] ?? '')) ?: null,
+        'new',
+    ]);
+    $id = (int) db()->lastInsertId();
+    log_activity($id, (int) $u['id'], 'add_lead', $company);
+    json_out(['ok' => true, 'id' => $id], 201);
+}
+
 /** Bounced list with reasons (רשימת מיילים שחזרו). */
 function handle_bounces(): void
 {
@@ -79,11 +128,11 @@ function handle_export(): void
     $u = require_user();
     [$w, $args] = scope_where($u);
     $st = db()->prepare(
-        "SELECT company, contact, role, linkedin, email, sector, city, status, bounce_reason, sent_at, replied_at, notes
+        "SELECT company, contact, role, linkedin, email, phone, sector, city, status, bounce_reason, sent_at, replied_at, notes
          FROM leads WHERE 1=1$w ORDER BY company"
     );
     $st->execute($args);
-    $headers = ['חברה', 'איש קשר', 'תפקיד', 'לינקדאין', 'מייל', 'תחום', 'עיר', 'סטטוס', 'סיבת חזרה', 'נשלח', 'ענה', 'הערות'];
+    $headers = ['חברה', 'איש קשר', 'תפקיד', 'לינקדאין', 'מייל', 'טלפון', 'תחום', 'עיר', 'סטטוס', 'סיבת חזרה', 'נשלח', 'ענה', 'הערות'];
     http_response_code(200);
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="segev-leads-' . date('Y-m-d') . '.csv"');
@@ -264,6 +313,12 @@ function handle_set_profile(): void
     $goal = trim((string) ($in['goal'] ?? ''));
     $wantsText = trim((string) ($in['wants_text'] ?? ''));
     $agentInstructions = trim((string) ($in['agent_instructions'] ?? ''));
+    // Daily leads schedule — a time like "08:00" and whether it's on.
+    $dailyTime = trim((string) ($in['daily_time'] ?? ''));
+    if ($dailyTime !== '' && !preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $dailyTime)) {
+        $dailyTime = '';
+    }
+    $dailyEnabled = !empty($in['daily_enabled']) && $dailyTime !== '' ? 1 : 0;
     if ($businessType === '') {
         json_err('צריך לבחור סוג עסק');
     }
@@ -278,12 +333,12 @@ function handle_set_profile(): void
             $businessName = (string) ($existing['business_name'] ?? '');
         }
         db()->prepare(
-            'UPDATE client_profiles SET business_name=?, business_type=?, target_sectors=?, regions=?, goal=?, wants_text=?, agent_instructions=?, status=\'active\' WHERE user_id=?'
-        )->execute([$businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions, $uid]);
+            'UPDATE client_profiles SET business_name=?, business_type=?, target_sectors=?, regions=?, goal=?, wants_text=?, agent_instructions=?, daily_time=?, daily_enabled=?, status=\'active\' WHERE user_id=?'
+        )->execute([$businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions, $dailyTime ?: null, $dailyEnabled, $uid]);
     } else {
         db()->prepare(
-            'INSERT INTO client_profiles (user_id, business_name, business_type, target_sectors, regions, goal, wants_text, agent_instructions) VALUES (?,?,?,?,?,?,?,?)'
-        )->execute([$uid, $businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions]);
+            'INSERT INTO client_profiles (user_id, business_name, business_type, target_sectors, regions, goal, wants_text, agent_instructions, daily_time, daily_enabled) VALUES (?,?,?,?,?,?,?,?,?,?)'
+        )->execute([$uid, $businessName, $businessType, $sectorsJson, $regions, $goal, $wantsText, $agentInstructions, $dailyTime ?: null, $dailyEnabled]);
     }
     log_activity(null, $uid, 'onboarding', "$businessType · " . implode(',', $sectors));
     json_out(['ok' => true]);

@@ -69,6 +69,7 @@ try {
         'POST /api/profile'     => handle_set_profile(),
         'GET /api/stats'        => handle_stats(),
         'GET /api/leads'        => handle_leads(),
+        'POST /api/leads'       => handle_create_lead(),
         'GET /api/leads/export' => handle_export(),
         'GET /api/bounces'      => handle_bounces(),
         'GET /api/activity'     => handle_activity(),

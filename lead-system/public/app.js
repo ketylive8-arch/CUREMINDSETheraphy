@@ -58,6 +58,7 @@
     login: "התחברה", logout: "התנתקה", refind: "איתור מייל מחדש",
     set_email: "עודכן מייל", queue_resend: "נכנס לתור שליחה",
     followup_draft: "הופק מייל אחרון", create_user: "נוצר משתמש",
+    add_lead: "נוסף ליד", onboarding: "השלים אונבורדינג", register: "נרשם",
   };
 
   // ---------- Login / Register ----------
@@ -125,6 +126,8 @@
     const [goal, setGoal] = useState("");
     const [wantsText, setWantsText] = useState("");
     const [agentInstructions, setAgentInstructions] = useState("");
+    const [dailyEnabled, setDailyEnabled] = useState(false);
+    const [dailyTime, setDailyTime] = useState("08:00");
     const [busy, setBusy] = useState(false);
     const [err, setErr] = useState("");
     function toggleSector(s) {
@@ -137,6 +140,7 @@
           business_name: businessName, business_type: businessType,
           target_sectors: sectors, regions, goal,
           wants_text: wantsText, agent_instructions: agentInstructions,
+          daily_enabled: dailyEnabled, daily_time: dailyTime,
         }) });
         onDone();
       } catch (ex) { setErr(ex.message); setBusy(false); }
@@ -173,6 +177,14 @@
             <div class="field"><label>הוראות לסוכן (איך לעבוד, מהיכן, מה להימנע)</label>
               <textarea class="ta" value=${agentInstructions} onInput=${(e) => setAgentInstructions(e.target.value)}
                 placeholder="לדוגמה: רק עסקים פעילים, לא לפנות למתחרים, להתמקד בלינקדאין ובאתרי החברות"></textarea></div>
+            <div class="field"><label>לקבל לידים חדשים כל יום?</label>
+              <label class="switchrow">
+                <input type="checkbox" checked=${dailyEnabled} onChange=${(e) => setDailyEnabled(e.target.checked)} />
+                <span>כן, כל יום בשעה</span>
+                <input type="time" class="timein" value=${dailyTime} onInput=${(e) => setDailyTime(e.target.value)} disabled=${!dailyEnabled} />
+              </label>
+              <div class="hint" style=${{ textAlign: "start", marginTop: "4px" }}>המערכת תאתר לך לידים חדשים ותכין פנייה — ואת מאשרת.</div>
+            </div>
             <div class="row-actions" style=${{ gap: "8px" }}>
               <button class="btn ghost" onClick=${() => setStep(1)}>← חזרה</button>
               <button class="btn" style=${{ flex: 1 }} disabled=${busy || sectors.length === 0} onClick=${finish}>
@@ -201,11 +213,62 @@
       </div>`)}</div>`;
   }
 
+  // Build a wa.me link from an Israeli phone (0XX… → 972XX…).
+  function waLink(phone) {
+    const d = String(phone || "").replace(/\D/g, "");
+    if (!d) return "";
+    const intl = d.startsWith("972") ? d : d.replace(/^0/, "972");
+    return "https://wa.me/" + intl;
+  }
+
+  // ---------- Add-lead modal ----------
+  function AddLeadModal({ onClose, onSaved }) {
+    const [f, setF] = useState({ company: "", contact: "", role: "", phone: "", email: "", linkedin: "", sector: "", city: "", notes: "", source_url: "" });
+    const [err, setErr] = useState("");
+    const [busy, setBusy] = useState(false);
+    const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+    async function save() {
+      if (!f.company.trim()) { setErr("צריך לפחות שם עסק / ליד"); return; }
+      setErr(""); setBusy(true);
+      try { await api("/leads", { method: "POST", body: JSON.stringify(f) }); onSaved(); }
+      catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`<div class="modal-bg" onClick=${onClose}>
+      <div class="modal" onClick=${(e) => e.stopPropagation()}>
+        <div class="m-head"><h3>הוספת ליד חדש</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+        <div class="m-body">
+          ${err && html`<div class="err">${err}</div>`}
+          <div class="field"><label>שם העסק / הליד *</label><input value=${f.company} onInput=${set("company")} placeholder="לדוגמה: רוני — מחפשת עוזרת בדרך" /></div>
+          <div style=${{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>איש קשר</label><input value=${f.contact} onInput=${set("contact")} /></div>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>תפקיד</label><input value=${f.role} onInput=${set("role")} /></div>
+          </div>
+          <div style=${{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>טלפון / וואטסאפ</label><input value=${f.phone} onInput=${set("phone")} dir="ltr" placeholder="052-6116361" /></div>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>מייל</label><input value=${f.email} onInput=${set("email")} dir="ltr" /></div>
+          </div>
+          <div class="field"><label>לינקדאין</label><input value=${f.linkedin} onInput=${set("linkedin")} dir="ltr" /></div>
+          <div style=${{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>תחום</label><input value=${f.sector} onInput=${set("sector")} /></div>
+            <div class="field" style=${{ flex: "1 1 180px" }}><label>עיר</label><input value=${f.city} onInput=${set("city")} /></div>
+          </div>
+          <div class="field"><label>מקור (קישור)</label><input value=${f.source_url} onInput=${set("source_url")} dir="ltr" placeholder="קישור לפוסט/מודעה" /></div>
+          <div class="field"><label>הערות / זווית פנייה</label><textarea class="ta" value=${f.notes} onInput=${set("notes")}></textarea></div>
+        </div>
+        <div class="m-foot">
+          <button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "הוסף ליד"}</button>
+          <button class="btn ghost" onClick=${onClose}>ביטול</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
   // ---------- Leads table ----------
   function LeadsTable({ onAction }) {
     const [leads, setLeads] = useState(null);
     const [status, setStatus] = useState("all");
     const [q, setQ] = useState("");
+    const [adding, setAdding] = useState(false);
     const load = useCallback(async () => {
       setLeads(null);
       const r = await api("/leads?status=" + encodeURIComponent(status) + "&q=" + encodeURIComponent(q));
@@ -223,6 +286,7 @@
         <div class="head"><h2>לידים</h2>
           <div style=${{ display: "flex", gap: "8px", alignItems: "center" }}>
             <span class="muted">${leads ? leads.length + " רשומות" : ""}</span>
+            <button class="btn sm" onClick=${() => setAdding(true)}>➕ ליד חדש</button>
             <button class="btn sm ghost" onClick=${exportLeadsCsv} title="ייצוא לאקסל">⬇ אקסל</button>
           </div></div>
         <div class="toolbar">
@@ -232,10 +296,11 @@
           <button class="btn sm ghost" onClick=${load}>חיפוש</button>
         </div>
         <div class="scroll">
-          ${!leads ? html`<div class="loading">טוען…</div>` : html`
+          ${!leads ? html`<div class="loading">טוען…</div>` : leads.length === 0
+            ? html`<div class="loading">אין עדיין לידים. לחצי "➕ ליד חדש" כדי להוסיף.</div>` : html`
           <table>
             <thead><tr>
-              <th>חברה</th><th>איש קשר</th><th>מייל</th><th class="hide-sm">תחום</th><th>סטטוס</th><th>פעולות</th>
+              <th>חברה</th><th>איש קשר</th><th>מייל / טלפון</th><th class="hide-sm">תחום</th><th>סטטוס</th><th>פעולות</th>
             </tr></thead>
             <tbody>
               ${leads.map((l) => html`<tr key=${l.id}>
@@ -246,7 +311,11 @@
                   ${l.role && html`<div class="email">${l.role}</div>`}
                   ${l.linkedin && /^https?:\/\//i.test(l.linkedin) && html`<a class="lk" href=${l.linkedin} target="_blank" rel="noopener noreferrer">לינקדאין ↗</a>`}
                 </td>
-                <td><div class="email">${l.email || "—"}</div></td>
+                <td>
+                  <div class="email">${l.email || ""}</div>
+                  ${l.phone && html`<div class="email">📞 ${l.phone} · <a class="lk" href=${waLink(l.phone)} target="_blank" rel="noopener noreferrer">וואטסאפ ↗</a></div>`}
+                  ${!l.email && !l.phone && html`<div class="email">—</div>`}
+                </td>
                 <td class="hide-sm">${l.sector || "—"}</td>
                 <td><${Badge} s=${l.status} /></td>
                 <td><div class="row-actions">
@@ -259,6 +328,7 @@
             </tbody>
           </table>`}
         </div>
+        ${adding && html`<${AddLeadModal} onClose=${() => setAdding(false)} onSaved=${() => { setAdding(false); load(); }} />`}
       </div>`;
   }
 
@@ -377,6 +447,7 @@
         <div style=${{ padding: "16px 18px" }}>
           <div class="kv">העסק שלך: <b>${(profile && profile.business_name) || "—"}</b> · ${(profile && profile.business_type) || ""}</div>
           <div class="kv">לידים שביקשת: <b>${sectors.length ? sectors.join(" · ") : "—"}</b></div>
+          ${profile && profile.daily_enabled ? html`<div class="kv">לידים יומיים: <b>כל יום בשעה ${profile.daily_time || "08:00"}</b> ⏰</div>` : ""}
           <div class="steps">
             <div class="stepc"><span class="num">1</span> מאתרים לידים אמיתיים לפי מה שבחרת</div>
             <div class="stepc"><span class="num">2</span> מכינים לכל ליד פנייה מותאמת — את מאשרת</div>

@@ -71,6 +71,7 @@ function migrate(PDO $pdo): void
             contact        TEXT,
             role           TEXT,
             linkedin       TEXT,
+            phone          TEXT,
             subject        TEXT,
             status         TEXT    NOT NULL DEFAULT 'new',
             bounce_reason  TEXT,
@@ -88,6 +89,7 @@ function migrate(PDO $pdo): void
     // Decision-maker fields for a lead (person's role + LinkedIn profile URL).
     try { $pdo->exec('ALTER TABLE leads ADD COLUMN role TEXT'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE leads ADD COLUMN linkedin TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN phone TEXT'); } catch (Throwable $e) {}
     // Client profile — each registered client's business + what leads they want.
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS client_profiles (
@@ -99,12 +101,18 @@ function migrate(PDO $pdo): void
             goal           TEXT,
             wants_text     TEXT,
             agent_instructions TEXT,
+            daily_time     TEXT,
+            daily_enabled  INTEGER DEFAULT 0,
             status         TEXT NOT NULL DEFAULT 'active',
             created_at     TEXT NOT NULL DEFAULT (datetime('now'))
         )
     ");
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN wants_text TEXT'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN agent_instructions TEXT'); } catch (Throwable $e) {}
+    // Daily leads schedule: the client can ask to receive fresh leads every day
+    // at a chosen time (HH:MM). daily_enabled toggles it on.
+    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_time TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_enabled INTEGER DEFAULT 0'); } catch (Throwable $e) {}
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("
