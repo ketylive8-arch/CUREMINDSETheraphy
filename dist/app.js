@@ -2324,7 +2324,7 @@ function HmRows({
   }, /*#__PURE__*/React.createElement("h3", null, t), /*#__PURE__*/React.createElement("p", null, p))));
 }
 function HmPillars() {
-  const items = [["חרדה ולחץ", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"], ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"], ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"], ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"], ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"], ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]];
+  const items = [["חרדה ומתח", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"], ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"], ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"], ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"], ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"], ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]];
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
     id: "worlds"
@@ -2391,7 +2391,7 @@ function HmAi() {
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
     id: "kety-ai"
-  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u2014 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D5\u05D9\u05E8\u05D8\u05D5\u05D0\u05DC\u05D9"), /*#__PURE__*/React.createElement("p", null, "\u05DC\u05D0 \u05EA\u05DE\u05D9\u05D3 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D7\u05DB\u05D5\u05EA \u05DC\u05DE\u05E4\u05D2\u05E9. \u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u05D4\u05D9\u05D0 \u05E2\u05D5\u05D6\u05E8\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05E9\u05DE\u05DB\u05D9\u05E8\u05D4 \u05D0\u05EA \u05D4\u05E9\u05D9\u05D8\u05D4, \u05E2\u05D5\u05E0\u05D4 \u05E2\u05DC \u05E9\u05D0\u05DC\u05D5\u05EA \u05E2\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA, \u05D5\u05DE\u05D7\u05D6\u05D9\u05E7\u05D4 \u05DB\u05DC\u05D9\u05DD \u05E7\u05E6\u05E8\u05D9\u05DD \u05DC\u05E8\u05D2\u05E2\u05D9\u05DD \u05E9\u05DC \u05DC\u05D7\u05E5."), /*#__PURE__*/React.createElement("p", null, "\u05D4\u05D9\u05D0 \u05DC\u05D0 \u05DE\u05D0\u05D1\u05D7\u05E0\u05EA \u05D5\u05DC\u05D0 \u05DE\u05D8\u05E4\u05DC\u05EA \u2014 \u05DB\u05E9\u05D4\u05D9\u05D0 \u05DE\u05D6\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E9\u05D3\u05D5\u05E8\u05E9 \u05D0\u05D3\u05DD, \u05D4\u05D9\u05D0 \u05DE\u05E4\u05E0\u05D4 \u05D0\u05DC\u05D9\u05D9."), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "\u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u2014 \u05DC\u05D9\u05D5\u05D5\u05D9 \u05D5\u05D9\u05E8\u05D8\u05D5\u05D0\u05DC\u05D9"), /*#__PURE__*/React.createElement("p", null, "\u05DC\u05D0 \u05EA\u05DE\u05D9\u05D3 \u05D0\u05E4\u05E9\u05E8 \u05DC\u05D7\u05DB\u05D5\u05EA \u05DC\u05DE\u05E4\u05D2\u05E9. \u05E7\u05D9\u05D5\u05E8\u05D8\u05D9 \u05D4\u05D9\u05D0 \u05E2\u05D5\u05D6\u05E8\u05EA \u05E8\u05D2\u05E9\u05D9\u05EA \u05E9\u05DE\u05DB\u05D9\u05E8\u05D4 \u05D0\u05EA \u05D4\u05E9\u05D9\u05D8\u05D4, \u05E2\u05D5\u05E0\u05D4 \u05E2\u05DC \u05E9\u05D0\u05DC\u05D5\u05EA \u05E2\u05DC \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA, \u05D5\u05DE\u05D7\u05D6\u05D9\u05E7\u05D4 \u05DB\u05DC\u05D9\u05DD \u05E7\u05E6\u05E8\u05D9\u05DD \u05DC\u05E8\u05D2\u05E2\u05D9\u05DD \u05E9\u05DC \u05DE\u05EA\u05D7."), /*#__PURE__*/React.createElement("p", null, "\u05D4\u05D9\u05D0 \u05DC\u05D0 \u05DE\u05D0\u05D1\u05D7\u05E0\u05EA \u05D5\u05DC\u05D0 \u05DE\u05D8\u05E4\u05DC\u05EA \u2014 \u05DB\u05E9\u05D4\u05D9\u05D0 \u05DE\u05D6\u05D4\u05D4 \u05DE\u05E6\u05D1 \u05E9\u05D3\u05D5\u05E8\u05E9 \u05D0\u05D3\u05DD, \u05D4\u05D9\u05D0 \u05DE\u05E4\u05E0\u05D4 \u05D0\u05DC\u05D9\u05D9."), /*#__PURE__*/React.createElement("div", {
     className: "btnrow"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn primary",
@@ -2444,7 +2444,7 @@ function HmBody() {
   }, "\u05DC\u05E4\u05D9\u05E8\u05D5\u05D8 \u05D4\u05E9\u05D9\u05D8\u05D4 \u2190"))), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05DC\u05DE\u05D9 \u05D6\u05D4 \u05DE\u05EA\u05D0\u05D9\u05DD?"), /*#__PURE__*/React.createElement(HmRows, {
-    items: [["לנוער 12-17", "קבוצות קטנות של עד 6 נערים ונערות. חרדת בחינות, לחץ חברתי, דימוי עצמי, מסכים והתנתקות. שלושה מפגשים עם כלים שנשארים."], ["לצעירים 18-25", "אחרי צבא, בלימודים, בתחילת הדרך. ערפל, השוואה, לחץ לבחור. קבוצה קטנה או ליווי אישי."], ["למבוגרים", "ליווי אישי לתהליכי עומק: חרדה, חסמים, דפוסים חוזרים במערכות יחסים ובקריירה."], ["למוסדות חינוך וארגוני נוער", "סדנאות \"המצפן הפנימי\" לבתי ספר, מתנ\"סים ומכינות. תוכנית מובנית, מותאמת לגיל ולצרכים."]]
+    items: [["לנוער 12-17", "קבוצות קטנות של עד 6 נערים ונערות. חרדת בחינות, מתח חברתי, דימוי עצמי, מסכים והתנתקות. שלושה מפגשים עם כלים שנשארים."], ["לצעירים 18-25", "אחרי צבא, בלימודים, בתחילת הדרך. ערפל, השוואה, מתח לבחור. קבוצה קטנה או ליווי אישי."], ["למבוגרים", "ליווי אישי לתהליכי עומק: חרדה, חסמים, דפוסים חוזרים במערכות יחסים ובקריירה."], ["למוסדות חינוך וארגוני נוער", "סדנאות \"המצפן הפנימי\" לבתי ספר, מתנ\"סים ומכינות. תוכנית מובנית, מותאמת לגיל ולצרכים."]]
   }), /*#__PURE__*/React.createElement("ul", {
     className: "chips"
   }, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
