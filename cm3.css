@@ -418,3 +418,8 @@ body footer.site{margin-top:clamp(28px,4vw,64px);padding:clamp(32px,5vw,64px) 0 
 #top.hero .lead{color:#FBF7EF;opacity:.85}
 #top.hero p{color:#FBF7EF}
 #top.hero .hero-photo img{box-shadow:0 24px 64px rgba(0,0,0,.45)}
+
+/* תיקוני Impeccable: ניגודיות, מילה יתומה בסוף שורה */
+:root{--gold-deep:#715320}
+p,li,blockquote{text-wrap:pretty}
+h1,h2,h3{text-wrap:balance}

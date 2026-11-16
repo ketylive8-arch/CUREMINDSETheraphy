@@ -20,7 +20,7 @@
       "#cmFloatBtn .cmw-orb svg{width:16px;height:16px;color:#1F1C18}" +
       "#cmFloatBtn .cmw-label{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}" +
       "#cmFloatBtn .cmw-label b{font-size:15px;font-weight:600}" +
-      "#cmFloatBtn .cmw-label small{font-size:12px;font-weight:400;color:#4A4234}" +
+      "#cmFloatBtn .cmw-label small{font-size:12px;font-weight:500;color:#231F1A}" +
       "#cmFloatOverlay{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-end;justify-content:flex-start;" +
       "background:rgba(234,221,195,.7);padding:20px}" +
       "#cmFloatOverlay.open{display:flex}" +
