@@ -20,12 +20,12 @@ function HmSocial() {
 function HmHero() {
   return (
     <section className="hero" id="top"><div className="hero-grid"><div>
-      <p className="eyebrow">קטי שגב · ליווי רגשי בחיפה, בקריות ובזום</p>
-      <h1>אתם לא צריכים להסביר לי מה קורה. אני מזהה את זה מהשורה הראשונה.</h1>
-      <p className="lead">זה המקום שבו מפסיקים להסביר ומתחילים לעבוד.</p>
-      <p>אני קטי שגב, מטפלת רגשית ומאמנת NLP, מפתחת שיטת CureMindset, בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
+      <h1>יש דברים שלא נפתרים בכוח הרצון.</h1>
+      <p className="lead">הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן, ושהגוף מגיב לפיהם לפני שהספקת לחשוב. כי הם לא נמצאים שם.</p>
+      <p>שיטת CureMindset עובדת בדיוק שם: על השורש, לא רק על מה שנראה מבחוץ. לנוער, לצעירים ולמבוגרים. בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
       <div className="btnrow">
-        <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות של 20 דקות</a>
+        <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות</a>
+        <a className="btn ghost" href="/method">איך השיטה עובדת</a>
       </div>
       <HmSocial />
     </div>
