@@ -1215,10 +1215,10 @@ function ArticlesSection() {
   // Local published articles stay visible alongside external blog posts.
   const published = [
   {
-    "title": "שחרור חרדה מהשורש: מסע של 15 יום לשינוי עמוק",
+    "title": "הרגעת החרדה בצעדים קטנים: מסע של 15 יום",
     "link": "/articles/healing-anxiety-journey.html",
     "pubDate": "2026-10-07",
-    "description": "מסע ריפוי סומטי לנוער, להורים ולכל מי שמכיר את הכבדות בחזה — כולל תוכנית תרגול אינטראקטיבית ל-15 יום."
+    "description": "מסע תרגול גופני לנוער, להורים ולכל מי שמכיר את הכבדות בחזה — כולל תוכנית תרגול אינטראקטיבית ל-15 יום."
   },
   {
     "title": "חוסן רגשי בגיל ההתבגרות: מיומנות שאפשר לפתח",
@@ -1595,7 +1595,7 @@ function HbSolution() {
           <Eyebrow>השיטה</Eyebrow>
           <h2 className="font-heading font-semibold text-ink-800 text-[26px] sm:text-[34px] leading-tight mb-5">שיטה מובנית — לא משפטי השראה</h2>
           <p className="text-ink-600 text-[17.5px] leading-relaxed">
-            CureMindset היא שיטת עבודה שפיתחה קטי שגב, על הנחה אחת לא־שגרתית: הקשיים שלך — החרדה, העומס — אינם פגם. הם מנגנוני הגנה שהתת-מודע גייס פעם כדי לשמור עליך. במקום להילחם בהם, השיטה מקשיבה להם ומשחררת אותם מהשורש — ברמה הרגשית והחושית שבה הדפוס באמת חי.
+            CureMindset היא שיטת עבודה שפיתחה קטי שגב, על הנחה אחת לא־שגרתית: הקשיים שלך — החרדה, העומס — אינם פגם. הם מנגנוני הגנה שהתת-מודע גייס פעם כדי לשמור עליך. במקום להילחם בהם, השיטה מקשיבה להם ומסייעת להם להשתחרר מהם — ברמה הרגשית והחושית שבה הדפוס באמת חי.
           </p>
         </Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1661,7 +1661,7 @@ function HbServices() {
 /* SECTION — עמודי התוכן (בהשראת זרימת Tony Robbins: Pillars) */
 function HbPillars() {
   const pillars = [
-    { icon: "wind", title: "חרדה", desc: "דריכות, הצפה ומחשבות שלא נעצרות — ויסות מהשורש.", href: "/anxiety-and-stress" },
+    { icon: "wind", title: "חרדה", desc: "דריכות, הצפה ומחשבות שלא נעצרות — ויסות של הגוף והמחשבה.", href: "/anxiety-and-stress" },
     { icon: "sparkles", title: "ביטחון עצמי ודימוי", desc: "ערך פנימי שלא תלוי במה שאחרים חושבים.", href: "/self-confidence" },
     { icon: "footprints", title: "דחיינות והתנעה", desc: "להבין את הדפוס — ולהתחיל לזוז בצעדים קטנים.", href: "/procrastination" },
     { icon: "graduation-cap", title: "חוסן רגשי לנוער", desc: "CURE Teens — בשפה של גיל ההתבגרות, בלי סטיגמה.", href: "/cure-teens" },
@@ -2027,6 +2027,14 @@ function HmBody() {
     <>
       <div className="pull-quote">הדפוס נלמד. ולכן אפשר ללמד אותו מחדש.</div>
       <HmPillars />
+      <section className="blk"><h2>איך עובדים איתי</h2>
+        <div className="cards">
+          <div className="card"><h3>תהליך אישי</h3><p>שישה מפגשים אישיים לפחות, בקליניקה או בזום, סביב המטרה האישית שלך.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
+          <div className="card"><h3>תוכנית קבוצתית</h3><p>מסע מובנה בקבוצה קטנה של 4 עד 6 משתתפים, פנים אל פנים או בזום.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
+          <div className="card"><h3>ליווי דיגיטלי</h3><p>תרגול יומיומי בין המפגשים: שאלות רפלקציה, קבצי אודיו וליווי בתוך מסגרת מוגדרת.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
+        </div>
+        <p>ההתאמה נבדקת בשיחת היכרות של 20 דקות, בלי התחייבות.</p>
+      </section>
       <section className="blk"><h2>מה בעצם קורה שם בפנים?</h2>
         <p>חרדה, עומס, דימוי עצמי נמוך ודפוסים חוזרים לא "נופלים עלינו". הם נלמדים.</p>
         <p>בשנים הראשונות לחיים המוח לומד מה בטוח ומה לא. הבגרות מגיעה, הסביבה משתנה, והדפוס נשאר ופועל אוטומטית.</p>
@@ -2060,7 +2068,7 @@ function HmBody() {
       <section className="blk"><h2>שאלות שנשאלות בדרך כלל</h2>
         <div className="faq">
           <details><summary>זה טיפול פסיכולוגי?</summary><p>זה תהליך אימון רגשי מבוסס NLP ועבודה עם התת-מודע. הוא אינו מחליף אבחון או טיפול רפואי-נפשי. אם צריך, נעבוד בצד ובשיתוף עם גורם מטפל.</p></details>
-          <details><summary>כמה זמן עד שמרגישים שינוי?</summary><p>לרוב כבר בשלושת המפגשים הראשונים יש היכרות עם הדפוס וכלים לוויסות. שינוי שמחזיק נבנה לאורך התהליך.</p></details>
+          <details><summary>כמה זמן עד שמרגישים שינוי?</summary><p>בדרך כלל כבר בתחילת התהליך מתחילים להכיר את הדפוס ולקבל כלים לוויסות. השינוי נבנה לאורך התהליך, וכל אדם בקצב שלו.</p></details>
           <details><summary>אפשר בזום?</summary><p>כן. המפגשים מתקיימים בקריית מוצקין, בקריית חיים או בזום לכל הארץ.</p></details>
         </div>
         <p><a className="go" href="/faq">לכל השאלות ←</a></p>
@@ -2072,7 +2080,7 @@ function HmBody() {
           <a className="btn ghost" href={HM_WA} target="_blank" rel="noopener">וואטסאפ</a>
           <a className="btn ghost" href="tel:0543032349">054-3032349</a>
         </div></div>
-      <div className="disclaimer">התכנים באתר אינם מהווים ייעוץ או טיפול רפואי.</div>
+      <div className="disclaimer">התכנים באתר הם אימון ותמיכה רגשית בשיטת NLP ו-CureMindset. הם אינם טיפול פסיכולוגי או פסיכיאטרי, אבחון או תחליף לייעוץ רפואי. הליווי משלים טיפול מקצועי ואינו מחליף אותו, ומי שמטופל כבר מוזמן לעדכן את המטפל/ת. במצוקה חריפה, מחשבות על פגיעה עצמית או חשש לסיכון: ער"ן 1201, מד"א 101 או חדר מיון.</div>
     </>
   );
 }
