@@ -145,10 +145,12 @@ td .email{color:var(--ink-2);font-size:13px;direction:ltr;text-align:start}
 
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
-.modal{background:#fff;border-radius:22px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
-.modal .m-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal{background:#fff;border-radius:22px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);
+  overflow:hidden;display:flex;flex-direction:column;max-height:90vh}
+.modal .m-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex:none}
 .modal .m-head h3{margin:0;font-size:16px;font-weight:600}
-.modal .m-body{padding:20px 22px}
+.modal .m-body{padding:20px 22px;overflow-y:auto}
+.modal .m-foot{flex:none}
 .modal textarea{width:100%;min-height:230px;border:1px solid var(--line-2);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.7;font-family:inherit;background:var(--panel)}
 .modal .m-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-start}
 .kv{font-size:14px;color:var(--ink-2);margin-bottom:9px}
