@@ -63,7 +63,7 @@
 
   // ---------- Login / Register ----------
   function Login({ onLogin }) {
-    const [mode, setMode] = useState("login"); // "login" | "register"
+    const [mode, setMode] = useState("register"); // "login" | "register" — signup-first entry
     const [name, setName] = useState("");
     const [business, setBusiness] = useState("");
     const [email, setEmail] = useState("");
@@ -86,12 +86,24 @@
       } catch (ex) { setErr(ex.message); } finally { setBusy(false); }
     }
     return html`
-      <div class="login-wrap">
+      <div class="entry">
+        <div class="entry-hero">
+          <div class="logo-lg">S</div>
+          <h1>מערכת הלידים החכמה לעסק שלך</h1>
+          <p class="entry-sub">נרשמים, מספרים לנו על העסק — והמערכת מביאה לכם לידים אמיתיים, עם פנייה מוכנה לכל אחד, ומעקב עד סגירה.</p>
+          <ul class="entry-benefits">
+            <li><span>🎯</span> מאתרים לידים אמיתיים לפי התחום והאזור שלך</li>
+            <li><span>✍️</span> פנייה מוכנה בסגנון שלך — אתם מאשרים לפני שליחה</li>
+            <li><span>📊</span> מעקב, תזכורות וייצוא לאקסל</li>
+          </ul>
+          <div class="entry-note">הרשמה חינם · שתי שאלות קצרות על העסק · מתחילים מיד</div>
+        </div>
+
         <form class="login-card" onSubmit=${submit}>
           <div class="brand">
             <div class="logo">S</div>
-            <h1>Segev MKG</h1>
-            <p>${reg ? "פתיחת חשבון חדש" : "מערכת לידים חכמה"}</p>
+            <h1>${reg ? "פתיחת חשבון לעסק" : "כניסה למערכת"}</h1>
+            <p>${reg ? "ממלאים פרטים ומתחילים לקבל לידים" : "ברוכים השבים"}</p>
           </div>
           ${err && html`<div class="err">${err}</div>`}
           ${reg && html`<div class="field"><label>שם מלא</label>
@@ -113,13 +125,13 @@
             <label class="switchrow" style=${{ fontSize: "13px" }}>
               <input type="checkbox" checked=${remember} onChange=${(e) => setRemember(e.target.checked)} /> זכור אותי
             </label>
-            <a href="#" onClick=${(e) => { e.preventDefault(); setErr("לאיפוס סיסמה פני/י למנהל המערכת: ketyse@gmail.com"); }}>שכחתי סיסמה</a>
+            <a href="#" onClick=${(e) => { e.preventDefault(); setErr("לאיפוס סיסמה פנו למנהל המערכת: ketyse@gmail.com"); }}>שכחתי סיסמה</a>
           </div>`}
-          <button class="btn block" disabled=${busy}>${busy ? "רגע…" : (reg ? "פתיחת חשבון →" : "כניסה")}</button>
+          <button class="btn block" disabled=${busy}>${busy ? "רגע…" : (reg ? "הרשמה והתחלה →" : "כניסה")}</button>
           <div class="hint">
             ${reg
-              ? html`כבר יש לך חשבון? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("login"); }}>כניסה</a>`
-              : html`לקוחה חדשה? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("register"); }}>פתיחת חשבון חדש</a>`}
+              ? html`כבר יש לכם חשבון? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("login"); }}>כניסה</a>`
+              : html`עסק חדש? <a href="#" onClick=${(e) => { e.preventDefault(); setErr(""); setMode("register"); }}>פתיחת חשבון וקבלת לידים</a>`}
           </div>
         </form>
       </div>`;
