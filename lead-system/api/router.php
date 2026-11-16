@@ -10,6 +10,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/leads.php';
+require_once __DIR__ . '/agents.php';
 
 $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -58,6 +59,17 @@ try {
             'email'    => handle_set_email($id),
         };
     }
+    // Agent hub: /api/agents/{id}/{action} and /api/keys/{id}/revoke
+    if (preg_match('#^/api/agents/(\d+)/(test|delete)$#', $path, $m) && $method === 'POST') {
+        $id = (int) $m[1];
+        match ($m[2]) {
+            'test'   => handle_test_agent($id),
+            'delete' => handle_delete_agent($id),
+        };
+    }
+    if (preg_match('#^/api/keys/(\d+)/revoke$#', $path, $m) && $method === 'POST') {
+        handle_revoke_key((int) $m[1]);
+    }
 
     $route = "$method $path";
     match ($route) {
@@ -75,6 +87,10 @@ try {
         'GET /api/activity'     => handle_activity(),
         'GET /api/users'        => handle_users(),
         'POST /api/users'       => handle_create_user(),
+        'GET /api/keys'         => handle_list_keys(),
+        'POST /api/keys'        => handle_create_key(),
+        'GET /api/agents'       => handle_list_agents(),
+        'POST /api/agents'      => handle_create_agent(),
         default                 => json_err('לא נמצא: ' . $path, 404),
     };
 } catch (Throwable $e) {

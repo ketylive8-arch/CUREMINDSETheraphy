@@ -70,6 +70,8 @@
     const [password, setPassword] = useState("");
     const [err, setErr] = useState("");
     const [busy, setBusy] = useState(false);
+    const [showPw, setShowPw] = useState(false);
+    const [remember, setRemember] = useState(true);
     const reg = mode === "register";
     async function submit(e) {
       e.preventDefault();
@@ -102,8 +104,17 @@
           </div>
           <div class="field">
             <label>סיסמה</label>
-            <input type="password" value=${password} onInput=${(e) => setPassword(e.target.value)} required />
+            <div class="pw-wrap">
+              <input type=${showPw ? "text" : "password"} value=${password} onInput=${(e) => setPassword(e.target.value)} required />
+              <button type="button" class="pw-toggle" onClick=${() => setShowPw(!showPw)} title=${showPw ? "הסתר" : "הצג"}>${showPw ? "הסתר" : "הצג"}</button>
+            </div>
           </div>
+          ${!reg && html`<div class="login-row">
+            <label class="switchrow" style=${{ fontSize: "13px" }}>
+              <input type="checkbox" checked=${remember} onChange=${(e) => setRemember(e.target.checked)} /> זכור אותי
+            </label>
+            <a href="#" onClick=${(e) => { e.preventDefault(); setErr("לאיפוס סיסמה פני/י למנהל המערכת: ketyse@gmail.com"); }}>שכחתי סיסמה</a>
+          </div>`}
           <button class="btn block" disabled=${busy}>${busy ? "רגע…" : (reg ? "פתיחת חשבון →" : "כניסה")}</button>
           <div class="hint">
             ${reg
@@ -458,6 +469,169 @@
       </div>`;
   }
 
+  // ---------- AI Agents Connection & Auth Hub ----------
+  const PLATFORMS = ["Make", "n8n", "Dify", "Zapier", "אחר"];
+  function AgentsHub() {
+    const [agents, setAgents] = useState(null);
+    const [keys, setKeys] = useState(null);
+    const [addingAgent, setAddingAgent] = useState(false);
+    const [genOpen, setGenOpen] = useState(false);
+    const [newKey, setNewKey] = useState(null); // shown exactly once
+    const [copied, setCopied] = useState("");
+    const [msg, setMsg] = useState("");
+    const baseUrl = window.location.origin + "/api";
+
+    const loadAgents = useCallback(async () => { try { const r = await api("/agents"); setAgents(r.agents); } catch (e) { setAgents([]); } }, []);
+    const loadKeys = useCallback(async () => { try { const r = await api("/keys"); setKeys(r.keys); } catch (e) { setKeys([]); } }, []);
+    useEffect(() => { loadAgents(); loadKeys(); }, []);
+
+    function copy(text, tag) { try { navigator.clipboard.writeText(text); setCopied(tag); setTimeout(() => setCopied(""), 1600); } catch (e) {} }
+    function flash(t) { setMsg(t); setTimeout(() => setMsg(""), 3500); }
+
+    async function testAgent(a) {
+      flash("בודק חיבור ל" + a.name + "…");
+      try { const r = await api("/agents/" + a.id + "/test", { method: "POST" }); flash((r.ok ? "✅ " : "⚠️ ") + r.detail); loadAgents(); }
+      catch (ex) { flash("שגיאה: " + ex.message); }
+    }
+    async function delAgent(a) { if (!confirm("למחוק את הסוכן " + a.name + "?")) return; await api("/agents/" + a.id + "/delete", { method: "POST" }); loadAgents(); }
+    async function revoke(k) { if (!confirm("לבטל את המפתח " + k.name + "? סוכנים שמשתמשים בו יתנתקו.")) return; await api("/keys/" + k.id + "/revoke", { method: "POST" }); loadKeys(); }
+
+    return html`
+      <div>
+        ${msg && html`<div class="notice">${msg}</div>`}
+
+        <!-- Base URL -->
+        <div class="card">
+          <div class="head"><h2>כתובת המערכת (Base URL)</h2><span class="muted">זו הכתובת שהסוכנים מתחברים אליה</span></div>
+          <div style=${{ padding: "16px 22px", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+            <span class="code" style=${{ fontSize: "14px", padding: "9px 12px" }}>${baseUrl}</span>
+            <button class="btn sm" onClick=${() => copy(baseUrl, "url")}>${copied === "url" ? "הועתק ✓" : "העתק"}</button>
+          </div>
+        </div>
+
+        <!-- Agents -->
+        <div class="card">
+          <div class="head"><h2>סוכני AI מחוברים</h2>
+            <button class="btn sm" onClick=${() => setAddingAgent(true)}>➕ הוסף חיבור סוכן</button></div>
+          <div style=${{ padding: "16px 22px" }}>
+            ${!agents ? html`<div class="loading">טוען…</div>` : agents.length === 0
+              ? html`<div class="loading">אין עדיין סוכנים. לחצי "הוסף חיבור סוכן" כדי להתחיל.</div>`
+              : html`<div class="agent-grid">${agents.map((a) => html`
+                <div class="agent-card" key=${a.id}>
+                  <div class="agent-top">
+                    <div>
+                      <div class="agent-name">${a.name}</div>
+                      <div class="agent-plat">${a.platform || "—"}</div>
+                    </div>
+                    <span class="badge ${a.status === "connected" ? "sent" : "bounced"}">
+                      <span class="dot"></span>${a.status === "connected" ? "מחובר" : "מנותק"}</span>
+                  </div>
+                  <div class="agent-meta">
+                    <div>הרשאה: <b>${a.permissions === "read_write" ? "קריאה וכתיבה" : "קריאה בלבד"}</b></div>
+                    <div>פעולה אחרונה: ${a.last_action_at ? a.last_action_at.replace("T", " ") : "—"}</div>
+                    ${a.webhook_url && html`<div class="agent-wh">Webhook: <span dir="ltr">${a.webhook_url}</span></div>`}
+                  </div>
+                  <div class="row-actions">
+                    <button class="btn sm ghost" onClick=${() => testAgent(a)}>בדיקת חיבור</button>
+                    <button class="btn sm ghost" onClick=${() => delAgent(a)}>מחיקה</button>
+                  </div>
+                </div>`)}</div>`}
+          </div>
+        </div>
+
+        <!-- API keys -->
+        <div class="card">
+          <div class="head"><h2>מפתחות API</h2>
+            <button class="btn sm" onClick=${() => setGenOpen(true)}>🔑 צור מפתח חדש</button></div>
+          <div style=${{ padding: "12px 22px 4px" }}>
+            <div class="notice">מפתח API מחליף את סיסמת המנהל — תני אותו לסוכן במקום הסיסמה. אפשר לבטל מפתח בכל רגע.</div>
+          </div>
+          <div class="scroll">
+            ${!keys ? html`<div class="loading">טוען…</div>` : keys.length === 0
+              ? html`<div class="loading">אין מפתחות עדיין.</div>`
+              : html`<table>
+                <thead><tr><th>שם</th><th>מפתח</th><th>הרשאה</th><th>שימוש אחרון</th><th>פעולה</th></tr></thead>
+                <tbody>${keys.map((k) => html`<tr key=${k.id} style=${{ opacity: k.revoked ? .45 : 1 }}>
+                  <td><div class="company">${k.name}</div></td>
+                  <td><span class="code">${k.prefix}…••••</span></td>
+                  <td>${k.permissions === "read_write" ? "קריאה+כתיבה" : "קריאה"}</td>
+                  <td>${k.last_used_at ? k.last_used_at.replace("T", " ") : "לא בשימוש"}</td>
+                  <td>${k.revoked ? html`<span class="badge removed">בוטל</span>` : html`<button class="btn sm ghost" onClick=${() => revoke(k)}>בטל</button>`}</td>
+                </tr>`)}</tbody></table>`}
+          </div>
+        </div>
+
+        ${addingAgent && html`<${AddAgentModal} onClose=${() => setAddingAgent(false)} onSaved=${() => { setAddingAgent(false); loadAgents(); }} />`}
+        ${genOpen && html`<${GenKeyModal} onClose=${() => setGenOpen(false)} onCreated=${(k) => { setGenOpen(false); setNewKey(k); loadKeys(); }} />`}
+        ${newKey && html`<${ShowKeyModal} data=${newKey} onClose=${() => setNewKey(null)} />`}
+      </div>`;
+  }
+
+  function AddAgentModal({ onClose, onSaved }) {
+    const [f, setF] = useState({ name: "", platform: "Make", permissions: "read", webhook_url: "" });
+    const [err, setErr] = useState(""); const [busy, setBusy] = useState(false);
+    const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+    async function save() {
+      if (!f.name.trim()) { setErr("צריך שם לסוכן"); return; }
+      setErr(""); setBusy(true);
+      try { await api("/agents", { method: "POST", body: JSON.stringify(f) }); onSaved(); }
+      catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`<div class="modal-bg" onClick=${onClose}><div class="modal" onClick=${(e) => e.stopPropagation()}>
+      <div class="m-head"><h3>הוספת חיבור סוכן</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+      <div class="m-body">
+        ${err && html`<div class="err">${err}</div>`}
+        <div class="field"><label>שם הסוכן *</label><input value=${f.name} onInput=${set("name")} placeholder="לדוגמה: סוכן שירות לקוחות" /></div>
+        <div class="field"><label>פלטפורמה</label>
+          <div class="chips">${PLATFORMS.map((p) => html`<button type="button" key=${p} class=${"chip" + (f.platform === p ? " on" : "")} onClick=${() => setF({ ...f, platform: p })}>${p}</button>`)}</div></div>
+        <div class="field"><label>רמת הרשאה</label>
+          <div class="chips">
+            <button type="button" class=${"chip" + (f.permissions === "read" ? " on" : "")} onClick=${() => setF({ ...f, permissions: "read" })}>קריאה בלבד</button>
+            <button type="button" class=${"chip" + (f.permissions === "read_write" ? " on" : "")} onClick=${() => setF({ ...f, permissions: "read_write" })}>קריאה וכתיבה</button>
+          </div></div>
+        <div class="field"><label>כתובת Webhook (אופציונלי)</label><input value=${f.webhook_url} onInput=${set("webhook_url")} dir="ltr" placeholder="https://hook.make.com/..." /></div>
+      </div>
+      <div class="m-foot"><button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "הוסף סוכן"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
+    </div></div>`;
+  }
+
+  function GenKeyModal({ onClose, onCreated }) {
+    const [name, setName] = useState(""); const [perm, setPerm] = useState("read");
+    const [err, setErr] = useState(""); const [busy, setBusy] = useState(false);
+    async function gen() {
+      if (!name.trim()) { setErr("צריך שם למפתח"); return; }
+      setErr(""); setBusy(true);
+      try { const r = await api("/keys", { method: "POST", body: JSON.stringify({ name, permissions: perm }) }); onCreated(r); }
+      catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`<div class="modal-bg" onClick=${onClose}><div class="modal" onClick=${(e) => e.stopPropagation()}>
+      <div class="m-head"><h3>יצירת מפתח API</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+      <div class="m-body">
+        ${err && html`<div class="err">${err}</div>`}
+        <div class="field"><label>שם המפתח *</label><input value=${name} onInput=${(e) => setName(e.target.value)} placeholder="לדוגמה: מפתח ל-Make" /></div>
+        <div class="field"><label>רמת הרשאה</label>
+          <div class="chips">
+            <button type="button" class=${"chip" + (perm === "read" ? " on" : "")} onClick=${() => setPerm("read")}>קריאה בלבד</button>
+            <button type="button" class=${"chip" + (perm === "read_write" ? " on" : "")} onClick=${() => setPerm("read_write")}>קריאה וכתיבה</button>
+          </div></div>
+      </div>
+      <div class="m-foot"><button class="btn" disabled=${busy} onClick=${gen}>${busy ? "יוצר…" : "צור מפתח"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
+    </div></div>`;
+  }
+
+  function ShowKeyModal({ data, onClose }) {
+    const [copied, setCopied] = useState(false);
+    function copy() { try { navigator.clipboard.writeText(data.key); setCopied(true); } catch (e) {} }
+    return html`<div class="modal-bg" onClick=${onClose}><div class="modal" onClick=${(e) => e.stopPropagation()}>
+      <div class="m-head"><h3>המפתח נוצר — ${data.name}</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+      <div class="m-body">
+        <div class="err">⚠️ שמרי את המפתח עכשיו במקום מאובטח. לא ניתן יהיה לצפות בו שוב.</div>
+        <div class="keybox" dir="ltr">${data.key}</div>
+        <button class="btn block" onClick=${copy}>${copied ? "הועתק ✓" : "העתק מפתח"}</button>
+      </div>
+    </div></div>`;
+  }
+
   // ---------- Shell ----------
   function Shell({ user, profile, onLogout }) {
     const isClient = user.role === "client";
@@ -485,7 +659,7 @@
 
     const tabs = isClient
       ? [["dashboard", "לוח בקרה"]]
-      : [["dashboard", "לוח בקרה"], ["bounces", "חזרו"], ["activity", "יומן פעילות"], ["users", "משתמשים"]];
+      : [["dashboard", "לוח בקרה"], ["agents", "חיבורי סוכנים"], ["bounces", "חזרו"], ["activity", "יומן פעילות"], ["users", "משתמשים"]];
 
     return html`
       <div class="app">
@@ -504,6 +678,7 @@
             : html`<${React.Fragment}><${Stats} stats=${stats} /><${LeadsTable} onAction=${onAction} /><//>`)}
           ${tab === "bounces" && html`<${Bounces} onAction=${onAction} />`}
           ${tab === "activity" && html`<${Activity} />`}
+          ${tab === "agents" && html`<${AgentsHub} />`}
           ${tab === "users" && html`<${Users} />`}
         </div>
         ${draft && html`<${FollowupModal} draft=${draft} onClose=${() => setDraft(null)} />`}

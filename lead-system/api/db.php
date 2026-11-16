@@ -113,6 +113,35 @@ function migrate(PDO $pdo): void
     // at a chosen time (HH:MM). daily_enabled toggles it on.
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_time TEXT'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_enabled INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+    // API keys — let AI agents (Make/n8n/Dify) authenticate without the admin
+    // password. The full key is shown once; only a hash + prefix are stored.
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS api_keys (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            owner_user_id INTEGER,
+            name          TEXT NOT NULL,
+            prefix        TEXT NOT NULL,
+            key_hash      TEXT NOT NULL,
+            permissions   TEXT NOT NULL DEFAULT 'read',
+            created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+            last_used_at  TEXT,
+            revoked       INTEGER NOT NULL DEFAULT 0
+        )
+    ");
+    // Connected AI agents — a registry the admin manages from the hub.
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS agents (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            owner_user_id  INTEGER,
+            name           TEXT NOT NULL,
+            platform       TEXT,
+            permissions    TEXT NOT NULL DEFAULT 'read',
+            webhook_url    TEXT,
+            status         TEXT NOT NULL DEFAULT 'disconnected',
+            last_action_at TEXT,
+            created_at     TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+    ");
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("
