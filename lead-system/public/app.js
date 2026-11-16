@@ -63,7 +63,7 @@
 
   // ---------- Login / Register ----------
   function Login({ onLogin }) {
-    const [mode, setMode] = useState("register"); // "login" | "register" — signup-first entry
+    const [mode, setMode] = useState("login"); // "login" | "register" — open on login; new businesses tap register
     const [name, setName] = useState("");
     const [business, setBusiness] = useState("");
     const [email, setEmail] = useState("");
