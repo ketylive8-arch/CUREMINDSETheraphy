@@ -4,13 +4,8 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/parents",
-      "destination": "/cure-teens",
-      "permanent": true
-    },
-    {
       "source": "/parents.html",
-      "destination": "/cure-teens",
+      "destination": "/parents",
       "permanent": true
     },
     {
@@ -98,7 +93,7 @@
     },
     {
       "source": "/parents",
-      "destination": "/cure-teens.html"
+      "destination": "/parents.html"
     },
     {
       "source": "/method",
