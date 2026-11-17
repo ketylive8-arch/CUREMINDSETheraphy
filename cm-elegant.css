@@ -1,0 +1,103 @@
+/* ==========================================================================
+   cm-elegant.css — שכבת "תדמיתי, מקצועי, אלגנטי, נקי" (15.11.2026)
+   נטענת אחרי cm3.css. לא משנה קופי, מבנה או צבעי מותג.
+   מהלך מרכזי אחד: כותרות בטיפוגרפיה עברית קלאסית (Frank Ruhl Libre, משקל קל),
+   גוף הטקסט נשאר Heebo. סביב זה הכל שקט: פינות חדות יותר, פחות קופסאות, יותר אוויר.
+   ========================================================================== */
+
+/* ---------- פונט כותרות (מקומי, OFL) ---------- */
+@font-face{font-family:"Frank Ruhl Libre";font-weight:300;font-display:swap;src:url(/fonts/frank-ruhl-libre-hebrew-300-normal.woff2) format("woff2");unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
+@font-face{font-family:"Frank Ruhl Libre";font-weight:400;font-display:swap;src:url(/fonts/frank-ruhl-libre-hebrew-400-normal.woff2) format("woff2");unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
+@font-face{font-family:"Frank Ruhl Libre";font-weight:500;font-display:swap;src:url(/fonts/frank-ruhl-libre-hebrew-500-normal.woff2) format("woff2");unicode-range:U+0307-0308,U+0590-05FF,U+200C-2010,U+20AA,U+25CC,U+FB1D-FB4F}
+@font-face{font-family:"Frank Ruhl Libre";font-weight:300;font-display:swap;src:url(/fonts/frank-ruhl-libre-latin-300-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
+@font-face{font-family:"Frank Ruhl Libre";font-weight:400 500;font-display:swap;src:url(/fonts/frank-ruhl-libre-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212,U+FEFF,U+FFFD}
+
+:root{
+  --serif:"Frank Ruhl Libre","David Libre","Times New Roman",serif;
+  --r:2px;                 /* פינות חדות ומחויטות במקום עגולות */
+  --line:#E6DDCE;
+}
+
+/* ---------- כותרות: הדפוס העברי הקלאסי ---------- */
+body h1, body h2,
+body .pull-quote, body .hero-quote,
+body .ctaband h2, body .ctaband h3,
+body .tile-h, body .foot-mark,
+body .cure .letter, body .big-stat .num,
+body .step-n, body .cnum, body .num-cards .n{
+  font-family:var(--serif)!important;
+  font-feature-settings:"kern","liga";
+}
+body h1{font-weight:400;font-size:clamp(2.15rem,1.3rem + 3.1vw,3.9rem);line-height:1.1;letter-spacing:-.012em}
+body h2{font-weight:400;font-size:clamp(1.6rem,1.15rem + 1.6vw,2.45rem);line-height:1.18;letter-spacing:-.008em}
+body h3{font-weight:500;letter-spacing:0}
+@media (min-width:980px){
+  body .blk:has(> h2:first-child) > h2{font-size:clamp(1.55rem,1.1rem + 1.1vw,2.15rem);line-height:1.2}
+}
+body .pull-quote{font-weight:300!important;font-size:clamp(1.6rem,1.1rem + 2vw,2.7rem)!important;line-height:1.28!important;letter-spacing:-.006em}
+body .hero-quote{font-weight:400;font-size:clamp(1.35rem,1.1rem + 1vw,1.85rem)}
+body .cure .letter,body .big-stat .num{font-weight:300}
+body .step-n,body .cnum,body .num-cards .n{font-weight:400;font-size:2.2rem}
+
+/* חתימה בכותרת העליונה */
+body .brand span{font-family:var(--serif)!important;font-weight:500;font-size:1.32rem;letter-spacing:0}
+
+/* ---------- גוף טקסט: קריא ושקט ---------- */
+body main .blk p, body main .blk li{color:var(--ink-2)}
+body main .blk .lead{color:var(--muted);font-weight:400}
+
+/* ---------- פתיחה כהה (מ-cm3): הכותרת הסריפית מקבלת אוויר ושקט ---------- */
+body .hero h1{font-weight:300;max-width:17ch}
+body .hero .lead{font-weight:300;opacity:.9}
+
+/* ---------- מרווחים: יותר אוויר בין פרקים ---------- */
+body .blk{padding-block:clamp(56px,8vw,120px)}
+
+/* ---------- כפתורים: מחויטים ---------- */
+body .btn, body main .btn, body .cta-top{
+  border-radius:var(--r)!important;font-weight:500!important;letter-spacing:.01em;
+}
+body .btn.primary, body main .btn.primary{transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease)}
+body .btn.primary:hover, body main .btn.primary:hover,
+body .cta-top:hover{background:var(--ink)!important;border-color:var(--ink)!important;color:var(--paper)!important;transform:none!important}
+body .btn.ghost, body main .btn.ghost{border-width:1px!important}
+/* על הרקע הכהה של הפתיחה: הריחוף מתהפך לקרם, לא לדיו */
+body .hero .btn.primary:hover, body main .hero .btn.primary:hover, #root .hero .btn.primary:hover{
+  background:#FBF7EF!important;border-color:#FBF7EF!important;color:#1E1A15!important}
+
+/* ---------- תמונות ווידאו: חדות, בלי צל ---------- */
+body main img, body .hero-photo img, body .video-embed{border-radius:var(--r)!important}
+body .video-embed{box-shadow:none!important}
+
+/* ---------- עולמות תוכן (דף הבית): מקופסאות חול לאינדקס שקט ---------- */
+#worlds .tiles{display:block;margin:0;border-top:1px solid var(--line-strong)}
+#worlds .tile{
+  display:block;background:none!important;border-radius:0!important;transform:none!important;
+  border-bottom:1px solid var(--line);transition:background-color .3s var(--ease)
+}
+#worlds .tile:hover{background:rgba(234,221,195,.35)!important}
+#worlds .tile-body{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:24px;row-gap:.25em;
+  padding:clamp(20px,2.4vw,30px) clamp(4px,1vw,12px)
+}
+#worlds .tile-h{grid-column:1;font-weight:400;font-size:clamp(1.35rem,1.1rem + 1vw,1.85rem);line-height:1.2}
+#worlds .tile-p{grid-column:1;color:var(--muted);font-size:1.02rem}
+#worlds .tile .go{grid-column:2;grid-row:1 / span 2;align-self:center;margin:0;border:0;padding:0;
+  font-size:.98rem;font-weight:500;color:var(--gold-deep);white-space:nowrap}
+#worlds .tile:hover .go{color:var(--ink)}
+@media (max-width:560px){
+  #worlds .tile-body{grid-template-columns:1fr}
+  #worlds .tile .go{grid-column:1;grid-row:auto;margin-top:.4em}
+}
+
+/* ---------- אריחי תמונה (תוכניות): פחות "כרטיס", יותר עמוד מגזין ---------- */
+body .tiles:not(#worlds .tiles) .tile{border-radius:var(--r)!important}
+body .tiles:not(#worlds .tiles) .tile:hover{transform:none}
+body .tiles:not(#worlds .tiles) .tile:hover img{opacity:.92}
+
+/* ---------- פוטר ---------- */
+body .foot-mark{font-weight:300;letter-spacing:-.02em}
+
+@media print{
+  body h1,body h2{color:#000}
+}
