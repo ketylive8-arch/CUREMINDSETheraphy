@@ -185,3 +185,12 @@ foreach ($pdo->query("SELECT id, offer FROM agents WHERE kind = 'hunter'")->fetc
             ->execute([json_encode($newDefaults, JSON_UNESCAPED_UNICODE), $newDefaults[0]['subject'], (int) $ag['id']]);
     }
 }
+
+// נוסחים בסגנון שקטי אישרה במייל (15.11): פתיח מהאתר, הצגה, "הסוד הקטן", חיסכון בזמן ובכסף, חודש ניסיון.
+$prev2 = json_decode(file_get_contents(__DIR__ . '/default-offers.prev2.json'), true);
+foreach ($pdo->query("SELECT id, offer FROM agents WHERE kind = 'hunter'")->fetchAll() as $ag) {
+    if (json_decode((string) $ag['offer'], true) == $prev2) {
+        $pdo->prepare('UPDATE agents SET offer = ?, subject = ? WHERE id = ?')
+            ->execute([json_encode($newDefaults, JSON_UNESCAPED_UNICODE), $newDefaults[0]['subject'], (int) $ag['id']]);
+    }
+}

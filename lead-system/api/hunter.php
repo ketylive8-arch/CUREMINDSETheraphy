@@ -316,7 +316,7 @@ const HUNT_ANGLES = [
     ],
     'office' => [
         'pain' => 'לידים שנכנסים לא מקבלים מענה מהיר, והפולואפים נשכחים בין כל המשימות',
-        'team' => "• סוכן שעונה לכל ליד תוך דקה ומבין את הצורך\n• סוכן שמכין טיוטת הצעת מחיר או סיכום פגישה\n• סוכן פולואפ שמזכיר ללקוח ולך מה הצעד הבא",
+        'team' => "• סוכן שעונה לכל ליד תוך דקה ומבין את הצורך\n• סוכן שמכין טיוטת הצעת מחיר או סיכום פגישה\n• סוכן פולואפ שמזכיר ללקוח ולכם מה הצעד הבא",
     ],
     'professional' => [
         'pain' => 'אותן שאלות חוזרות כל יום, ואיסוף מסמכים ומועדים מלקוחות לוקח המון זמן',
@@ -357,7 +357,37 @@ function hunt_fill(string $tpl, array $lead): string
         '{עיר}' => $lead['city'], '{אתר}' => $lead['website'] ?: '',
         '{וואטסאפ}' => 'https://wa.me/' . ((getenv('REPLY_WHATSAPP') ?: '') ?: '972542306016'),
         '{הכאב}' => $angle['pain'], '{הצוות}' => $angle['team'],
+        '{מהאתר}' => !empty($lead['about']) ? "ראיתי באתר שלכם: \u{201C}{$lead['about']}\u{201D}" : '',
     ]);
+}
+
+/** אחרי המילוי: שורות ריקות כפולות (למשל כשאין משפט מהאתר) מצטמצמות. */
+function hunt_tidy(string $t): string
+{
+    return trim(preg_replace("/\n{3,}/u", "\n\n", $t));
+}
+
+/** משפט אחד אמיתי מהאתר של העסק: תיאור האתר (meta description), אם הוא קצר ובעברית. */
+function hunt_site_about(string $site): string
+{
+    if ($site === '') {
+        return '';
+    }
+    [$code, $html] = hunt_http($site, null, 8);
+    if ($code < 200 || $code >= 400) {
+        return '';
+    }
+    if (!preg_match('/<meta[^>]+(?:name|property)=["\'](?:og:)?description["\'][^>]*content=["\']([^"\']{20,220})["\']/iu', $html, $m)
+        && !preg_match('/<meta[^>]+content=["\']([^"\']{20,220})["\'][^>]*(?:name|property)=["\'](?:og:)?description["\']/iu', $html, $m)) {
+        return '';
+    }
+    $d = trim(preg_replace('/\s+/u', ' ', html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    // רק תיאור בעברית, בלי כתובות ומספרי טלפון
+    if (!preg_match('/\p{Hebrew}{3,}/u', $d) || preg_match('/(https?:|www\.|\d{3}-?\d{7})/u', $d)) {
+        return '';
+    }
+    $d = rtrim($d, ' .|-–');
+    return mb_strlen($d) > 160 ? rtrim(mb_substr($d, 0, 157)) . '…' : $d;
 }
 
 /**
@@ -493,11 +523,12 @@ function hunt_run_agent(array $agent, float $deadline): string
                     continue; // ביקשו הסרה / חזר בעבר — לא פונים שוב
                 }
             }
-            $lead = ['company' => $b['name'], 'sector' => $cat, 'city' => $city, 'website' => $b['website']];
+            $lead = ['company' => $b['name'], 'sector' => $cat, 'city' => $city, 'website' => $b['website'],
+                     'about' => $email && $b['website'] && microtime(true) < $deadline - 15 ? hunt_site_about((string) $b['website']) : ''];
             // ההצעה: הסוג שהכי מתאים לעסק, מותאם לתחום ולשם העסק (ולאתר שלו, אם יש מפתח Claude)
             $offer = hunt_pick_offer(hunt_offers($agent), $cat);
-            $subject = $offer ? hunt_fill((string) ($offer['subject'] ?? ''), $lead) : '';
-            $draft = $offer ? hunt_fill((string) $offer['text'], $lead) : '';
+            $subject = $offer ? hunt_tidy(hunt_fill((string) ($offer['subject'] ?? ''), $lead)) : '';
+            $draft = $offer ? hunt_tidy(hunt_fill((string) $offer['text'], $lead)) : '';
             if ($draft !== '' && $email && microtime(true) < $deadline - 20) {
                 $draft = hunt_ai_personalize($draft, $lead, hunt_site_text((string) $b['website']));
             }
