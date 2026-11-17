@@ -73,6 +73,7 @@ function hunt_http(string $url, ?array $post = null, int $timeout = 10): array
         CURLOPT_USERAGENT      => HUNT_UA,
         CURLOPT_ENCODING       => '',
         CURLOPT_MAXFILESIZE    => 600000,
+        CURLOPT_IPRESOLVE      => CURL_IPRESOLVE_V4,
     ]);
     if ($post !== null) {
         curl_setopt($ch, CURLOPT_POST, true);
@@ -140,7 +141,7 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
     $json = null;
     foreach (HUNT_OVERPASS as $server) {
         // GET (כמו דפדפן) — חלק מהשרתים מעדיפים את זה על POST
-        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 40);
+        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 20);
         $last = $code;
         if ($code === 200 && is_array($json = json_decode($body, true))) {
             break;
@@ -148,6 +149,11 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
         $json = null;
     }
     if ($json === null) {
+        // גיבוי: מנוע החיפוש של OpenStreetMap (Nominatim) — אותו מאגר ציבורי, ממשק אחר
+        $alt = hunt_find_nominatim($k, $v, $city);
+        if ($alt !== null) {
+            return $alt;
+        }
         throw new RuntimeException("מאגר העסקים לא ענה ($last" . (!empty($GLOBALS['HUNT_LAST_ERR']) ? ': ' . $GLOBALS['HUNT_LAST_ERR'] : '') . ')');
     }
     $out = [];
@@ -163,6 +169,44 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
             'email'   => trim((string) ($t['email'] ?? $t['contact:email'] ?? '')),
             'phone'   => trim((string) ($t['phone'] ?? $t['contact:phone'] ?? '')),
             'osm'     => 'https://www.openstreetmap.org/' . ($el['type'] ?? 'node') . '/' . ($el['id'] ?? 0),
+        ];
+    }
+    return $out;
+}
+
+/** גיבוי: Nominatim (חיפוש OpenStreetMap) עם הפרטים הנוספים של כל עסק (אתר, מייל, טלפון). */
+function hunt_find_nominatim(string $k, string $v, string $city): ?array
+{
+    $bb = HUNT_CITY_BBOX[$city] ?? null;
+    $qs = ['q' => str_replace('_', ' ', $v), 'format' => 'jsonv2', 'extratags' => 1, 'limit' => 50, 'accept-language' => 'he'];
+    if ($bb) {
+        $qs['viewbox'] = "{$bb[1]},{$bb[2]},{$bb[3]},{$bb[0]}";
+        $qs['bounded'] = 1;
+    } else {
+        $qs['q'] .= ' ' . $city;
+        $qs['countrycodes'] = 'il';
+    }
+    [$code, $body] = hunt_http('https://nominatim.openstreetmap.org/search?' . http_build_query($qs), null, 25);
+    $rows = $code === 200 ? json_decode($body, true) : null;
+    if (!is_array($rows)) {
+        return null;
+    }
+    $out = [];
+    foreach ($rows as $r) {
+        if (($r['category'] ?? '') !== $k || ($r['type'] ?? '') !== $v) {
+            continue; // רק עסקים מהסוג המבוקש
+        }
+        $t = $r['extratags'] ?? [];
+        $name = trim((string) ($r['name'] ?? ''));
+        $site = hunt_norm_url((string) ($t['website'] ?? $t['contact:website'] ?? ''));
+        $mail = trim((string) ($t['email'] ?? $t['contact:email'] ?? ''));
+        if ($name === '' || ($site === '' && $mail === '')) {
+            continue;
+        }
+        $out[] = [
+            'name' => $name, 'website' => $site, 'email' => $mail,
+            'phone' => trim((string) ($t['phone'] ?? $t['contact:phone'] ?? '')),
+            'osm' => 'https://www.openstreetmap.org/' . ($r['osm_type'] ?? 'node') . '/' . ($r['osm_id'] ?? 0),
         ];
     }
     return $out;
