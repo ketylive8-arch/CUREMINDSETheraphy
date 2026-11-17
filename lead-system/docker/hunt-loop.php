@@ -33,7 +33,7 @@ while (true) {
             $agents = db()->query("SELECT * FROM agents WHERE kind = 'hunter' AND active = 1 ORDER BY last_run_at ASC")->fetchAll();
             foreach ($agents as $a) {
                 say("{$a['name']}: מתחיל חיפוש");
-                $res = hunt_run_agent($a, microtime(true) + 240);
+                $res = hunt_run_agent($a, microtime(true) + 600);
                 say("{$a['name']}: $res");
             }
             if (!$agents) {

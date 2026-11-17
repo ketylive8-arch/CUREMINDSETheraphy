@@ -128,7 +128,7 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
     $sel = "[\"$k\"=\"$v\"]";
     if (isset(HUNT_CITY_BBOX[$city])) {
         $scope = '(' . implode(',', HUNT_CITY_BBOX[$city]) . ')';
-        $q = "[out:json][timeout:25];(nwr{$sel}[\"website\"]$scope;nwr{$sel}[\"contact:website\"]$scope;"
+        $q = "[out:json][timeout:50];(nwr{$sel}[\"website\"]$scope;nwr{$sel}[\"contact:website\"]$scope;"
            . "nwr{$sel}[\"email\"]$scope;nwr{$sel}[\"contact:email\"]$scope;);out tags center $limit;";
     } else {
         $area = $city === 'כל הארץ'
@@ -141,7 +141,8 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
     $json = null;
     foreach (HUNT_OVERPASS as $server) {
         // GET (כמו דפדפן) — חלק מהשרתים מעדיפים את זה על POST
-        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 20);
+        // השרתים הציבוריים עמוסים: תשובה לוקחת לפעמים 30–50 שניות, אז מחכים מספיק
+        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 55);
         $last = $code;
         if ($code === 200 && is_array($json = json_decode($body, true))) {
             break;
@@ -154,7 +155,7 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
         if ($alt !== null) {
             return $alt;
         }
-        throw new RuntimeException("מאגר העסקים לא ענה ($last" . (!empty($GLOBALS['HUNT_LAST_ERR']) ? ': ' . $GLOBALS['HUNT_LAST_ERR'] : '') . ')');
+        throw new RuntimeException('מאגר העסקים לא ענה (גיבוי: ' . ($GLOBALS['HUNT_NOMI_CODE'] ?? '-') . "; ראשי: $last" . (!empty($GLOBALS['HUNT_LAST_ERR']) ? ': ' . $GLOBALS['HUNT_LAST_ERR'] : '') . ')');
     }
     $out = [];
     foreach (($json['elements'] ?? []) as $el) {
@@ -187,6 +188,7 @@ function hunt_find_nominatim(string $k, string $v, string $city): ?array
         $qs['countrycodes'] = 'il';
     }
     [$code, $body] = hunt_http('https://nominatim.openstreetmap.org/search?' . http_build_query($qs), null, 25);
+    $GLOBALS['HUNT_NOMI_CODE'] = $code;
     $rows = $code === 200 ? json_decode($body, true) : null;
     if (!is_array($rows)) {
         return null;
