@@ -70,7 +70,11 @@ function hunt_http(string $url, ?array $post = null, int $timeout = 10): array
     $body = curl_exec($ch);
     $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
     $final = (string) curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+    $err = curl_error($ch);
     curl_close($ch);
+    if ($code === 0 && $err !== '') {
+        $GLOBALS['HUNT_LAST_ERR'] = substr($err, 0, 120);
+    }
     return [$code, is_string($body) ? substr($body, 0, 600000) : '', $final ?: $url];
 }
 
@@ -124,7 +128,8 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
     $last = 0;
     $json = null;
     foreach (HUNT_OVERPASS as $server) {
-        [$code, $body] = hunt_http($server, ['data' => $q], 45);
+        // GET (כמו דפדפן) — חלק מהשרתים מעדיפים את זה על POST
+        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 40);
         $last = $code;
         if ($code === 200 && is_array($json = json_decode($body, true))) {
             break;
@@ -132,7 +137,7 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
         $json = null;
     }
     if ($json === null) {
-        throw new RuntimeException("מאגר העסקים לא ענה ($last)");
+        throw new RuntimeException("מאגר העסקים לא ענה ($last" . (!empty($GLOBALS['HUNT_LAST_ERR']) ? ': ' . $GLOBALS['HUNT_LAST_ERR'] : '') . ')');
     }
     $out = [];
     foreach (($json['elements'] ?? []) as $el) {
