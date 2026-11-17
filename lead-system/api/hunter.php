@@ -210,6 +210,7 @@ function hunt_fill(string $tpl, array $lead): string
     return strtr($tpl, [
         '{שם העסק}' => $lead['company'], '{תחום}' => $lead['sector'],
         '{עיר}' => $lead['city'], '{אתר}' => $lead['website'] ?: '',
+        '{וואטסאפ}' => 'https://wa.me/' . (env('REPLY_WHATSAPP', '972542306016') ?? '972542306016'),
     ]);
 }
 

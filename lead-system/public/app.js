@@ -636,7 +636,7 @@
       name: agent.name || "סוכן עסקים קטנים",
       instructions: agent.instructions || "",
       subject: agent.subject || "סוכן AI שעונה ללקוחות של {שם העסק} 24/7",
-      offer: agent.offer || "שלום {שם העסק},\n\nראיתי את העסק שלכם ב{עיר}. אנחנו בונים לעסקים קטנים סוכן AI שעונה ללקוחות בוואטסאפ ובאתר 24/7, קובע תורים ואוסף פניות — גם כשאתם עסוקים.\n\nאשמח לשלוח הדגמה קצרה. מתי נוח לדבר?\n\nקטי שגב · Segev MKG",
+      offer: agent.offer || "שלום {שם העסק},\n\nראיתי את העסק שלכם ב{עיר}. אנחנו בונים לעסקים קטנים סוכן AI שעונה ללקוחות בוואטסאפ ובאתר 24/7, קובע תורים ואוסף פניות — גם כשאתם עסוקים.\n\nאשמח להראות לכם הדגמה קצרה — אפשר לכתוב לנו ישר בוואטסאפ: {וואטסאפ}\n\nקטי שגב · Segev MKG · 054-230-6016",
       targets: agent.targets || "",
       area: agent.area || "חיפה, קריית מוצקין, קריית ביאליק, קריית אתא, קריית ים",
       active: agent.id ? !!Number(agent.active) : true,
@@ -673,7 +673,7 @@
         <div class="field"><label>נושא המייל</label><input id="h-subject" value=${f.subject} onInput=${set("subject")} /></div>
         <div class="field"><label>ההצעה (נכנסת לכל ליד, מותאמת לעסק)</label>
           <textarea id="h-offer" rows="8" value=${f.offer} onInput=${set("offer")}></textarea>
-          <div class="muted" style=${{ fontSize: "13px" }}>אפשר לכתוב {שם העסק}, {תחום}, {עיר} — הסוכן ממלא לבד לכל עסק.</div></div>
+          <div class="muted" style=${{ fontSize: "13px" }}>אפשר לכתוב {שם העסק}, {תחום}, {עיר}, {וואטסאפ} — הסוכן ממלא לבד לכל עסק. {וואטסאפ} הוא קישור לבוט שעונה ב-054-230-6016.</div></div>
         <label class="check" style=${{ display: "flex", gap: "8px", alignItems: "center" }}><input id="h-active" type="checkbox" checked=${f.active} onChange=${(e) => setF({ ...f, active: e.target.checked })} /> הסוכן עובד (מחפש לבד כל שעה)</label>
       </div>
       <div class="m-foot"><button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "שמירה"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
