@@ -76,6 +76,32 @@ function hunt_http(string $url, ?array $post = null, int $timeout = 10): array
 
 /* ------------------------------------------------------------ discovery */
 
+/** מסגרת גאוגרפית לערים נפוצות (דרום, מערב, צפון, מזרח) — שאילתה קלה ומהירה במקום חיפוש לפי שם. */
+const HUNT_CITY_BBOX = [
+    'חיפה'          => [32.74, 34.95, 32.84, 35.07],
+    'קריית מוצקין'  => [32.825, 35.065, 32.85, 35.095],
+    'קריית ביאליק'  => [32.82, 35.07, 32.85, 35.11],
+    'קריית אתא'     => [32.78, 35.08, 32.82, 35.13],
+    'קריית ים'      => [32.84, 35.06, 32.86, 35.085],
+    'נשר'           => [32.75, 35.02, 32.78, 35.06],
+    'טירת כרמל'     => [32.745, 34.95, 32.775, 34.985],
+    'עכו'           => [32.90, 35.06, 32.94, 35.10],
+    'נהריה'         => [32.99, 35.08, 33.03, 35.12],
+    'תל אביב'       => [32.03, 34.74, 32.15, 34.85],
+    'ירושלים'       => [31.72, 35.13, 31.85, 35.26],
+    'באר שבע'       => [31.21, 34.74, 31.29, 34.84],
+    'ראשון לציון'   => [31.94, 34.73, 32.01, 34.83],
+    'נתניה'         => [32.27, 34.83, 32.36, 34.90],
+    'פתח תקווה'     => [32.06, 34.85, 32.12, 34.92],
+];
+
+/** שרתי Overpass ציבוריים — אם אחד עמוס, עוברים לבא. */
+const HUNT_OVERPASS = [
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.private.coffee/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+];
+
 /** עסקים מסוג מסוים בעיר מסוימת, מרישומי OpenStreetMap. */
 function hunt_find_businesses(string $category, string $city, int $limit = 60): array
 {
@@ -84,16 +110,30 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
         return [];
     }
     $sel = "[\"$k\"=\"$v\"]";
-    $area = $city === 'כל הארץ'
-        ? 'area["ISO3166-1"="IL"][admin_level=2]->.a;'
-        : 'area["name"="' . str_replace('"', '', $city) . '"]["boundary"="administrative"]->.a;';
-    $q = "[out:json][timeout:40];$area(nwr{$sel}[\"website\"](area.a);nwr{$sel}[\"contact:website\"](area.a);"
-       . "nwr{$sel}[\"email\"](area.a);nwr{$sel}[\"contact:email\"](area.a););out tags center $limit;";
-    [$code, $body] = hunt_http('https://overpass-api.de/api/interpreter', ['data' => $q], 50);
-    if ($code !== 200) {
-        throw new RuntimeException("מאגר העסקים לא ענה ($code)");
+    if (isset(HUNT_CITY_BBOX[$city])) {
+        $scope = '(' . implode(',', HUNT_CITY_BBOX[$city]) . ')';
+        $q = "[out:json][timeout:25];(nwr{$sel}[\"website\"]$scope;nwr{$sel}[\"contact:website\"]$scope;"
+           . "nwr{$sel}[\"email\"]$scope;nwr{$sel}[\"contact:email\"]$scope;);out tags center $limit;";
+    } else {
+        $area = $city === 'כל הארץ'
+            ? 'area["ISO3166-1"="IL"][admin_level=2]->.a;'
+            : 'area["name"="' . str_replace('"', '', $city) . '"]["boundary"="administrative"]->.a;';
+        $q = "[out:json][timeout:40];$area(nwr{$sel}[\"website\"](area.a);nwr{$sel}[\"contact:website\"](area.a);"
+           . "nwr{$sel}[\"email\"](area.a);nwr{$sel}[\"contact:email\"](area.a););out tags center $limit;";
     }
-    $json = json_decode($body, true);
+    $last = 0;
+    $json = null;
+    foreach (HUNT_OVERPASS as $server) {
+        [$code, $body] = hunt_http($server, ['data' => $q], 45);
+        $last = $code;
+        if ($code === 200 && is_array($json = json_decode($body, true))) {
+            break;
+        }
+        $json = null;
+    }
+    if ($json === null) {
+        throw new RuntimeException("מאגר העסקים לא ענה ($last)");
+    }
     $out = [];
     foreach (($json['elements'] ?? []) as $el) {
         $t = $el['tags'] ?? [];
