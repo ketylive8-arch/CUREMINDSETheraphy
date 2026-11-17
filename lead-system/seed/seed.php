@@ -175,3 +175,13 @@ $pdo->prepare("UPDATE agents SET offer = ?, subject = ? WHERE kind = 'hunter' AN
     json_decode($defaultOffers, true)[0]['subject'],
     'שלום {שם העסק},%אנחנו בונים לעסקים קטנים סוכן AI%',
 ]);
+
+// נוסחים חדשים (17.11, קטי: קודם הצגה ופתיח מושך, ומבצע סוף שנה). מחליפים רק אם ההצעות עדיין ברירת המחדל הקודמת.
+$prevDefaults = json_decode(file_get_contents(__DIR__ . '/default-offers.prev.json'), true);
+$newDefaults = json_decode(file_get_contents(__DIR__ . '/default-offers.json'), true);
+foreach ($pdo->query("SELECT id, offer FROM agents WHERE kind = 'hunter'")->fetchAll() as $ag) {
+    if (json_decode((string) $ag['offer'], true) == $prevDefaults) {
+        $pdo->prepare('UPDATE agents SET offer = ?, subject = ? WHERE id = ?')
+            ->execute([json_encode($newDefaults, JSON_UNESCAPED_UNICODE), $newDefaults[0]['subject'], (int) $ag['id']]);
+    }
+}
