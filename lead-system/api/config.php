@@ -38,6 +38,39 @@ if (!function_exists('env')) {
     }
 }
 
+/**
+ * Accept a single DATABASE_URL (the form Render/Heroku provide:
+ * postgres://user:pass@host:port/dbname) and translate it into the PDO DSN +
+ * user + pass the app uses. This lets the Postgres connection be wired with
+ * one env var. Explicit DB_DSN/DB_USER/DB_PASS still win if set.
+ */
+(function (): void {
+    $url = getenv('DATABASE_URL');
+    if ($url === false || $url === '' || getenv('DB_DSN') !== false) {
+        return;
+    }
+    $p = parse_url($url);
+    if (!$p || empty($p['host'])) {
+        return;
+    }
+    $scheme = $p['scheme'] ?? 'postgres';
+    if (!in_array($scheme, ['postgres', 'postgresql', 'pgsql'], true)) {
+        return;
+    }
+    $host = $p['host'];
+    $port = $p['port'] ?? 5432;
+    $dbname = ltrim($p['path'] ?? '', '/');
+    // External Render hostnames (…render.com) need SSL; the internal host does not.
+    $ssl = str_contains($host, '.') ? ';sslmode=require' : '';
+    putenv("DB_DSN=pgsql:host=$host;port=$port;dbname=$dbname$ssl");
+    if (isset($p['user'])) {
+        putenv('DB_USER=' . urldecode($p['user']));
+    }
+    if (isset($p['pass'])) {
+        putenv('DB_PASS=' . urldecode($p['pass']));
+    }
+})();
+
 return [
     // Application
     'app_name'    => 'Segev MKG · מערכת לידים',

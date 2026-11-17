@@ -70,7 +70,7 @@ if (is_file($avFile)) {
     $adminId = (int) ($adminRow->fetch()['id'] ?? 0);
 
     $exists = $pdo->prepare(
-        "SELECT id FROM leads WHERE company = ? AND IFNULL(contact,'') = ?"
+        "SELECT id FROM leads WHERE company = ? AND COALESCE(contact,'') = ?"
     );
     $insAv = $pdo->prepare(
         'INSERT INTO leads (owner_user_id, company, contact, role, linkedin, email, sector, city, website, notes, status)
@@ -111,7 +111,7 @@ $suppress = is_file($suppressFile)
     : [];
 
 $supIns = $pdo->prepare(
-    'INSERT OR IGNORE INTO suppressions (email, reason) VALUES (?, ?)'
+    'INSERT INTO suppressions (email, reason) VALUES (?, ?) ON CONFLICT (email) DO NOTHING'
 );
 foreach ($suppress as $s) {
     $email = strtolower(trim((string) ($s['email'] ?? '')));

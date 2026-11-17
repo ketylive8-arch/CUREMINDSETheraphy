@@ -105,9 +105,9 @@ function require_user(): array
     }
     $st = db()->prepare(
         "SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id
-         WHERE s.token = ? AND s.expires_at > datetime('now')"
+         WHERE s.token = ? AND s.expires_at > ?"
     );
-    $st->execute([$token]);
+    $st->execute([$token, date('Y-m-d H:i:s')]);
     $user = $st->fetch();
     if (!$user) {
         json_err('החיבור פג, התחברי מחדש', 401);

@@ -107,7 +107,7 @@ function handle_create_lead(): void
         trim((string) ($in['source_url'] ?? '')) ?: null,
         'new',
     ]);
-    $id = (int) db()->lastInsertId();
+    $id = last_id('leads');
     log_activity($id, (int) $u['id'], 'add_lead', $company);
     json_out(['ok' => true, 'id' => $id], 201);
 }

@@ -10,9 +10,9 @@ function login_rate_limited(string $email): bool
 {
     $st = db()->prepare(
         "SELECT COUNT(*) c FROM login_attempts
-         WHERE email = ? AND ok = 0 AND created_at > datetime('now','-15 minutes')"
+         WHERE email = ? AND ok = 0 AND created_at > ?"
     );
-    $st->execute([$email]);
+    $st->execute([$email, date('Y-m-d H:i:s', time() - 15 * 60)]);
     return (int) $st->fetch()['c'] >= 8;
 }
 
@@ -76,7 +76,7 @@ function handle_register(): void
     } catch (PDOException $e) {
         json_err('האימייל כבר רשום — נסי להתחבר', 409);
     }
-    $userId = (int) db()->lastInsertId();
+    $userId = last_id('users');
     if ($businessName !== '') {
         $p = db()->prepare('INSERT INTO client_profiles (user_id, business_name) VALUES (?, ?)');
         $p->execute([$userId, $businessName]);

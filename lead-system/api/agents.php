@@ -40,7 +40,7 @@ function handle_create_key(): void
     db()->prepare(
         'INSERT INTO api_keys (owner_user_id, name, prefix, key_hash, permissions) VALUES (?,?,?,?,?)'
     )->execute([(int) $u['id'], $name, $prefix, $hash, $perm]);
-    $id = (int) db()->lastInsertId();
+    $id = last_id('api_keys');
     log_activity(null, (int) $u['id'], 'create_key', "$name ($perm)");
     // key is shown exactly once
     json_out(['ok' => true, 'id' => $id, 'name' => $name, 'permissions' => $perm, 'key' => $raw], 201);
@@ -89,7 +89,7 @@ function handle_create_agent(): void
         norm_perm((string) ($in['permissions'] ?? 'read')),
         $webhook ?: null,
     ]);
-    $id = (int) db()->lastInsertId();
+    $id = last_id('agents');
     log_activity(null, (int) $u['id'], 'add_agent', $name);
     json_out(['ok' => true, 'id' => $id], 201);
 }
