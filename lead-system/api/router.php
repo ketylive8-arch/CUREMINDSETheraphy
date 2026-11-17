@@ -11,6 +11,7 @@ require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/leads.php';
 require_once __DIR__ . '/agents.php';
+require_once __DIR__ . '/hunter.php';
 
 $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -60,11 +61,13 @@ try {
         };
     }
     // Agent hub: /api/agents/{id}/{action} and /api/keys/{id}/revoke
-    if (preg_match('#^/api/agents/(\d+)/(test|delete)$#', $path, $m) && $method === 'POST') {
+    if (preg_match('#^/api/agents/(\d+)/(test|delete|update|run)$#', $path, $m) && $method === 'POST') {
         $id = (int) $m[1];
         match ($m[2]) {
             'test'   => handle_test_agent($id),
             'delete' => handle_delete_agent($id),
+            'update' => handle_update_agent($id),
+            'run'    => handle_run_agent_now($id),
         };
     }
     if (preg_match('#^/api/keys/(\d+)/revoke$#', $path, $m) && $method === 'POST') {
@@ -91,6 +94,8 @@ try {
         'POST /api/keys'        => handle_create_key(),
         'GET /api/agents'       => handle_list_agents(),
         'POST /api/agents'      => handle_create_agent(),
+        'POST /api/hunt/run'    => handle_hunt_run(),
+        'GET /api/hunt/categories' => handle_hunt_categories(),
         default                 => json_err('לא נמצא: ' . $path, 404),
     };
 } catch (Throwable $e) {

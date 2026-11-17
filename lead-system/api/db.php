@@ -168,6 +168,16 @@ function migrate(PDO $pdo): void
             created_at     $now
         )
     ");
+    // סוכני ציד לידים: סוג, תוכן (מה לעשות + ההצעה), יעדים, ומצב ריצה.
+    foreach ([
+        "kind TEXT DEFAULT 'external'", 'instructions TEXT', 'offer TEXT', 'subject TEXT', 'targets TEXT', 'area TEXT',
+        'active INTEGER DEFAULT 0', 'hunt_cursor INTEGER DEFAULT 0', 'last_run_at TEXT', 'last_result TEXT', 'found_total INTEGER DEFAULT 0',
+    ] as $col) {
+        try { $pdo->exec("ALTER TABLE agents ADD COLUMN $col"); } catch (Throwable $e) {}
+    }
+    // מאיזה סוכן הגיע הליד, וטיוטת ההצעה המותאמת לעסק.
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN agent_id INTEGER'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN draft TEXT'); } catch (Throwable $e) {}
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("

@@ -288,6 +288,7 @@
 
   // ---------- Leads table ----------
   function LeadsTable({ onAction }) {
+    const [offer, setOffer] = useState(null);
     const [leads, setLeads] = useState(null);
     const [status, setStatus] = useState("all");
     const [q, setQ] = useState("");
@@ -346,12 +347,15 @@
                     ? html`<button class="btn sm" onClick=${() => act(l, "refind")}>אתר מייל</button>`
                     : html`<button class="btn sm ghost" onClick=${() => act(l, "followup")}>מייל אחרון</button>`}
                   ${l.email && l.status !== "bounced" && html`<button class="btn sm ghost" onClick=${() => act(l, "resend")}>שלח שוב</button>`}
+                  ${l.draft && html`<button class="btn sm ghost" onClick=${() => setOffer({ to: l.email, subject: l.subject || "", body: l.draft })}>📝 ההצעה</button>`}
+                  ${l.source_url && /^https?:\/\//i.test(l.source_url) && html`<a class="lk" href=${l.source_url} target="_blank" rel="noopener noreferrer" title="איפה נמצא המייל">מקור ↗</a>`}
                 </div></td>
               </tr>`)}
             </tbody>
           </table>`}
         </div>
         ${adding && html`<${AddLeadModal} onClose=${() => setAdding(false)} onSaved=${() => { setAdding(false); load(); }} />`}
+        ${offer && html`<${FollowupModal} draft=${offer} title="ההצעה של הסוכן — טיוטה" onClose=${() => setOffer(null)} />`}
       </div>`;
   }
 
@@ -439,14 +443,14 @@
   }
 
   // ---------- Follow-up modal ----------
-  function FollowupModal({ draft, onClose }) {
+  function FollowupModal({ draft, onClose, title }) {
     const [copied, setCopied] = useState(false);
     function copy() {
       try { navigator.clipboard.writeText(draft.subject + "\n\n" + draft.body); setCopied(true); } catch (e) {}
     }
     return html`<div class="modal-bg" onClick=${onClose}>
       <div class="modal" onClick=${(e) => e.stopPropagation()}>
-        <div class="m-head"><h3>מייל אחרון — טיוטה</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+        <div class="m-head"><h3>${title || "מייל אחרון — טיוטה"}</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
         <div class="m-body">
           <div class="notice">זו טיוטה בלבד. שום דבר לא נשלח ללא אישורך ומקור שליחה מוגדר.</div>
           <div class="kv">אל: <b dir="ltr">${draft.to || "—"}</b></div>
@@ -492,6 +496,8 @@
     const [copied, setCopied] = useState("");
     const [msg, setMsg] = useState("");
     const baseUrl = window.location.origin + "/api";
+    const [editing, setEditing] = useState(null); // סוכן לידים בעריכה ({} = חדש)
+    const [running, setRunning] = useState(0);
 
     const loadAgents = useCallback(async () => { try { const r = await api("/agents"); setAgents(r.agents); } catch (e) { setAgents([]); } }, []);
     const loadKeys = useCallback(async () => { try { const r = await api("/keys"); setKeys(r.keys); } catch (e) { setKeys([]); } }, []);
@@ -504,6 +510,17 @@
       flash("בודק חיבור ל" + a.name + "…");
       try { const r = await api("/agents/" + a.id + "/test", { method: "POST" }); flash((r.ok ? "✅ " : "⚠️ ") + r.detail); loadAgents(); }
       catch (ex) { flash("שגיאה: " + ex.message); }
+    }
+    const hunters = (agents || []).filter((a) => a.kind === "hunter");
+    async function runNow(a) {
+      setRunning(a.id); flash("הסוכן " + a.name + " מחפש עכשיו… (עד דקה)");
+      try { const r = await api("/agents/" + a.id + "/run", { method: "POST" }); flash("✅ " + r.result); }
+      catch (ex) { flash("שגיאה: " + ex.message); }
+      setRunning(0); loadAgents();
+    }
+    async function toggleHunter(a) {
+      await api("/agents/" + a.id + "/update", { method: "POST", body: JSON.stringify({ active: !Number(a.active) }) });
+      loadAgents();
     }
     async function delAgent(a) { if (!confirm("למחוק את הסוכן " + a.name + "?")) return; await api("/agents/" + a.id + "/delete", { method: "POST" }); loadAgents(); }
     async function revoke(k) { if (!confirm("לבטל את המפתח " + k.name + "? סוכנים שמשתמשים בו יתנתקו.")) return; await api("/keys/" + k.id + "/revoke", { method: "POST" }); loadKeys(); }
@@ -521,14 +538,45 @@
           </div>
         </div>
 
+        <!-- Lead hunters -->
+        <div class="card">
+          <div class="head"><h2>סוכני לידים — עובדים לבד כל שעה</h2>
+            <button class="btn sm" onClick=${() => setEditing({})}>➕ סוכן לידים חדש</button></div>
+          <div style=${{ padding: "12px 22px 4px" }}>
+            <div class="notice">כל סוכן מחפש עסקים ברישומים ציבוריים, ולוקח מייל רק מהאתר של העסק או מהרישום שלו, עם קישור למקור. אין מייל מפורסם? הליד נשמר בלי מייל. אף מייל לא מומצא.</div>
+          </div>
+          <div style=${{ padding: "8px 22px 16px" }}>
+            ${!agents ? html`<div class="loading">טוען…</div>` : hunters.length === 0
+              ? html`<div class="loading">עוד אין סוכני לידים. לחצי "סוכן לידים חדש", כתבי לו מה לעשות ומה להציע, ובחרי סוגי עסקים.</div>`
+              : html`<div class="agent-grid">${hunters.map((a) => html`
+                <div class="agent-card" key=${a.id}>
+                  <div class="agent-top">
+                    <div><div class="agent-name">${a.name}</div><div class="agent-plat">${a.area || "—"}</div></div>
+                    <span class="badge ${Number(a.active) ? "sent" : "bounced"}"><span class="dot"></span>${Number(a.active) ? "עובד" : "מושהה"}</span>
+                  </div>
+                  <div class="agent-meta">
+                    <div>סוגי עסקים: <b>${a.targets || "לא נבחרו"}</b></div>
+                    <div>לידים שמצא עד היום: <b>${a.found_total || 0}</b></div>
+                    <div>ריצה אחרונה: ${a.last_run_at ? a.last_run_at.replace("T", " ") : "עוד לא רץ"}</div>
+                    ${a.last_result && html`<div style=${{ color: "var(--ink-2, #666)" }}>${a.last_result}</div>`}
+                  </div>
+                  <div class="row-actions">
+                    <button class="btn sm" onClick=${() => setEditing(a)}>תוכן והגדרות</button>
+                    <button class="btn sm ghost" disabled=${running === a.id} onClick=${() => runNow(a)}>${running === a.id ? "מחפש…" : "הרץ עכשיו"}</button>
+                    <button class="btn sm ghost" onClick=${() => toggleHunter(a)}>${Number(a.active) ? "השהיה" : "הפעלה"}</button>
+                  </div>
+                </div>`)}</div>`}
+          </div>
+        </div>
+
         <!-- Agents -->
         <div class="card">
-          <div class="head"><h2>סוכני AI מחוברים</h2>
+          <div class="head"><h2>סוכנים חיצוניים (Make / n8n / Dify)</h2>
             <button class="btn sm" onClick=${() => setAddingAgent(true)}>➕ הוסף חיבור סוכן</button></div>
           <div style=${{ padding: "16px 22px" }}>
             ${!agents ? html`<div class="loading">טוען…</div>` : agents.length === 0
               ? html`<div class="loading">אין עדיין סוכנים. לחצי "הוסף חיבור סוכן" כדי להתחיל.</div>`
-              : html`<div class="agent-grid">${agents.map((a) => html`
+              : html`<div class="agent-grid">${agents.filter((a) => a.kind !== "hunter").map((a) => html`
                 <div class="agent-card" key=${a.id}>
                   <div class="agent-top">
                     <div>
@@ -573,10 +621,63 @@
           </div>
         </div>
 
+        ${editing && html`<${HunterModal} agent=${editing} onClose=${() => setEditing(null)} onSaved=${() => { setEditing(null); loadAgents(); flash("נשמר. הסוכן ימשיך לחפש לבד כל שעה."); }} />`}
         ${addingAgent && html`<${AddAgentModal} onClose=${() => setAddingAgent(false)} onSaved=${() => { setAddingAgent(false); loadAgents(); }} />`}
         ${genOpen && html`<${GenKeyModal} onClose=${() => setGenOpen(false)} onCreated=${(k) => { setGenOpen(false); setNewKey(k); loadKeys(); }} />`}
         ${newKey && html`<${ShowKeyModal} data=${newKey} onClose=${() => setNewKey(null)} />`}
       </div>`;
+  }
+
+  // ---------- סוכן לידים: מה לעשות, מה להציע, למי ואיפה ----------
+  function HunterModal({ agent, onClose, onSaved }) {
+    const isNew = !agent.id;
+    const [cats, setCats] = useState([]);
+    const [f, setF] = useState({
+      name: agent.name || "סוכן עסקים קטנים",
+      instructions: agent.instructions || "",
+      subject: agent.subject || "סוכן AI שעונה ללקוחות של {שם העסק} 24/7",
+      offer: agent.offer || "שלום {שם העסק},\n\nראיתי את העסק שלכם ב{עיר}. אנחנו בונים לעסקים קטנים סוכן AI שעונה ללקוחות בוואטסאפ ובאתר 24/7, קובע תורים ואוסף פניות — גם כשאתם עסוקים.\n\nאשמח לשלוח הדגמה קצרה. מתי נוח לדבר?\n\nקטי שגב · Segev MKG",
+      targets: agent.targets || "",
+      area: agent.area || "חיפה, קריית מוצקין, קריית ביאליק, קריית אתא, קריית ים",
+      active: agent.id ? !!Number(agent.active) : true,
+    });
+    const [err, setErr] = useState(""); const [busy, setBusy] = useState(false);
+    useEffect(() => { api("/hunt/categories").then((r) => setCats(r.categories)).catch(() => {}); }, []);
+    const sel = f.targets.split(",").map((x) => x.trim()).filter(Boolean);
+    const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+    function toggleCat(c) {
+      const next = sel.includes(c) ? sel.filter((x) => x !== c) : [...sel, c];
+      setF({ ...f, targets: next.join(", ") });
+    }
+    async function save() {
+      if (!f.name.trim()) { setErr("צריך שם לסוכן"); return; }
+      if (!sel.length) { setErr("בחרי לפחות סוג עסק אחד"); return; }
+      if (!f.offer.trim()) { setErr("כתבי את ההצעה שהסוכן יציע"); return; }
+      setErr(""); setBusy(true);
+      try {
+        if (isNew) await api("/agents", { method: "POST", body: JSON.stringify({ ...f, kind: "hunter" }) });
+        else await api("/agents/" + agent.id + "/update", { method: "POST", body: JSON.stringify(f) });
+        onSaved();
+      } catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`<div class="modal-bg" onClick=${onClose}><div class="modal" onClick=${(e) => e.stopPropagation()}>
+      <div class="m-head"><h3>${isNew ? "סוכן לידים חדש" : "תוכן והגדרות · " + agent.name}</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+      <div class="m-body">
+        ${err && html`<div class="err">${err}</div>`}
+        <div class="field"><label>שם הסוכן</label><input id="h-name" value=${f.name} onInput=${set("name")} /></div>
+        <div class="field"><label>מה הסוכן עושה (ההוראות שלך)</label>
+          <textarea id="h-instr" rows="4" value=${f.instructions} onInput=${set("instructions")} placeholder="למשל: לחפש עסקים קטנים שאין להם מענה מהיר ללקוחות. להתמקד בעסקים עם אתר. לא לפנות לרשתות גדולות."></textarea></div>
+        <div class="field"><label>סוגי עסקים לחיפוש</label>
+          <div class="chips">${cats.map((c) => html`<button type="button" key=${c} class=${"chip" + (sel.includes(c) ? " on" : "")} onClick=${() => toggleCat(c)}>${c}</button>`)}</div></div>
+        <div class="field"><label>ערים / אזורים (מופרדים בפסיק)</label><input id="h-area" value=${f.area} onInput=${set("area")} placeholder="חיפה, קריית מוצקין, או: כל הארץ" /></div>
+        <div class="field"><label>נושא המייל</label><input id="h-subject" value=${f.subject} onInput=${set("subject")} /></div>
+        <div class="field"><label>ההצעה (נכנסת לכל ליד, מותאמת לעסק)</label>
+          <textarea id="h-offer" rows="8" value=${f.offer} onInput=${set("offer")}></textarea>
+          <div class="muted" style=${{ fontSize: "13px" }}>אפשר לכתוב {שם העסק}, {תחום}, {עיר} — הסוכן ממלא לבד לכל עסק.</div></div>
+        <label class="check" style=${{ display: "flex", gap: "8px", alignItems: "center" }}><input id="h-active" type="checkbox" checked=${f.active} onChange=${(e) => setF({ ...f, active: e.target.checked })} /> הסוכן עובד (מחפש לבד כל שעה)</label>
+      </div>
+      <div class="m-foot"><button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "שמירה"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
+    </div></div>`;
   }
 
   function AddAgentModal({ onClose, onSaved }) {
