@@ -96,6 +96,7 @@ try {
         'POST /api/agents'      => handle_create_agent(),
         'POST /api/hunt/run'    => handle_hunt_run(),
         'GET /api/hunt/categories' => handle_hunt_categories(),
+        'GET /api/hunt/report'  => handle_hunt_report(),
         default                 => json_err('לא נמצא: ' . $path, 404),
     };
 } catch (Throwable $e) {

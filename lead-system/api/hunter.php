@@ -466,3 +466,39 @@ function handle_hunt_categories(): void
     require_admin();
     json_out(['categories' => array_keys(HUNT_CATEGORIES)]);
 }
+
+/**
+ * דוח יומי לצוות הסוכנים (מרכז הפיקוד קורא אותו): מה הסוכנים מצאו ב-24 השעות האחרונות.
+ * GET /api/hunt/report?key=… — מפתח קריאה בלבד, נגזר מ-HUNT_SECRET (לא מאפשר להריץ או לשנות).
+ */
+function hunt_report_key(): string
+{
+    db();
+    return substr(hash('sha256', (string) env('HUNT_SECRET', '') . '|report'), 0, 24);
+}
+
+function handle_hunt_report(): void
+{
+    if ((string) env('HUNT_SECRET', '') === '' || !hash_equals(hunt_report_key(), (string) ($_GET['key'] ?? ''))) {
+        json_err('forbidden', 403);
+    }
+    $pdo = db();
+    $since = date('Y-m-d H:i:s', time() - 86400);
+    $lines = ['דוח סוכני הלידים · ' . date('d.m.Y H:i'), ''];
+    foreach ($pdo->query("SELECT * FROM agents WHERE kind = 'hunter' ORDER BY id")->fetchAll() as $a) {
+        $st = $pdo->prepare('SELECT company, email, phone, sector, city, source_url FROM leads WHERE agent_id = ? AND created_at >= ? ORDER BY id DESC');
+        $st->execute([(int) $a['id'], $since]);
+        $rows = $st->fetchAll();
+        $withEmail = count(array_filter($rows, fn ($r) => !empty($r['email'])));
+        $lines[] = "סוכן: {$a['name']} · " . ((int) $a['active'] ? 'פעיל' : 'מושהה');
+        $lines[] = 'ריצה אחרונה: ' . ($a['last_run_at'] ?: 'עוד לא רץ') . ' · ' . ($a['last_result'] ?: '');
+        $lines[] = '24 שעות אחרונות: ' . count($rows) . " לידים חדשים, $withEmail עם מייל מאומת.";
+        foreach (array_slice($rows, 0, 40) as $r) {
+            $lines[] = "- {$r['company']} · {$r['sector']} · {$r['city']} · " . ($r['email'] ?: 'אין מייל מפורסם') . ($r['phone'] ? " · {$r['phone']}" : '') . " · מקור: {$r['source_url']}";
+        }
+        $lines[] = '';
+    }
+    header('Content-Type: text/plain; charset=utf-8');
+    echo implode("\n", $lines);
+    exit;
+}
