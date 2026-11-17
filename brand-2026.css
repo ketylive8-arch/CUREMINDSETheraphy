@@ -171,3 +171,33 @@ input:invalid:not(:placeholder-shown){ border-color:#DC2626; }
   body{ background:#fff; color:#000; }
   a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:11px; }
 }
+
+/* ---------- 11. תיקון ההירו: קרם וזהב במקום רקע כהה ---------- */
+section.hero, #root section.hero, .hero{
+  background:radial-gradient(130% 90% at 50% 0%, #FFFFFF 0%, #FBF7EF 55%, #F3E9D6 100%) !important;
+  color:var(--cm-ink) !important;
+  border-block-end:1px solid rgba(194,151,74,.25);
+}
+.hero h1, .hero h2, .hero h3, .hero p, .hero li, .hero .lead{
+  color:var(--cm-ink) !important;
+}
+.hero .lead, .hero p{ color:#4F4942 !important; }
+#root .hero a:not(.btn), .hero a:not(.btn){
+  color:var(--cm-gold-deep) !important;
+}
+.hero .btn.ghost, #root .hero .btn.ghost{
+  color:var(--cm-gold-deep) !important;
+  border-color:rgba(138,106,47,.45) !important;
+  background:#FFFFFF !important;
+}
+.hero .btn, .hero .btn.primary{
+  background:var(--cm-gold) !important;
+  color:#2D2A26 !important;
+  border-color:var(--cm-gold) !important;
+}
+#root .hero .hm-social a, .hero .hm-social a{ color:var(--cm-gold-deep) !important; }
+/* מניעת משטחים כהים בכל האתר */
+[style*="background:#1E1A15"], [style*="background: #1E1A15"]{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FBF7EF 100%) !important;
+  color:var(--cm-ink) !important;
+}
