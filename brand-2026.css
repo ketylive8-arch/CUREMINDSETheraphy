@@ -201,3 +201,69 @@ section.hero, #root section.hero, .hero{
   background:linear-gradient(180deg,#FFFFFF 0%,#FBF7EF 100%) !important;
   color:var(--cm-ink) !important;
 }
+
+/* ---------- 12. קו נקי אלגנטי: לבן, אוויר, טיפוגרפיה עדינה ---------- */
+:root{
+  --cm-white:#FFFFFF;
+  --cm-offwhite:#FBFBFD;
+  --cm-hairline:#EFEFF2;
+  --cm-ink-soft:#1D1D1F;
+  --cm-ink-body:#424245;
+}
+html, body{ background:var(--cm-white) !important; }
+body{ color:var(--cm-ink-body); letter-spacing:-0.003em; }
+
+/* כותרות: גדולות, מדויקות, בלי כבדות מיותרת */
+h1, .hero h1{ font-weight:700 !important; letter-spacing:-0.022em !important; line-height:1.12 !important; color:var(--cm-ink-soft) !important; }
+h2{ font-weight:600 !important; letter-spacing:-0.016em !important; color:var(--cm-ink-soft) !important; }
+h3, h4{ font-weight:600 !important; letter-spacing:-0.01em !important; color:var(--cm-ink-soft) !important; }
+.hero .lead, .hero p{ color:var(--cm-ink-body) !important; font-weight:400 !important; }
+
+/* הירו: לבן נקי, בלי גרדיאנט צבעוני */
+section.hero, #root section.hero, .hero{
+  background:var(--cm-white) !important;
+  color:var(--cm-ink-soft) !important;
+  border-block-end:1px solid var(--cm-hairline) !important;
+  padding-block:clamp(64px,9vw,120px) !important;
+}
+
+/* משטחים: לבן, קו שיער דק, בלי צל כבד */
+section, .section{ background:transparent; }
+.card, .tile, .box, .panel, .price, .service{
+  background:var(--cm-white) !important;
+  border:1px solid var(--cm-hairline) !important;
+  box-shadow:none !important;
+  border-radius:18px !important;
+}
+.card:hover, .tile:hover{ box-shadow:0 8px 28px -18px rgba(0,0,0,.18) !important; }
+
+/* כפתורים: פשוטים ונקיים, זהב רק כמבטא */
+.btn, a.btn, button.btn{
+  border-radius:999px !important;
+  box-shadow:none !important;
+  font-weight:600 !important;
+  letter-spacing:0 !important;
+}
+.btn.primary, .btn:not(.ghost), a.btn:not(.ghost){
+  background:var(--cm-ink-soft) !important;
+  color:#FFFFFF !important;
+  border:1px solid var(--cm-ink-soft) !important;
+}
+.btn.ghost, a.btn.ghost{
+  background:transparent !important;
+  color:var(--cm-ink-soft) !important;
+  border:1px solid #D2D2D7 !important;
+}
+.btn.primary:hover, .btn:not(.ghost):hover{ opacity:.88; }
+
+/* קישורים: זהב עמוק, קו תחתון דק */
+main a:not(.btn){ color:var(--cm-gold-deep); text-decoration-color:rgba(138,106,47,.35); }
+main a:not(.btn):hover{ text-decoration-color:var(--cm-gold-deep); }
+
+/* ריווח נדיב, טקסט קצר לשורה */
+main p, main li{ max-width:68ch; line-height:1.72; }
+section{ padding-block:clamp(56px,7vw,96px); }
+hr{ border:0; border-top:1px solid var(--cm-hairline); margin-block:48px; }
+
+/* ניקוי עיטורים כבדים מהאתר הקיים */
+.hm-social a, .badge, .pill{ box-shadow:none !important; }
