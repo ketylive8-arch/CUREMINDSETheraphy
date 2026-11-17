@@ -113,9 +113,11 @@ const HUNT_CITY_BBOX = [
 
 /** שרתי Overpass ציבוריים — אם אחד עמוס, עוברים לבא. */
 const HUNT_OVERPASS = [
+    // מראות של אותו מאגר; הראשי חוסם לפעמים את כתובות השרת (תור ארוך לכל כתובת)
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
     'https://overpass-api.de/api/interpreter',
+    'https://overpass.osm.jp/api/interpreter',
     'https://overpass.private.coffee/api/interpreter',
-    'https://overpass.kumi.systems/api/interpreter',
 ];
 
 /** עסקים מסוג מסוים בעיר מסוימת, מרישומי OpenStreetMap. */
@@ -139,12 +141,15 @@ function hunt_find_businesses(string $category, string $city, int $limit = 60): 
     }
     $last = 0;
     $json = null;
-    foreach (HUNT_OVERPASS as $server) {
+    static $good = null;
+    $servers = $good ? array_values(array_unique(array_merge([$good], HUNT_OVERPASS))) : HUNT_OVERPASS;
+    foreach ($servers as $server) {
         // GET (כמו דפדפן) — חלק מהשרתים מעדיפים את זה על POST
         // השרתים הציבוריים עמוסים: תשובה לוקחת לפעמים 30–50 שניות, אז מחכים מספיק
-        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 55);
+        [$code, $body] = hunt_http($server . '?data=' . rawurlencode($q), null, 35);
         $last = $code;
         if ($code === 200 && is_array($json = json_decode($body, true))) {
+            $good = $server;
             break;
         }
         $json = null;
