@@ -304,14 +304,132 @@ function hunt_email_from_site(string $site): array
 
 /* ----------------------------------------------------------------- offer */
 
-/** ההצעה של הסוכן, מותאמת לעסק: {שם העסק} {תחום} {עיר} {אתר}. */
+/** מה צוות סוכני AI יעשה אצל כל סוג עסק — נכנס להצעה במקום {הצוות} ו-{הכאב}. */
+const HUNT_ANGLES = [
+    'therapy' => [
+        'pain' => 'פניות של מטופלים מגיעות בערב ובלילה, באמצע טיפול, וחלק מהן הולכות לאיבוד',
+        'team' => "• סוכנת קבלה שעונה לפניות בחום 24/7 ומבינה מה הפונה צריך\n• סוכן תורים שקובע, מזכיר ומפחית ביטולים\n• סוכן מעקב ששולח תזכורת עדינה למי שהתעניין ולא קבע",
+    ],
+    'lodging' => [
+        'pain' => 'אורחים שואלים על זמינות ומחירים בכל שעה, ומי שלא מקבל תשובה מהר מזמין במקום אחר',
+        'team' => "• סוכן הזמנות שעונה על זמינות, מחירים ושאלות 24/7\n• סוכן שמכין את האורח לפני ההגעה (הגעה, חניה, צ'ק-אין)\n• סוכן שמבקש ביקורת אחרי השהייה ומחזיר אורחים לעונה הבאה",
+    ],
+    'office' => [
+        'pain' => 'לידים שנכנסים לא מקבלים מענה מהיר, והפולואפים נשכחים בין כל המשימות',
+        'team' => "• סוכן שעונה לכל ליד תוך דקה ומבין את הצורך\n• סוכן שמכין טיוטת הצעת מחיר או סיכום פגישה\n• סוכן פולואפ שמזכיר ללקוח ולך מה הצעד הבא",
+    ],
+    'professional' => [
+        'pain' => 'אותן שאלות חוזרות כל יום, ואיסוף מסמכים ומועדים מלקוחות לוקח המון זמן',
+        'team' => "• סוכן שעונה לשאלות הנפוצות של הלקוחות בשמך\n• סוכן שאוסף מסמכים ופרטים מלקוחות לפני שהם מגיעים אליך\n• סוכן שמזכיר מועדים ותשלומים",
+    ],
+    'beauty' => [
+        'pain' => 'קביעת תורים בוואטסאפ גוזלת זמן באמצע עבודה, ולקוחות ותיקים לא חוזרים מעצמם',
+        'team' => "• סוכן תורים שקובע ומזכיר לבד\n• סוכן שמחזיר לקוחות ותיקים עם הודעה אישית בזמן הנכון\n• סוכן שעונה על מחירים, טיפולים ושעות 24/7",
+    ],
+    'shop' => [
+        'pain' => 'לקוחות שואלים על מלאי, מחירים ושעות פתיחה, ומחכים לתשובה',
+        'team' => "• סוכן שעונה על מלאי, מחירים ושעות 24/7\n• סוכן שאוסף הזמנות ומעביר אליך מסודר\n• סוכן ששולח מבצעים ועדכונים ללקוחות קבועים",
+    ],
+    'food' => [
+        'pain' => 'הזמנות שולחנות ושאלות על התפריט מגיעות בשעות הכי עמוסות',
+        'team' => "• סוכן שמזמין שולחנות ועונה על תפריט ושעות\n• סוכן שאוסף הזמנות לאירועים\n• סוכן שמבקש ביקורת ומחזיר לקוחות",
+    ],
+];
+
+const HUNT_CAT_ANGLE = [
+    'פסיכותרפיסטים' => 'therapy', 'יועצים ומטפלים רגשיים' => 'therapy', 'מטפלים (קליניקה פרטית)' => 'therapy',
+    'רפואה משלימה' => 'therapy', 'פיזיותרפיסטים' => 'therapy', 'קלינאי תקשורת' => 'therapy', 'מרפאים בעיסוק' => 'therapy',
+    'קליניקות' => 'therapy', 'רופאי שיניים' => 'therapy',
+    'צימרים' => 'lodging', 'בתי הארחה' => 'lodging', 'מלונות' => 'lodging',
+    'חברות ומשרדים' => 'office', 'יועצים עסקיים' => 'office', 'משרדי פרסום ושיווק' => 'office', 'משרדי תיווך' => 'office',
+    'רואי חשבון' => 'professional', 'עורכי דין' => 'professional', 'סוכני ביטוח' => 'professional',
+    'קוסמטיקה וטיפוח' => 'beauty', 'מספרות' => 'beauty', 'חדרי כושר וסטודיו' => 'beauty',
+    'חנויות בגדים' => 'shop', 'חנויות מתנות' => 'shop', 'תכשיטים' => 'shop', 'חנויות פרחים' => 'shop', 'אופטיקה' => 'shop',
+    'מסעדות' => 'food', 'בתי קפה' => 'food',
+];
+
+/** ההצעה של הסוכן, מותאמת לעסק: {שם העסק} {תחום} {עיר} {אתר} {וואטסאפ} {הכאב} {הצוות}. */
 function hunt_fill(string $tpl, array $lead): string
 {
+    $angle = HUNT_ANGLES[HUNT_CAT_ANGLE[$lead['sector']] ?? 'office'];
     return strtr($tpl, [
         '{שם העסק}' => $lead['company'], '{תחום}' => $lead['sector'],
         '{עיר}' => $lead['city'], '{אתר}' => $lead['website'] ?: '',
         '{וואטסאפ}' => 'https://wa.me/' . (env('REPLY_WHATSAPP', '972542306016') ?? '972542306016'),
+        '{הכאב}' => $angle['pain'], '{הצוות}' => $angle['team'],
     ]);
+}
+
+/**
+ * סוגי ההצעות של הסוכן. נשמר כ-JSON: [{name, types[], subject, text}]. הצעה ישנה (טקסט אחד)
+ * נקראת כהצעה אחת לכל סוגי העסקים.
+ */
+function hunt_offers(array $agent): array
+{
+    $raw = (string) ($agent['offer'] ?? '');
+    $j = json_decode($raw, true);
+    if (is_array($j) && $j && isset($j[0]['text'])) {
+        return array_values(array_filter($j, fn ($o) => trim((string) ($o['text'] ?? '')) !== ''));
+    }
+    return $raw === '' ? [] : [['name' => 'הצעה', 'types' => [], 'subject' => (string) ($agent['subject'] ?? ''), 'text' => $raw]];
+}
+
+/** ההצעה שהכי מתאימה לסוג העסק: קודם הצעה שסומנה לסוג הזה, אחר כך הצעה כללית. */
+function hunt_pick_offer(array $offers, string $cat): ?array
+{
+    foreach ($offers as $o) {
+        if (in_array($cat, (array) ($o['types'] ?? []), true)) {
+            return $o;
+        }
+    }
+    foreach ($offers as $o) {
+        if (empty($o['types'])) {
+            return $o;
+        }
+    }
+    return $offers[0] ?? null;
+}
+
+/**
+ * כשיש מפתח Claude בשרת (ANTHROPIC_API_KEY) — מתאים את ההצעה לעסק הספציפי לפי מה שכתוב באתר שלו.
+ * בלי מפתח — ההצעה המותאמת לפי סוג העסק נשארת כמו שהיא.
+ */
+function hunt_ai_personalize(string $text, array $lead, string $siteText): string
+{
+    $key = (string) (env('ANTHROPIC_API_KEY', '') ?? '');
+    if ($key === '' || $siteText === '') {
+        return $text;
+    }
+    $prompt = "זו הצעה שקטי שגב (Segev MKG) שולחת לבעל עסק קטן. התאימי אותה לעסק הזה בלבד, בעברית, בלי להמציא עובדות.\n"
+        . "מותר להוסיף משפט אחד שמראה שקראנו את האתר שלהם (רק דבר שכתוב בו). שמרי על המבנה, הקישורים והחתימה. עד 140 מילים.\n"
+        . "מחזירים רק את נוסח ההודעה.\n\nהעסק: {$lead['company']} · {$lead['sector']} · {$lead['city']}\n"
+        . "מהאתר שלהם:\n" . mb_substr($siteText, 0, 1500) . "\n\nההצעה:\n$text";
+    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTPHEADER => ['content-type: application/json', 'x-api-key: ' . $key, 'anthropic-version: 2023-06-01'],
+        CURLOPT_POSTFIELDS => json_encode(['model' => env('HUNT_MODEL', 'claude-sonnet-4-6'), 'max_tokens' => 700,
+            'messages' => [['role' => 'user', 'content' => $prompt]]], JSON_UNESCAPED_UNICODE),
+    ]);
+    $res = json_decode((string) curl_exec($ch), true);
+    curl_close($ch);
+    $out = trim((string) ($res['content'][0]['text'] ?? ''));
+    return $out !== '' ? $out : $text;
+}
+
+/** טקסט קריא מדף הבית (כותרת, תיאור, פסקאות ראשונות) — לצורך ההתאמה האישית. */
+function hunt_site_text(string $site): string
+{
+    if ($site === '') {
+        return '';
+    }
+    [$code, $html] = hunt_http($site, null, 8);
+    if ($code < 200 || $code >= 400) {
+        return '';
+    }
+    $html = preg_replace('#<(script|style|noscript)[^>]*>.*?</\1>#si', ' ', $html);
+    $text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) $html), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    return mb_substr($text, 0, 2000);
 }
 
 /* ------------------------------------------------------------------- run */
@@ -376,14 +494,24 @@ function hunt_run_agent(array $agent, float $deadline): string
                 }
             }
             $lead = ['company' => $b['name'], 'sector' => $cat, 'city' => $city, 'website' => $b['website']];
+            // ההצעה: הסוג שהכי מתאים לעסק, מותאם לתחום ולשם העסק (ולאתר שלו, אם יש מפתח Claude)
+            $offer = hunt_pick_offer(hunt_offers($agent), $cat);
+            $subject = $offer ? hunt_fill((string) ($offer['subject'] ?? ''), $lead) : '';
+            $draft = $offer ? hunt_fill((string) $offer['text'], $lead) : '';
+            if ($draft !== '' && $email && microtime(true) < $deadline - 20) {
+                $draft = hunt_ai_personalize($draft, $lead, hunt_site_text((string) $b['website']));
+            }
+
             $note = "נמצא ע\"י הסוכן «{$agent['name']}»" . ($email ? " · המייל מ{$how}" : ' · לא נמצא מייל מפורסם');
+            if ($offer && !empty($offer['name'])) {
+                $note .= " · הצעה: {$offer['name']}";
+            }
             $pdo->prepare(
                 'INSERT INTO leads (owner_user_id, agent_id, company, email, sector, city, website, source_url, phone, subject, draft, notes, status)
                  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,\'new\')'
             )->execute([
                 $owner, (int) $agent['id'], $b['name'], $email, $cat, $city, $b['website'] ?: null, $src,
-                $b['phone'] ?: null, hunt_fill((string) ($agent['subject'] ?? ''), $lead) ?: null,
-                hunt_fill((string) ($agent['offer'] ?? ''), $lead) ?: null, $note,
+                $b['phone'] ?: null, $subject ?: null, $draft ?: null, $note,
             ]);
             log_activity(last_id('leads'), $owner, 'agent_found', "{$agent['name']}: {$b['name']}" . ($email ? " · $email" : ''));
             $new++;

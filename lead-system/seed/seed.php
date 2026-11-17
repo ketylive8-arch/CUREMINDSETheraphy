@@ -166,3 +166,12 @@ $pdo->prepare("UPDATE agents SET targets = ? WHERE kind = 'hunter' AND targets =
     'חברות ומשרדים, יועצים עסקיים, משרדי פרסום ושיווק, רואי חשבון, סוכני ביטוח, פסיכותרפיסטים, יועצים ומטפלים רגשיים, מטפלים (קליניקה פרטית), רפואה משלימה, פיזיותרפיסטים, קליניקות, קוסמטיקה וטיפוח, צימרים, בתי הארחה, מלונות, חנויות בגדים, חנויות מתנות, תכשיטים',
     'מספרות, קוסמטיקה וטיפוח, רואי חשבון, עורכי דין, סוכני ביטוח, משרדי תיווך, רופאי שיניים, קליניקות, חדרי כושר וסטודיו, מוסכים',
 ]);
+
+// סוגי ההצעות של סוכן העסקים הקטנים (בקשת קטי): צוות סוכני AI שבעל העסק מנהל בעצמו.
+// מעדכנים רק אם ההצעה עדיין ברירת המחדל הקודמת (טקסט אחד שלא נערך).
+$defaultOffers = file_get_contents(__DIR__ . '/default-offers.json');
+$pdo->prepare("UPDATE agents SET offer = ?, subject = ? WHERE kind = 'hunter' AND offer NOT LIKE '[%' AND offer LIKE ?")->execute([
+    json_encode(json_decode($defaultOffers, true), JSON_UNESCAPED_UNICODE),
+    json_decode($defaultOffers, true)[0]['subject'],
+    'שלום {שם העסק},%אנחנו בונים לעסקים קטנים סוכן AI%',
+]);

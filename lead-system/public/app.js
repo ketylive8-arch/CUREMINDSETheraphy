@@ -628,6 +628,23 @@
       </div>`;
   }
 
+  // ההצעות שהסוכן בוחר מהן לכל עסק. {הכאב} ו-{הצוות} מתמלאים לבד לפי סוג העסק.
+  const DEFAULT_OFFERS = [
+    { name: "צוות סוכני AI לעסק", types: [], subject: "{שם העסק}: צוות סוכני AI שעובד בשבילכם 24/7",
+      text: "שלום {שם העסק},\n\n{הכאב}.\n\nהיום בעל עסק קטן יכול לנהל לעצמו צוות של סוכני AI, כמו עובדים, רק שהם זמינים 24/7. למשל:\n{הצוות}\n\nאתם מחליטים מה כל סוכן עושה, והם עובדים בשבילכם. אנחנו בונים ומלווים את זה עד שזה עובד.\n\nרוצים לראות איך זה נראה אצלכם? כתבו לנו בוואטסאפ: {וואטסאפ}\n\nקטי שגב · Segev MKG · 054-230-6016" },
+    { name: "סוכנת קבלה למטפלים", types: ["פסיכותרפיסטים", "יועצים ומטפלים רגשיים", "מטפלים (קליניקה פרטית)", "רפואה משלימה", "פיזיותרפיסטים", "קליניקות"],
+      subject: "מי עונה למטופלים של {שם העסק} כשאתם בטיפול?",
+      text: "שלום {שם העסק},\n\n{הכאב}.\n\nאפשר לבנות לקליניקה צוות קטן של סוכני AI שעובד בשבילכם:\n{הצוות}\n\nהסוכנים כותבים בשפה שלכם ובטון שלכם, ואתם רואים כל שיחה ומחליטים מה הם עושים.\n\nאשמח להראות הדגמה קצרה. כתבו לנו בוואטסאפ: {וואטסאפ}\n\nקטי שגב · Segev MKG · 054-230-6016" },
+    { name: "סוכן הזמנות לאירוח", types: ["צימרים", "בתי הארחה", "מלונות"],
+      subject: "{שם העסק}: אורחים שמקבלים תשובה בשתיים בלילה",
+      text: "שלום {שם העסק},\n\n{הכאב}.\n\nאפשר לבנות לכם צוות סוכני AI שעובד גם כשאתם ישנים:\n{הצוות}\n\nאתם מנהלים את הצוות ומחליטים מה כל סוכן עושה.\n\nרוצים לראות איך זה עובד? כתבו לנו בוואטסאפ: {וואטסאפ}\n\nקטי שגב · Segev MKG · 054-230-6016" },
+  ];
+  function parseOffers(a) {
+    try { const j = JSON.parse(a.offer || ""); if (Array.isArray(j) && j.length) return j; } catch (e) {}
+    if (a.offer) return [{ name: "הצעה", types: [], subject: a.subject || "", text: a.offer }];
+    return DEFAULT_OFFERS;
+  }
+
   // ---------- סוכן לידים: מה לעשות, מה להציע, למי ואיפה ----------
   function HunterModal({ agent, onClose, onSaved }) {
     const isNew = !agent.id;
@@ -635,12 +652,13 @@
     const [f, setF] = useState({
       name: agent.name || "סוכן עסקים קטנים",
       instructions: agent.instructions || "",
-      subject: agent.subject || "סוכן AI שעונה ללקוחות של {שם העסק} 24/7",
-      offer: agent.offer || "שלום {שם העסק},\n\nראיתי את העסק שלכם ב{עיר}. אנחנו בונים לעסקים קטנים סוכן AI שעונה ללקוחות בוואטסאפ ובאתר 24/7, קובע תורים ואוסף פניות — גם כשאתם עסוקים.\n\nאשמח להראות לכם הדגמה קצרה — אפשר לכתוב לנו ישר בוואטסאפ: {וואטסאפ}\n\nקטי שגב · Segev MKG · 054-230-6016",
       targets: agent.targets || "",
       area: agent.area || "חיפה, קריית מוצקין, קריית ביאליק, קריית אתא, קריית ים",
       active: agent.id ? !!Number(agent.active) : true,
     });
+    const [offers, setOffers] = useState(() => parseOffers(agent));
+    const setOffer = (i, k, v) => setOffers(offers.map((o, n) => (n === i ? { ...o, [k]: v } : o)));
+    const toggleOfferType = (i, c) => { const t = offers[i].types || []; setOffer(i, "types", t.includes(c) ? t.filter((x) => x !== c) : [...t, c]); };
     const [err, setErr] = useState(""); const [busy, setBusy] = useState(false);
     useEffect(() => { api("/hunt/categories").then((r) => setCats(r.categories)).catch(() => {}); }, []);
     const sel = f.targets.split(",").map((x) => x.trim()).filter(Boolean);
@@ -652,11 +670,12 @@
     async function save() {
       if (!f.name.trim()) { setErr("צריך שם לסוכן"); return; }
       if (!sel.length) { setErr("בחרי לפחות סוג עסק אחד"); return; }
-      if (!f.offer.trim()) { setErr("כתבי את ההצעה שהסוכן יציע"); return; }
+      if (!offers.some((o) => (o.text || "").trim())) { setErr("כתבי לפחות הצעה אחת"); return; }
       setErr(""); setBusy(true);
       try {
-        if (isNew) await api("/agents", { method: "POST", body: JSON.stringify({ ...f, kind: "hunter" }) });
-        else await api("/agents/" + agent.id + "/update", { method: "POST", body: JSON.stringify(f) });
+        const payload = { ...f, offer: JSON.stringify(offers), subject: (offers[0] && offers[0].subject) || "" };
+        if (isNew) await api("/agents", { method: "POST", body: JSON.stringify({ ...payload, kind: "hunter" }) });
+        else await api("/agents/" + agent.id + "/update", { method: "POST", body: JSON.stringify(payload) });
         onSaved();
       } catch (ex) { setErr(ex.message); setBusy(false); }
     }
@@ -670,10 +689,19 @@
         <div class="field"><label>סוגי עסקים לחיפוש</label>
           <div class="chips">${cats.map((c) => html`<button type="button" key=${c} class=${"chip" + (sel.includes(c) ? " on" : "")} onClick=${() => toggleCat(c)}>${c}</button>`)}</div></div>
         <div class="field"><label>ערים / אזורים (מופרדים בפסיק)</label><input id="h-area" value=${f.area} onInput=${set("area")} placeholder="חיפה, קריית מוצקין, או: כל הארץ" /></div>
-        <div class="field"><label>נושא המייל</label><input id="h-subject" value=${f.subject} onInput=${set("subject")} /></div>
-        <div class="field"><label>ההצעה (נכנסת לכל ליד, מותאמת לעסק)</label>
-          <textarea id="h-offer" rows="8" value=${f.offer} onInput=${set("offer")}></textarea>
-          <div class="muted" style=${{ fontSize: "13px" }}>אפשר לכתוב {שם העסק}, {תחום}, {עיר}, {וואטסאפ} — הסוכן ממלא לבד לכל עסק. {וואטסאפ} הוא קישור לבוט שעונה ב-054-230-6016.</div></div>
+        <div class="field"><label>סוגי ההצעות שלך</label>
+          <div class="muted" style=${{ fontSize: "13px" }}>הסוכן בוחר לכל עסק את ההצעה שסימנת לסוג שלו (או את הכללית), ומתאים אותה. {שם העסק}, {עיר}, {וואטסאפ} מתמלאים לבד. {הכאב} ו-{הצוות} = מה הבעיה של העסק ואיזה צוות סוכנים יעבוד אצלו, לפי התחום.</div></div>
+        ${offers.map((o, i) => html`<div key=${i} style=${{ border: "1px solid var(--line, #e5e5e5)", borderRadius: "12px", padding: "12px", display: "grid", gap: "8px" }}>
+          <div style=${{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <input id=${"o-name-" + i} class="ta" value=${o.name || ""} onInput=${(e) => setOffer(i, "name", e.target.value)} placeholder="שם ההצעה" style=${{ flex: 1, fontWeight: 600 }} />
+            ${offers.length > 1 && html`<button type="button" class="btn sm ghost" onClick=${() => setOffers(offers.filter((_, n) => n !== i))}>הסרה</button>`}
+          </div>
+          <div class="muted" style=${{ fontSize: "13px" }}>למי ההצעה (בלי סימון = לכולם):</div>
+          <div class="chips">${sel.map((c) => html`<button type="button" key=${c} class=${"chip" + ((o.types || []).includes(c) ? " on" : "")} onClick=${() => toggleOfferType(i, c)}>${c}</button>`)}</div>
+          <input id=${"o-subject-" + i} class="ta" value=${o.subject || ""} onInput=${(e) => setOffer(i, "subject", e.target.value)} placeholder="נושא המייל" />
+          <textarea id=${"o-text-" + i} class="ta" rows="8" value=${o.text || ""} onInput=${(e) => setOffer(i, "text", e.target.value)}></textarea>
+        </div>`)}
+        <div><button type="button" class="btn sm ghost" onClick=${() => setOffers([...offers, { name: "הצעה חדשה", types: [], subject: "", text: "" }])}>➕ סוג הצעה נוסף</button></div>
         <label class="check" style=${{ display: "flex", gap: "8px", alignItems: "center" }}><input id="h-active" type="checkbox" checked=${f.active} onChange=${(e) => setF({ ...f, active: e.target.checked })} /> הסוכן עובד (מחפש לבד כל שעה)</label>
       </div>
       <div class="m-foot"><button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "שמירה"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
