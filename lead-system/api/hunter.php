@@ -237,6 +237,100 @@ function hunt_host(string $url): string
     return preg_replace('/^www\./', '', $h);
 }
 
+/* ------------------------------------------------- חיפוש ברשת (כל האינטרנט) */
+
+/** אתרים שאינם אתר של עסק: רשתות חברתיות, אינדקסים, חדשות, ממשלה. מהם לוקחים רק מייל שמופיע בתוצאה עצמה. */
+const HUNT_NOT_BUSINESS_SITE = '/(facebook|instagram|linkedin|tiktok|youtube|twitter|x\.com|wikipedia|google|b144|d\.co\.il|zap\.co\.il|easy\.co\.il|midrag|rest\.co\.il|ynet|mako|walla\.co\.il|haaretz|maariv|calcalist|themarker|bizportal|globes|gov\.il|ac\.il|muni\.il|kolzchut|booking\.com|tripadvisor|airbnb|zimmer|tzimer|wix\.com|bing\.com|duckduckgo|yad2|waze|moovit|doctorsil|infomed|hamakor)/i';
+
+/** תוצאות חיפוש (כותרת, קישור, תקציר) — DuckDuckGo, ואם לא ענה אז Bing. */
+function hunt_search(string $q): array
+{
+    $out = [];
+    [$code, $html] = hunt_http('https://html.duckduckgo.com/html/', ['q' => $q, 'kl' => 'il-he'], 15);
+    if ($code === 200 && preg_match_all('~<a[^>]+class="result__a"[^>]+href="([^"]+)"[^>]*>(.*?)</a>.*?class="result__snippet"[^>]*>(.*?)</(?:a|div)>~s', $html, $m, PREG_SET_ORDER)) {
+        foreach ($m as $r) {
+            $u = html_entity_decode($r[1]);
+            if (preg_match('~[?&]uddg=([^&]+)~', $u, $um)) {
+                $u = urldecode($um[1]);
+            }
+            $out[] = ['url' => $u, 'title' => hunt_clean($r[2]), 'snippet' => hunt_clean($r[3])];
+        }
+    }
+    if (!$out) {
+        [$code, $html] = hunt_http('https://www.bing.com/search?' . http_build_query(['q' => $q, 'cc' => 'IL', 'setlang' => 'he', 'count' => 30]), null, 15);
+        if ($code === 200 && preg_match_all('~<li class="b_algo".*?<h2[^>]*><a[^>]+href="([^"]+)"[^>]*>(.*?)</a>.*?<p[^>]*>(.*?)</p>~s', $html, $m, PREG_SET_ORDER)) {
+            foreach ($m as $r) {
+                $out[] = ['url' => html_entity_decode($r[1]), 'title' => hunt_clean($r[2]), 'snippet' => hunt_clean($r[3])];
+            }
+        }
+    }
+    $GLOBALS['HUNT_SEARCH_CODE'] = $code;
+    return $out;
+}
+
+function hunt_clean(string $h): string
+{
+    return trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($h), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+}
+
+/** שם העסק מתוך כותרת התוצאה: החלק הראשון לפני | / - / – / · */
+function hunt_title_name(string $title, string $host): string
+{
+    $parts = array_values(array_filter(array_map('trim', preg_split('/\s[|\-–·:]\s|\s\|\s?/u', $title))));
+    $n = $parts[0] ?? '';
+    if ($n === '' || mb_strlen($n) > 45) {
+        $n = $host;
+    }
+    return $n;
+}
+
+/** עסקים מסוג מסוים בעיר, מחיפוש ברשת: אתרי עסקים, ומיילים שמופיעים בתוצאות (כולל רשתות חברתיות ואינדקסים). */
+function hunt_find_web(string $category, string $city): array
+{
+    $queries = [
+        "$category ב$city צור קשר",
+        "\"$category\" \"$city\" \"@gmail.com\" OR \"@walla.co.il\" OR \"@hotmail.com\"",
+    ];
+    $out = [];
+    $seen = [];
+    $raw = 0;
+    foreach ($queries as $q) {
+        $res = hunt_search($q);
+        $raw += count($res);
+        foreach ($res as $r) {
+            $url = hunt_norm_url($r['url']);
+            if ($url === '') {
+                continue;
+            }
+            $host = hunt_host($url);
+            $isSite = !preg_match(HUNT_NOT_BUSINESS_SITE, $host);
+            $emails = hunt_emails_in($r['title'] . ' ' . $r['snippet']);
+            $email = $isSite ? hunt_pick_email($emails, $url) : (array_values(array_filter($emails, fn ($e) => preg_match('/@(gmail|walla|yahoo|hotmail|outlook|012|bezeqint|netvision)\./', $e) || !preg_match(HUNT_NOT_BUSINESS_SITE, $e)))[0] ?? null);
+            if (!$isSite && !$email) {
+                continue; // עמוד ברשת חברתית / אינדקס בלי מייל גלוי — אין מה לקחת
+            }
+            $key = $isSite ? $host : $email;
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = 1;
+            preg_match('/0(?:[23489]|5\d|7\d)-?\d{7}/', $r['snippet'], $pm);
+            $out[] = [
+                'name'    => hunt_title_name($r['title'], $host),
+                'website' => $isSite ? (parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST)) : '',
+                'email'   => $email ?: '',
+                'phone'   => $pm[0] ?? '',
+                'osm'     => $url,
+                'how'     => $email ? 'תוצאת חיפוש ברשת (' . $host . ')' : '',
+            ];
+        }
+    }
+    if ($raw === 0) {
+        throw new RuntimeException('מנוע החיפוש לא החזיר תוצאות (קוד ' . ($GLOBALS['HUNT_SEARCH_CODE'] ?? 0) . ')');
+    }
+    return $out;
+}
+
 /* --------------------------------------------------------- email finding */
 
 /** מיילים שמופיעים בפועל בעמוד (mailto וטקסט), אחרי סינון זבל. */
@@ -497,11 +591,23 @@ function hunt_run_agent(array $agent, float $deadline): string
 
     for ($i = 0; $i < count($combos) && $new < HUNT_MAX_NEW_PER_RUN && microtime(true) < $deadline; $i++) {
         [$cat, $city] = $combos[($cursor + $i) % count($combos)];
-        try {
-            $found = hunt_find_businesses($cat, $city);
-        } catch (Throwable $e) {
-            $notes[] = "$cat/$city: " . $e->getMessage();
-            continue;
+        // מקור 1: מאגר העסקים הציבורי (OpenStreetMap). אם לא ענה פעם אחת בריצה — לא מחכים לו שוב.
+        $found = [];
+        if (empty($osmDown)) {
+            try {
+                $found = hunt_find_businesses($cat, $city);
+            } catch (Throwable $e) {
+                $osmDown = true;
+                $notes[] = "מאגר: " . $e->getMessage();
+            }
+        }
+        // מקור 2: חיפוש בכל הרשת — אתרי עסקים, רשתות חברתיות ואינדקסים (רק מייל שמופיע בפועל)
+        if (microtime(true) < $deadline - 30) {
+            try {
+                $found = array_merge($found, hunt_find_web($cat, $city));
+            } catch (Throwable $e) {
+                $notes[] = "חיפוש ברשת: " . $e->getMessage();
+            }
         }
         foreach ($found as $b) {
             if ($new >= HUNT_MAX_NEW_PER_RUN || microtime(true) >= $deadline) {
@@ -514,7 +620,7 @@ function hunt_run_agent(array $agent, float $deadline): string
                 continue;
             }
             $checked++;
-            $email = null; $src = $b['osm']; $how = 'רישום ציבורי (OpenStreetMap)';
+            $email = null; $src = $b['osm']; $how = ($b['how'] ?? '') ?: 'רישום ציבורי (OpenStreetMap)';
             if ($b['email'] && filter_var($b['email'], FILTER_VALIDATE_EMAIL)) {
                 $email = strtolower($b['email']);
             } elseif ($b['website']) {
@@ -524,7 +630,7 @@ function hunt_run_agent(array $agent, float $deadline): string
                 }
             }
             if ($email) {
-                $sup = $pdo->prepare('SELECT 1 FROM suppressions WHERE email = ?');
+                $sup = $pdo->prepare('SELECT 1 FROM suppressions WHERE LOWER(email) = ?');
                 $sup->execute([$email]);
                 if ($sup->fetch()) {
                     continue; // ביקשו הסרה / חזר בעבר — לא פונים שוב
