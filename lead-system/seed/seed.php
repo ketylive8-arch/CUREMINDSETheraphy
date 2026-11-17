@@ -133,3 +133,24 @@ foreach ($pdo->query('SELECT email FROM suppressions')->fetchAll() as $row) {
 
 $remaining = (int) $pdo->query('SELECT COUNT(*) c FROM leads')->fetch()['c'];
 echo "cleanup: removed {$removedBounced} bounced + {$removedSuppressed} suppressed; {$remaining} active leads remain\n";
+
+// סוכן לידים ראשון — כדי שהמערכת תתחיל לחפש לבד מיד. נוצר פעם אחת בלבד;
+// את התוכן, ההצעה, סוגי העסקים והערים קטי משנה מהמסך "חיבורי סוכנים".
+$hasHunter = (int) $pdo->query("SELECT COUNT(*) c FROM agents WHERE kind = 'hunter'")->fetch()['c'];
+$adminQ = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+$adminQ->execute([$a['email']]);
+$ownerId = (int) ($adminQ->fetch()['id'] ?? 0);
+if (!$hasHunter && $ownerId) {
+    $pdo->prepare(
+        "INSERT INTO agents (owner_user_id, name, platform, permissions, kind, instructions, subject, offer, targets, area, active, status)
+         VALUES (?,?,?,?,?,?,?,?,?,?,1,'connected')"
+    )->execute([
+        $ownerId, 'סוכן עסקים קטנים', 'סוכן פנימי', 'read_write', 'hunter',
+        'לחפש עסקים קטנים מקומיים עם אתר או מייל מפורסם, שיכולים להרוויח מסוכן AI שעונה ללקוחות. לא רשתות גדולות.',
+        'סוכן AI שעונה ללקוחות של {שם העסק} 24/7',
+        "שלום {שם העסק},\n\nראיתי את העסק שלכם ב{עיר}. אנחנו בונים לעסקים קטנים סוכן AI שעונה ללקוחות בוואטסאפ ובאתר 24/7, קובע תורים ואוסף פניות — גם כשאתם עסוקים.\n\nאשמח לשלוח הדגמה קצרה. מתי נוח לדבר?\n\nקטי שגב · Segev MKG",
+        'מספרות, קוסמטיקה וטיפוח, רואי חשבון, עורכי דין, סוכני ביטוח, משרדי תיווך, רופאי שיניים, קליניקות, חדרי כושר וסטודיו, מוסכים',
+        'חיפה, קריית מוצקין, קריית ביאליק, קריית אתא, קריית ים, נשר, טירת כרמל',
+    ]);
+    echo "lead hunter agent created\n";
+}
