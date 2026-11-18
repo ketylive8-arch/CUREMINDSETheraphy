@@ -1,0 +1,26 @@
+# מחבר את מערכת הלידים למסד הנתונים הקבוע (segev-mkg-db), כדי שלידים, סוכנים והסרות לא יימחקו בעדכונים.
+services:
+  - type: web
+    name: segev-mkg-leads
+    runtime: docker
+    plan: starter
+    region: oregon
+    repo: https://github.com/ketylive8-arch/CUREMINDSETheraphy
+    branch: claude/curemindset-lead-detection-system-2muun6
+    dockerfilePath: ./lead-system/Dockerfile
+    dockerContext: ./lead-system
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: segev-mkg-db
+          property: connectionString
+
+databases:
+  - name: segev-mkg-db
+    databaseName: segev_mkg_db
+    user: segev_mkg_db_user
+    plan: basic-256mb
+    region: oregon
+    postgresMajorVersion: "16"
+    ipAllowList: []
