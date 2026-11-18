@@ -1,0 +1,269 @@
+/* brand-2026.css — CureMindset / קטי שגב
+ * שכבת שיפור אחידה לכל הדפים הסטטיים: נגישות, רספונסיביות, טיפוגרפיה ועיצוב.
+ * נטענת אחרונה אחרי cm3.css / modern.css / site-nav.css, ומשתמשת במשתנים
+ * הקיימים (--paper, --ink, --gold...) עם נפילה לערכי DESIGN_TOKENS.md.
+ */
+
+:root{
+  --cm-gold:#C9A96E;
+  --cm-gold-alt:#C2974A;
+  --cm-gold-deep:#8A6A2F;
+  --cm-gold-soft:#EFE3CC;
+  --cm-page:#FAF8F4;
+  --cm-page-alt:#FBF7EF;
+  --cm-card:#FFFFFF;
+  --cm-beige:#E8E0D5;
+  --cm-ink:#2D2A26;
+  --cm-ink-2:#6B6560;
+  --cm-muted:#9B958F;
+  --cm-soft-blue:#B8D4E3;
+  --cm-focus:#C2974A;
+  --cm-radius-sm:8px;
+  --cm-radius-md:12px;
+  --cm-radius-lg:18px;
+  --cm-shadow-card:0 1px 3px rgba(45,42,38,.06), 0 8px 24px -12px rgba(45,42,38,.10);
+  --cm-shadow-elevated:0 20px 48px -20px rgba(194,151,74,.35);
+  --cm-tap:44px;
+}
+
+/* ---------- 1. בסיס טיפוגרפי ורספונסיבי ---------- */
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{
+  font-family:Assistant, Rubik, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4,.display{ font-family:Rubik, Assistant, sans-serif; line-height:1.25; }
+h1{ font-weight:800; font-size:clamp(28px, 5.2vw, 44px); }
+h2{ font-weight:700; font-size:clamp(23px, 3.6vw, 32px); }
+h3{ font-weight:700; font-size:clamp(18px, 2.4vw, 22px); }
+p, li{ font-size:clamp(16px, 1.5vw, 17px); }
+small, .small, figcaption{ font-size:clamp(13px, 1.2vw, 14px); }
+
+/* קריאות: רוחב שורה נוח, מרווח בין פסקאות */
+main p, main li{ max-width:72ch; }
+main p{ margin-block:.85em; }
+
+/* ---------- 2. מדיה וגלילה אופקית ---------- */
+img, svg, video, iframe{ max-width:100%; height:auto; }
+img{ border-radius:var(--cm-radius-sm); }
+.table-wrap, .table-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+pre, code{ overflow-x:auto; }
+
+/* ---------- 3. פוקוס נראה לכל אלמנט אינטראקטיבי (WCAG 2.4.7) ---------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+.btn:focus-visible{
+  outline:3px solid var(--cm-focus);
+  outline-offset:2px;
+  border-radius:4px;
+}
+a{ text-underline-offset:.22em; }
+
+/* קישור דילוג לתוכן (WCAG 2.4.1) */
+.skip-link{
+  position:absolute;
+  inset-inline-start:12px;
+  top:-60px;
+  z-index:9999;
+  background:var(--cm-card);
+  color:var(--cm-gold-deep);
+  font-family:Rubik,Assistant,sans-serif;
+  font-weight:700;
+  font-size:15px;
+  padding:12px 18px;
+  border:2px solid var(--cm-gold-alt);
+  border-radius:var(--cm-radius-md);
+  box-shadow:var(--cm-shadow-card);
+  text-decoration:none;
+  transition:top .15s ease;
+}
+.skip-link:focus{ top:12px; }
+#main:focus{ outline:none; }
+
+/* ---------- 4. יעדי מגע נוחים (WCAG 2.5.8) ---------- */
+@media (pointer:coarse){
+  .btn, button, a.btn, input[type=submit], input[type=button]{
+    min-height:var(--cm-tap);
+    padding-block:12px;
+  }
+  .site-nav a{ min-height:var(--cm-tap); display:flex; align-items:center; }
+  .nav-toggle{ width:var(--cm-tap); height:var(--cm-tap); }
+}
+.btn, a.btn, button{
+  transition:background-color .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+}
+@media (hover:hover){
+  .btn:hover, a.btn:hover, button:hover{ transform:translateY(-1px); }
+}
+
+/* ---------- 5. טפסים: קריאים, נגישים, בלי זום במובייל ---------- */
+input, select, textarea{
+  font-family:inherit;
+  font-size:16px;              /* מונע זום אוטומטי ב-iOS */
+  min-height:var(--cm-tap);
+  border-radius:var(--cm-radius-sm);
+}
+label{ display:inline-block; margin-bottom:6px; font-weight:600; color:var(--cm-ink); }
+input:invalid:not(:placeholder-shown){ border-color:#DC2626; }
+.field-error, .error-msg{ color:#B3261E; font-size:14px; }
+
+/* ---------- 6. כרטיסים ומשטחים אחידים ---------- */
+.card, .tile, .box, .panel{
+  background:var(--cm-card);
+  border-radius:var(--cm-radius-md);
+  box-shadow:var(--cm-shadow-card);
+}
+
+/* ---------- 7. מובייל: מרווחים, כותרות וטבלאות ---------- */
+@media (max-width:860px){
+  main{ padding-inline:16px; }
+  h1{ margin-block:.5em .4em; }
+  section{ padding-block:clamp(28px, 6vw, 48px); }
+  .wrap{ padding-inline:16px; }
+  /* כפתורים ברוחב מלא כשיש כמה בשורה */
+  .hero .btn, .cta .btn{ width:100%; max-width:420px; }
+  table{ display:block; overflow-x:auto; white-space:nowrap; }
+}
+@media (max-width:480px){
+  h1{ font-size:clamp(26px, 7.4vw, 32px); }
+  h2{ font-size:clamp(21px, 6vw, 26px); }
+  blockquote{ margin-inline:0; }
+}
+
+/* ---------- 8. תנועה מופחתת (WCAG 2.3.3) ---------- */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+/* ---------- 9. ניגודיות וסימון מצב ניווט ---------- */
+.site-nav a[aria-current="page"],
+.site-nav a.active{
+  color:var(--cm-gold-deep);
+  font-weight:700;
+  text-decoration:underline;
+  text-decoration-thickness:2px;
+  text-underline-offset:.35em;
+}
+.visually-hidden{
+  position:absolute !important;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0);
+  white-space:nowrap;
+  border:0;
+}
+
+/* ---------- 10. הדפסה ---------- */
+@media print{
+  .site-nav, .nav-toggle, .skip-link, .hm-social, .cta-sticky, .float-btn{ display:none !important; }
+  body{ background:#fff; color:#000; }
+  a[href^="http"]::after{ content:" (" attr(href) ")"; font-size:11px; }
+}
+
+/* ---------- 11. תיקון ההירו: קרם וזהב במקום רקע כהה ---------- */
+section.hero, #root section.hero, .hero{
+  background:radial-gradient(130% 90% at 50% 0%, #FFFFFF 0%, #FBF7EF 55%, #F3E9D6 100%) !important;
+  color:var(--cm-ink) !important;
+  border-block-end:1px solid rgba(194,151,74,.25);
+}
+.hero h1, .hero h2, .hero h3, .hero p, .hero li, .hero .lead{
+  color:var(--cm-ink) !important;
+}
+.hero .lead, .hero p{ color:#4F4942 !important; }
+#root .hero a:not(.btn), .hero a:not(.btn){
+  color:var(--cm-gold-deep) !important;
+}
+.hero .btn.ghost, #root .hero .btn.ghost{
+  color:var(--cm-gold-deep) !important;
+  border-color:rgba(138,106,47,.45) !important;
+  background:#FFFFFF !important;
+}
+.hero .btn, .hero .btn.primary{
+  background:var(--cm-gold) !important;
+  color:#2D2A26 !important;
+  border-color:var(--cm-gold) !important;
+}
+#root .hero .hm-social a, .hero .hm-social a{ color:var(--cm-gold-deep) !important; }
+/* מניעת משטחים כהים בכל האתר */
+[style*="background:#1E1A15"], [style*="background: #1E1A15"]{
+  background:linear-gradient(180deg,#FFFFFF 0%,#FBF7EF 100%) !important;
+  color:var(--cm-ink) !important;
+}
+
+/* ---------- 12. קו נקי אלגנטי: לבן, אוויר, טיפוגרפיה עדינה ---------- */
+:root{
+  --cm-white:#FFFFFF;
+  --cm-offwhite:#FBFBFD;
+  --cm-hairline:#EFEFF2;
+  --cm-ink-soft:#1D1D1F;
+  --cm-ink-body:#424245;
+}
+html, body{ background:var(--cm-white) !important; }
+body{ color:var(--cm-ink-body); letter-spacing:-0.003em; }
+
+/* כותרות: גדולות, מדויקות, בלי כבדות מיותרת */
+h1, .hero h1{ font-weight:700 !important; letter-spacing:-0.022em !important; line-height:1.12 !important; color:var(--cm-ink-soft) !important; }
+h2{ font-weight:600 !important; letter-spacing:-0.016em !important; color:var(--cm-ink-soft) !important; }
+h3, h4{ font-weight:600 !important; letter-spacing:-0.01em !important; color:var(--cm-ink-soft) !important; }
+.hero .lead, .hero p{ color:var(--cm-ink-body) !important; font-weight:400 !important; }
+
+/* הירו: לבן נקי, בלי גרדיאנט צבעוני */
+section.hero, #root section.hero, .hero{
+  background:var(--cm-white) !important;
+  color:var(--cm-ink-soft) !important;
+  border-block-end:1px solid var(--cm-hairline) !important;
+  padding-block:clamp(64px,9vw,120px) !important;
+}
+
+/* משטחים: לבן, קו שיער דק, בלי צל כבד */
+section, .section{ background:transparent; }
+.card, .tile, .box, .panel, .price, .service{
+  background:var(--cm-white) !important;
+  border:1px solid var(--cm-hairline) !important;
+  box-shadow:none !important;
+  border-radius:18px !important;
+}
+.card:hover, .tile:hover{ box-shadow:0 8px 28px -18px rgba(0,0,0,.18) !important; }
+
+/* כפתורים: פשוטים ונקיים, זהב רק כמבטא */
+.btn, a.btn, button.btn{
+  border-radius:999px !important;
+  box-shadow:none !important;
+  font-weight:600 !important;
+  letter-spacing:0 !important;
+}
+.btn.primary, .btn:not(.ghost), a.btn:not(.ghost){
+  background:var(--cm-ink-soft) !important;
+  color:#FFFFFF !important;
+  border:1px solid var(--cm-ink-soft) !important;
+}
+.btn.ghost, a.btn.ghost{
+  background:transparent !important;
+  color:var(--cm-ink-soft) !important;
+  border:1px solid #D2D2D7 !important;
+}
+.btn.primary:hover, .btn:not(.ghost):hover{ opacity:.88; }
+
+/* קישורים: זהב עמוק, קו תחתון דק */
+main a:not(.btn){ color:var(--cm-gold-deep); text-decoration-color:rgba(138,106,47,.35); }
+main a:not(.btn):hover{ text-decoration-color:var(--cm-gold-deep); }
+
+/* ריווח נדיב, טקסט קצר לשורה */
+main p, main li{ max-width:68ch; line-height:1.72; }
+section{ padding-block:clamp(56px,7vw,96px); }
+hr{ border:0; border-top:1px solid var(--cm-hairline); margin-block:48px; }
+
+/* ניקוי עיטורים כבדים מהאתר הקיים */
+.hm-social a, .badge, .pill{ box-shadow:none !important; }
