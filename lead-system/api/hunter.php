@@ -268,9 +268,19 @@ function hunt_search(string $q): array
     return $out;
 }
 
+/** ניקוי רווחים בטוח: אתר עם קידוד שבור לא מפיל את הריצה. */
+function hunt_squash(?string $t): string
+{
+    $t = (string) $t;
+    if (!mb_check_encoding($t, 'UTF-8')) {
+        $t = mb_convert_encoding($t, 'UTF-8', 'UTF-8, Windows-1255, ISO-8859-8');
+    }
+    return trim((string) preg_replace('/\s+/u', ' ', $t));
+}
+
 function hunt_clean(string $h): string
 {
-    return trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($h), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    return hunt_squash(html_entity_decode(strip_tags($h), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
 }
 
 /** שם העסק מתוך כותרת התוצאה: החלק הראשון לפני | / - / – / · */
@@ -465,7 +475,7 @@ function hunt_fill(string $tpl, array $lead): string
 /** אחרי המילוי: שורות ריקות כפולות (למשל כשאין משפט מהאתר) מצטמצמות. */
 function hunt_tidy(string $t): string
 {
-    return trim(preg_replace("/\n{3,}/u", "\n\n", $t));
+    return trim((string) preg_replace("/\n{3,}/", "\n\n", $t));
 }
 
 /** משפט אחד אמיתי מהאתר של העסק: תיאור האתר (meta description), אם הוא קצר ובעברית. */
@@ -482,7 +492,7 @@ function hunt_site_about(string $site): string
         && !preg_match('/<meta[^>]+content=["\']([^"\']{20,220})["\'][^>]*(?:name|property)=["\'](?:og:)?description["\']/iu', $html, $m)) {
         return '';
     }
-    $d = trim(preg_replace('/\s+/u', ' ', html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $d = hunt_squash(html_entity_decode($m[1], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     // רק תיאור בעברית, בלי כתובות ומספרי טלפון
     if (!preg_match('/\p{Hebrew}{3,}/u', $d) || preg_match('/(https?:|www\.|\d{3}-?\d{7})/u', $d)) {
         return '';
@@ -558,8 +568,8 @@ function hunt_site_text(string $site): string
     if ($code < 200 || $code >= 400) {
         return '';
     }
-    $html = preg_replace('#<(script|style|noscript)[^>]*>.*?</\1>#si', ' ', $html);
-    $text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags((string) $html), ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    $html = (string) preg_replace('#<(script|style|noscript)[^>]*>.*?</\1>#si', ' ', (string) $html);
+    $text = hunt_squash(html_entity_decode(strip_tags((string) $html), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     return mb_substr($text, 0, 2000);
 }
 
@@ -613,6 +623,7 @@ function hunt_run_agent(array $agent, float $deadline): string
             if ($new >= HUNT_MAX_NEW_PER_RUN || microtime(true) >= $deadline) {
                 break;
             }
+            try { // עסק אחד בעייתי לא עוצר את כל הריצה
             $host = $b['website'] ? hunt_host($b['website']) : '';
             $dup = $pdo->prepare('SELECT 1 FROM leads WHERE owner_user_id = ? AND (company = ? OR (? <> \'\' AND website LIKE ?)) LIMIT 1');
             $dup->execute([$owner, $b['name'], $host, '%' . $host . '%']);
@@ -661,6 +672,9 @@ function hunt_run_agent(array $agent, float $deadline): string
             $new++;
             if ($email) {
                 $withEmail++;
+            }
+            } catch (Throwable $e) {
+                $notes[] = ($b['name'] ?? '?') . ': ' . $e->getMessage();
             }
         }
     }
