@@ -282,3 +282,74 @@ hr{ border:0; border-top:1px solid var(--cm-hairline); margin-block:48px; }
 .ctaband{background:linear-gradient(180deg,#FFFFFF 0%,#FBF7EF 100%);border:1px solid var(--cm-hairline,#EFEFF2);border-radius:20px;padding:clamp(24px,4vw,40px);margin:36px 0 8px}
 .ctaband h2{margin:0 0 8px}
 .disclaimer{font-size:13.5px;color:#6B6560;line-height:1.65;margin:22px 0 8px;padding-top:16px;border-top:1px solid var(--cm-hairline,#EFEFF2)}
+
+/* ---------- 14. כפתורים בזהב בננה (לא חום) ---------- */
+:root{
+  --cm-banana:#E9C97F;
+  --cm-banana-deep:#DDB863;
+  --cm-banana-soft:#F3E2B8;
+}
+.btn.primary, .btn:not(.ghost), a.btn.primary, a.btn:not(.ghost),
+button.btn.primary, input[type=submit]{
+  background:var(--cm-banana) !important;
+  color:#2D2A26 !important;
+  border:1px solid var(--cm-banana-deep) !important;
+  box-shadow:none !important;
+}
+.btn.primary:hover, .btn:not(.ghost):hover, a.btn:not(.ghost):hover{
+  background:var(--cm-banana-deep) !important;
+  color:#2D2A26 !important;
+  opacity:1 !important;
+}
+.btn.ghost, a.btn.ghost{
+  background:#FFFFFF !important;
+  color:var(--cm-gold-deep) !important;
+  border:1px solid var(--cm-banana-deep) !important;
+}
+.cta-top{
+  background:var(--cm-banana) !important;
+  color:#2D2A26 !important;
+  border:1px solid var(--cm-banana-deep) !important;
+}
+.cta-top:hover{ background:var(--cm-banana-deep) !important; color:#2D2A26 !important; }
+.ctaband .btn.primary{ background:var(--cm-banana) !important; }
+
+/* ---------- 15. סגירות סופיות: לבן, כפתור זהב בננה, ריווח אחיד וצר ---------- */
+html body{ background:#FFFFFF !important; }
+html body main.wrap{ max-width:920px; margin-inline:auto; padding-inline:clamp(16px,4vw,28px); }
+html body main .btn.primary, html body main a.btn.primary, html body a.btn.primary,
+html body .cta-top, html body .hero .btn.primary{
+  background:var(--cm-banana,#E9C97F) !important;
+  color:#2D2A26 !important;
+  border:1.5px solid var(--cm-banana-deep,#DDB863) !important;
+  box-shadow:none !important;
+}
+html body main .btn.primary:hover, html body a.btn.primary:hover, html body .cta-top:hover,
+html body .hero .btn.primary:hover{
+  background:var(--cm-banana-deep,#DDB863) !important;
+  color:#2D2A26 !important;
+}
+html body main .btn.ghost, html body main a.btn.ghost, html body .hero .btn.ghost{
+  background:#FFFFFF !important;
+  color:var(--cm-gold-deep,#8A6A2F) !important;
+  border:1.5px solid var(--cm-banana-deep,#DDB863) !important;
+}
+/* ריווח אחיד וצפוף יותר: בלי חורים ריקים בין פסקאות */
+html body main{ padding-block:0 !important; }
+html body .hero{ padding-block:clamp(36px,5vw,64px) !important; }
+html body .body-sec{ padding-block:6px 24px !important; max-width:720px; }
+html body .body-sec p{ margin:9px 0 !important; line-height:1.7 !important; }
+html body .body-sec h2{ margin:30px 0 8px !important; }
+html body .body-sec h3{ margin:18px 0 4px !important; }
+html body .body-sec .bullets{ margin:10px 0 12px !important; }
+html body .body-sec .bullets li{ margin:5px 0 !important; }
+html body .ctaband{ margin:26px 0 6px !important; }
+html body .disclaimer{ margin:16px 0 0 !important; }
+/* אחידות בין הדפים */
+html body .hero h1{ max-width:22ch; }
+html body .hero .lead{ max-width:52ch; }
+html body .btnrow{ gap:10px !important; }
+/* לבן מלא גם על מעטפת האנימציה והסקשנים */
+html body .sc-grain, html body #sc-canvas, html body section, html body .hero,
+html body footer.site, html body .ctaband{ background-color:#FFFFFF !important; }
+html body .ctaband{ background-image:none !important; }
