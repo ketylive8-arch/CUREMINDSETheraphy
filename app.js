@@ -21,8 +21,8 @@ function HmHero() {
   return (
     <section className="hero" id="top"><div className="hero-grid"><div>
       <h1>יש דברים שלא נפתרים בכוח הרצון.</h1>
-      <p className="lead">הם נמצאים עמוק יותר, בדפוסים שהתת-מודע למד מזמן, ושהגוף מגיב לפיהם לפני שהספקת לחשוב. כי הם לא נמצאים שם.</p>
-      <p>שיטת CureMindset עובדת בדיוק שם: על השורש, לא רק על מה שנראה מבחוץ. לנוער, לצעירים ולמבוגרים. בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
+      <p className="lead">הם יושבים עמוק יותר, בדפוסים שהתת-מודע למד מזמן. הגוף מגיב לפני שהמחשבה מספיקה להגיע.</p>
+      <p>שיטת CureMindset עובדת בדיוק שם. על השורש, לא רק על מה שנראה מבחוץ. לנוער, לצעירים ולמבוגרים, בקריית מוצקין, בקריית חיים ובזום לכל הארץ.</p>
       <div className="btnrow">
         <a className="btn primary" href={HM_CAL} target="_blank" rel="noopener">לשיחת היכרות</a>
         <a className="btn ghost" href="/method">איך השיטה עובדת</a>
@@ -113,6 +113,7 @@ const CONTENT = {
       { label: "לצעירים", href: "/young-adults" },
       { label: "למבוגרים", href: "/adults" },
       { label: "עזרה וירטואלית", href: "/online" },
+      { label: "ליווי דיגיטלי", href: "/today" },
       { label: "שאלות נפוצות", href: "/faq" },
     ],
     login: "שיחת היכרות",
@@ -2023,14 +2024,15 @@ function HmBody() {
     <>
       <div className="pull-quote">הדפוס נלמד. ולכן אפשר ללמד אותו מחדש.</div>
       <HmPillars />
-      <section className="blk"><h2>איך עובדים איתי</h2>
-        <div className="cards">
-          <div className="card"><h3>תהליך אישי</h3><p>שישה מפגשים אישיים לפחות, בקליניקה או בזום, סביב המטרה האישית שלך.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
-          <div className="card"><h3>תוכנית קבוצתית</h3><p>מסע מובנה בקבוצה קטנה של 4 עד 6 משתתפים, פנים אל פנים או בזום.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
-          <div className="card"><h3>ליווי דיגיטלי</h3><p>תרגול יומיומי בין המפגשים: שאלות רפלקציה, קבצי אודיו וליווי בתוך מסגרת מוגדרת.</p><p><a className="go" href="/programs">לפרטים ←</a></p></div>
-        </div>
-        <p>ההתאמה נבדקת בשיחת היכרות של 20 דקות, בלי התחייבות.</p>
+      <section className="blk"><h2>במה אני עובדת</h2>
+        <ul className="signs">
+          <li>אימון רגשי ותהליכי עומק מבוססי NLP</li>
+          <li>ליווי אישי לבניית חוסן וביטחון עצמי</li>
+          <li>סדנאות חוסן לנוער (12 עד 17)</li>
+          <li><a href="/today">אזור אישי דיגיטלי ומאמן מנטלי חכם, זמין 24/7</a></li>
+        </ul>
       </section>
+      <div className="pull-quote">השינוי לא קורה כשמבינים.<br />הוא קורה כשהגוף לומד תגובה חדשה.</div>
       <section className="blk"><h2>מה בעצם קורה שם בפנים?</h2>
         <p>חרדה, עומס, דימוי עצמי נמוך ודפוסים חוזרים לא "נופלים עלינו". הם נלמדים.</p>
         <p>בשנים הראשונות לחיים המוח לומד מה בטוח ומה לא. הבגרות מגיעה, הסביבה משתנה, והדפוס נשאר ופועל אוטומטית.</p>
