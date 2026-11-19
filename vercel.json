@@ -4,11 +4,6 @@
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/parents.html",
-      "destination": "/parents",
-      "permanent": true
-    },
-    {
       "source": "/gifts",
       "destination": "/programs",
       "permanent": true
@@ -52,6 +47,36 @@
       "source": "/mental-coaching-teens",
       "destination": "/cure-teens",
       "permanent": true
+    },
+    {
+      "source": "/schools",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/workshop-inner-compass",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/schools.html",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/workshop-inner-compass.html",
+      "destination": "/programs",
+      "permanent": true
+    },
+    {
+      "source": "/parents",
+      "destination": "/cure-teens",
+      "permanent": true
+    },
+    {
+      "source": "/parents.html",
+      "destination": "/cure-teens",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -90,10 +115,6 @@
     {
       "source": "/cure-teens",
       "destination": "/cure-teens.html"
-    },
-    {
-      "source": "/parents",
-      "destination": "/parents.html"
     },
     {
       "source": "/method",
@@ -164,10 +185,6 @@
       "destination": "/app-today.html"
     },
     {
-      "source": "/workshop-inner-compass",
-      "destination": "/workshop-inner-compass.html"
-    },
-    {
       "source": "/workshop-cure-teens",
       "destination": "/workshop-cure-teens.html"
     },
@@ -228,12 +245,12 @@
       "destination": "/young-adults.html"
     },
     {
-      "source": "/schools",
-      "destination": "/schools.html"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/parents",
+      "destination": "/cure-teens.html"
     }
   ]
 }

@@ -190,9 +190,6 @@ const CONTENT = {
       label: "למבוגרים",
       href: "/adults"
     }, {
-      label: "מוסדות",
-      href: "/schools"
-    }, {
       label: "עזרה וירטואלית",
       href: "/online"
     }, {
@@ -275,12 +272,6 @@ const CONTENT = {
     title: "סדנאות ותוכניות CureMindset",
     subtitle: "כל סדנה בנפרד — עם התוכן והמסגרת שלה. פרטים ומחיר בשיחה קצרה איתי",
     items: [{
-      icon: "compass",
-      title: "המצפן הפנימי",
-      meta: "3 מפגשים · עד 8 משתתפים",
-      text: "סדנת חוויה קבוצתית בשיטת CURE: לפגוש חרדה, לשחרר חסמים ולחווט מחדש את הדרך שאתה מגיב.",
-      href: "/workshop-inner-compass"
-    }, {
       icon: "user-round",
       title: "CURE Teens",
       meta: "6 מפגשים אישיים",
@@ -2154,11 +2145,6 @@ function HbDigital() {
 /* SECTION 7.5 — סדנאות */
 function HbWorkshops() {
   const list = [{
-    title: "המצפן הפנימי",
-    sub: "Unleash Your Mindset",
-    text: "סדנת הדגל לשחרור דפוסים ובניית מיינדסט — למבוגרים.",
-    href: "/workshop-inner-compass"
-  }, {
     title: "CURE Teens",
     sub: "מסע החוסן למתבגרים",
     text: "חוסן, ביטחון ותקשורת בשפה של גיל ההתבגרות.",
@@ -2324,7 +2310,7 @@ function HmRows({
   }, /*#__PURE__*/React.createElement("h3", null, t), /*#__PURE__*/React.createElement("p", null, p))));
 }
 function HmPillars() {
-  const items = [["חרדה ומתח", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"], ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"], ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"], ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"], ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"], ["מוסדות חינוך", "סדנאות המצפן הפנימי לבתי ספר", "/schools"]];
+  const items = [["חרדה ומתח", "כשהגוף מגיב לפני שהמחשבה מגיעה", "/anxiety-and-stress"], ["ביטחון עצמי ודימוי", "הקול הפנימי שלא מפסיק לבקר", "/self-confidence"], ["דחיינות והתנעה", "לדעת מה צריך, ולא להתחיל", "/procrastination"], ["נוער 12-17", "הנער שנראה \"בסדר\" — ולא באמת", "/cure-teens"], ["צעירים 18-25", "אחרי צבא, בתקופה של ערפל", "/young-adults"]];
   return /*#__PURE__*/React.createElement("section", {
     className: "blk",
     id: "worlds"
@@ -2444,7 +2430,7 @@ function HmBody() {
   }, "\u05DC\u05E4\u05D9\u05E8\u05D5\u05D8 \u05D4\u05E9\u05D9\u05D8\u05D4 \u2190"))), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05DC\u05DE\u05D9 \u05D6\u05D4 \u05DE\u05EA\u05D0\u05D9\u05DD?"), /*#__PURE__*/React.createElement(HmRows, {
-    items: [["לנוער 12-17", "קבוצות קטנות של עד 6 נערים ונערות. חרדת בחינות, מתח חברתי, דימוי עצמי, מסכים והתנתקות. שלושה מפגשים עם כלים שנשארים."], ["לצעירים 18-25", "אחרי צבא, בלימודים, בתחילת הדרך. ערפל, השוואה, מתח לבחור. קבוצה קטנה או ליווי אישי."], ["למבוגרים", "ליווי אישי לתהליכי עומק: חרדה, חסמים, דפוסים חוזרים במערכות יחסים ובקריירה."], ["למוסדות חינוך וארגוני נוער", "סדנאות \"המצפן הפנימי\" לבתי ספר, מתנ\"סים ומכינות. תוכנית מובנית, מותאמת לגיל ולצרכים."]]
+    items: [["לנוער 12-17", "קבוצות קטנות של עד 6 נערים ונערות. חרדת בחינות, מתח חברתי, דימוי עצמי, מסכים והתנתקות. שלושה מפגשים עם כלים שנשארים."], ["לצעירים 18-25", "אחרי צבא, בלימודים, בתחילת הדרך. ערפל, השוואה, מתח לבחור. קבוצה קטנה או ליווי אישי."], ["למבוגרים", "ליווי אישי לתהליכי עומק: חרדה, חסמים, דפוסים חוזרים במערכות יחסים ובקריירה."]]
   }), /*#__PURE__*/React.createElement("ul", {
     className: "chips"
   }, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
@@ -2453,9 +2439,7 @@ function HmBody() {
     href: "/young-adults"
   }, "\u05DC\u05E6\u05E2\u05D9\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
     href: "/adults"
-  }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")), /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("a", {
-    href: "/schools"
-  }, "\u05DC\u05DE\u05D5\u05E1\u05D3\u05D5\u05EA")))), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
+  }, "\u05DC\u05DE\u05D1\u05D5\u05D2\u05E8\u05D9\u05DD")))), /*#__PURE__*/React.createElement(HmAi, null), /*#__PURE__*/React.createElement("section", {
     className: "blk"
   }, /*#__PURE__*/React.createElement("h2", null, "\u05D0\u05D9\u05DA \u05E0\u05E8\u05D0\u05D4 \u05D4\u05EA\u05D4\u05DC\u05D9\u05DA \u05D1\u05E4\u05D5\u05E2\u05DC"), /*#__PURE__*/React.createElement(HmRows, {
     items: [["שיחת היכרות", "20 דקות, בטלפון או בזום. מספרים מה קורה, ואני אומרת בכנות אם זה מתאים."], ["תיאום ציפיות", "מה המטרה, מה המסלול, כמה מפגשים ומה קורה ביניהם."], ["העבודה עצמה", "מפגשי עומק, קבוצה או אישי, עם כלים לתרגול בבית."], ["בדיקת שינוי", "לא לפי \"איך מרגיש היום\", אלא לפי מה שהשתנה בחיים."]]
