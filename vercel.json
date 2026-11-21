@@ -383,6 +383,14 @@
       "destination": "/app-today.html"
     },
     {
+      "source": "/practice",
+      "destination": "/practice.html"
+    },
+    {
+      "source": "/progress",
+      "destination": "/progress.html"
+    },
+    {
       "source": "/dashboard",
       "destination": "/app.html"
     }

@@ -354,7 +354,7 @@ def build():
     body = hero("המאמן המנטלי שלך, זמין 24/7",
                 "בין המפגשים, ולמי שעדיין לא התחיל תהליך אישי, יש לך מקום דיגיטלי פרטי. מבוסס על שיטת CureMindset. תמיד זמין, תמיד ממוקד, תמיד בקצב שלך.",
                 photo="/images/kety-digital.jpg", alt="קטי שגב, ליווי דיגיטלי",
-                extra_btns=f'<div class="btns"><a class="btn" href="/dashboard">היכנס לאזור האישי</a><a class="btn ghost" href="/dashboard">התחל תרגול עכשיו</a><a class="btn ghost" href="{CAL}" target="_blank" rel="noopener">לשיחת היכרות אישית</a></div>')
+                extra_btns=f'<div class="btns"><a class="btn" href="/dashboard">היכנס לאזור האישי</a><a class="btn ghost" href="/practice">התחל תרגול עכשיו</a><a class="btn ghost" href="{CAL}" target="_blank" rel="noopener">לשיחת היכרות אישית</a></div>')
     body += sec("למה זה בנוי כך", '''<p>רוב האנשים יודעים מה צריך לעשות. הבעיה היא שבשעה שבה המתח עולה, הידע לא מספיק. הגוף כבר מגיב, המחשבות רצות, והכלים נשארים רחוק.</p>
 <p>האזור האישי הדיגיטלי נבנה בדיוק בשביל הרגעים האלה. לא במקום מפגש אישי, אלא כחיזוק אמיתי שלו. וכמקום בטוח לתרגל, גם כשאין לך כוח "לעבוד על עצמך".</p>''')
     body += sec("מה יש בפנים", '''<p><b>מאמן מנטלי חכם.</b> מבוסס על עקרונות CureMindset. אתה בוחר מה מטריד אותך עכשיו, והוא נותן לך תרגיל מדויק והדרכה קולית.</p>
@@ -372,6 +372,22 @@ def build():
     body += note() + related([("/method", "השיטה"), ("/faq", "שאלות נפוצות"), ("/contact", "צור קשר")])
     page("/today", "app-today.html", "המאמן המנטלי שלך, זמין 24/7 | קטי שגב · CureMindset",
          "אזור אישי דיגיטלי ומאמן מנטלי חכם מבוסס שיטת CureMindset: תרגילים קצרים, הדרכה קולית וקבצי שמע לחיזוק חוסן פנימי, בין המפגשים ובכל שעה.", body)
+
+    # ---------- תרגול מודרך ----------
+    body = hero("תרגול מודרך", "כלי קצר, בקצב שלך: כפתור חירום לרגעי מתח וכאב, התבוננות בתחושה, תהליך להרגעת כאב ובדיקה מהירה שמראה איך זה משתנה. בכל רגע אפשר לעצור.", extra_btns=" ")
+    body += '<section class="sec"><div class="wrap"><noscript><p>הכלי דורש JavaScript. אפשר לקבוע שיחת היכרות ולתרגל יחד: <a href="' + CAL + '">לקביעת שיחה</a>.</p></noscript><div id="practice"></div></div></section>'
+    body += '<script src="/practice.js" defer></script>'
+    body += note(" אם הכאב חדש, חריף או לא מוסבר, יש לפנות לרופא.") + related([("/progress", "מדד חוסן והתקדמות"), ("/today", "הליווי הדיגיטלי"), ("/contact", "צור קשר")])
+    page("/practice", "practice.html", "תרגול מודרך: כפתור חירום, Somatic Tracking ותהליך להרגעת כאב | CureMindset",
+         "כלי תרגול מודרך בעברית: כפתור חירום, נשימה, התבוננות בתחושה ותהליך להרגעת כאב. התשובות נשארות במכשיר שלך.", body)
+
+    # ---------- מדד חוסן והתקדמות ----------
+    body = hero("מדד חוסן והתקדמות אישי", "השיקוף של התהליך שלך: מה הצלחת, איפה עדיין יש עומס, ומה הצעד הבא. מחושב מהתרגולים והמדידות שלך בלבד.", extra_btns='<div class="btns"><a class="btn" href="/practice#check">לבדיקה מהירה</a><a class="btn ghost" href="/practice">לתרגול מודרך</a></div>')
+    body += '<div id="progress"></div><noscript><div class="wrap"><p>המדד דורש JavaScript.</p></div></noscript>'
+    body += '<script src="/vendor/react.min.js"></script><script src="/vendor/react-dom.min.js"></script><script src="/progress.js" defer></script>'
+    body += note(" המדד אינו אבחון ואינו מחליף טיפול. הנתונים נשמרים במכשיר שלך בלבד.") + related([("/practice", "תרגול מודרך"), ("/today", "הליווי הדיגיטלי"), ("/contact", "צור קשר")])
+    page("/progress", "progress.html", "מדד חוסן והתקדמות אישי | CureMindset",
+         "מסך אישי שמשקף את ההצלחות, האתגרים והדפוסים שלך, עם כפתור פעולה לתרגול המתאים. הנתונים נשארים במכשיר שלך.", body)
 
     # ---------- שאלות נפוצות ----------
     body = hero("שאלות נפוצות", "כל מה שחשוב לדעת לפני שמתחילים.", extra_btns="")
