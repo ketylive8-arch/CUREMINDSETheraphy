@@ -2,10 +2,10 @@
    Salesforce structure (objects, list views, status, record cards) in a clean,
    Apple-light skin. RTL. Light + dark. Mapped onto the app's existing classes. */
 :root{
-  /* neutrals (cool, deliberate) */
-  --bg:#F4F5F7; --surface:#FFFFFF; --panel:#FAFBFC; --sunken:#EEF0F3;
-  --ink:#16181D; --ink-2:#5B616E; --ink-3:#9097A1;
-  --line:#E4E7EC; --line-2:#D7DBE2;
+  /* neutrals — warm greige (אפור כתמתם), cards stay crisp white for contrast */
+  --bg:#ECE7DF; --surface:#FFFFFF; --panel:#F7F4EE; --sunken:#E7E1D6;
+  --ink:#201D18; --ink-2:#6A635A; --ink-3:#9B9388;
+  --line:#E3DCD0; --line-2:#D6CDBE;
   /* brand + action */
   --accent:#B08A4F;            /* Segev gold — identity mark, used sparingly */
   --accent-soft:#F3EADA;
@@ -224,7 +224,7 @@ td .email{color:var(--ink-2);font-size:13px;direction:ltr;text-align:start}
 
 /* ---------- Entry / signup landing ---------- */
 .entry{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:52px;
-  padding:40px 24px;background:radial-gradient(1100px 520px at 82% -10%,var(--accent-soft),transparent),var(--bg);flex-wrap:wrap}
+  padding:40px 24px;background:linear-gradient(180deg,#F1ECE4,var(--bg));flex-wrap:wrap}
 .entry-hero{max-width:430px;flex:0 1 430px}
 .entry-hero .logo-lg{width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#c9a96e,#9a7b33);
   color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:27px;
