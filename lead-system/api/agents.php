@@ -61,7 +61,8 @@ function handle_list_agents(): void
 {
     $u = require_admin();
     $st = db()->prepare(
-        'SELECT id, name, platform, permissions, webhook_url, status, last_action_at, created_at
+        'SELECT id, name, platform, permissions, webhook_url, status, last_action_at, created_at,
+                kind, instructions, offer, subject, targets, area, active, last_run_at, last_result, found_total
          FROM agents WHERE owner_user_id = ? ORDER BY id DESC'
     );
     $st->execute([(int) $u['id']]);
@@ -80,14 +81,24 @@ function handle_create_agent(): void
     if ($webhook !== '' && !filter_var($webhook, FILTER_VALIDATE_URL)) {
         json_err('כתובת Webhook לא תקינה');
     }
+    $hunter = ($in['kind'] ?? '') === 'hunter';
     db()->prepare(
-        'INSERT INTO agents (owner_user_id, name, platform, permissions, webhook_url) VALUES (?,?,?,?,?)'
+        'INSERT INTO agents (owner_user_id, name, platform, permissions, webhook_url, kind, instructions, offer, subject, targets, area, active, status)
+         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)'
     )->execute([
         (int) $u['id'],
         $name,
-        trim((string) ($in['platform'] ?? '')) ?: null,
-        norm_perm((string) ($in['permissions'] ?? 'read')),
+        $hunter ? 'סוכן פנימי' : (trim((string) ($in['platform'] ?? '')) ?: null),
+        $hunter ? 'read_write' : norm_perm((string) ($in['permissions'] ?? 'read')),
         $webhook ?: null,
+        $hunter ? 'hunter' : 'external',
+        trim((string) ($in['instructions'] ?? '')) ?: null,
+        trim((string) ($in['offer'] ?? '')) ?: null,
+        trim((string) ($in['subject'] ?? '')) ?: null,
+        trim((string) ($in['targets'] ?? '')) ?: null,
+        trim((string) ($in['area'] ?? '')) ?: null,
+        $hunter ? 1 : 0,
+        $hunter ? 'connected' : 'disconnected',
     ]);
     $id = last_id('agents');
     log_activity(null, (int) $u['id'], 'add_agent', $name);

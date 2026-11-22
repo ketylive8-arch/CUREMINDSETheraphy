@@ -16,4 +16,7 @@ php seed/seed.php || echo "seed step reported an issue (continuing to serve)"
 # once DATABASE_URL points at Postgres (the data dir is then unused).
 chmod -R 777 /app/data 2>/dev/null || true
 
+# סוכני הלידים: טיימר ברקע שמריץ אותם פעם בשעה (מתחיל מחדש אם נפל).
+( while true; do php docker/hunt-loop.php; echo "[hunter] הטיימר נעצר — מפעיל מחדש"; sleep 30; done ) &
+
 exec apache2-foreground

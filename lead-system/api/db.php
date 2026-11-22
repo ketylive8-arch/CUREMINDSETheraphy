@@ -139,9 +139,6 @@ function migrate(PDO $pdo): void
     // at a chosen time (HH:MM). daily_enabled toggles it on.
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_time TEXT'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_enabled INTEGER DEFAULT 0'); } catch (Throwable $e) {}
-    // Automatic lead engine: the date a client last received their daily leads,
-    // so the scheduler delivers once per day at (or after) their chosen time.
-    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN last_delivery_date TEXT'); } catch (Throwable $e) {}
     // API keys — let AI agents (Make/n8n/Dify) authenticate without the admin
     // password. The full key is shown once; only a hash + prefix are stored.
     $pdo->exec("
@@ -171,6 +168,16 @@ function migrate(PDO $pdo): void
             created_at     $now
         )
     ");
+    // סוכני ציד לידים: סוג, תוכן (מה לעשות + ההצעה), יעדים, ומצב ריצה.
+    foreach ([
+        "kind TEXT DEFAULT 'external'", 'instructions TEXT', 'offer TEXT', 'subject TEXT', 'targets TEXT', 'area TEXT',
+        'active INTEGER DEFAULT 0', 'hunt_cursor INTEGER DEFAULT 0', 'last_run_at TEXT', 'last_result TEXT', 'found_total INTEGER DEFAULT 0',
+    ] as $col) {
+        try { $pdo->exec("ALTER TABLE agents ADD COLUMN $col"); } catch (Throwable $e) {}
+    }
+    // מאיזה סוכן הגיע הליד, וטיוטת ההצעה המותאמת לעסק.
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN agent_id INTEGER'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN draft TEXT'); } catch (Throwable $e) {}
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("

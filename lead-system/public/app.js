@@ -50,6 +50,7 @@
     queued:    { label: "בתור שליחה", dot: "#7e22ce" },
     refinding: { label: "מאתר מייל",  dot: "#0369a1" },
     removed:   { label: "הוסר",      dot: "#888" },
+    callback:  { label: "לחזור אליו", dot: "#0f766e" },
   };
   const Badge = ({ s }) => html`<span class=${"badge " + s}>
     <span class="dot" style=${{ background: (STATUS[s] || {}).dot }}></span>${(STATUS[s] || { label: s }).label}</span>`;
@@ -139,7 +140,7 @@
 
   // ---------- Onboarding wizard ----------
   const BUSINESS_TYPES = ["מלונאות", "קוסמטיקה", "מזון ומשקאות", "אלקטרוניקה", "קליניקה / בריאות", "שיווק ופרסום", "אחר"];
-  const SECTOR_OPTS = ["תעופה / GSA", "מלונות", "יבואנים / מפיצים", "חברות B2B", "קליניקות", "ציוד רפואי", "מסעדנות", "קוסמטיקה", "הייטק"];
+  const SECTOR_OPTS = ["מלונות", "יבואנים / מפיצים", "חברות B2B", "קליניקות", "ציוד רפואי", "מסעדנות", "קוסמטיקה", "הייטק"];
   function Onboarding({ user, onDone }) {
     const [step, setStep] = useState(1);
     const [businessType, setBusinessType] = useState("");
@@ -288,6 +289,7 @@
 
   // ---------- Leads table ----------
   function LeadsTable({ onAction }) {
+    const [offer, setOffer] = useState(null);
     const [leads, setLeads] = useState(null);
     const [status, setStatus] = useState("all");
     const [q, setQ] = useState("");
@@ -346,12 +348,15 @@
                     ? html`<button class="btn sm" onClick=${() => act(l, "refind")}>אתר מייל</button>`
                     : html`<button class="btn sm ghost" onClick=${() => act(l, "followup")}>מייל אחרון</button>`}
                   ${l.email && l.status !== "bounced" && html`<button class="btn sm ghost" onClick=${() => act(l, "resend")}>שלח שוב</button>`}
+                  ${l.draft && html`<button class="btn sm ghost" onClick=${() => setOffer({ to: l.email, subject: l.subject || "", body: l.draft })}>📝 ההצעה</button>`}
+                  ${l.source_url && /^https?:\/\//i.test(l.source_url) && html`<a class="lk" href=${l.source_url} target="_blank" rel="noopener noreferrer" title="איפה נמצא המייל">מקור ↗</a>`}
                 </div></td>
               </tr>`)}
             </tbody>
           </table>`}
         </div>
         ${adding && html`<${AddLeadModal} onClose=${() => setAdding(false)} onSaved=${() => { setAdding(false); load(); }} />`}
+        ${offer && html`<${FollowupModal} draft=${offer} title="ההצעה של הסוכן — טיוטה" onClose=${() => setOffer(null)} />`}
       </div>`;
   }
 
@@ -439,14 +444,14 @@
   }
 
   // ---------- Follow-up modal ----------
-  function FollowupModal({ draft, onClose }) {
+  function FollowupModal({ draft, onClose, title }) {
     const [copied, setCopied] = useState(false);
     function copy() {
       try { navigator.clipboard.writeText(draft.subject + "\n\n" + draft.body); setCopied(true); } catch (e) {}
     }
     return html`<div class="modal-bg" onClick=${onClose}>
       <div class="modal" onClick=${(e) => e.stopPropagation()}>
-        <div class="m-head"><h3>מייל אחרון — טיוטה</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+        <div class="m-head"><h3>${title || "מייל אחרון — טיוטה"}</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
         <div class="m-body">
           <div class="notice">זו טיוטה בלבד. שום דבר לא נשלח ללא אישורך ומקור שליחה מוגדר.</div>
           <div class="kv">אל: <b dir="ltr">${draft.to || "—"}</b></div>
@@ -492,6 +497,8 @@
     const [copied, setCopied] = useState("");
     const [msg, setMsg] = useState("");
     const baseUrl = window.location.origin + "/api";
+    const [editing, setEditing] = useState(null); // סוכן לידים בעריכה ({} = חדש)
+    const [running, setRunning] = useState(0);
 
     const loadAgents = useCallback(async () => { try { const r = await api("/agents"); setAgents(r.agents); } catch (e) { setAgents([]); } }, []);
     const loadKeys = useCallback(async () => { try { const r = await api("/keys"); setKeys(r.keys); } catch (e) { setKeys([]); } }, []);
@@ -504,6 +511,17 @@
       flash("בודק חיבור ל" + a.name + "…");
       try { const r = await api("/agents/" + a.id + "/test", { method: "POST" }); flash((r.ok ? "✅ " : "⚠️ ") + r.detail); loadAgents(); }
       catch (ex) { flash("שגיאה: " + ex.message); }
+    }
+    const hunters = (agents || []).filter((a) => a.kind === "hunter");
+    async function runNow(a) {
+      setRunning(a.id); flash("הסוכן " + a.name + " מחפש עכשיו… (עד דקה)");
+      try { const r = await api("/agents/" + a.id + "/run", { method: "POST" }); flash("✅ " + r.result); }
+      catch (ex) { flash("שגיאה: " + ex.message); }
+      setRunning(0); loadAgents();
+    }
+    async function toggleHunter(a) {
+      await api("/agents/" + a.id + "/update", { method: "POST", body: JSON.stringify({ active: !Number(a.active) }) });
+      loadAgents();
     }
     async function delAgent(a) { if (!confirm("למחוק את הסוכן " + a.name + "?")) return; await api("/agents/" + a.id + "/delete", { method: "POST" }); loadAgents(); }
     async function revoke(k) { if (!confirm("לבטל את המפתח " + k.name + "? סוכנים שמשתמשים בו יתנתקו.")) return; await api("/keys/" + k.id + "/revoke", { method: "POST" }); loadKeys(); }
@@ -521,14 +539,45 @@
           </div>
         </div>
 
+        <!-- Lead hunters -->
+        <div class="card">
+          <div class="head"><h2>סוכני לידים — עובדים לבד כל שעה</h2>
+            <button class="btn sm" onClick=${() => setEditing({})}>➕ סוכן לידים חדש</button></div>
+          <div style=${{ padding: "12px 22px 4px" }}>
+            <div class="notice">כל סוכן מחפש עסקים ברישומים ציבוריים, ולוקח מייל רק מהאתר של העסק או מהרישום שלו, עם קישור למקור. אין מייל מפורסם? הליד נשמר בלי מייל. אף מייל לא מומצא.</div>
+          </div>
+          <div style=${{ padding: "8px 22px 16px" }}>
+            ${!agents ? html`<div class="loading">טוען…</div>` : hunters.length === 0
+              ? html`<div class="loading">עוד אין סוכני לידים. לחצי "סוכן לידים חדש", כתבי לו מה לעשות ומה להציע, ובחרי סוגי עסקים.</div>`
+              : html`<div class="agent-grid">${hunters.map((a) => html`
+                <div class="agent-card" key=${a.id}>
+                  <div class="agent-top">
+                    <div><div class="agent-name">${a.name}</div><div class="agent-plat">${a.area || "—"}</div></div>
+                    <span class="badge ${Number(a.active) ? "sent" : "bounced"}"><span class="dot"></span>${Number(a.active) ? "עובד" : "מושהה"}</span>
+                  </div>
+                  <div class="agent-meta">
+                    <div>סוגי עסקים: <b>${a.targets || "לא נבחרו"}</b></div>
+                    <div>לידים שמצא עד היום: <b>${a.found_total || 0}</b></div>
+                    <div>ריצה אחרונה: ${a.last_run_at ? a.last_run_at.replace("T", " ") : "עוד לא רץ"}</div>
+                    ${a.last_result && html`<div style=${{ color: "var(--ink-2, #666)" }}>${a.last_result}</div>`}
+                  </div>
+                  <div class="row-actions">
+                    <button class="btn sm" onClick=${() => setEditing(a)}>תוכן והגדרות</button>
+                    <button class="btn sm ghost" disabled=${running === a.id} onClick=${() => runNow(a)}>${running === a.id ? "מחפש…" : "הרץ עכשיו"}</button>
+                    <button class="btn sm ghost" onClick=${() => toggleHunter(a)}>${Number(a.active) ? "השהיה" : "הפעלה"}</button>
+                  </div>
+                </div>`)}</div>`}
+          </div>
+        </div>
+
         <!-- Agents -->
         <div class="card">
-          <div class="head"><h2>סוכני AI מחוברים</h2>
+          <div class="head"><h2>סוכנים חיצוניים (Make / n8n / Dify)</h2>
             <button class="btn sm" onClick=${() => setAddingAgent(true)}>➕ הוסף חיבור סוכן</button></div>
           <div style=${{ padding: "16px 22px" }}>
             ${!agents ? html`<div class="loading">טוען…</div>` : agents.length === 0
               ? html`<div class="loading">אין עדיין סוכנים. לחצי "הוסף חיבור סוכן" כדי להתחיל.</div>`
-              : html`<div class="agent-grid">${agents.map((a) => html`
+              : html`<div class="agent-grid">${agents.filter((a) => a.kind !== "hunter").map((a) => html`
                 <div class="agent-card" key=${a.id}>
                   <div class="agent-top">
                     <div>
@@ -573,10 +622,82 @@
           </div>
         </div>
 
+        ${editing && html`<${HunterModal} agent=${editing} onClose=${() => setEditing(null)} onSaved=${() => { setEditing(null); loadAgents(); flash("נשמר. הסוכן ימשיך לחפש לבד כל שעה."); }} />`}
         ${addingAgent && html`<${AddAgentModal} onClose=${() => setAddingAgent(false)} onSaved=${() => { setAddingAgent(false); loadAgents(); }} />`}
         ${genOpen && html`<${GenKeyModal} onClose=${() => setGenOpen(false)} onCreated=${(k) => { setGenOpen(false); setNewKey(k); loadKeys(); }} />`}
         ${newKey && html`<${ShowKeyModal} data=${newKey} onClose=${() => setNewKey(null)} />`}
       </div>`;
+  }
+
+  // ההצעות שהסוכן בוחר מהן לכל עסק. {הכאב} ו-{הצוות} מתמלאים לבד לפי סוג העסק.
+  const DEFAULT_OFFERS = [{"name": "צוות סוכני AI לעסק", "types": [], "subject": "מה הייתם עושים עם עוד שעתיים ביום?", "text": "שלום {שם העסק},\n\n{מהאתר}\n\nנעים מאוד, אני קטי שגב, בעלת SEGEV Master Marketing. כ-15 שנה אני עוסקת בפיתוח עסקי ובשיווק לעסקים, והיום אני מתכננת ובונה צוותים של סוכני AI שעושים את העבודה השוטפת של העסק.\n\nאולי תהיתם איך הגעתי דווקא אליכם, ואיך המייל הזה כל כך אישי. אז הנה סוד קטן: את העבודה עשה הסוכן המופלא שלי. הוא מצא את העסק שלכם, קרא עליו והכין לי את הפנייה, ואני רק עברתי עליה ולחצתי שלח. זה בדיוק מה שאני רוצה שיהיה גם לכם.\n\nאצל עסקים כמו שלכם, {הכאב}. ככה צוות סוכנים יכול לעבוד אצלכם:\n{הצוות}\n\nאתם מנהלים את הצוות: שולחים הודעה קולית בוואטסאפ בין לבין, והסוכנים מכינים. שום דבר לא יוצא בלי האישור שלכם.\n\nמה זה חוסך:\n• זמן: נגיד שעה ביום על תורים, תזכורות ומיילים. זה בערך 20 שעות בחודש שחוזרות אליכם.\n• כסף: עובדת עולה כ-8,000 ₪ בחודש בעלויות מעביד. צוות דיגיטלי מתחיל מ-1,000 ₪ לחודש, בהתאמה לצרכים, בלי ימי מחלה ובלי חופשות.\n\nאפשר להתחיל בחודש ניסיון, בלי התחייבות. שיחה של 15 דקות מספיקה כדי לבדוק התאמה. מתי נוח לכם, בוקר או ערב?\n\nקטי שגב | SEGEV Master Marketing · 054-2306016\nלינקדאין: il.linkedin.com/in/ketysegev · וואטסאפ: {וואטסאפ}\n\nלהסרה השיבו הסר."}, {"name": "מטפלים וקליניקות", "types": ["פסיכותרפיסטים", "יועצים ומטפלים רגשיים", "מטפלים (קליניקה פרטית)", "רפואה משלימה", "פיזיותרפיסטים", "קלינאי תקשורת", "מרפאים בעיסוק", "קליניקות", "רופאי שיניים"], "subject": "מה הייתם עושים עם עוד שעתיים ביום, בין טיפול לטיפול?", "text": "שלום {שם העסק},\n\n{מהאתר}\n\nנעים מאוד, אני קטי שגב, בעלת SEGEV Master Marketing. כ-15 שנה אני עוסקת בפיתוח עסקי ובשיווק לעסקים, והיום אני מתכננת ובונה צוותים של סוכני AI שעושים את העבודה השוטפת של העסק.\n\nאולי תהיתם איך הגעתי דווקא אליכם, ואיך המייל הזה כל כך אישי. אז הנה סוד קטן: את העבודה עשה הסוכן המופלא שלי. הוא מצא את העסק שלכם, קרא עליו והכין לי את הפנייה, ואני רק עברתי עליה ולחצתי שלח. זה בדיוק מה שאני רוצה שיהיה גם לכם.\n\nאני מכירה את זה מבפנים, כי אני גם מטפלת: {הכאב}. ככה צוות סוכנים יכול לעבוד בקליניקה שלכם:\n{הצוות}\n\nאתם מנהלים את הצוות: שולחים הודעה קולית בוואטסאפ בין לבין, והסוכנים מכינים. שום דבר לא יוצא בלי האישור שלכם.\n\nמה זה חוסך:\n• זמן: נגיד שעה ביום על תורים, תזכורות ומיילים. זה בערך 20 שעות בחודש שחוזרות אליכם.\n• כסף: עובדת עולה כ-8,000 ₪ בחודש בעלויות מעביד. צוות דיגיטלי מתחיל מ-1,000 ₪ לחודש, בהתאמה לצרכים, בלי ימי מחלה ובלי חופשות.\n\nאפשר להתחיל בחודש ניסיון, בלי התחייבות. שיחה של 15 דקות מספיקה כדי לבדוק התאמה. מתי נוח לכם, בוקר או ערב?\n\nקטי שגב | SEGEV Master Marketing · 054-2306016\nלינקדאין: il.linkedin.com/in/ketysegev · וואטסאפ: {וואטסאפ}\n\nלהסרה השיבו הסר."}, {"name": "צימרים, בתי הארחה ומלונות", "types": ["צימרים", "בתי הארחה", "מלונות"], "subject": "מי עונה לאורחים שכותבים לכם בשתיים בלילה?", "text": "שלום {שם העסק},\n\n{מהאתר}\n\nנעים מאוד, אני קטי שגב, בעלת SEGEV Master Marketing. כ-15 שנה אני עוסקת בפיתוח עסקי ובשיווק לעסקים, והיום אני מתכננת ובונה צוותים של סוכני AI שעושים את העבודה השוטפת של העסק.\n\nאולי תהיתם איך הגעתי דווקא אליכם, ואיך המייל הזה כל כך אישי. אז הנה סוד קטן: את העבודה עשה הסוכן המופלא שלי. הוא מצא את העסק שלכם, קרא עליו והכין לי את הפנייה, ואני רק עברתי עליה ולחצתי שלח. זה בדיוק מה שאני רוצה שיהיה גם לכם.\n\nכל מי שמנהל אירוח מכיר את זה: {הכאב}. ככה צוות סוכנים יכול לעבוד אצלכם, גם כשאתם ישנים:\n{הצוות}\n\nאתם מנהלים את הצוות: שולחים הודעה קולית בוואטסאפ בין לבין, והסוכנים מכינים. שום דבר לא יוצא בלי האישור שלכם.\n\nמה זה חוסך:\n• זמן: נגיד שעה ביום על תורים, תזכורות ומיילים. זה בערך 20 שעות בחודש שחוזרות אליכם.\n• כסף: עובדת עולה כ-8,000 ₪ בחודש בעלויות מעביד. צוות דיגיטלי מתחיל מ-1,000 ₪ לחודש, בהתאמה לצרכים, בלי ימי מחלה ובלי חופשות.\n\nאפשר להתחיל בחודש ניסיון, בלי התחייבות. שיחה של 15 דקות מספיקה כדי לבדוק התאמה. מתי נוח לכם, בוקר או ערב?\n\nקטי שגב | SEGEV Master Marketing · 054-2306016\nלינקדאין: il.linkedin.com/in/ketysegev · וואטסאפ: {וואטסאפ}\n\nלהסרה השיבו הסר."}];
+  function parseOffers(a) {
+    try { const j = JSON.parse(a.offer || ""); if (Array.isArray(j) && j.length) return j; } catch (e) {}
+    if (a.offer) return [{ name: "הצעה", types: [], subject: a.subject || "", text: a.offer }];
+    return DEFAULT_OFFERS;
+  }
+
+  // ---------- סוכן לידים: מה לעשות, מה להציע, למי ואיפה ----------
+  function HunterModal({ agent, onClose, onSaved }) {
+    const isNew = !agent.id;
+    const [cats, setCats] = useState([]);
+    const [f, setF] = useState({
+      name: agent.name || "סוכן עסקים קטנים",
+      instructions: agent.instructions || "",
+      targets: agent.targets || "",
+      area: agent.area || "חיפה, קריית מוצקין, קריית ביאליק, קריית אתא, קריית ים",
+      active: agent.id ? !!Number(agent.active) : true,
+    });
+    const [offers, setOffers] = useState(() => parseOffers(agent));
+    const setOffer = (i, k, v) => setOffers(offers.map((o, n) => (n === i ? { ...o, [k]: v } : o)));
+    const toggleOfferType = (i, c) => { const t = offers[i].types || []; setOffer(i, "types", t.includes(c) ? t.filter((x) => x !== c) : [...t, c]); };
+    const [err, setErr] = useState(""); const [busy, setBusy] = useState(false);
+    useEffect(() => { api("/hunt/categories").then((r) => setCats(r.categories)).catch(() => {}); }, []);
+    const sel = f.targets.split(",").map((x) => x.trim()).filter(Boolean);
+    const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+    function toggleCat(c) {
+      const next = sel.includes(c) ? sel.filter((x) => x !== c) : [...sel, c];
+      setF({ ...f, targets: next.join(", ") });
+    }
+    async function save() {
+      if (!f.name.trim()) { setErr("צריך שם לסוכן"); return; }
+      if (!sel.length) { setErr("בחרי לפחות סוג עסק אחד"); return; }
+      if (!offers.some((o) => (o.text || "").trim())) { setErr("כתבי לפחות הצעה אחת"); return; }
+      setErr(""); setBusy(true);
+      try {
+        const payload = { ...f, offer: JSON.stringify(offers), subject: (offers[0] && offers[0].subject) || "" };
+        if (isNew) await api("/agents", { method: "POST", body: JSON.stringify({ ...payload, kind: "hunter" }) });
+        else await api("/agents/" + agent.id + "/update", { method: "POST", body: JSON.stringify(payload) });
+        onSaved();
+      } catch (ex) { setErr(ex.message); setBusy(false); }
+    }
+    return html`<div class="modal-bg" onClick=${onClose}><div class="modal" onClick=${(e) => e.stopPropagation()}>
+      <div class="m-head"><h3>${isNew ? "סוכן לידים חדש" : "תוכן והגדרות · " + agent.name}</h3><button class="btn sm ghost" onClick=${onClose}>סגירה</button></div>
+      <div class="m-body">
+        ${err && html`<div class="err">${err}</div>`}
+        <div class="field"><label>שם הסוכן</label><input id="h-name" value=${f.name} onInput=${set("name")} /></div>
+        <div class="field"><label>מה הסוכן עושה (ההוראות שלך)</label>
+          <textarea id="h-instr" rows="4" value=${f.instructions} onInput=${set("instructions")} placeholder="למשל: לחפש עסקים קטנים שאין להם מענה מהיר ללקוחות. להתמקד בעסקים עם אתר. לא לפנות לרשתות גדולות."></textarea></div>
+        <div class="field"><label>סוגי עסקים לחיפוש</label>
+          <div class="chips">${cats.map((c) => html`<button type="button" key=${c} class=${"chip" + (sel.includes(c) ? " on" : "")} onClick=${() => toggleCat(c)}>${c}</button>`)}</div></div>
+        <div class="field"><label>ערים / אזורים (מופרדים בפסיק)</label><input id="h-area" value=${f.area} onInput=${set("area")} placeholder="חיפה, קריית מוצקין, או: כל הארץ" /></div>
+        <div class="field"><label>סוגי ההצעות שלך</label>
+          <div class="muted" style=${{ fontSize: "13px" }}>הסוכן בוחר לכל עסק את ההצעה שסימנת לסוג שלו (או את הכללית), ומתאים אותה. {שם העסק}, {עיר}, {וואטסאפ} מתמלאים לבד. {הכאב} ו-{הצוות} = מה הבעיה של העסק ואיזה צוות סוכנים יעבוד אצלו, לפי התחום. {מהאתר} = משפט מהאתר של העסק (אם יש), אחרת השורה יורדת.</div></div>
+        ${offers.map((o, i) => html`<div key=${i} style=${{ border: "1px solid var(--line, #e5e5e5)", borderRadius: "12px", padding: "12px", display: "grid", gap: "8px" }}>
+          <div style=${{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <input id=${"o-name-" + i} class="ta" value=${o.name || ""} onInput=${(e) => setOffer(i, "name", e.target.value)} placeholder="שם ההצעה" style=${{ flex: 1, fontWeight: 600 }} />
+            ${offers.length > 1 && html`<button type="button" class="btn sm ghost" onClick=${() => setOffers(offers.filter((_, n) => n !== i))}>הסרה</button>`}
+          </div>
+          <div class="muted" style=${{ fontSize: "13px" }}>למי ההצעה (בלי סימון = לכולם):</div>
+          <div class="chips">${sel.map((c) => html`<button type="button" key=${c} class=${"chip" + ((o.types || []).includes(c) ? " on" : "")} onClick=${() => toggleOfferType(i, c)}>${c}</button>`)}</div>
+          <input id=${"o-subject-" + i} class="ta" value=${o.subject || ""} onInput=${(e) => setOffer(i, "subject", e.target.value)} placeholder="נושא המייל" />
+          <textarea id=${"o-text-" + i} class="ta" rows="8" value=${o.text || ""} onInput=${(e) => setOffer(i, "text", e.target.value)}></textarea>
+        </div>`)}
+        <div><button type="button" class="btn sm ghost" onClick=${() => setOffers([...offers, { name: "הצעה חדשה", types: [], subject: "", text: "" }])}>➕ סוג הצעה נוסף</button></div>
+        <label class="check" style=${{ display: "flex", gap: "8px", alignItems: "center" }}><input id="h-active" type="checkbox" checked=${f.active} onChange=${(e) => setF({ ...f, active: e.target.checked })} /> הסוכן עובד (מחפש לבד כל שעה)</label>
+      </div>
+      <div class="m-foot"><button class="btn" disabled=${busy} onClick=${save}>${busy ? "שומר…" : "שמירה"}</button><button class="btn ghost" onClick=${onClose}>ביטול</button></div>
+    </div></div>`;
   }
 
   function AddAgentModal({ onClose, onSaved }) {

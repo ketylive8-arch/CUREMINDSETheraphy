@@ -97,11 +97,6 @@ return [
     // Daily sending cap (safety for cold outreach from a Gmail account).
     'daily_send_cap' => (int) env('DAILY_SEND_CAP', '30'),
 
-    // Automatic lead engine: shared token the scheduler uses to trigger a
-    // distribution run (POST /api/engine/run). Empty => the run endpoint is
-    // closed. The admin "run now" per client uses normal admin auth instead.
-    'engine_token' => env('ENGINE_TOKEN', ''),
-
     // Fixed, locked business signature (never altered).
     'signature' => "בברכה,\nKety Segev\nSegev Master Marketing Solution\n054-230-6016\nhttps://bit.ly/m/segevmastermkg",
 ];
