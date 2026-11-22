@@ -11,6 +11,7 @@ require_once __DIR__ . '/helpers.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/leads.php';
 require_once __DIR__ . '/agents.php';
+require_once __DIR__ . '/engine.php';
 
 $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -70,6 +71,10 @@ try {
     if (preg_match('#^/api/keys/(\d+)/revoke$#', $path, $m) && $method === 'POST') {
         handle_revoke_key((int) $m[1]);
     }
+    // Lead engine: admin "run now" for one client.
+    if (preg_match('#^/api/engine/run/(\d+)$#', $path, $m) && $method === 'POST') {
+        handle_engine_run_client((int) $m[1]);
+    }
 
     $route = "$method $path";
     match ($route) {
@@ -91,6 +96,8 @@ try {
         'POST /api/keys'        => handle_create_key(),
         'GET /api/agents'       => handle_list_agents(),
         'POST /api/agents'      => handle_create_agent(),
+        'GET /api/engine/status'=> handle_engine_status(),
+        'POST /api/engine/run'  => handle_engine_run(),
         default                 => json_err('לא נמצא: ' . $path, 404),
     };
 } catch (Throwable $e) {

@@ -139,6 +139,9 @@ function migrate(PDO $pdo): void
     // at a chosen time (HH:MM). daily_enabled toggles it on.
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_time TEXT'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN daily_enabled INTEGER DEFAULT 0'); } catch (Throwable $e) {}
+    // Automatic lead engine: the date a client last received their daily leads,
+    // so the scheduler delivers once per day at (or after) their chosen time.
+    try { $pdo->exec('ALTER TABLE client_profiles ADD COLUMN last_delivery_date TEXT'); } catch (Throwable $e) {}
     // API keys — let AI agents (Make/n8n/Dify) authenticate without the admin
     // password. The full key is shown once; only a hash + prefix are stored.
     $pdo->exec("

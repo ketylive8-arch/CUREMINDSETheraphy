@@ -139,7 +139,7 @@
 
   // ---------- Onboarding wizard ----------
   const BUSINESS_TYPES = ["מלונאות", "קוסמטיקה", "מזון ומשקאות", "אלקטרוניקה", "קליניקה / בריאות", "שיווק ופרסום", "אחר"];
-  const SECTOR_OPTS = ["מלונות", "יבואנים / מפיצים", "חברות B2B", "קליניקות", "ציוד רפואי", "מסעדנות", "קוסמטיקה", "הייטק"];
+  const SECTOR_OPTS = ["תעופה / GSA", "מלונות", "יבואנים / מפיצים", "חברות B2B", "קליניקות", "ציוד רפואי", "מסעדנות", "קוסמטיקה", "הייטק"];
   function Onboarding({ user, onDone }) {
     const [step, setStep] = useState(1);
     const [businessType, setBusinessType] = useState("");

@@ -84,7 +84,9 @@ if (is_file($avFile)) {
         $exists->execute([$company, $contact]);
         if ($exists->fetch()) continue;
         $insAv->execute([
-            ':owner'    => $adminId ?: null,
+            // Pool lead (no owner) so the automatic engine can distribute it to
+            // clients by segment. The admin still sees the whole pool.
+            ':owner'    => null,
             ':company'  => $company,
             ':contact'  => $contact ?: null,
             ':role'     => $l['role'] ?? null,
