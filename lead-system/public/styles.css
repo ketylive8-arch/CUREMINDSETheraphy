@@ -7,9 +7,10 @@
   --ink:#201D18; --ink-2:#6A635A; --ink-3:#9B9388;
   --line:#E3DCD0; --line-2:#D6CDBE;
   /* brand + action */
-  --accent:#B08A4F;            /* Segev gold — identity mark, used sparingly */
-  --accent-soft:#F3EADA;
-  --primary:#2F6FEB; --primary-ink:#1E4FB8; --primary-soft:#EAF1FE;
+  --accent:#B08A4F; --accent-soft:#F3EADA;
+  --navy:#1E2A4A; --navy-soft:#E7EAF1;
+  /* brand action: gold with navy text */
+  --primary:#C7982F; --primary-ink:#8A6417; --primary-soft:#F7EDD5; --on-primary:#1E2A4A;
   /* semantic status (separate from accent) */
   --green:#0E9F6E; --green-bg:#E3F6EF;
   --red:#E02424;   --red-bg:#FBE8E8;
@@ -28,7 +29,8 @@
   --ink:#F3F4F6; --ink-2:#A6ADBA; --ink-3:#6B7280;
   --line:#262A32; --line-2:#333945;
   --accent:#D6B06A; --accent-soft:#2E2718;
-  --primary:#5B8DEF; --primary-ink:#8FB2F5; --primary-soft:#172338;
+  --navy:#9FB0D0; --navy-soft:#1A2030;
+  --primary:#D8B45E; --primary-ink:#E6C988; --primary-soft:#2A2514; --on-primary:#17213A;
   --green:#38C793; --green-bg:#12271A;
   --red:#F56565;   --red-bg:#2E1515;
   --amber:#E0A93C; --amber-bg:#2C2411;
@@ -45,7 +47,8 @@
   --ink:#F3F4F6; --ink-2:#A6ADBA; --ink-3:#6B7280;
   --line:#262A32; --line-2:#333945;
   --accent:#D6B06A; --accent-soft:#2E2718;
-  --primary:#5B8DEF; --primary-ink:#8FB2F5; --primary-soft:#172338;
+  --navy:#9FB0D0; --navy-soft:#1A2030;
+  --primary:#D8B45E; --primary-ink:#E6C988; --primary-soft:#2A2514; --on-primary:#17213A;
   --green:#38C793; --green-bg:#12271A; --red:#F56565; --red-bg:#2E1515;
   --amber:#E0A93C; --amber-bg:#2C2411; --blue:#5B8DEF; --blue-bg:#172338;
   --slate:#A6ADBA; --slate-bg:#1C2027; --purple:#A48BFB; --purple-bg:#211B3A;
@@ -64,8 +67,8 @@ h1,h2,h3{letter-spacing:-.02em;font-weight:700}
 
 /* ---------- Buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;
-  border-radius:11px;padding:11px 18px;font-size:14.5px;font-weight:650;
-  background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(47,111,235,.25);
+  border-radius:11px;padding:11px 18px;font-size:14.5px;font-weight:700;
+  background:var(--primary);color:var(--on-primary);box-shadow:0 1px 2px rgba(30,42,74,.14);
   transition:transform .08s,opacity .15s,background .15s,box-shadow .15s}
 .btn:hover{opacity:.92}
 .btn:active{transform:scale(.985)}
@@ -81,9 +84,9 @@ h1,h2,h3{letter-spacing:-.02em;font-weight:700}
 .login-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;
   box-shadow:var(--shadow);padding:38px 32px;width:100%;max-width:400px}
 .brand{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:24px}
-.brand .logo{width:52px;height:52px;border-radius:15px;background:linear-gradient(145deg,#c9a96e,#9a7b33);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:23px;
-  box-shadow:0 6px 16px rgba(154,123,51,.28);margin-bottom:6px}
+.brand .logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(150deg,#2B3C62,#15203A);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(21,32,58,.3);margin-bottom:6px}
 .brand h1{font-size:21px;margin:4px 0 0;font-weight:750}
 .brand p{margin:3px 0 0;color:var(--ink-2);font-size:14px}
 
@@ -109,9 +112,10 @@ h1,h2,h3{letter-spacing:-.02em;font-weight:700}
   backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line);
   display:flex;align-items:center;justify-content:space-between;padding:11px 22px}
 .topbar .left{display:flex;align-items:center;gap:11px}
-.topbar .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,#c9a96e,#9a7b33);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;
-  box-shadow:0 2px 6px rgba(154,118,60,.3)}
+.topbar .logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(150deg,#2B3C62,#15203A);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 7px rgba(21,32,58,.3)}
+.logo-img{width:66%;height:66%;object-fit:contain;display:block}
 .topbar .title{font-weight:750;font-size:15px;letter-spacing:-.02em}
 .topbar .sub{font-size:12px;color:var(--ink-2)}
 .topbar .who{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:10px}
@@ -226,9 +230,9 @@ td .email{color:var(--ink-2);font-size:13px;direction:ltr;text-align:start}
 .entry{min-height:100vh;display:flex;align-items:center;justify-content:center;gap:52px;
   padding:40px 24px;background:linear-gradient(180deg,#F1ECE4,var(--bg));flex-wrap:wrap}
 .entry-hero{max-width:430px;flex:0 1 430px}
-.entry-hero .logo-lg{width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#c9a96e,#9a7b33);
-  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:27px;
-  box-shadow:0 10px 26px rgba(154,123,51,.3);margin-bottom:20px}
+.entry-hero .logo-lg{width:60px;height:60px;border-radius:18px;background:linear-gradient(150deg,#2B3C62,#15203A);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 26px rgba(21,32,58,.32);margin-bottom:20px}
 .entry-hero h1{font-size:30px;line-height:1.16;margin:0 0 13px;letter-spacing:-.03em;font-weight:780}
 .entry-sub{font-size:16px;color:var(--ink-2);line-height:1.6;margin:0 0 20px}
 .entry-benefits{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:11px}

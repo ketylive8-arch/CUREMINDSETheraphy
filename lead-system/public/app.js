@@ -89,7 +89,7 @@
     return html`
       <div class="entry">
         <div class="entry-hero">
-          <div class="logo-lg">S</div>
+          <div class="logo-lg"><img class="logo-img" src="/logo.svg" alt="Segev" /></div>
           <h1>מערכת הלידים החכמה לעסק שלך</h1>
           <p class="entry-sub">נרשמים, מספרים לנו על העסק — והמערכת מביאה לכם לידים אמיתיים, עם פנייה מוכנה לכל אחד, ומעקב עד סגירה.</p>
           <ul class="entry-benefits">
@@ -102,7 +102,7 @@
 
         <form class="login-card" onSubmit=${submit}>
           <div class="brand">
-            <div class="logo">S</div>
+            <div class="logo"><img class="logo-img" src="/logo.svg" alt="Segev" /></div>
             <h1>${reg ? "פתיחת חשבון לעסק" : "כניסה למערכת"}</h1>
             <p>${reg ? "ממלאים פרטים ומתחילים לקבל לידים" : "ברוכים השבים"}</p>
           </div>
@@ -172,7 +172,7 @@
     return html`
       <div class="login-wrap">
         <div class="login-card" style=${{ maxWidth: "460px" }}>
-          <div class="brand"><div class="logo">S</div>
+          <div class="brand"><div class="logo"><img class="logo-img" src="/logo.svg" alt="Segev" /></div>
             <h1>ברוכה הבאה, ${user.name}</h1>
             <p>שתי שאלות קצרות ומתחילים</p></div>
           ${err && html`<div class="err">${err}</div>`}
@@ -798,7 +798,7 @@
       <div class="app">
         <div class="topbar">
           <div class="left">
-            <div class="logo">S</div>
+            <div class="logo"><img class="logo-img" src="/logo.svg" alt="Segev" /></div>
             <div><div class="title">Segev MKG · מערכת לידים</div><div class="sub">שלום, ${user.name}</div></div>
           </div>
           <div class="who"><button class="btn sm ghost" onClick=${onLogout}>יציאה</button></div>

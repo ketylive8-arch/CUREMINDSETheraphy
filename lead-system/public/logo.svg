@@ -1,0 +1,17 @@
+<svg viewBox="0 0 132 104" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Segev Master Marketing">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#EBCB7A"/>
+      <stop offset="0.5" stop-color="#D4A94E"/>
+      <stop offset="1" stop-color="#B07E2B"/>
+    </linearGradient>
+  </defs>
+  <!-- S + M monogram -->
+  <g fill="url(#gold)" font-family="Georgia, 'Times New Roman', serif" font-weight="700">
+    <text x="0" y="82" font-size="92">S</text>
+    <text x="50" y="82" font-size="92">M</text>
+  </g>
+  <!-- growth arrow rising to the upper-right -->
+  <path d="M98 60 L126 24" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M126 24 L108 26 M126 24 L124 43" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
