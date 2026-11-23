@@ -125,3 +125,23 @@ form.lead-form label.c input{width:22px;height:22px;margin-top:3px;flex:none}
 @keyframes pgpop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.pg-star{animation:none}.pr-breath{transition:none}}
 #practice{padding-bottom:90px}
+/* articles + programs */
+.reads{list-style:none;margin:0;padding:0}
+.reads li{padding:16px 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.reads li:first-child{border-top:0}
+.reads li a b{font-weight:600}
+.reads.big li h3{margin:0;font-size:1.25rem}
+.reads.big p{margin:0;max-width:62ch}
+.reads span,.reads p{color:var(--muted)}
+a.more{font-weight:600;color:var(--gold-deep);margin-inline-end:18px}
+.tag{font-size:.85rem;color:var(--muted)}
+.byline{font-size:.92rem;color:var(--muted);margin:0 0 14px}
+.toc{border-inline-start:2px solid var(--gold);padding:4px 16px;margin:0 0 24px;max-width:640px}
+.toc h2{font-size:1rem;margin:0 0 .3em}
+.toc ol{margin:0;padding-inline-start:1.2em}
+.toc a{display:inline-block;padding:6px 0}
+.art .txt{max-width:72ch}
+.art h2{margin-top:1.6em}
+.art h3{margin:1.2em 0 .3em}
+.art .refs li{font-size:.9rem;overflow-wrap:anywhere}
+.spot{width:100%;height:232px;border:0;border-radius:12px;display:block;margin:14px 0 8px}

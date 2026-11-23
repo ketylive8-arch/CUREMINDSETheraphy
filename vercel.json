@@ -224,16 +224,6 @@
       "permanent": true
     },
     {
-      "source": "/programs",
-      "destination": "/method",
-      "permanent": true
-    },
-    {
-      "source": "/programs.html",
-      "destination": "/method",
-      "permanent": true
-    },
-    {
       "source": "/gifts",
       "destination": "/method",
       "permanent": true
@@ -264,16 +254,6 @@
       "permanent": true
     },
     {
-      "source": "/articles",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/articles.html",
-      "destination": "/",
-      "permanent": true
-    },
-    {
       "source": "/program",
       "destination": "/dashboard",
       "permanent": true
@@ -301,11 +281,6 @@
     {
       "source": "/app-today.html",
       "destination": "/today",
-      "permanent": true
-    },
-    {
-      "source": "/articles/(.*)",
-      "destination": "/",
       "permanent": true
     }
   ],
@@ -397,6 +372,18 @@
     {
       "source": "/first-aid",
       "destination": "/first-aid.html"
+    },
+    {
+      "source": "/programs",
+      "destination": "/programs.html"
+    },
+    {
+      "source": "/articles",
+      "destination": "/articles.html"
+    },
+    {
+      "source": "/articles/:slug",
+      "destination": "/articles/:slug.html"
     }
   ]
 }

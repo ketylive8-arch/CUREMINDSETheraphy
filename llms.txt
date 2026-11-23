@@ -12,10 +12,27 @@
 
 ## עמודים מרכזיים
 - [בית](https://www.ketysegev.com/): מה זו השיטה ולמי היא מתאימה
-- [השיטה והפרוטוקול](https://www.ketysegev.com/method): ארבעת שלבי CURE ושבעת הפרוטוקולים הקליניים
+- [השיטה](https://www.ketysegev.com/method): ארבעת שלבי CURE: בהירות, שחרור, חיווט מחדש והעצמה
+- [תוכניות](https://www.ketysegev.com/programs): נוער 12-17, צעירים 18-25, מבוגרים, ליווי דיגיטלי
+- [נוער](https://www.ketysegev.com/teens): ליווי רגשי לנוער
+- [צעירים](https://www.ketysegev.com/young-adults): ליווי לצעירים 18-25
+- [מבוגרים](https://www.ketysegev.com/adults): ליווי אישי למבוגרים
+- [חרדה ועומס](https://www.ketysegev.com/anxiety): מה קורה בגוף ובמוח ואיך עובדים על השורש
 - [חוסן רגשי](https://www.ketysegev.com/emotional-resilience): בניית חוסן לאורך זמן
-- [צעירים 18-25](https://www.ketysegev.com/young-adults): ליווי לצעירים בשלבי מעבר
-- [אודות](https://www.ketysegev.com/about) · [שאלות נפוצות](https://www.ketysegev.com/faq) · [יצירת קשר](https://www.ketysegev.com/contact)
+- [עזרה ראשונה לחרדה](https://www.ketysegev.com/first-aid): תרגול מוקלט של שבע דקות
+- [תרגול מודרך](https://www.ketysegev.com/practice): כפתור חירום, Somatic Tracking ותהליך להרגעת כאב
+- [מאמרים](https://www.ketysegev.com/articles): מאמרים בעברית על חרדה, חוסן, ביטחון עצמי ונוער
+- [על קטי](https://www.ketysegev.com/about): הסיפור והדרך
+- [שאלות נפוצות](https://www.ketysegev.com/faq): תשובות קצרות וישירות
+- [צור קשר](https://www.ketysegev.com/contact): טלפון, וואטסאפ ויומן
+
+- [חרדה חברתית אצל בני נוער: איך הורים יכולים לעזור בלי להגביר את המתח?](https://www.ketysegev.com/articles/teen-social-anxiety-parent-guide)
+- [מהו חוסן רגשי, ואיך בונים אותו?](https://www.ketysegev.com/articles/what-is-emotional-resilience)
+- [חוסן רגשי אצל בני נוער: מה אפשר לעשות](https://www.ketysegev.com/articles/teen-emotional-resilience)
+- [חרדה: מה קורה בגוף ובמוח, ואיך מתחילים להירגע](https://www.ketysegev.com/articles/anxiety-body-and-mind)
+- [ביטחון עצמי וביקורת עצמית: איך משנים את הקול הפנימי](https://www.ketysegev.com/articles/self-confidence-inner-critic)
+- [אחרי הצבא: למה זה מרגיש כל כך כבד, ואיך מתחילים להתמצא](https://www.ketysegev.com/articles/young-adults-after-army)
+- [מהו אימון NLP, ומה ההבדל בינו לטיפול פסיכולוגי?](https://www.ketysegev.com/articles/what-is-nlp-coaching)
 
 ## הבהרה
 התכנים באתר אינם מהווים ייעוץ או טיפול רפואי, ואינם תחליף לאבחון או לטיפול מקצועי. במצוקה מיידית: ער"ן 1201.

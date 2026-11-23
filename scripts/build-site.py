@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
 # בונה את אתר CureMindset (דפים סטטיים) מהתוכן שבקובץ זה. להרצה: python3 scripts/build-site.py
 # התוכן נגזר מחבילת התוכן של קטי ומהמסמך "CureMindset_Content_Sections_1_and_2".
-import re, json, os, html
+import re, json, os, html, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://www.ketysegev.com"
 CAL = "https://calendly.com/ketysegev/meet-with-me"
 WA = "https://wa.me/972543032349"
-CSSV = "20261119a"
+CSSV = "20261123a"
 
 DISCLAIMER = ('התכנים באתר הם אימון ותמיכה רגשית בשיטת NLP ו-CureMindset. הם אינם טיפול פסיכולוגי או פסיכיאטרי, '
               'אבחון או תחליף לייעוץ רפואי. הליווי משלים טיפול מקצועי ואינו מחליף אותו, ומי שמטופל כבר מוזמן לעדכן את המטפל/ת. '
               'במצוקה חריפה, מחשבות על פגיעה עצמית או חשש לסיכון: ער"ן 1201, מד"א 101 או חדר מיון. '
               'ליווי של קטינים נעשה בהסכמת הורה או אפוטרופוס.')
 
-NAV = [("/method", "השיטה"), ("/teens", "לנוער"), ("/young-adults", "לצעירים"), ("/adults", "למבוגרים"),
+NAV = [("/method", "השיטה"), ("/programs", "תוכניות"), ("/teens", "לנוער"), ("/young-adults", "לצעירים"), ("/adults", "למבוגרים"),
        ("/today", "ליווי דיגיטלי"), ("/about", "על קטי"), ("/faq", "שאלות נפוצות"), ("/contact", "צור קשר")]
 
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import articles_data as AD
+PAGES = []
+TODAY = "2026-11-23"
 
 def esc(s):
     return html.escape(s, quote=True)
@@ -75,7 +80,7 @@ def footer():
 <footer class="ftr"><div class="wrap">
 <div class="cols">
 <div><h4>CureMindset · קטי שגב</h4><p>מטפלת רגשית ומאמנת מנטלית (NLP). שיטה שנבנתה מניסיון אישי.</p>
-<p>054-3032349 · <a style="display:inline;padding:0" href="{WA}" target="_blank" rel="noopener">וואטסאפ</a></p></div>
+<p><a style="display:inline;padding:0" href="tel:0543032349">054-3032349</a> · <a style="display:inline;padding:0" href="{WA}" target="_blank" rel="noopener">וואטסאפ</a></p></div>
 <div><h4>איפה פוגשים</h4><p>קריית מוצקין, מרכז דיאלוג</p><p>קריית חיים, מרכז תכלת</p><p>בזום, לכל הארץ</p></div>
 <div><h4>מידע</h4><a href="/privacy">פרטיות</a><a href="/terms">תנאי שימוש</a><a href="/accessibility">נגישות</a><a href="/responsibility">הבהרת אחריות</a></div>
 </div>
@@ -133,7 +138,37 @@ def related(items):
     return '<div class="wrap related">עוד באתר: ' + "".join(f'<a href="{h}">{t}</a>' for h, t in items) + "</div>"
 
 
+ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "CureMindset · קטי שגב", "url": SITE,
+       "logo": SITE + "/images/logo.png", "telephone": "+972-54-3032349", "areaServed": "IL",
+       "founder": {"@type": "Person", "name": "קטי שגב"}, "sameAs": ["https://www.youtube.com/@ketynlplive"],
+       "knowsAbout": ["חרדה", "חוסן רגשי", "ביטחון עצמי", "NLP", "אימון רגשי", "ליווי נוער"],
+       "address": [{"@type": "PostalAddress", "addressLocality": "קריית מוצקין", "addressCountry": "IL"}, {"@type": "PostalAddress", "addressLocality": "קריית חיים", "addressCountry": "IL"}]}
+PERSON = {"@context": "https://schema.org", "@type": "Person", "name": "קטי שגב", "jobTitle": "מטפלת רגשית ומאמנת מנטלית (NLP)",
+          "url": SITE + "/about", "worksFor": {"@type": "Organization", "name": "CureMindset", "url": SITE}, "sameAs": ["https://www.youtube.com/@ketynlplive"]}
+SERVICE_NAMES = {"/teens": "ליווי רגשי ואימון מנטלי לנוער 12-17", "/young-adults": "ליווי רגשי לצעירים 18-25",
+                 "/adults": "ליווי רגשי ואימון מנטלי למבוגרים", "/anxiety": "ליווי לעומס וחרדה בשיטת CureMindset"}
+
+
+def readmore(path):
+    slugs = AD.READMORE.get(path)
+    if not slugs:
+        return ""
+    rows = "".join(f'<li><a href="/articles/{s}"><b>{esc(AD.BY[s]["h1"])}</b></a><span>{esc(AD.BY[s]["short"])}</span><a class="more" href="/articles/{s}">לקרוא עוד</a></li>' for s in slugs)
+    return f'<section class="sec"><div class="wrap"><h2>לקרוא עוד על הנושא</h2><ul class="reads">{rows}</ul><p><a href="/articles">לכל המאמרים</a></p></div></section>'
+
+
 def page(path, file, title, desc, body, extra_ld=""):
+    PAGES.append((path, file))
+    if path == "/":
+        extra_ld += ld(ORG)
+    if path == "/about":
+        extra_ld += ld(PERSON)
+    if path in SERVICE_NAMES:
+        extra_ld += ld({"@context": "https://schema.org", "@type": "Service", "name": SERVICE_NAMES[path], "provider": {"@type": "Person", "name": "קטי שגב"},
+                        "areaServed": "IL", "serviceType": "ליווי רגשי ואימון מנטלי", "url": SITE + path})
+    rm = readmore(path)
+    if rm:
+        body = body.replace('<section class="band">', rm + '<section class="band">', 1) if '<section class="band">' in body else body + rm
     out = head(title, desc, path, extra_ld) + header(path) + body + footer()
     with open(os.path.join(ROOT, file), "w", encoding="utf-8") as f:
         f.write(out)
@@ -457,6 +492,79 @@ window.open('https://wa.me/972543032349?text='+encodeURIComponent(t),'_blank','n
         body = f'<section class="hero"><div class="wrap"><h1>{h1}</h1><p class="lead">{lead}</p></div></section>' + inner
         page(path, f"{f}.html", title, desc, body)
 
+
+    # ---------- תוכניות ----------
+    PROGS = [
+        ("/teens", "תוכנית הנוער, גילאי 12 עד 17", "קבוצה קטנה של שלושה מפגשים או ליווי אישי. בונים ויסות, ביטחון עצמי וחוסן, עם כלים לתרגול בין המפגשים. ליווי של קטינים נעשה בהסכמת הורה או אפוטרופוס.", "teen-emotional-resilience"),
+        ("/young-adults", "תוכנית לצעירים, גילאי 18 עד 25", "קבוצה של עד שישה משתתפים בשלושה מפגשים של שעתיים, או ליווי אישי בקצב שלך. לשלבי מעבר, ערפל ועומס אחרי הצבא ובתחילת הדרך.", "young-adults-after-army"),
+        ("/adults", "ליווי אישי למבוגרים", "תהליך ממוקד של 6 עד 10 מפגשים של 50 עד 60 דקות. עובדים על דפוסים חוזרים, חרדה ועומס, דימוי עצמי וחסמים, ובונים שגרה שמחזיקה.", "self-confidence-inner-critic"),
+        ("/today", "ליווי דיגיטלי, בכל שעה", "מאמן מנטלי חכם, תרגול מודרך וכפתור חירום, זמינים בין המפגשים ולפניהם.", "anxiety-body-and-mind"),
+    ]
+    rows = "".join(f'<li><h3><a href="{h}">{esc(t)}</a></h3><p>{esc(d)}</p><p><a class="more" href="{h}">לפרטים על התוכנית</a> <a class="more" href="/articles/{a}">לקרוא עוד על הנושא</a></p></li>' for h, t, d, a in PROGS)
+    body = hero("התוכניות", "שלוש דרכים להתחיל, לפי הגיל והצורך. את ההתאמה בודקים יחד בשיחת היכרות קצרה.", extra_btns=btns())
+    body += f'<section class="sec"><div class="wrap"><ul class="reads big">{rows}</ul></div></section>'
+    body += sec("איפה פוגשים", "<p>בקריית מוצקין (מרכז דיאלוג), בקריית חיים (מרכז תכלת) ובזום, לכל הארץ.</p>")
+    body += cta() + note() + related([("/method", "השיטה"), ("/articles", "מאמרים"), ("/faq", "שאלות נפוצות")])
+    page("/programs", "programs.html", "תוכניות ליווי רגשי לנוער, צעירים ומבוגרים | קטי שגב · CureMindset",
+         "תוכניות CureMindset: נוער 12-17, צעירים 18-25, ליווי אישי למבוגרים וליווי דיגיטלי. קריית מוצקין, קריית חיים וזום.", body)
+
+    # ---------- מאמרים ----------
+    rows = "".join(f'<li><h3><a href="/articles/{a["slug"]}">{esc(a["h1"])}</a></h3><p>{esc(a["short"])}</p><p><a class="more" href="/articles/{a["slug"]}">לקרוא עוד</a> <span class="tag">{esc(a["topic"])}</span></p></li>' for a in AD.A)
+    body = hero("מאמרים", "מקום לקרוא, להבין ולבחור את הצעד הבא. כל מאמר מחובר לתוכנית ולכלי תרגול באתר.", extra_btns=" ")
+    body += f'<section class="sec"><div class="wrap"><ul class="reads big">{rows}</ul></div></section>'
+    body += cta() + note() + related([("/programs", "תוכניות"), ("/method", "השיטה"), ("/faq", "שאלות נפוצות")])
+    page("/articles", "articles.html", "מאמרים על חרדה, חוסן רגשי וביטחון עצמי | קטי שגב · CureMindset",
+         "מאמרים בעברית על חרדה, חוסן רגשי, ביטחון עצמי, נוער וצעירים, ועל שיטת CureMindset. מאת קטי שגב.", body)
+    os.makedirs(os.path.join(ROOT, "articles"), exist_ok=True)
+    for a in AD.A:
+        path = "/articles/" + a["slug"]
+        toc = "".join(f'<li><a href="#{i}">{esc(t)}</a></li>' for i, t in a["toc"])
+        body = hero(esc(a["h1"]), esc(a["answer"]), extra_btns=" ")
+        body += f'<section class="sec art"><div class="wrap"><p class="byline">מאת קטי שגב · עודכן ב-23.11.2026</p><nav class="toc" aria-label="תוכן העניינים"><h2>במאמר</h2><ol>{toc}</ol></nav><div class="txt">{a["body"]}</div></div></section>'
+        faqh = "".join(f"<details><summary>{esc(q)}</summary><p>{esc(an)}</p></details>" for q, an in a["faq"])
+        body += f'<section class="sec"><div class="wrap"><h2>שאלות נפוצות</h2><div class="faq">{faqh}</div></div></section>'
+        body += f'<section class="sec"><div class="wrap"><h2>לצעד הבא</h2><p>רוצים להבין אם זה מתאים לכם? <a href="{a["program"][0]}">{esc(a["program"][1])}</a>, או שיחת היכרות קצרה.</p></div></section>'
+        body += cta() + note() + related([(a["program"][0], a["program"][1]), ("/articles", "כל המאמרים"), ("/programs", "תוכניות")])
+        extra = ld({"@context": "https://schema.org", "@type": "Article", "headline": a["h1"], "description": a["desc"], "inLanguage": "he",
+                    "datePublished": AD.PUB, "dateModified": TODAY, "mainEntityOfPage": SITE + path,
+                    "author": {"@type": "Person", "name": "קטי שגב", "url": SITE + "/about"},
+                    "publisher": {"@type": "Organization", "name": "CureMindset · קטי שגב", "url": SITE, "logo": {"@type": "ImageObject", "url": SITE + "/images/logo.png"}},
+                    "image": SITE + "/images/kety-920.jpg"})
+        if a["faq"]:
+            extra += ld({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+                {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": an}} for q, an in a["faq"]]})
+        page(path, "articles/" + a["slug"] + ".html", a["title"], a["desc"], body, extra)
+
+    # ---------- עזרה ראשונה לחרדה (תוכן מהעמוד שהועלה, בעיצוב האתר) ----------
+    body = hero("עזרה ראשונה לחרדה", "תרגול מודרך קצר שמחזיר את הגוף לרגיעה. שבע דקות, באוזניות, בכל מקום.",
+                paras=["זו לא הרצאה ולא היפנוזה. הקלטה בעברית, בקול שלי, שמובילה אתכם צעד אחר צעד: נשימה, עיגון בגוף ומשפטים שמרגיעים את המערכת. אתם נשארים עם העיניים פקוחות, בשליטה, ויכולים לעצור בכל רגע."],
+                extra_btns='<div class="btns"><a class="btn" href="#listen">להאזין עכשיו</a><a class="btn ghost" href="/practice">לתרגול המודרך</a></div>')
+    body += '<section class="sec" id="listen"><div class="wrap"><h2>התרגול</h2><p>אם אתם באמצע הצפה, הקשיבו עכשיו. אם אתם רוצים להבין קודם מה זה, קראו את השורות שאחרי.</p><iframe title="עזרה ראשונה לחרדה, פרק בספוטיפיי" class="spot" src="https://open.spotify.com/embed/episode/3XMpL3GBhi9YQ2FVIZNXd3?theme=0" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe><p class="pg-small">לא נפתח? <a href="https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3" target="_blank" rel="noopener">להאזנה ישירות בספוטיפיי</a></p></div></section>'
+    body += sec("איך להשתמש בזה נכון", "<p>פעם או פעמיים ביום, ועוד פעם אחת ברגע שמרגישים שהמתח עולה. לא בנהיגה ולא בזמן הליכה ברחוב, כדי שהקשב יהיה פנימי ובטוח.</p><p>שלושה שבועות של תרגול יומי עושים את ההבדל. לא בגלל שההקלטה משתנה, אלא בגלל שהגוף לומד להכיר את הדרך חזרה לעצמו ומתחיל לעשות אותה לבד.</p><p>התרגול הזה הוא כלי, לא טיפול. הוא מוריד עומס ברגע נתון, אבל הוא לא מפרק את הדפוס שמפעיל את החרדה. את זה עושים בתהליך אישי.</p>")
+    body += sec("למי זה מתאים, ולמי לא", "<p><b>מתאים:</b> לפני שיחה חשובה, לפני מבחן, ברגע של הצפה, לפני שינה, ולמי שנמצא בתהליך ורוצה כלי לתרגול בין המפגשים.</p><p><b>לא מתאים:</b> לחרדה מתמשכת שמנהלת את היום בלי ליווי מקצועי, למי שנמצא במצב פסיכוטי או אחרי טראומה פעילה בלי מטפל שמלווה אותו, ולבני נוער מתחת לגיל שמונה עשרה בלי הסכמת הורה.</p><p><b>ואם זה לא מספיק:</b> אם אחרי כמה ימים של תרגול העומס לא יורד, או שהחרדה מתחילה לצמצם לכם את החיים, זה הסימן לעבור לליווי אישי. שם עובדים על השורש, בקצב שלכם.</p>")
+    body += cta("רוצים להתחיל?", "בחרו מועד לשיחת היכרות, או דברו איתי קודם.") + note() + related([("/anxiety", "חרדה"), ("/practice", "תרגול מודרך"), ("/programs", "תוכניות"), ("/articles/anxiety-body-and-mind", "מאמר: מה קורה בגוף בחרדה")])
+    page("/first-aid", "first-aid.html", "עזרה ראשונה לחרדה: תרגול מוקלט של שבע דקות | קטי שגב · CureMindset",
+         "תרגול מודרך בעברית שמחזיר את הגוף לרגיעה: נשימה, עיגון בגוף ומשפטים מרגיעים. שבע דקות, באוזניות, בכל מקום.", body)
+
+    # ---------- מפת אתר ----------
+    pr = {"/": "1.0", "/programs": "0.9", "/articles": "0.8"}
+    urls = [(p, pr.get(p, "0.6" if p.startswith("/articles/") else "0.8")) for p, _ in PAGES] + [("/v3/", "0.6")]
+    with open(os.path.join(ROOT, "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(
+            f'  <url><loc>{SITE}{u if u != "/" else "/"}</loc><lastmod>{TODAY}</lastmod><priority>{q}</priority></url>\n' for u, q in urls) + "</urlset>\n")
+    # ---------- llms.txt ----------
+    lt = open(os.path.join(ROOT, "llms.txt"), encoding="utf-8").read()
+    pages_txt = "## עמודים מרכזיים\n" + "".join(f"- [{t}]({SITE}{h}): {d}\n" for h, t, d in [
+        ("/", "בית", "מה זו השיטה ולמי היא מתאימה"), ("/method", "השיטה", "ארבעת שלבי CURE: בהירות, שחרור, חיווט מחדש והעצמה"),
+        ("/programs", "תוכניות", "נוער 12-17, צעירים 18-25, מבוגרים, ליווי דיגיטלי"), ("/teens", "נוער", "ליווי רגשי לנוער"),
+        ("/young-adults", "צעירים", "ליווי לצעירים 18-25"), ("/adults", "מבוגרים", "ליווי אישי למבוגרים"),
+        ("/anxiety", "חרדה ועומס", "מה קורה בגוף ובמוח ואיך עובדים על השורש"), ("/emotional-resilience", "חוסן רגשי", "בניית חוסן לאורך זמן"),
+        ("/first-aid", "עזרה ראשונה לחרדה", "תרגול מוקלט של שבע דקות"), ("/practice", "תרגול מודרך", "כפתור חירום, Somatic Tracking ותהליך להרגעת כאב"),
+        ("/articles", "מאמרים", "מאמרים בעברית על חרדה, חוסן, ביטחון עצמי ונוער"), ("/about", "על קטי", "הסיפור והדרך"),
+        ("/faq", "שאלות נפוצות", "תשובות קצרות וישירות"), ("/contact", "צור קשר", "טלפון, וואטסאפ ויומן")]) + "\n" + "".join(
+        f"- [{a['h1']}]({SITE}/articles/{a['slug']})\n" for a in AD.A) + "\n"
+    lt = re.sub(r"## עמודים מרכזיים.*?(?=## הבהרה)", lambda m: pages_txt, lt, flags=re.S)
+    open(os.path.join(ROOT, "llms.txt"), "w", encoding="utf-8").write(lt)
     print("נבנו דפים")
 
 
