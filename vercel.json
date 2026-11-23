@@ -382,8 +382,32 @@
       "destination": "/articles.html"
     },
     {
-      "source": "/articles/:slug",
-      "destination": "/articles/:slug.html"
+      "source": "/articles/teen-social-anxiety-parent-guide",
+      "destination": "/articles/teen-social-anxiety-parent-guide.html"
+    },
+    {
+      "source": "/articles/what-is-emotional-resilience",
+      "destination": "/articles/what-is-emotional-resilience.html"
+    },
+    {
+      "source": "/articles/teen-emotional-resilience",
+      "destination": "/articles/teen-emotional-resilience.html"
+    },
+    {
+      "source": "/articles/anxiety-body-and-mind",
+      "destination": "/articles/anxiety-body-and-mind.html"
+    },
+    {
+      "source": "/articles/self-confidence-inner-critic",
+      "destination": "/articles/self-confidence-inner-critic.html"
+    },
+    {
+      "source": "/articles/young-adults-after-army",
+      "destination": "/articles/young-adults-after-army.html"
+    },
+    {
+      "source": "/articles/what-is-nlp-coaching",
+      "destination": "/articles/what-is-nlp-coaching.html"
     }
   ]
 }

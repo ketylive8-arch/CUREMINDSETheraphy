@@ -546,6 +546,14 @@ window.open('https://wa.me/972543032349?text='+encodeURIComponent(t),'_blank','n
     page("/first-aid", "first-aid.html", "עזרה ראשונה לחרדה: תרגול מוקלט של שבע דקות | קטי שגב · CureMindset",
          "תרגול מודרך בעברית שמחזיר את הגוף לרגיעה: נשימה, עיגון בגוף ומשפטים מרגיעים. שבע דקות, באוזניות, בכל מקום.", body)
 
+    # ---------- ניתוב המאמרים ב-vercel.json (כללים מפורשים לכל מאמר) ----------
+    vp = os.path.join(ROOT, "vercel.json")
+    vj = json.load(open(vp, encoding="utf-8"))
+    vj["rewrites"] = [r for r in vj["rewrites"] if not r["source"].startswith("/articles/")]
+    for a in AD.A:
+        vj["rewrites"].append({"source": "/articles/" + a["slug"], "destination": "/articles/" + a["slug"] + ".html"})
+    json.dump(vj, open(vp, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
     # ---------- מפת אתר ----------
     pr = {"/": "1.0", "/programs": "0.9", "/articles": "0.8"}
     urls = [(p, pr.get(p, "0.6" if p.startswith("/articles/") else "0.8")) for p, _ in PAGES] + [("/v3/", "0.6")]
