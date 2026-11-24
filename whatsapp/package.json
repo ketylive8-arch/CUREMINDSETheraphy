@@ -1,0 +1,16 @@
+{
+  "name": "segev-whatsapp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Segev MKG — WhatsApp control for the lead system (QR link + voice commands)",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node index.js" },
+  "dependencies": {
+    "@whiskeysockets/baileys": "7.0.0-rc14",
+    "@hapi/boom": "^10.0.1",
+    "express": "^4.21.2",
+    "pino": "^9.5.0",
+    "qrcode": "1.5.3"
+  }
+}
