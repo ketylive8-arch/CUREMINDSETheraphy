@@ -7,15 +7,15 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://www.ketysegev.com"
 CAL = "https://calendly.com/ketysegev/meet-with-me"
 WA = "https://wa.me/972543032349"
-CSSV = "20261123a"
+CSSV = "20261124a"
 
 DISCLAIMER = ('התכנים באתר הם אימון ותמיכה רגשית בשיטת NLP ו-CureMindset. הם אינם טיפול פסיכולוגי או פסיכיאטרי, '
               'אבחון או תחליף לייעוץ רפואי. הליווי משלים טיפול מקצועי ואינו מחליף אותו, ומי שמטופל כבר מוזמן לעדכן את המטפל/ת. '
               'במצוקה חריפה, מחשבות על פגיעה עצמית או חשש לסיכון: ער"ן 1201, מד"א 101 או חדר מיון. '
               'ליווי של קטינים נעשה בהסכמת הורה או אפוטרופוס.')
 
-NAV = [("/method", "השיטה"), ("/programs", "תוכניות"), ("/teens", "לנוער"), ("/young-adults", "לצעירים"), ("/adults", "למבוגרים"),
-       ("/today", "ליווי דיגיטלי"), ("/about", "על קטי"), ("/faq", "שאלות נפוצות"), ("/contact", "צור קשר")]
+NAV = [("/method", "השיטה"), ("/programs", "תוכניות"), ("/today", "ליווי דיגיטלי"), ("/about", "על קטי"), ("/faq", "שאלות נפוצות")]
+APP_PATHS = {"/practice", "/progress", "/today", "/first-aid"}
 
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -61,18 +61,31 @@ def head(title, desc, path, extra=""):
 </head>'''
 
 
+CUR = {"p": "/"}
+
 def header(path):
+    CUR["p"] = path
     cur = ' aria-current="page"'
     links = "".join('<a href="%s"%s>%s</a>' % (h, cur if h == path else "", tt) for h, tt in NAV)
-    return f'''<body>
+    cls = ' class="app"' if path in APP_PATHS else ""
+    return f'''<body{cls}>
 <a class="skip" href="#main">דלגו לתוכן</a>
 <header class="hdr"><div class="wrap">
 <a class="brand" href="/" aria-label="קטי שגב, לדף הבית">קטי שגב</a>
-<nav class="nav" id="nav" aria-label="ניווט ראשי">{links}</nav>
-<a class="btn" href="{CAL}" target="_blank" rel="noopener">שיחת היכרות</a>
+<nav class="nav" id="nav" aria-label="ניווט ראשי">{links}<a class="only-m" href="/dashboard">התחברות</a><a class="only-m" href="/contact">צור קשר</a></nav>
+<a class="login" href="/dashboard">התחברות</a>
+<a class="btn" href="{CAL}" target="_blank" rel="noopener">קביעת שיחה</a>
 <button class="menu-btn" type="button" aria-label="תפריט" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </div></header>
 <main id="main">'''
+
+
+def tabbar():
+    if CUR["p"] not in APP_PATHS:
+        return ""
+    t = [("/practice", "היום", "M12 3v18M3 12h18"), ("#bot", "קיריטי", "M4 5h16v11H9l-5 4z"), ("/articles", "ספרייה", "M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"), ("/practice#emergency", "הרגע שלי", "M12 21s-8-5-8-11a5 5 0 018-3 5 5 0 018 3c0 6-8 11-8 11z")]
+    items = "".join(f'<a href="{h}"{" data-bot=1" if h == "#bot" else ""}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{d}"/></svg><span>{n}</span></a>' for h, n, d in t)
+    return f'<nav class="tabbar" aria-label="ניווט באזור האישי">{items}</nav><script>document.querySelector("[data-bot]").addEventListener("click",function(e){{e.preventDefault();var b=document.getElementById("cmFloatBtn");if(b)b.click();}});</script>'
 
 
 def footer():
@@ -93,6 +106,7 @@ if(b&&n)b.addEventListener('click',function(){{var o=n.classList.toggle('open');
 <script src="/curebot-float.js" defer></script>
 <script src="/accessibility-widget.js" defer></script>
 <script src="/booking-float.js" defer></script>
+{tabbar()}
 </body>
 </html>
 '''
@@ -198,21 +212,29 @@ def build():
         "הם יושבים עמוק יותר, בדפוסים שהתת-מודע למד מזמן. הגוף מגיב לפני שהמחשבה מספיקה להגיע.",
         photo="/images/kety-920.jpg", alt="קטי שגב, מטפלת רגשית ומאמנת NLP",
         paras=("שיטת CureMindset עובדת בדיוק שם. על השורש, לא רק על מה שנראה מבחוץ. לנוער, לצעירים ולמבוגרים, בקריית מוצקין, בקריית חיים ובזום לכל הארץ.",),
-        extra_btns=f'<div class="btns"><a class="btn" href="{CAL}" target="_blank" rel="noopener">לשיחת היכרות</a><a class="btn ghost" href="/method">איך השיטה עובדת</a></div>')
+        extra_btns=f'<div class="btns"><a class="btn" href="{CAL}" target="_blank" rel="noopener">לקביעת שיחה</a><a class="btn ghost" href="/dashboard">התחברות לאזור האישי</a></div>')
+    body += '''<section class="trust"><div class="wrap wide"><ul>
+<li><b>3</b><span>מקומות מפגש: קריית מוצקין, קריית חיים וזום לכל הארץ</span></li>
+<li><b>20</b><span>דקות בשיחת היכרות, בלי התחייבות</span></li>
+<li><b>3</b><span>מפגשים בקבוצה, או ליווי אישי של 6 עד 10 מפגשים</span></li></ul></div></section>'''
+    inside = [("הרגע שלי", "כפתור לרגעי מתח וכאב: נשימה והתבוננות בתחושה, צעד אחרי צעד."), ("תהליך להרגעת כאב", "תהליך מודרך שמלווה אותך בשיחה, בקצב שלך."),
+              ("Somatic Tracking", "תרגול קצר של התבוננות בתחושה בגוף, בלי להילחם בה."), ("בדיקה מהירה", "חמש מדידות קצרות שמראות איך זה משתנה."),
+              ("מדד חוסן והתקדמות", "מסך אישי שמשקף את ההצלחות והצעד הבא."), ("קיריטי", "העוזרת הדיגיטלית של CureMindset, זמינה בכל שעה.")]
+    items = "".join(f"<li><h3>{t}</h3><p>{d}</p></li>" for t, d in inside)
+    body += f'''<section class="sec"><div class="wrap wide inside"><div><h2>מה יש בפנים</h2><p class="lead">אזור אישי דיגיטלי שמלווה את הליווי האישי, ולא מחליף אותו.</p><ul class="six">{items}</ul>
+<div class="btns"><a class="btn" href="/practice">לנסות עכשיו</a><a class="btn ghost" href="/today">עוד על הליווי הדיגיטלי</a></div></div>
+<div class="phone" aria-label="הדגמה חיה של כלי התרגול"><iframe src="/practice?embed=1" title="הדגמה חיה של כלי התרגול המודרך" loading="lazy"></iframe></div></div></section>'''
+    body += sec("שלושה דברים שהשיטה עושה", '''<div class="three"><div><h3>בהירות</h3><p>ממפים את הדפוס: מתי הוא מופיע, מה מפעיל אותו ומה קורה רגע לפניו.</p></div>
+<div><h3>שחרור</h3><p>נוגעים במה שמחזיק אותו במקום, כולל עבודה עם הגוף, בלי להילחם בתחושה.</p></div>
+<div><h3>חיווט מחדש והעצמה</h3><p>בונים תגובה חדשה, מתרגלים, ומחזיקים את השינוי בחיים עצמם.</p></div></div><p><a href="/method">להכיר את השיטה ←</a></p>''')
+    body += quote("השינוי לא קורה כשמבינים.<br>הוא קורה כשהגוף לומד תגובה חדשה.")
+    body += sec("להאזין", '<p>תרגול מוקלט של שבע דקות בקולה של קטי, לרגעי מתח.</p><p><a class="btn" href="/first-aid">עזרה ראשונה לחרדה</a></p>')
     body += sec("מי אני", '''<p>שמי קטי שגב. אני מטפלת רגשית, מאמנת מנטלית (NLP Master) ומפתחת שיטת CureMindset.</p>
 <p>במשך שנים חיפשתי פתרון. הבנתי הכול בראש, והגוף המשיך להגיב באותה דרך. הפתרון היה במקום שלא חיפשתי: בשכבה שבה הדפוסים נרשמים. מכאן נולדה השיטה, ומכאן אני מלווה היום נוער, צעירים ומבוגרים.</p>
 <p><a href="/about">הסיפור שלי ←</a></p>''')
-    body += sec("במה אני עובדת", ul([
-        "אימון רגשי ותהליכי עומק מבוססי NLP",
-        "ליווי אישי לבניית חוסן וביטחון עצמי",
-        '<a href="/teens">סדנאות חוסן לנוער (12 עד 17)</a>',
-        '<a href="/today">אזור אישי דיגיטלי ומאמן מנטלי חכם, זמין 24/7</a>']) +
-        '<p>מי שמגיעים אליי מגיעים בדרך כלל עם אחד מאלה: <a href="/teens">נער או נערה שנראים בסדר ואינם בסדר</a>, <a href="/young-adults">צעירים אחרי צבא שמרגישים ערפל</a>, או <a href="/adults">מבוגרים שהכול אצלם מסודר חוץ מהראש</a>.</p>')
-    body += quote("השינוי לא קורה כשמבינים.<br>הוא קורה כשהגוף לומד תגובה חדשה.")
-    body += sec("איך זה מתחיל", '''<p>בשיחת היכרות של 20 דקות. אני שומעת מה קורה, אתם שואלים כל מה שצריך, ויחד מבינים אם ואיך מתקדמים. אין מכירה בשיחה, ויש תשובה ישרה, גם אם היא "זה לא בשבילכם".</p>
-<p>המפגשים מתקיימים בקריית מוצקין (מרכז דיאלוג), בקריית חיים (מרכז תכלת) ובזום, לכל הארץ.</p>''')
-    body += cta()
-    body += note() + related([("/faq", "שאלות נפוצות"), ("/method", "השיטה"), ("/contact", "צור קשר")])
+    body += '<section class="sec"><div class="wrap"><h2>שאלות נפוצות</h2><div class="faq">' + "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in FAQ[:6]) + '</div><p><a href="/faq">לכל השאלות ←</a></p></div></section>'
+    body += cta("רוצים להתחיל?", "שיחת היכרות של 20 דקות, בטלפון או בזום. מבינים מה קורה ומה נכון לעשות עכשיו.")
+    body += note() + related([("/programs", "תוכניות"), ("/articles", "מאמרים"), ("/contact", "צור קשר")])
     sc = ld({"@context": "https://schema.org", "@type": "ProfessionalService", "name": "קטי שגב · CureMindset", "url": SITE + "/",
              "telephone": "+972543032349", "areaServed": ["קריית מוצקין", "קריית חיים", "קריית ביאליק", "קריית ים", "קריית אתא", "חיפה"],
              "provider": {"@type": "Person", "name": "קטי שגב", "jobTitle": "מטפלת רגשית ומאמנת מנטלית (NLP)"}})
@@ -411,6 +433,7 @@ def build():
     # ---------- תרגול מודרך ----------
     body = hero("תרגול מודרך", "כלי קצר, בקצב שלך: כפתור חירום לרגעי מתח וכאב, התבוננות בתחושה, תהליך להרגעת כאב ובדיקה מהירה שמראה איך זה משתנה. בכל רגע אפשר לעצור.", extra_btns=" ")
     body += '<section class="sec"><div class="wrap"><noscript><p>הכלי דורש JavaScript. אפשר לקבוע שיחת היכרות ולתרגל יחד: <a href="' + CAL + '">לקביעת שיחה</a>.</p></noscript><div id="practice"></div></div></section>'
+    body = '<script>if(/embed/.test(location.search))document.documentElement.className+=" embed"</script>' + body
     body += '<script src="/practice.js" defer></script>'
     body += note(" אם הכאב חדש, חריף או לא מוסבר, יש לפנות לרופא.") + related([("/progress", "מדד חוסן והתקדמות"), ("/today", "הליווי הדיגיטלי"), ("/contact", "צור קשר")])
     page("/practice", "practice.html", "תרגול מודרך: כפתור חירום, Somatic Tracking ותהליך להרגעת כאב | CureMindset",

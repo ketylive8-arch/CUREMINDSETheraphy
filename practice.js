@@ -33,6 +33,14 @@
       o: [["כפתור חירום", "emg:e1"], ["Somatic Tracking קצר", "som:s1"], ["תהליך להרגעת כאב", "pain:p0"], ["בדיקה מהירה", "check:c1"]] }
   ];
 
+  MODS.intro = [
+    { id: "i1", t: "say", p: ["ברוכים הבאים. זה מקום לתרגל בקצב שלך.", "כלי קצר שמלווה את הליווי האישי של קטי שגב, ואינו מחליף אותו."] },
+    { id: "i2", t: "say", p: ["למי זה מתאים? לכל מי שמרגיש מתח, עומס או כאב שחוזר, ורוצה כלי מעשי לרגע שבו זה קורה."] },
+    { id: "i3", t: "say", p: ["מי אני? קטי שגב, מטפלת רגשית ומאמנת מנטלית. את השיטה, CureMindset, בניתי מניסיון אישי."] },
+    { id: "i4", t: "say", p: ["מאיפה מתחילים? בלחיצה אחת על \"כפתור חירום\" כשצריך, או בבדיקה מהירה כדי לראות איפה אתה נמצא היום."] },
+    { id: "i5", t: "say", p: ["ומי זו קיריטי? העוזרת הדיגיטלית של CureMindset. היא זמינה בכל שעה, בכפתור בפינת המסך.", "{מוכנה|מוכן} להתחיל?"], last: true }
+  ];
+
   MODS.emg = [
     { id: "e1", t: "say", p: ["אני כאן. בוא{י|} ניקח רגע אחד ביחד.", "קח{י|} נשימה אחת עמוקה פנימה... ושחרר{י|} לאט החוצה.", "עוד אחת."] },
     { id: "e2", t: "say", p: ["עכשיו רק שים{י|} לב: איפה התחושה הכי חזקה בגוף כרגע?", "אין צורך לשנות אותה. רק לראות אותה."] },
@@ -218,6 +226,7 @@
     if (step.id === "b2") logDone("breath");
     if (step.id === "s5") logDone("som");
     if (step.id === "q2") logDone("sit");
+    if (step.last) { store.seen = 1; save(); }
     if (step.t === "say") {
       html = frame('<div data-focus>' + paras(q) + '</div><div class="btns"><button class="btn" data-next>המשך</button></div>', step);
     } else if (step.t === "ask") {
@@ -301,6 +310,6 @@
 
   var DEEP = { pain: "pain:p0", emergency: "emg:e1", som: "som:s1", check: "check:c1", breath: "breath:b1" };
   var hsh = (location.hash || "").replace("#", "");
-  if (DEEP[hsh]) go(DEEP[hsh]); else menu();
+  if (DEEP[hsh]) go(DEEP[hsh]); else if (!store.seen) go("intro:i1"); else menu();
   window.addEventListener("hashchange", function () { var k = (location.hash || "").replace("#", ""); if (DEEP[k]) go(DEEP[k]); });
 })();
