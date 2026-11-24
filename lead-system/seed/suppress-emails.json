@@ -12,6 +12,8 @@
   { "email": "info@pegasus-hotel.co.il",       "reason": "חזר — השרת דחה" },
   { "email": "reservations@sharon.co.il",      "reason": "חזר — נחסם" },
   { "email": "myjerusalemview@gmail.com",      "reason": "חזר — משתמש לא קיים" },
+  { "email": "info@spincare.com",              "reason": "חזר — השרת לא נגיש (timeout)" },
+  { "email": "info@rambam.org.il",             "reason": "חזר — השרת לא נגיש (timeout)" },
   { "email": "reservations@sephardichouse.co.il", "reason": "השיב 'אם רלוונטי' — דחייה מנומסת" },
   { "email": "golanhotel@golanhotel.co.il",    "reason": "השיב 'לא כדאי'" },
   { "email": "zmanaravahotel@gmail.com",       "reason": "מענה אוטומטי — לא להשאיר הודעות" },
