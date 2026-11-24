@@ -200,3 +200,35 @@ html.embed #practice{padding:8px 4px 24px}
  body.app #cmFloatHint{bottom:134px!important}
  body.app #cmA11yPanel{bottom:132px!important}
 }
+/* ===== שפת כרטיסים מלאה (כמו Curable) ===== */
+body{background:var(--bg)}
+.sec{border-top:0;padding:10px clamp(12px,3vw,24px)}
+.sec>.wrap{max-width:1050px;background:#fff;border-radius:var(--r-card);box-shadow:var(--sh-card);padding:clamp(22px,4vw,44px)}
+.sec:nth-of-type(3n)>.wrap{background:var(--band);box-shadow:none}
+.sec .wrap h2{margin-top:0}
+.hero{padding:clamp(24px,4vw,56px) clamp(12px,3vw,24px) 10px}
+.hero>.wrap{max-width:1050px;background:var(--band);border-radius:var(--r-big);padding:clamp(24px,5vw,56px)}
+.hero.photo>.wrap{padding:clamp(20px,4vw,44px)}
+.quote{max-width:1050px;margin:10px auto;background:var(--band);border:0;border-radius:var(--r-card);padding:clamp(24px,4vw,44px);text-align:center;width:calc(100% - clamp(24px,6vw,48px))}
+.wrap:has(>.quote){padding:0}
+.trust{background:transparent;padding:10px clamp(12px,3vw,24px)}
+.trust .wrap{padding:0}
+.trust li{background:#fff;border-radius:var(--r-card);box-shadow:var(--sh-card);padding:22px;text-align:center}
+.six li{background:var(--bg);border-radius:16px;padding:16px 18px;border:1px solid var(--line)}
+.six h3{margin-top:0}
+.three>div{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-card);padding:20px 22px}
+.sec:nth-of-type(3n) .three>div,.sec:nth-of-type(3n) .six li{background:#fff}
+.faq details{background:var(--bg);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;padding:0 18px}
+.faq summary{min-height:56px}
+.faq details[open]{background:#fff}
+.list li::before{background:var(--gold)}
+.band{margin:10px clamp(12px,3vw,24px);background:#26221D;color:#FAF7F1;text-align:center;padding:clamp(28px,5vw,52px) 0}
+.band h2{color:#E6C679}.band p{color:#E7DFCF;margin-inline:auto}.band .btns{justify-content:center}
+.band .btn.ghost{background:transparent;color:#FAF7F1;border-color:#E6C679}
+.band .btn{box-shadow:none}
+.note{max-width:1050px;margin-inline:auto;border-top:0;padding:16px clamp(24px,6vw,48px) 8px;font-size:.85rem}
+.wrap:has(>.note),.wrap.related{max-width:1050px}
+.pg-sec{background:#fff;border-radius:var(--r-card);box-shadow:var(--sh-card);padding:clamp(18px,3vw,30px);margin:10px 0;border-top:0}
+.art .txt{max-width:680px}
+.hdr{background:rgba(255,255,255,.94)}
+.ftr{background:var(--band);border-top:0;margin-top:20px}
