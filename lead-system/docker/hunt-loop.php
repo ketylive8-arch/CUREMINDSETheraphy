@@ -1,7 +1,8 @@
 <?php
 /**
  * הטיימר של סוכני הלידים — רץ ברקע בתוך אותו שרת (start.sh), בלי שירות נוסף.
- * כל 10 דקות: קורא תשובות בתיבה (הסר / לחזור / ענו) ושולח הצעה אחת מאושרת.
+ * פעם ביום (20:00 שעון ישראל): קורא תשובות בתיבה (הסר / לחזור / ענו).
+ * כל 10 דקות: שולח הצעה אחת מאושרת (בכפוף לתקרה).
  * פעם בשעה: כל הסוכנים הפעילים מחפשים עסקים חדשים.
  */
 declare(strict_types=1);
@@ -19,13 +20,22 @@ $first = getenv('HUNT_FIRST_DELAY_SEC');
 sleep($first === false ? 90 : (int) $first); // לתת לשרת לעלות קודם
 
 $lastHunt = 0;
+$lastMailDay = '';
+// שעת בדיקת התיבה (תשובות/הסרות/החזרות) — פעם ביום, שעון ישראל. ברירת מחדל 20:00.
+$mailHour = (int) (getenv('MAIL_CHECK_HOUR') ?: 20);
 while (true) {
-    try {
-        foreach (mail_check_replies() as $line) {
-            say("תיבה: $line");
+    // בדיקת התיבה פעם ביום בלבד, מהשעה שנקבעה (ברירת מחדל 20:00 שעון ישראל).
+    $nowIl = new DateTime('now', new DateTimeZone('Asia/Jerusalem'));
+    $today = $nowIl->format('Y-m-d');
+    if ((int) $nowIl->format('G') >= $mailHour && $lastMailDay !== $today) {
+        $lastMailDay = $today;
+        try {
+            foreach (mail_check_replies() as $line) {
+                say("תיבה: $line");
+            }
+        } catch (Throwable $e) {
+            say('תיבה: ' . $e->getMessage());
         }
-    } catch (Throwable $e) {
-        say('תיבה: ' . $e->getMessage());
     }
     if (time() - $lastHunt >= $every) {
         $lastHunt = time();
