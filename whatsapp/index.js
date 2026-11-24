@@ -22,9 +22,24 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || ""; // set as an env var on
 const OWNER = String(process.env.OWNER_NUMBER || "").replace(/\D/g, ""); // who may give commands
 const OPENAI_KEY = process.env.OPENAI_API_KEY || "";
 
-fs.mkdirSync(AUTH_DIR, { recursive: true });
+// Prefer the persistent disk (AUTH_DIR, e.g. /data/auth). If it is not mounted
+// or not writable, fall back to a local folder so the service still starts and
+// shows the QR — the link is then only temporary until a disk is added.
+let AUTH_PATH = AUTH_DIR;
+let persistent = true;
+try {
+  fs.mkdirSync(AUTH_PATH, { recursive: true });
+} catch {
+  persistent = false;
+  AUTH_PATH = "./.wa-auth";
+  try { fs.mkdirSync(AUTH_PATH, { recursive: true }); } catch { /* ignore */ }
+}
 
-const view = { status: "starting", qr: null, me: null, lastEvent: "מתחיל…", handled: 0 };
+const view = {
+  status: "starting", qr: null, me: null, handled: 0,
+  lastEvent: persistent ? "מתחיל…" : "אין דיסק קבוע — החיבור זמני עד שיתווסף דיסק",
+  persistent,
+};
 
 /* ---------------- lead-system API (admin session, cached) ---------------- */
 let token = null;
@@ -96,7 +111,7 @@ async function handleCommand(text) {
 /* ---------------- WhatsApp connection ---------------- */
 let sock = null;
 async function connect() {
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+  const { state, saveCreds } = await useMultiFileAuthState(AUTH_PATH);
   sock = makeWASocket({ auth: state, logger: log, printQRInTerminal: false, syncFullHistory: false });
 
   sock.ev.on("creds.update", saveCreds);
