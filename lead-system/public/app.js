@@ -765,6 +765,73 @@
     </div></div>`;
   }
 
+  // ---------- WhatsApp groups ----------
+  function Groups() {
+    const [groups, setGroups] = useState(null);
+    const [text, setText] = useState("");
+    const [busy, setBusy] = useState(false);
+    const [msg, setMsg] = useState("");
+    const load = useCallback(async () => {
+      try { const r = await api("/groups"); setGroups(r.groups || []); } catch (e) { setGroups([]); }
+    }, []);
+    useEffect(() => { load(); }, [load]);
+
+    async function add() {
+      if (!text.trim()) return;
+      setBusy(true); setMsg("");
+      try {
+        const r = await api("/groups", { method: "POST", body: JSON.stringify({ text }) });
+        setMsg("נוספו " + (r.added || 0) + " קבוצות.");
+        setText(""); load();
+      } catch (e) { setMsg("⚠️ " + (e.message || "לא נוספו קבוצות")); }
+      setBusy(false);
+      setTimeout(() => setMsg(""), 4000);
+    }
+    async function del(g) {
+      if (!confirm("להסיר את הקבוצה «" + g.name + "» מהמעקב?")) return;
+      await api("/groups/" + g.id + "/delete", { method: "POST" }); load();
+    }
+    const statusLabel = { pending: "ממתינה לחיבור", active: "פעילה · אוספת", failed: "לא זמינה" };
+
+    return html`
+      <div class="card">
+        <div class="head"><h2>קבוצות וואטסאפ — איתור לידים</h2>
+          <span class="muted">המערכת מאזינה לקבוצות שאת כבר חברה בהן, ואוספת רק פניות של מי שמבקש שירות</span></div>
+        <div class="m-body">
+          <div class="notice" style=${{ lineHeight: 1.7 }}>
+            <b>איך זה עובד:</b> מחברים חשבון וואטסאפ אחד (שלך) בסריקת QR, מוסיפים כאן את הקבוצות,
+            והמערכת קוראת פוסטים שבהם מישהו <b>מחפש או ממליץ על</b> נותן שירות ("מחפשת מעצבת",
+            "דרוש אינסטלטור") — מסווגת ב-AI והופכת אותם ללידים. היא לא שולחת הודעות בקבוצות
+            ולא אוספת את המספרים של כל החברים.
+            <br/><a href="https://segev-whatsapp.onrender.com" target="_blank" rel="noopener">→ חיבור חשבון הוואטסאפ (סריקת QR)</a>
+          </div>
+
+          <h3 style=${{ marginBottom: "6px" }}>הוספת קבוצות (הדבקה או ייבוא מאקסל)</h3>
+          <div class="muted" style=${{ fontSize: "13px", marginBottom: "6px" }}>
+            שורה לכל קבוצה: שם הקבוצה, ואם יש — קישור הזמנה (chat.whatsapp.com/…). אפשר להדביק עמודה שלמה מאקסל.</div>
+          <textarea rows="5" dir="auto" value=${text} onInput=${(e) => setText(e.target.value)}
+            placeholder=${"ממליצים חיפה והקריות\nדרושים צפון https://chat.whatsapp.com/XXXX\nבעלי עסקים קריית אתא"}></textarea>
+          <button class="btn" disabled=${busy} onClick=${add}>${busy ? "מוסיף…" : "הוסף קבוצות"}</button>
+          ${msg && html`<span class="muted" style=${{ marginInlineStart: "10px" }}>${msg}</span>`}
+
+          <h3 style=${{ margin: "18px 0 6px" }}>הקבוצות במעקב</h3>
+          ${!groups ? html`<div class="loading">טוען…</div>`
+            : groups.length === 0
+              ? html`<div class="loading">עוד אין קבוצות. הדביקי קבוצות למעלה כדי להתחיל.</div>`
+              : html`<table>
+                  <thead><tr><th>קבוצה</th><th>קישור</th><th>סטטוס</th><th>לידים</th><th>פעילות אחרונה</th><th></th></tr></thead>
+                  <tbody>${groups.map((g) => html`<tr key=${g.id}>
+                    <td>${g.name}</td>
+                    <td>${g.invite ? html`<a href=${g.invite} target="_blank" rel="noopener" dir="ltr">קישור</a>` : html`<span class="muted">—</span>`}</td>
+                    <td>${statusLabel[g.status] || g.status}</td>
+                    <td>${g.lead_count || 0}</td>
+                    <td class="muted">${g.last_seen_at || "—"}</td>
+                    <td><button class="btn sm ghost" onClick=${() => del(g)}>הסר</button></td>
+                  </tr>`)}</tbody></table>`}
+        </div>
+      </div>`;
+  }
+
   // ---------- Shell ----------
   function Shell({ user, profile, onLogout }) {
     const isClient = user.role === "client";
@@ -792,7 +859,7 @@
 
     const tabs = isClient
       ? [["dashboard", "לוח בקרה"]]
-      : [["dashboard", "לוח בקרה"], ["agents", "חיבורי סוכנים"], ["bounces", "חזרו"], ["activity", "יומן פעילות"], ["users", "משתמשים"]];
+      : [["dashboard", "לוח בקרה"], ["agents", "חיבורי סוכנים"], ["groups", "קבוצות וואטסאפ"], ["bounces", "חזרו"], ["activity", "יומן פעילות"], ["users", "משתמשים"]];
 
     return html`
       <div class="app">
@@ -812,6 +879,7 @@
           ${tab === "bounces" && html`<${Bounces} onAction=${onAction} />`}
           ${tab === "activity" && html`<${Activity} />`}
           ${tab === "agents" && html`<${AgentsHub} />`}
+          ${tab === "groups" && html`<${Groups} />`}
           ${tab === "users" && html`<${Users} />`}
         </div>
         ${draft && html`<${FollowupModal} draft=${draft} onClose=${() => setDraft(null)} />`}

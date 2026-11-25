@@ -178,6 +178,28 @@ function migrate(PDO $pdo): void
     // מאיזה סוכן הגיע הליד, וטיוטת ההצעה המותאמת לעסק.
     try { $pdo->exec('ALTER TABLE leads ADD COLUMN agent_id INTEGER'); } catch (Throwable $e) {}
     try { $pdo->exec('ALTER TABLE leads ADD COLUMN draft TEXT'); } catch (Throwable $e) {}
+    // לידים מקבוצות וואטסאפ: סוג הליד, הקבוצה שממנה הגיע, ההודעה המקורית ורמת הדחיפות.
+    // lead_kind: 'business' (ציד עסקים רגיל) או 'request' (מישהו ביקש שירות בקבוצה).
+    try { $pdo->exec("ALTER TABLE leads ADD COLUMN lead_kind TEXT DEFAULT 'business'"); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN source_group TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN raw_message TEXT'); } catch (Throwable $e) {}
+    try { $pdo->exec('ALTER TABLE leads ADD COLUMN urgency TEXT'); } catch (Throwable $e) {}
+    // קבוצות וואטסאפ שהמנהלת הוסיפה למעקב (ייבוא מאקסל/הדבקה). המערכת אוספת מהן
+    // רק פוסטים שבהם מישהו מבקש שירות — לא קוצרים את המספרים של כל חברי הקבוצה.
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS wa_groups (
+            id            $pk,
+            owner_user_id INTEGER,
+            name          TEXT NOT NULL,
+            invite        TEXT,
+            jid           TEXT,
+            status        TEXT NOT NULL DEFAULT 'pending',
+            note          TEXT,
+            lead_count    INTEGER DEFAULT 0,
+            last_seen_at  TEXT,
+            created_at    $now
+        )
+    ");
     // Suppression list — addresses that must never be contacted again
     // (bounced, asked to be removed, or replied \"not relevant\").
     $pdo->exec("

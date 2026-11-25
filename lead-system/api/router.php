@@ -12,6 +12,7 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/leads.php';
 require_once __DIR__ . '/agents.php';
 require_once __DIR__ . '/hunter.php';
+require_once __DIR__ . '/wa.php';
 
 $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -73,6 +74,10 @@ try {
     if (preg_match('#^/api/keys/(\d+)/revoke$#', $path, $m) && $method === 'POST') {
         handle_revoke_key((int) $m[1]);
     }
+    // קבוצות וואטסאפ: /api/groups/{id}/delete
+    if (preg_match('#^/api/groups/(\d+)/delete$#', $path, $m) && $method === 'POST') {
+        handle_delete_group((int) $m[1]);
+    }
 
     $route = "$method $path";
     match ($route) {
@@ -94,6 +99,9 @@ try {
         'POST /api/keys'        => handle_create_key(),
         'GET /api/agents'       => handle_list_agents(),
         'POST /api/agents'      => handle_create_agent(),
+        'GET /api/groups'       => handle_list_groups(),
+        'POST /api/groups'      => handle_add_groups(),
+        'POST /api/wa/ingest'   => handle_wa_ingest(),
         'POST /api/hunt/run'    => handle_hunt_run(),
         'GET /api/hunt/categories' => handle_hunt_categories(),
         'GET /api/hunt/report'  => handle_hunt_report(),

@@ -21,6 +21,8 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "segevmkg@gmail.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || ""; // set as an env var on the service; never hardcoded
 const OWNER = String(process.env.OWNER_NUMBER || "").replace(/\D/g, ""); // who may give commands
 const OPENAI_KEY = process.env.OPENAI_API_KEY || "";
+const HUNT_SECRET = process.env.HUNT_SECRET || "";                     // shared secret for /api/wa/ingest
+const GROUP_INGEST = (process.env.GROUP_INGEST || "1") !== "0";        // passive group lead collection on/off
 
 // Prefer the persistent disk (AUTH_DIR, e.g. /data/auth). If it is not mounted
 // or not writable, fall back to a local folder so the service still starts and
@@ -142,8 +144,14 @@ async function connect() {
     for (const m of messages) {
       try {
         if (m.key.fromMe) continue;
-        const from = (m.key.remoteJid || "").replace(/@.*/, "").replace(/\D/g, "");
-        // only the owner may operate the system
+        const jid = m.key.remoteJid || "";
+        // Group message → passive lead collection (listen only, never reply).
+        if (jid.endsWith("@g.us")) {
+          if (GROUP_INGEST && HUNT_SECRET) await ingestGroupMessage(m);
+          continue;
+        }
+        const from = jid.replace(/@.*/, "").replace(/\D/g, "");
+        // Direct messages: only the owner may operate the system by command.
         if (OWNER && from !== OWNER) continue;
         const inner = m.message || {};
         let text = inner.conversation || inner.extendedTextMessage?.text || "";
@@ -167,6 +175,47 @@ async function connect() {
 
 async function reply(jid, text) {
   try { await sock.sendMessage(jid, { text }); } catch { /* ignore */ }
+}
+
+/* ---------------- passive group lead collection ----------------
+ * For groups the linked account is already a member of, we listen only —
+ * never send, react, or mark read. Each text message is forwarded to the
+ * lead system, which classifies it and keeps ONLY genuine service requests
+ * ("מחפשת…", "דרוש…", "ממליצים על…"). We never harvest members' numbers in bulk.
+ */
+const groupNames = new Map(); // jid -> subject (cached)
+async function groupName(jid) {
+  if (groupNames.has(jid)) return groupNames.get(jid);
+  let name = "";
+  try { name = (await sock.groupMetadata(jid))?.subject || ""; } catch { /* ignore */ }
+  groupNames.set(jid, name);
+  return name;
+}
+
+async function ingestGroupMessage(m) {
+  const jid = m.key.remoteJid || "";
+  const inner = m.message || {};
+  const text = inner.conversation || inner.extendedTextMessage?.text || "";
+  if (!text || text.trim().length < 15) return;                 // skip media/system/short
+  const participant = (m.key.participant || "").replace(/@.*/, "").replace(/\D/g, "");
+  const payload = {
+    group: await groupName(jid),
+    group_jid: jid,
+    sender_name: m.pushName || "",
+    sender_phone: participant,
+    text,
+  };
+  try {
+    const r = await fetch(API + "/api/wa/ingest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Hunt-Secret": HUNT_SECRET },
+      body: JSON.stringify(payload),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (j && j.stored) {
+      view.lastEvent = "ליד חדש מקבוצה: " + (j.category || "") + " · " + (payload.group || jid);
+    }
+  } catch { /* a single message failing never stops the listener */ }
 }
 
 /* ---------------- web page: QR + status ---------------- */
