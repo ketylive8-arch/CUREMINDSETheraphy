@@ -194,3 +194,12 @@ foreach ($pdo->query("SELECT id, offer FROM agents WHERE kind = 'hunter'")->fetc
             ->execute([json_encode($newDefaults, JSON_UNESCAPED_UNICODE), $newDefaults[0]['subject'], (int) $ag['id']]);
     }
 }
+
+// הוראת קטי (25.11): כל מייל נגמר ב"זוהי הצעה חד פעמית... השיבו הסר ותוסרו מרשימת התפוצה".
+$prev3 = json_decode(file_get_contents(__DIR__ . '/default-offers.prev3.json'), true);
+foreach ($pdo->query("SELECT id, offer FROM agents WHERE kind = 'hunter'")->fetchAll() as $ag) {
+    if (json_decode((string) $ag['offer'], true) == $prev3) {
+        $pdo->prepare('UPDATE agents SET offer = ?, subject = ? WHERE id = ?')
+            ->execute([json_encode($newDefaults, JSON_UNESCAPED_UNICODE), $newDefaults[0]['subject'], (int) $ag['id']]);
+    }
+}
