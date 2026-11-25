@@ -80,6 +80,20 @@ def header(path):
 <main id="main">'''
 
 
+SOCIAL = [
+    ("יוטיוב", "https://www.youtube.com/@ketynlplive", '<path d="M21.6 7.2a2.5 2.5 0 00-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 002.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 001.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 001.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5.2 3z"/>'),
+    ("אינסטגרם", "https://instagram.com/ketysegev", '<path d="M7.5 2h9A5.5 5.5 0 0122 7.5v9a5.5 5.5 0 01-5.5 5.5h-9A5.5 5.5 0 012 16.5v-9A5.5 5.5 0 017.5 2zm0 2A3.5 3.5 0 004 7.5v9A3.5 3.5 0 007.5 20h9a3.5 3.5 0 003.5-3.5v-9A3.5 3.5 0 0016.5 4zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6zm5.3-3.2a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/>'),
+    ("פייסבוק", "https://www.facebook.com/Ketyse", '<path d="M13.5 22v-8.2h2.8l.5-3.4h-3.3V8.2c0-1 .3-1.7 1.7-1.7h1.7V3.5c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.7H7.2v3.4H10V22z"/>'),
+    ("ספוטיפיי", "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3", '<path d="M12 2a10 10 0 100 20 10 10 0 000-20zm4.6 14.4a.75.75 0 01-1 .3c-2.8-1.7-6.300-2.100-10.400-1.100a.75.75 0 11-.3-1.500c4.500-1 8.400-.6 11.500 1.300.4.2.5.7.2 1zm1.300-3a.94.94 0 01-1.300.3c-3.200-2-8.100-2.500-11.900-1.400a.94.94 0 11-.5-1.800c4.300-1.300 9.700-.7 13.400 1.600.4.2.5.8.3 1.300zm.1-3.100c-3.800-2.300-10.200-2.500-13.900-1.400a1.130 1.130 0 11-.7-2.100c4.200-1.300 11.200-1 15.600 1.600a1.130 1.130 0 01-1 2z"/>'),
+    ("Linktree", "https://linktr.ee/Ketysegev", '<path d="M10.900 2h2.200v5.500l3.900-3.900 1.600 1.600-4.200 4.200H20v2.200h-5.800l4.100 4.100-1.600 1.600-4.700-4.700V22h-2.200v-8.400l-4.700 4.700-1.600-1.600 4.100-4.100H4V10.400h5.800L5.600 6.200l1.600-1.600 3.700 3.800z"/>'),
+]
+
+
+def social_html():
+    return '<ul class="social" aria-label="הרשתות של קטי שגב">' + "".join(
+        f'<li><a href="{u}" target="_blank" rel="noopener" aria-label="{n}"><svg viewBox="0 0 24 24" aria-hidden="true">{p}</svg></a></li>' for n, u, p in SOCIAL) + "</ul>"
+
+
 def tabbar():
     if CUR["p"] not in APP_PATHS:
         return ""
@@ -93,7 +107,7 @@ def footer():
 <footer class="ftr"><div class="wrap">
 <div class="cols">
 <div><h4>CureMindset · קטי שגב</h4><p>מטפלת רגשית ומאמנת מנטלית (NLP). שיטה שנבנתה מניסיון אישי.</p>
-<p><a style="display:inline;padding:0" href="tel:0543032349">054-3032349</a> · <a style="display:inline;padding:0" href="{WA}" target="_blank" rel="noopener">וואטסאפ</a></p></div>
+<p><a style="display:inline;padding:0" href="tel:0543032349">054-3032349</a> · <a style="display:inline;padding:0" href="{WA}" target="_blank" rel="noopener">וואטסאפ</a></p><h4 style="margin-top:14px">ברשת</h4>{social_html()}</div>
 <div><h4>איפה פוגשים</h4><p>קריית מוצקין, מרכז דיאלוג</p><p>קריית חיים, מרכז תכלת</p><p>בזום, לכל הארץ</p></div>
 <div><h4>מידע</h4><a href="/privacy">פרטיות</a><a href="/terms">תנאי שימוש</a><a href="/accessibility">נגישות</a><a href="/responsibility">הבהרת אחריות</a></div>
 </div>
@@ -154,13 +168,20 @@ def related(items):
 
 ORG = {"@context": "https://schema.org", "@type": "Organization", "name": "CureMindset · קטי שגב", "url": SITE,
        "logo": SITE + "/images/logo.png", "telephone": "+972-54-3032349", "areaServed": "IL",
-       "founder": {"@type": "Person", "name": "קטי שגב"}, "sameAs": ["https://www.youtube.com/@ketynlplive"],
+       "founder": {"@type": "Person", "name": "קטי שגב"}, "sameAs": ["https://www.youtube.com/@ketynlplive", "https://instagram.com/ketysegev", "https://www.facebook.com/Ketyse", "https://linktr.ee/Ketysegev", "https://open.spotify.com/episode/3XMpL3GBhi9YQ2FVIZNXd3"],
        "knowsAbout": ["חרדה", "חוסן רגשי", "ביטחון עצמי", "NLP", "אימון רגשי", "ליווי נוער"],
        "address": [{"@type": "PostalAddress", "addressLocality": "קריית מוצקין", "addressCountry": "IL"}, {"@type": "PostalAddress", "addressLocality": "קריית חיים", "addressCountry": "IL"}]}
 PERSON = {"@context": "https://schema.org", "@type": "Person", "name": "קטי שגב", "jobTitle": "מטפלת רגשית ומאמנת מנטלית (NLP)",
           "url": SITE + "/about", "worksFor": {"@type": "Organization", "name": "CureMindset", "url": SITE}, "sameAs": ["https://www.youtube.com/@ketynlplive"]}
 SERVICE_NAMES = {"/teens": "ליווי רגשי ואימון מנטלי לנוער 12-17", "/young-adults": "ליווי רגשי לצעירים 18-25",
                  "/adults": "ליווי רגשי ואימון מנטלי למבוגרים", "/anxiety": "ליווי לעומס וחרדה בשיטת CureMindset"}
+
+
+def gift_section():
+    return '''<section class="sec"><div class="wrap"><h2>מתנה חינם: הפודקאסט Mindset TRAINBRAIN</h2><p>שיחות על המוח, על דפוסים ועל מה שבאמת עוזר, בגובה העיניים. בלי הרשמה ובלי תשלום.</p>
+<div class="video-embed"><iframe src="https://www.youtube.com/embed/videoseries?list=UURNxka7LYKNPFqko72-8U1Q" title="הפודקאסט Mindset TRAINBRAIN, קטי שגב" allow="encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe></div>
+<p><a href="https://www.youtube.com/@ketynlplive/videos" target="_blank" rel="noopener">לכל הפרקים בערוץ היוטיוב ←</a></p>
+<p>ועוד מתנה: <a href="/first-aid">עזרה ראשונה לחרדה</a>, תרגול מוקלט של שבע דקות.</p></div></section>'''
 
 
 def readmore(path):
@@ -180,7 +201,7 @@ def page(path, file, title, desc, body, extra_ld=""):
     if path in SERVICE_NAMES:
         extra_ld += ld({"@context": "https://schema.org", "@type": "Service", "name": SERVICE_NAMES[path], "provider": {"@type": "Person", "name": "קטי שגב"},
                         "areaServed": "IL", "serviceType": "ליווי רגשי ואימון מנטלי", "url": SITE + path})
-    rm = readmore(path)
+    rm = (gift_section() if path == "/anxiety" else "") + readmore(path)
     if rm:
         body = body.replace('<section class="band">', rm + '<section class="band">', 1) if '<section class="band">' in body else body + rm
     out = head(title, desc, path, extra_ld) + header(path) + body + footer()
